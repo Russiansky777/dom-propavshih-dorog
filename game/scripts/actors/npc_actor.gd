@@ -51,6 +51,7 @@ var partner: Node2D = null
 var live: NpcLive3D = null
 var held: HeldProp = null   # 02.11 (стр. 21): rooms data `held` — a thing in the villager's hand
 var action_props: Array = []   # block 3: HeldProp per thing in hand of a one-shot action (actor data rt3d.props)
+var worn_props: Array = []     # 09.11: HeldProp per thing worn on the body (rooms data `worn`)
 var _floor_k: float = ActorSheet.FLOOR_FORESHORTENING_DEFAULT
 
 
@@ -159,6 +160,12 @@ func setup(id: String, h: StoryHotspot, room: Node, the_player: Node2D) -> bool:
 	# 02.11 (стр. 21): a thing carried in the hand (rooms data `held` on the hotspot — Mitya's lantern)
 	if h.data is Dictionary and (h.data as Dictionary).has("held"):
 		held = HeldProp.attach(self, h.data["held"])
+	# 09.11 (Director 13:36 «повесь на бедро, как-то красиво»): a thing worn on the body (rooms data `worn`, HeldProp
+	# grip "body" — Tamara's mail bag on her hip on the bridge)
+	if h.data is Dictionary and (h.data as Dictionary).has("worn"):
+		var wspec: Dictionary = (h.data["worn"] as Dictionary).duplicate()
+		wspec["grip"] = "body"
+		worn_props.append(HeldProp.attach(self, wspec))
 	# block 3: a villager busy with something the whole time the room or frame is shown (rooms data `act` on the
 	# hotspot {clip, loop, hold_at, start}: the epilogue's tarring, the postwoman's bag) — from `start` (share of the clip)
 	if live != null and h.data is Dictionary and (h.data as Dictionary).has("act"):
@@ -195,6 +202,15 @@ func _exit_tree() -> void:
 ## or its current state — where the villager looks when not talking (the door he waits at).
 func _face_data() -> void:
 	if hotspot == null or not is_instance_valid(hotspot):
+		return
+	# Director 09.11, 12:35 («Тамара развернута к нам… Павел на финале тоже развернут непонятно как, Пелагея тоже»):
+	# `face_dir` — the facing of the painted figure the frame had before its live 3D figure (layers compose `dir` of the
+	# v2 sheets: 0 towards the viewer, then clockwise on screen — 2 left, 4 away, 6 right), so the figure stands turned
+	# exactly as in the accepted frame, not as a point picked by eye
+	if hotspot.data.has("face_dir"):
+		var yaw := deg_to_rad(-45.0 * float(hotspot.data["face_dir"]))
+		var k := maxf(_floor_k, 0.05)
+		face_towards(global_position + Vector2(sin(yaw), cos(yaw) * k) * 200.0)
 		return
 	var f: Array = hotspot.current_state().get("face", hotspot.data.get("face", []))
 	if f.size() >= 2:
@@ -348,9 +364,9 @@ func play_action(role: String, hold: bool = false, hold_at: float = -1.0, loop: 
 	return L * clampf(hold_at, 0.0, 1.0) if hold_at >= 0.0 else L
 
 
-func release_action() -> void:
+func release_action(at_share: float = -1.0) -> void:
 	if live != null:
-		live.release_once()
+		live.release_once(at_share)
 
 
 func _line_to_agata() -> bool:

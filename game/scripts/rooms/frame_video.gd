@@ -12,8 +12,12 @@ extends VideoStreamPlayer
 ##                                                        and over; one file loops.
 ## The picture under the player stays: the first frame while the stream opens, and the frame as it was without the
 ## file. The room's lights (RoomLighting) shade the player like the picture.
+## Director 09.11, 12:35 («Уля вообще не приходит при этом на видео»): the clips were picked once, when the frame was
+## built — the dinner opens without Ulyana and «Ульяна пришла» (ep_ulyana_came) is set later, at the door's line, so the
+## video stayed on the family without her. Now a flag change picks again (`bg` kept): other clips → the new one at once.
 
 var files: Array = []
+var bg: Dictionary = {}
 var _last := -1
 
 
@@ -45,8 +49,9 @@ static func _holds(e: Dictionary) -> bool:
 	return true
 
 
-func setup(p_files: Array, pos: Vector2, sz: Vector2) -> void:
+func setup(p_files: Array, pos: Vector2, sz: Vector2, p_bg: Dictionary = {}) -> void:
 	files = p_files
+	bg = p_bg
 	name = "Video"
 	expand = true
 	volume_db = -80.0
@@ -55,12 +60,34 @@ func setup(p_files: Array, pos: Vector2, sz: Vector2) -> void:
 	size = sz
 	loop = files.size() == 1
 	autoplay = false
-	if files.size() > 1:
-		finished.connect(_next)
+	finished.connect(_on_finished)
 
 
 func _ready() -> void:
 	_next()   # play() needs the tree
+	if not bg.is_empty() and not GameState.flag_changed.is_connected(_on_flag):
+		GameState.flag_changed.connect(_on_flag)
+
+
+func _exit_tree() -> void:
+	if GameState.flag_changed.is_connected(_on_flag):
+		GameState.flag_changed.disconnect(_on_flag)
+
+
+func _on_finished() -> void:
+	if files.size() > 1:
+		_next()
+
+
+## A story flag changed while the frame is shown: the variant's clips again; different ones start at once.
+func _on_flag(_flag: String, _value: bool) -> void:
+	var now := pick(bg)
+	if now.is_empty() or now == files:
+		return
+	files = now
+	_last = -1
+	loop = files.size() == 1
+	_next()
 
 
 func _next() -> void:

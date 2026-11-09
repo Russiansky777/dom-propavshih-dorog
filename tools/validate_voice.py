@@ -72,6 +72,21 @@ _dspec.loader.exec_module(direction)
 NARRATION_REQUIRED = ("speaker", "subdir", "skip_sections", "skip_fields")
 
 
+
+
+def _trimmed_now(lang: str, e: dict, cur: dict) -> bool:
+    """09.11: a recording shortened for the game whose shortened text is the line's text now."""
+    t = _voice_trim_module().load_trims().get(f"{lang}/{e.get('file', '')}")
+    return t is not None and cur.get("text") == t.get("text")
+
+def _voice_trim_module():
+    """tools/voice_trim.py (09.11): lines shortened for the game — the game's copy and manifest differ on purpose."""
+    import importlib.util as _u
+    sp = _u.spec_from_file_location("voice_trim", str(ROOT / "tools" / "voice_trim.py"))
+    mod = _u.module_from_spec(sp)
+    sp.loader.exec_module(mod)
+    return mod
+
 def load(path: Path, default=None):
     if not path.exists():
         return default
@@ -508,6 +523,8 @@ def check(lines: dict, manifests: dict[str, dict], cast: dict | None, voices: di
             elif narr != (cur.get("kind") == "narration"):
                 errors.append(f"{tag}: запись реплики под ключом закадровой фразы (или наоборот)")
                 continue
+            elif _trimmed_now(src_dir.name, e, cur):
+                pass   # 09.11: shortened for the game (data/story/voice_trim.json) — it sounds as the line reads now
             elif sha1(cur["text"]) != e.get("text_sha1"):
                 reason = "текст изменён после записи (sha1 не совпадает) — игра молчит"
                 if narr and (own is None or not own.get("assigned", True)):
@@ -526,9 +543,11 @@ def check(lines: dict, manifests: dict[str, dict], cast: dict | None, voices: di
             if "stale" in e:
                 errors.append(f"{tag}: помечена stale ({e['stale']}), но совпадает с текущей репликой")
             # запасная запись другого голоса (ключ читает персонаж) не перезаписывается — её теги/произношение не сверяем
-            if own is not None and own.get("assigned", True) and e.get("voice_sha1", e.get("text_sha1")) != sha1(api_text(cur)):
+            if cur is not None and _trimmed_now(src_dir.name, e, cur):
+                pass
+            elif own is not None and own.get("assigned", True) and e.get("voice_sha1", e.get("text_sha1")) != sha1(api_text(cur)):
                 (errors if strict else warns).append(f"{tag}: теги подачи изменены — ждёт перегенерации (pipeline-voice); пока звучит прежний дубль")
-            if e.get("text") != cur["text"]:
+            if e.get("text") != cur["text"] and not _trimmed_now(src_dir.name, e, cur):
                 errors.append(f"{tag}: text записи ≠ text реплики при равном sha1")
             if narr:
                 key = str(e.get("key", lid))
@@ -576,7 +595,13 @@ def check(lines: dict, manifests: dict[str, dict], cast: dict | None, voices: di
             if not game_copy:
                 continue
             g = game_dir / str(e.get("file", ""))
-            if not g.is_file() or g.read_bytes() != f.read_bytes():
+            trim = _voice_trim_module().load_trims().get(f"{src_dir.name}/{e.get('file', '')}")
+            if trim is not None:
+                mark = g.with_name(g.name + ".trim.json")
+                ok_t = g.is_file() and mark.is_file() and json.loads(mark.read_text(encoding="utf-8")).get("src_md5") == hashlib.md5(f.read_bytes()).hexdigest()
+                if not ok_t:
+                    errors.append(f"{tag}: обрезанной копии игры {g.relative_to(ROOT)} нет или она не из этого исходника — tools/sync_voice.sh")
+            elif not g.is_file() or g.read_bytes() != f.read_bytes():
                 errors.append(f"{tag}: копия игры {g.relative_to(ROOT)} отсутствует или отличается — tools/sync_voice.sh")
             else:
                 imp = g.with_name(g.name + ".import")
@@ -592,7 +617,8 @@ def check(lines: dict, manifests: dict[str, dict], cast: dict | None, voices: di
                     errors.append(f"{rel}/{rel_f}: файл без записи в манифесте (не соответствует ни одному ключу/реплике)")
         if files and game_copy:
             gm = game_dir / "manifest.json"
-            if not gm.is_file() or gm.read_bytes() != (src_dir / "manifest.json").read_bytes():
+            if not gm.is_file() or gm.read_text(encoding="utf-8") != _voice_trim_module().expected_manifest(
+                    (src_dir / "manifest.json").read_text(encoding="utf-8"), src_dir.name):
                 errors.append(f"{gm.relative_to(ROOT)} отсутствует или отличается — tools/sync_voice.sh")
     if rerecord:
         warns.append(f"к перезаписи {len(rerecord)} (текст изменён после записи, игра их не играет): {', '.join(rerecord)} — "

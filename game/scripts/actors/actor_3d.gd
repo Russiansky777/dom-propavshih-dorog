@@ -2085,7 +2085,10 @@ func pose(delta: float, walk_phase: float, w: float, act_w: float, act_name: Str
 	# (tests/probe_hand_spikes.gd, probe_action_jitter). Now a gate eases the weight down and back up (smoothstep over
 	# switch_fade_s): no step reaches the spring, the hands set off and settle softly.
 	var switching := act_name != "" and act_name != _act_name and _act_name != ""
-	if switching and _gate <= 0.0 and _a_s <= 0.002:
+	# 09.11 (the key from Tamara's hand: Agata's reach came in only at 0,6 of it): when the old clip is already out
+	# (shown weight ≈ 0 and still), the new one takes over at once — the gate used to go down and up first, and while
+	# it did the faded old gesture was called back to ~0,3 for a moment (a ghost of the line's gesture), then dropped
+	if switching and _a_s <= 0.002 and (_gate <= 0.0 or absf(_a_v) < 0.01):
 		_a_s = 0.0
 		_a_v = 0.0
 		switching = false   # the old clip is out: _apply takes the new one, the gate opens
@@ -2528,3 +2531,191 @@ func triangle_count() -> int:
 			var idx = arr[Mesh.ARRAY_INDEX]
 			n += (idx.size() if idx != null else (arr[Mesh.ARRAY_VERTEX] as PackedVector3Array).size()) / 3
 	return n
+
+
+# --- Things held in the fingers ---------------------------------------------------------------------
+# Director 09.11, 11:34 («ключ приклеен на руку, а не в руке находится»): a small thing in the hand is not a picture
+# laid over the 2D figure at the wrist any more — it is a flat picture inside the figure's own 3D render, at the grip
+# of the hand (the middle of the fingers, found from the hand's own vertices), facing the camera and turned with the
+# hand on screen. The fingers in front of it hide its gripped end by depth; the rest shows past the fist. HeldProp
+# (data grip "fingers") drives it; the quad is placed after the skeleton's modifiers ran (skeleton_updated).
+
+var _grip_local: Dictionary = {}    # "Left"/"Right" → [grip, fingertip] in the hand bone's rest frame (skeleton units)
+var hand_props: Array = []          # MeshInstance3D (meta side, anchor_uv, size, turn_deg)
+
+
+## The grip and the fingertip of a hand in its bone's rest frame: vertices whose strongest bone is the hand; the
+## fingertip is the farthest from the wrist, the grip the middle of those between 45 % and 80 % of that reach.
+func hand_grip_local(side: String) -> Array:
+	if _grip_local.has(side):
+		return _grip_local[side]
+	var hb := skeleton.find_bone(side + "Hand")
+	var pts: Array = []
+	if hb >= 0:
+		var hr := skeleton.get_bone_global_rest(hb)
+		var inv := hr.affine_inverse()
+		for mi in meshes:
+			var skin: Skin = (mi as MeshInstance3D).skin
+			if skin == null:
+				continue
+			var binds: Array = []
+			for j in skin.get_bind_count():
+				var b := skin.get_bind_bone(j)
+				if b < 0:
+					b = skeleton.find_bone(skin.get_bind_name(j))
+				binds.append([b, skeleton.get_bone_global_rest(b) * skin.get_bind_pose(j)] if b >= 0 else [-1, Transform3D.IDENTITY])
+			for s in mi.mesh.get_surface_count():
+				var arr := mi.mesh.surface_get_arrays(s)
+				var vs: PackedVector3Array = arr[Mesh.ARRAY_VERTEX]
+				var bi = arr[Mesh.ARRAY_BONES]
+				var bw = arr[Mesh.ARRAY_WEIGHTS]
+				if bi == null or bw == null or vs.is_empty():
+					continue
+				var per: int = bi.size() / vs.size()
+				for k in vs.size():
+					var best := -1
+					var wb := 0.0
+					for c in per:
+						var w: float = bw[k * per + c]
+						if w > wb:
+							wb = w
+							best = int(bi[k * per + c])
+					if best < 0 or best >= binds.size() or int(binds[best][0]) != hb:
+						continue
+					pts.append(inv * ((binds[best][1] as Transform3D) * vs[k]))
+	var tip := Vector3.ZERO
+	for p in pts:
+		if (p as Vector3).length() > tip.length():
+			tip = p
+	var grip := tip * 0.6
+	var n := 0
+	var acc := Vector3.ZERO
+	for p in pts:
+		var d := (p as Vector3).length()
+		if d >= tip.length() * 0.45 and d <= tip.length() * 0.8:
+			acc += p
+			n += 1
+	if n > 0:
+		grip = acc / float(n)
+	_grip_local[side] = [grip, tip]
+	return _grip_local[side]
+
+
+## A picture held in the fingers of `side` ("Left"/"Right"): `size_m` its height, `anchor` [x, y] the picture's px
+## that sits in the grip, `turn_deg` its turn from «down the hand» (as HeldProp's 2D turn: clockwise on screen).
+## `opts`: hang (true — it hangs from the grip, upright on screen, not turned with the hand: a key held by its ring
+## in a hand whose fingers do not close), tip_k (0..1 — the grip moved that far towards the fingertip), lift_m (the
+## picture moved that far towards the camera — lying on an open palm, not inside the hand).
+func add_hand_prop(tex: Texture2D, side: String, size_m: float, anchor: Vector2, turn_deg: float, opts: Dictionary = {}) -> MeshInstance3D:
+	var mi := MeshInstance3D.new()
+	mi.name = "HandProp"
+	var ts := tex.get_size()
+	var q := QuadMesh.new()
+	q.size = Vector2(size_m * ts.x / maxf(ts.y, 1.0), size_m)
+	mi.mesh = q
+	var m := ShaderMaterial.new()
+	m.shader = SHADER
+	m.set_shader_parameter("albedo_tex", tex)
+	m.set_shader_parameter("as_painted", true)
+	m.set_shader_parameter("alpha_cut", 0.5)
+	mi.material_override = m
+	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	mi.visible = false
+	mi.set_meta("side", side)
+	mi.set_meta("anchor_uv", Vector2(anchor.x / maxf(ts.x, 1.0), anchor.y / maxf(ts.y, 1.0)))
+	mi.set_meta("turn_deg", turn_deg)
+	mi.set_meta("hang", bool(opts.get("hang", false)))
+	# 09.11 (Tamara's mail bag on her hip): a thing worn on the body — `bone` (full name) and `offset` (metres, in the
+	# figure's own frame: x — her left, y — up, z — her front), hanging upright, not in a hand
+	mi.set_meta("bone", String(opts.get("bone", "")))
+	mi.set_meta("offset", opts.get("offset", Vector3.ZERO))
+	mi.set_meta("tip_k", clampf(float(opts.get("tip_k", 0.0)), 0.0, 1.0))
+	mi.set_meta("lift_m", float(opts.get("lift_m", 0.0)))
+	add_child(mi)
+	hand_props.append(mi)
+	if not skeleton.skeleton_updated.is_connected(_place_hand_props):
+		skeleton.skeleton_updated.connect(_place_hand_props)
+	hand_grip_local(side)
+	_place_hand_props()
+	return mi
+
+
+## The grip of a hand now, world space (tests, the hand-over: where the thing is).
+func hand_grip_world(side: String) -> Vector3:
+	var hb := skeleton.find_bone(side + "Hand")
+	if hb < 0:
+		return Vector3.INF
+	var g: Transform3D = skeleton.global_transform * skeleton.get_bone_global_pose(hb)
+	return g * (hand_grip_local(side)[0] as Vector3)
+
+
+## The same on the figure's frame (frame px, as bone_frame_px).
+func hand_grip_frame_px(side: String) -> Vector2:
+	if camera == null:
+		return Vector2.INF
+	var p := hand_grip_world(side)
+	return Vector2.INF if p == Vector3.INF else camera.unproject_position(p)
+
+
+func _place_hand_props() -> void:
+	if camera == null:
+		return
+	var cb := camera.global_transform.basis.orthonormalized()
+	for mi in hand_props:
+		if not is_instance_valid(mi) or not (mi as MeshInstance3D).visible:
+			continue
+		if String(mi.get_meta("bone", "")) != "":
+			_place_worn(mi, cb)
+			continue
+		var side := String(mi.get_meta("side"))
+		var hb := skeleton.find_bone(side + "Hand")
+		if hb < 0:
+			continue
+		var g: Transform3D = skeleton.global_transform * skeleton.get_bone_global_pose(hb)
+		var gt: Array = hand_grip_local(side)
+		var gl: Vector3 = (gt[0] as Vector3).lerp(gt[1] as Vector3, float(mi.get_meta("tip_k", 0.0)))
+		var gp: Vector3 = g * gl + cb.z * float(mi.get_meta("lift_m", 0.0))
+		var d: Vector3 = g * (gt[1] as Vector3) - g.origin
+		# the hand's direction on screen (camera plane, y up): the picture's «down» goes along it; hanging — straight down
+		var ang := -PI * 0.5 if bool(mi.get_meta("hang", false)) else atan2(d.dot(cb.y), d.dot(cb.x))
+		var roll := ang + PI * 0.5 - deg_to_rad(float(mi.get_meta("turn_deg")))
+		var b := Basis(cb.z, roll) * cb
+		var q: QuadMesh = (mi as MeshInstance3D).mesh
+		var uv: Vector2 = mi.get_meta("anchor_uv")
+		var off := Vector3((uv.x - 0.5) * q.size.x, (0.5 - uv.y) * q.size.y, 0.0)
+		(mi as MeshInstance3D).global_transform = Transform3D(b, gp - b * off)
+
+
+
+func _place_worn(mi: MeshInstance3D, cb: Basis) -> void:
+	var b := skeleton.find_bone(String(mi.get_meta("bone")))
+	if b < 0:
+		return
+	var at: Vector3 = (skeleton.global_transform * skeleton.get_bone_global_pose(b)).origin
+	var fb := turn.global_transform.basis.orthonormalized() if turn != null else Basis.IDENTITY
+	var off: Vector3 = mi.get_meta("offset", Vector3.ZERO)
+	var p := at + fb * off
+	var roll := -deg_to_rad(float(mi.get_meta("turn_deg")))
+	var bb := Basis(cb.z, roll) * cb
+	var q: QuadMesh = mi.mesh
+	var uv: Vector2 = mi.get_meta("anchor_uv")
+	var o := Vector3((uv.x - 0.5) * q.size.x, (0.5 - uv.y) * q.size.y, 0.0)
+	mi.global_transform = Transform3D(bb, p - bb * o)
+
+
+## A point of a held/worn picture (uv 0..1 of the picture) on the figure's frame (frame px) — a strap's end.
+func hand_prop_point_px(mi: MeshInstance3D, uv: Vector2) -> Vector2:
+	if camera == null or not is_instance_valid(mi):
+		return Vector2.INF
+	var q: QuadMesh = mi.mesh
+	var local := Vector3((uv.x - 0.5) * q.size.x, (0.5 - uv.y) * q.size.y, 0.0)
+	return camera.unproject_position(mi.global_transform * local)
+
+
+## A bone of the figure on its frame (frame px), `up_m` above the bone's head (the top of a shoulder).
+func bone_point_px(bone: String, up_m: float = 0.0) -> Vector2:
+	var b := skeleton.find_bone(bone)
+	if b < 0 or camera == null:
+		return Vector2.INF
+	var p: Vector3 = (skeleton.global_transform * skeleton.get_bone_global_pose(b)).origin + Vector3.UP * up_m
+	return camera.unproject_position(p)

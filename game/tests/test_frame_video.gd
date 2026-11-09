@@ -85,6 +85,35 @@ func _run() -> void:
 			root.get_viewport().get_texture().get_image().save_png(out5.path_join("frame_video_ingame_EP_dinner.png"))
 		sr.set_frame("", false)
 		await process_frame
+	# FV-6 (Director 09.11, 12:35 «Уля вообще не приходит при этом на видео»): the dinner opens without Ulyana and her
+	# flag is set later, at the door's line (E5 M26) — the clip must change to the family with her at once.
+	# Self-check first: with the re-pick switched off (as built before) the clip stays — the check sees the defect.
+	for old_way in [true, false]:
+		gs.reset()
+		gs.set_flag("v01_cup_blue", true)
+		sr.set_frame("EP_dinner", false)
+		for i in 3:
+			await process_frame
+		var v6 = fv.room.get_node_or_null("Background/Video") if fv.room != null else null
+		if old_way and v6 != null and gs.flag_changed.is_connected(Callable(v6, "_on_flag")):
+			gs.flag_changed.disconnect(Callable(v6, "_on_flag"))
+		var before6 := String(v6.stream.resource_path).get_file() if v6 != null and v6.stream != null else ""
+		gs.set_flag("ep_ulyana_came", true)
+		await process_frame
+		var after6 := String(v6.stream.resource_path).get_file() if v6 != null and v6.stream != null else ""
+		var switched: bool = before6.begins_with("closed_blue") and after6.begins_with("open_blue") and v6.is_playing()
+		if old_way:
+			_check(not switched, "FV-6 self-check: without the re-pick the clip still changed (%s → %s)" % [before6, after6])
+		else:
+			_check(switched, "FV-6 Ulyana came mid-frame: clip %s → %s" % [before6, after6])
+		sr.set_frame("", false)
+		await process_frame
+	var m26: Dictionary = sd.scene("M26")
+	var sets_at_line := false
+	for st in m26.get("stage", []):
+		if (st.get("sets", []) as Array).has("ep_ulyana_came") and typeof(st.get("at")) != TYPE_STRING:
+			sets_at_line = true
+	_check(sets_at_line, "FV-6 M26 no longer sets ep_ulyana_came at a line — the test's premise changed")
 	gs.reset()
 	# a frame whose variant has no clip falls back to the painting with its layers (FrameVideo.pick → [])
 	var empty: Array = load("res://scripts/rooms/frame_video.gd").pick({"videos": [{"if": ["no_such_flag_ever"], "files": ["res://assets/rooms/EP_dinner/open_blue_a.ogv"]}]})

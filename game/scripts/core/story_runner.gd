@@ -10,6 +10,8 @@ extends Node
 ## A villager walked off in a staging (stage[].npc_go) — tests and probes.
 signal npc_went(npc_id: String)
 signal npc_acted(id: String, action: String, seconds: float)   # block 3: a villager plays a one-shot clip (tests)
+signal handed_over(from_id: String, at_share: float)   # 09.11: the thing went from the villager's hand into Agata's (tests)
+var last_handover: Dictionary = {}   # tests: {from, share, px — how far apart the two grips were when it changed hands}
 ## Rooms data on_enter `reveal`: these hotspots are lit for a moment (GameUi → HotspotReveal), I-T1.
 signal hotspots_beckoned(ids: Array)
 ## A room layer moved off in a staging (stage[].layer_go — the empty boat along the rope, H36) — tests and probes.
@@ -570,6 +572,21 @@ func _run_stage(spec: Dictionary) -> void:
 			_stage_running = false
 			_next()
 			return
+	# Director 09.11, 11:34 («Агата не забирает его в тот момент, а он пропадает… обходит Тамару… она сразу по логике
+	# должна забирать»): `handover` {from, take, face, contact, prop, release_s} — Agata takes the thing from the
+	# villager's held-out hand where she stands: she plays `take` turned to `face`; at `contact` (share of her action)
+	# the giver's picture goes (HeldProp.give_away) and hers shows (`prop` — HeldProp spec, grip "fingers", shown from
+	# that share of her action); the giver's held pose is let go `release_s` later. Waits for her action's end.
+	if spec.has("handover"):
+		var ho_serial := _stage_serial
+		await _stage_handover(spec["handover"])
+		if ho_serial != _stage_serial:
+			return
+		if not spec.has("fade_out_s") and not spec.has("room") and not spec.has("npc_go") and not spec.has("cut") \
+				and not spec.has("npc_act") and not spec.has("frame"):
+			_stage_running = false
+			_next()
+			return
 	# Block 3 (Director 05.11: «где кто-то делает что-то… отразить анимацией»): `npc_act` [{id, action, hold, hold_at,
 	# loop, wait}] — villagers play a one-shot clip of their live model (hug, hand over, crank); `hold` keeps its last
 	# pose, `hold_at` (share of the clip) stops it there — the embrace at its closest — until a later staging's
@@ -595,6 +612,11 @@ func _run_stage(spec: Dictionary) -> void:
 			var hold: bool = bool(g.get("hold", false)) or g.has("hold_at")
 			var secs := float(an.call("play_action", String(g.get("action", "")), hold, float(g.get("hold_at", -1.0)), bool(g.get("loop", false))))
 			npc_acted.emit(String(g.get("id", "")), String(g.get("action", "")), secs)
+			# 09.11 (Director 12:35: Pelageya pulls the line of the boat, not the air): `rope_to` [x, y] — a line from her
+			# hands to that point of the room while the clip plays (hand_line.gd)
+			if g.has("rope_to") and secs > 0.0:
+				var rt: Array = g["rope_to"]
+				load("res://scripts/actors/hand_line.gd").attach(an, Vector2(float(rt[0]), float(rt[1])))
 			if bool(g.get("wait", not hold)):
 				act_s = maxf(act_s, secs * clampf(float(g.get("wait_k", 1.0)), 0.0, 1.0))
 		if act_s > 0.0:
@@ -737,6 +759,91 @@ func _stage_agata_go(ag: Dictionary) -> void:
 	pl.set("speed_factor", keep)
 
 
+func _stage_handover(ho: Dictionary) -> void:
+	var pl: Node2D = RoomManager.player
+	var room := RoomManager.current_room
+	var npc := room.get_node_or_null("npc_" + String(ho.get("from", ""))) if room != null else null
+	if pl == null or npc == null or not pl.has_method("perform_at"):
+		return
+	var take := String(ho.get("take", "reach"))
+	var fc: Array = ho.get("face", [npc.global_position.x, npc.global_position.y])
+	var face := Vector2(float(fc[0]), float(fc[1]))
+	var contact := clampf(float(ho.get("contact", 0.4)), 0.05, 0.95)
+	var mine: HeldProp = null
+	if ho.has("prop") and pl.has_method("hold_prop"):
+		var ps: Dictionary = (ho["prop"] as Dictionary).duplicate(true)
+		ps["during"] = take
+		ps["from"] = 2.0   # shown from the moment the hands meet (set below)
+		ps["grip"] = String(ps.get("grip", "fingers"))
+		mine = pl.call("hold_prop", ps)
+	# she turns to the hand first (a reach started mid-turn went past it), then reaches
+	var serial := _stage_serial
+	if pl.has_method("face_towards"):
+		pl.call("face_towards", face)
+		var tt := 0.0
+		while tt < 0.8 and absf(angle_difference(float(pl.get("yaw3d")), float(pl.get("yaw3d_target")))) > deg_to_rad(4.0):
+			await get_tree().process_frame
+			tt += get_process_delta_time()
+		if serial != _stage_serial:
+			return
+	# …and the talk gesture of the line before has faded (otherwise the reach comes in only after it, past its peak:
+	# the shown action weight dipped to 0 and rose again at 0,6 of the reach — measured, probe_handover)
+	var v3 = pl.get("view3d")
+	if v3 != null:
+		var tw := 0.0
+		while tw < 1.0 and float(v3.shown_act_w()) > 0.03:
+			await get_tree().process_frame
+			tw += get_process_delta_time()
+		if serial != _stage_serial:
+			return
+	pl.call("perform_at", pl.global_position, face, take)
+	var givers: Array = []
+	for hp in npc.get("action_props"):
+		if is_instance_valid(hp) and (hp as HeldProp).shown():
+			givers.append(hp)
+	var t := 0.0
+	var given := false
+	var best := INF
+	var win: Array = ho.get("window", [maxf(contact - 0.2, 0.05), minf(contact + 0.2, 0.95)])
+	while t < 8.0:
+		await get_tree().process_frame
+		if serial != _stage_serial:
+			return
+		if not get_tree().paused:
+			t += get_process_delta_time()
+		var acting := bool(pl.call("is_acting"))
+		var st: Dictionary = pl.call("held_act_state") if pl.has_method("held_act_state") else {}
+		var share := float(st.get("t", 0.0)) / maxf(float(st.get("len", 1.0)), 0.01)
+		# the hands meet: the giver's grip and hers closest (in the window around `contact`), or the window is over
+		var d := INF
+		if mine != null and not givers.is_empty():
+			var a: Vector2 = (givers[0] as HeldProp).grip_screen()
+			var b: Vector2 = mine.grip_screen()
+			if a != Vector2.INF and b != Vector2.INF:
+				d = a.distance_to(b)
+		var meet := false
+		if share >= float(win[0]) and share <= float(win[1]) and d < INF:
+			meet = d <= float(ho.get("touch_px", 14.0)) or d > best + 4.0
+			best = minf(best, d)
+		if not given and (meet or share > float(win[1]) or (d == INF and share >= contact) or (not acting and t > 0.2)):
+			given = true
+			if mine != null:
+				mine.data["from"] = maxf(share - 0.001, 0.0)
+			for hp in givers:
+				(hp as HeldProp).give_away(0.0)
+			last_handover = {"from": String(ho.get("from", "")), "share": share, "px": minf(best, d)}
+			handed_over.emit(String(ho.get("from", "")), share)
+			var rel := float(ho.get("release_s", 0.25))
+			var rel_at := float(ho.get("release_at", -1.0))
+			get_tree().create_timer(rel, false).timeout.connect(func():
+				if is_instance_valid(npc) and npc.has_method("release_action"):
+					npc.call("release_action", rel_at))
+		if not acting and t > 0.2:
+			break
+	if mine != null and is_instance_valid(mine):
+		mine.queue_free()
+
+
 ## `npc_go` [{id, to: [x, y], s, fade}]: before the fade, villagers in the room walk off (NpcActor.go_off) — toward a
 ## door, easing with the depth and fading out. Returns the longest of their seconds (0 — nobody to move).
 func _stage_npc_go(spec: Dictionary) -> float:
@@ -760,7 +867,18 @@ func _stage_npc_go(spec: Dictionary) -> float:
 				var door_s := _stage_door(room, g["door"], secs, in_black)
 				longest = maxf(longest, secs + 0.15 if in_black else door_s)
 			# I-T2 (lines 128–129): `face` "<id>" — on arrival the villager turns to that one and keeps to them.
-			var other := room.get_node_or_null("npc_" + String(g.get("face", ""))) as Node2D
+			var fc = g.get("face", "")
+			if fc is Array and (fc as Array).size() >= 2 and npc.has_method("face_towards"):
+				# 09.11: a point to turn to on arrival (Pelageya to the line at the pier plate)
+				var fp := Vector2(float(fc[0]), float(fc[1]))
+				get_tree().create_timer(secs, false).timeout.connect(func():
+					if is_instance_valid(npc):
+						npc.set("partner", null)
+						npc.call("face_towards", fp))
+				fc = ""
+			var other := room.get_node_or_null("npc_" + String(fc)) as Node2D
+			if String(fc) == "agata":
+				other = RoomManager.player   # 09.11: back to her place, turned to Agata
 			if other != null and npc.has_method("set_partner"):
 				get_tree().create_timer(secs, false).timeout.connect(func():
 					if is_instance_valid(npc) and is_instance_valid(other):
@@ -916,6 +1034,24 @@ func _stage_apply(spec: Dictionary) -> void:
 	# shows the same; the scene's own grants still come at its end.
 	for f in spec.get("sets", []):
 		GameState.set_flag(String(f), true)
+	# 09.11: `npc_to` [{id, to: [x, y], face: [x, y] | "agata"}] — a villager is back at her place while black (Pelageya
+	# from the water's edge to the path, where the room has her and Agata walks next)
+	var rm_now := RoomManager.current_room
+	for g in spec.get("npc_to", []):
+		var npc := rm_now.get_node_or_null("npc_" + String(g.get("id", ""))) as Node2D if rm_now != null else null
+		if npc == null:
+			continue
+		var to: Array = g.get("to", [npc.global_position.x, npc.global_position.y])
+		npc.global_position = Vector2(float(to[0]), float(to[1]))
+		if rm_now.has_method("depth_scale_at") and npc.get("sheet") != null:
+			var sc: float = rm_now.depth_scale_at(npc.global_position) * float(npc.get("sheet").scale_factor)
+			npc.scale = Vector2(sc, sc)
+		var fc = g.get("face", "")
+		if String(fc) == "agata" and RoomManager.player != null and npc.has_method("set_partner"):
+			npc.call("set_partner", RoomManager.player)
+		elif fc is Array and npc.has_method("face_towards"):
+			npc.set("partner", null)
+			npc.call("face_towards", Vector2(float(fc[0]), float(fc[1])))
 	_stage_layer_reset(spec)
 	if spec.has("layer_write"):
 		call_deferred("_stage_layer_write", spec["layer_write"])
