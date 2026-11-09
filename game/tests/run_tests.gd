@@ -1378,11 +1378,15 @@ func _test_npc_actors() -> void:
 	var guard := 0
 	while (not sr.current_beat.is_empty() or sr.is_staging()) and guard < 3000:   # 09.11: stagings take seconds (frames)
 		guard += 1
+		if sr.is_staging():
+			await process_frame   # Tamara walks to the counter's end, holds the key out, walks back — not a line
+			continue
 		var b: Dictionary = sr.current_beat
 		if b.get("type") == "line":
 			seen.append("%s→%s" % [String(b.get("speaker", "")), spr.animation])
 			if String(b.get("speaker", "")) == "tamara":
-				_check(spr.animation == "talk_0" and spr.is_playing(), "during Tamara's line the talk sheet must play, got %s" % spr.animation)
+				# 09.11: from «Бери ключ» on she stands at the counter's end turned to Agata — another row of the same sheet
+				_check(spr.animation.begins_with("talk_") and spr.is_playing(), "during Tamara's line the talk sheet must play, got %s" % spr.animation)
 			else:
 				# I-T2/I-T4: with a listen clip she listens (turned to Agata) while someone else speaks
 				_check(spr.animation.begins_with("listen_" if t.sheet.has_action("listen") else "idle_"), "during another speaker's line Tamara listens (or idles without a listen clip), got %s" % spr.animation)
