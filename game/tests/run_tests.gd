@@ -1392,7 +1392,14 @@ func _test_npc_actors() -> void:
 		await process_frame
 	_check(seen.size() >= 3, "M01 should show at least 3 lines, saw %s" % str(seen))
 	print("    M01 lines → Tamara's animation: %s" % str(seen))
-	_check(spr.animation.begins_with("idle_"), "after the dialogue Tamara idles again")
+	# 09.11: the scene's last staging walks Tamara back to her place behind the counter first
+	for k in 400:
+		if not sr.is_staging() and not bool(t.get("walking")):
+			break
+		await process_frame
+	for k in 10:
+		await process_frame
+	_check(spr.animation.begins_with("idle_"), "after the dialogue Tamara idles again (got %s)" % spr.animation)
 	# R1: Pelageya, slightly taller than Agata (scale_factor), same mechanics.
 	rm.change_room("R1", "default")
 	await physics_frame
