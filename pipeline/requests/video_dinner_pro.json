@@ -1,0 +1,26 @@
+{
+  "_comment": "Проба Kling 3.0 Pro (Директор 09.11, 16:16 «давай часть хотя бы сделаем в нормальном качестве и я посмотрю»): ужин «с Ульяной, синяя чашка», картина в полном размере (1672×941, без уменьшения до 1280), 10 с, последний кадр = картина; 2 дубля — берётся тот, чей конец ближе к началу (шов без двоения). Промпт — переделки dinner_3 (Тихон с пустыми лапами).",
+  "trial": "dinner_pro",
+  "attempts": 2,
+  "image_max": 0,
+  "jpeg_q": 95,
+  "frames": [
+    {
+      "id": "EP_dinner_open_blue",
+      "image": "assets/incoming/video/dinner/base_open_blue.png",
+      "prompt": "Static camera, warm candlelit room. Everyone keeps their seats; they breathe softly, heads turn slightly as they listen to each other, a faint smile, the man nods. The candle flame sways, glints play on the samovar, snow drifts past the window. The small grey creature on the stove shelf only blinks and twitches an ear, its paws stay empty and folded on its belly. Nobody picks anything up; nothing new appears in anyone's hands. Painterly look unchanged, no new elements. Ends exactly in the starting pose."
+    }
+  ],
+  "models": [
+    {
+      "id": "fal-ai/kling-video/v3/pro/image-to-video",
+      "image_key": [
+        "image_url",
+        "tail_image_url"
+      ],
+      "args": {
+        "duration": "10"
+      }
+    }
+  ]
+}
