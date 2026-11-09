@@ -12,6 +12,11 @@ extends SceneTree
 ##        dir), not as a point picked by eye.
 ##   HO-4 the small actions taken out (12:40): Tamara's bag strap and bag picture, Pelageya's tarring, the lamp of
 ##        Ilya's wife (staging and the lamp in hand).
+##   HO-5 Tamara's mail bag on the bridge: worn at the hip, a strap to the shoulder, no light rim.
+##   HO-6 the other scenes with things in hands: Mitya takes the lantern from the snow with the hand that reaches it
+##        (left), when it is there; Nina hangs the coat at the top of her reach, at the hook; no villager walks off the
+##        floor of a room and stays there (Nina walked into the table, M19c); Ilya's knife and Nina's chalk are in the
+##        fingers, the knife held out until the black.
 ## Each check has a self-check that shows it catches the defect.
 ##   xvfb-run godot --path game --display-driver x11 --rendering-driver opengl3 --fixed-fps 30 -s res://tests/test_handover.gd
 
@@ -94,6 +99,8 @@ func _run() -> void:
 		await _ho3()
 	if only == "" or only == "5":
 		await _ho5()
+	if only == "" or only == "6":
+		await _ho6()
 	_ho4()
 	print("==== handover: %d tests, %d passed, %d failed ====" % [passes + fails, passes, fails])
 	quit(1 if fails > 0 else 0)
@@ -338,3 +345,159 @@ func _ho5() -> void:
 	_check(e2 > 0 and float(l2) / float(e2) >= 0.03, "HO-5 self-check: the old bag picture's rim is not found (%d of %d)" % [l2, e2])
 	sr.set_frame("", false)
 	await process_frame
+
+
+
+func _grip_at(npc: Node2D, side: String) -> Vector2:
+	var live = npc.get("live")
+	var px: Vector2 = live.view.call("hand_grip_frame_px", side)
+	var b: Sprite2D = live.get("body")
+	return b.global_transform * (px + b.offset)
+
+
+## The grip of `side` when the npc's one-shot `clip` is at `share` (it plays from the start; real frames, x11).
+func _grip_at_share(npc: Node2D, clip: String, share: float, side: String) -> Vector2:
+	var secs := float(npc.call("play_action", clip, false, -1.0, false))
+	var live = npc.get("live")
+	var L: float = live.view.action_length(clip)
+	var t := 0.0
+	while t < secs + 1.0:
+		await process_frame
+		t += 1.0 / 30.0
+		if bool(live.get("_once_clip")) and float(live.get("act_t")) / maxf(L, 0.01) >= share:
+			return _grip_at(npc, side)
+	return Vector2.INF
+
+
+func _ho6() -> void:
+	print("  -- HO-6 the other things in hands")
+	# the lantern (M18, R3): Mitya at his staging place, turned to Pelageya
+	gs.reset()
+	_flags_before("M18")
+	gs.set_flag("started_M18", true)
+	rm.change_room("R3", "default")
+	for i in 30:
+		await process_frame
+	var mit: Node2D = rm.current_room.get_node_or_null("npc_mitya")
+	var bail := Vector2((490.0 + 583.0) * 0.5, 537.0) * (1920.0 / 1672.0)   # the lantern on the snow (layer mitya_lantern)
+	if mit == null or mit.get("live") == null:
+		_check(false, "HO-6 no live Mitya in R3")
+	else:
+		mit.global_position = Vector2(520, 668)
+		mit.call("face_towards", Vector2(690, 668))
+		for i in 30:
+			await process_frame
+		var m18: Dictionary = sd.scene("M18")
+		var at := -1.0
+		for st in m18.get("stage", []):
+			for g in st.get("npc_act", []):
+				if String(g.get("action", "")) == "pick_up":
+					at = float(g.get("sets_at", -1.0))
+		_check(at > 0.0, "HO-6 M18: the lantern goes into the hand by a timer, not when the clip is there (sets_at)")
+		var lh: Vector2 = await _grip_at_share(mit, "pick_up", maxf(at, 0.0), "Left")
+		_check(lh.distance_to(bail) < 45.0, "HO-6 M18: at the take Mitya's left hand is %.0f px from the lantern (≤ 45)" % lh.distance_to(bail))
+		for i in 90:
+			await process_frame
+		var rh: Vector2 = await _grip_at_share(mit, "pick_up", maxf(at, 0.0), "Right")
+		_check(rh.distance_to(bail) > 60.0, "HO-6 self-check: the right hand (where the lantern used to appear) is near it too (%.0f)" % rh.distance_to(bail))
+		var hold: Dictionary = {}
+		for h in sd.room("R3").get("hotspots", []):
+			if h.get("id") == "mitya":
+				hold = h.get("held", {})
+		_check(String(hold.get("bone", "")) == "LeftHand", "HO-6 M18: the lantern is held in %s, not the hand that picked it up" % hold.get("bone", ""))
+	# the coat (M23c, H1): at the top of hang_coat Nina's hand is at the hook
+	gs.reset()
+	_flags_before("M23c")
+	gs.set_flag("started_M23c", true)
+	rm.change_room("H1", "default")
+	for i in 30:
+		await process_frame
+	var nin: Node2D = rm.current_room.get_node_or_null("npc_nina")
+	var hook := Vector2(1222, 290)
+	if nin == null or nin.get("live") == null:
+		_check(false, "HO-6 no live Nina in H1")
+	else:
+		var go: Array = []
+		var face: Array = []
+		var at2 := -1.0
+		for st in sd.scene("M23c").get("stage", []):
+			for g in st.get("npc_go", []):
+				if String(g.get("id", "")) == "nina" and go.is_empty():
+					go = g.get("to", [])
+					face = g.get("face", [])
+			for g in st.get("npc_act", []):
+				if String(g.get("action", "")) == "hang_coat":
+					at2 = float(g.get("sets_at", -1.0))
+		_check(go.size() == 2 and face.size() == 2 and at2 > 0.0, "HO-6 M23c: no step to the hook / no sets_at")
+		if go.size() == 2 and face.size() == 2:
+			nin.global_position = Vector2(float(go[0]), float(go[1]))
+			nin.call("face_towards", Vector2(float(face[0]), float(face[1])))
+			for i in 30:
+				await process_frame
+			var g2: Vector2 = await _grip_at_share(nin, "hang_coat", at2, "Right")
+			_check(g2.distance_to(hook) < 55.0, "HO-6 M23c: at the hanging Nina's hand is %.0f px from the hook (≤ 55)" % g2.distance_to(hook))
+			# self-check: where she stood before, turned to the hook
+			for i in 120:
+				await process_frame
+			nin.global_position = Vector2(1404, 756)
+			nin.call("face_towards", Vector2(1222, 290))
+			for i in 30:
+				await process_frame
+			var g3: Vector2 = await _grip_at_share(nin, "hang_coat", 0.62, "Right")
+			_check(g3.distance_to(hook) > 80.0, "HO-6 self-check: the old staging puts the hand near the hook too (%.0f)" % g3.distance_to(hook))
+	# no villager stays off the floor after a walk (M19c: Nina into the table)
+	_check(_off_floor().is_empty(), "HO-6 villagers end walks off the floor: %s" % [_off_floor()])
+	_check(_inside(Vector2(560, 820), sd.room("O3").get("walkable", [])) == false, "HO-6 self-check: the old M19c point (560, 820) counts as on the floor of O3")
+	var m19c_place := false
+	for st in sd.scene("M19c").get("stage", []):
+		for g in st.get("npc_act", []):
+			if String(g.get("action", "")) == "place_table":
+				m19c_place = true
+	_check(not m19c_place, "HO-6 M19c: Nina still walks to the table that is off the floor")
+	# the knife and the chalk: in the fingers; the knife held out until the black
+	var ilya = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/ilya.json"))
+	var nina = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/nina.json"))
+	var kn: Dictionary = ilya["rt3d"]["props"]["give_small"][0]
+	var ch: Dictionary = nina["rt3d"]["props"]["write_board"][0]
+	_check(String(kn.get("grip", "")) == "fingers" and float(kn.get("until", 0.0)) >= 1.0, "HO-6 Ilya's knife: grip %s until %s" % [kn.get("grip"), kn.get("until")])
+	_check(String(ch.get("grip", "")) == "fingers", "HO-6 Nina's chalk: grip %s (on the palm)" % ch.get("grip"))
+	var held_out := false
+	for st in sd.scene("M25").get("stage", []):
+		for g in st.get("npc_act", []):
+			if String(g.get("id", "")) == "ilya" and String(g.get("action", "")) == "give_small" and g.has("hold_at"):
+				held_out = true
+	_check(held_out, "HO-6 M25: Ilya's knife is not held out until the black (it went out mid-reach)")
+
+
+static func _inside(p: Vector2, poly: Array) -> bool:
+	var c := false
+	var n := poly.size()
+	for i in n:
+		var a: Array = poly[i]
+		var b: Array = poly[(i + 1) % n]
+		if (float(a[1]) > p.y) != (float(b[1]) > p.y) and p.x < (float(b[0]) - float(a[0])) * (p.y - float(a[1])) / (float(b[1]) - float(a[1])) + float(a[0]):
+			c = not c
+	return c
+
+
+func _off_floor() -> Array:
+	var out: Array = []
+	for id in sd.scene_order:
+		var sc: Dictionary = sd.scene(id)
+		for st in sc.get("stage", []):
+			for g in st.get("npc_go", []):
+				if bool(g.get("fade", true)) or bool(g.get("in_black", false)):
+					continue
+				for rid in sc.get("locations", []).slice(0, 3):
+					var r: Dictionary = sd.room(String(rid))
+					if r.is_empty() or bool(r.get("frame", false)):
+						continue
+					var has := false
+					for h in r.get("hotspots", []):
+						if h.get("id") == g.get("id"):
+							has = true
+					var w: Array = r.get("walkable", [])
+					var to: Array = g.get("to", [0, 0])
+					if has and not w.is_empty() and not _inside(Vector2(float(to[0]), float(to[1])), w):
+						out.append("%s %s %s %s" % [id, rid, g.get("id"), to])
+	return out
