@@ -1,0 +1,10 @@
+run 42541478132 2026-11-09T00:44:25Z request: pipeline/requests/video_dinner_3.json
+== кадр EP_dinner_closed_blue: assets/incoming/video/dinner/base_closed_blue.png
+   картинка 1280x720, 307 КБ
+   fal-ai/kling-video/v3/standard/image-to-video #2: ОШИБКА User is locked. Reason: Exhausted balance. Top up your balance at fal.ai/dashboard/billing.
+   fal-ai/kling-video/v3/standard/image-to-video #1: OK 184.4 с, 20582 КБ
+== кадр EP_dinner_open_white: assets/incoming/video/dinner/base_open_white.png
+   картинка 1280x720, 306 КБ
+   fal-ai/kling-video/v3/standard/image-to-video #2: OK 145.4 с, 20834 КБ
+   fal-ai/kling-video/v3/standard/image-to-video #1: OK 225.0 с, 20550 КБ
+готово: 3 клипов, 1 ошибок → assets/incoming/video/dinner_3
