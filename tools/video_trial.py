@@ -73,10 +73,13 @@ def main() -> int:
         from PIL import Image
         import base64, io
         im = Image.open(fr["image"]).convert("RGB")
-        if im.width > 1280:
-            im = im.resize((1280, round(im.height * 1280 / im.width)), Image.LANCZOS)
+        # Director 09.11, 12:40 («почему мы делали 1280… разве у нас игра в 1280?»): request `image_max` (px of the long
+        # side; 0 — the picture as it is) and `jpeg_q`; old requests keep 1280 / 92
+        cap = int(req.get("image_max", 1280))
+        if cap > 0 and im.width > cap:
+            im = im.resize((cap, round(im.height * cap / im.width)), Image.LANCZOS)
         buf = io.BytesIO()
-        im.save(buf, "JPEG", quality=92)
+        im.save(buf, "JPEG", quality=int(req.get("jpeg_q", 92)))
         image_url = "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode()
         print(f"   картинка {im.width}x{im.height}, {len(buf.getvalue()) // 1024} КБ")
         # все модели разом (Директор 22:40 «почему так долго?»): время прогона — самая медленная модель, не сумма
