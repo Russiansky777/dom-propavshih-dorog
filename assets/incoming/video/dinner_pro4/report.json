@@ -1,0 +1,57 @@
+{
+ "trial": "dinner_pro4",
+ "runs": [
+  {
+   "frame": "EP_dinner_closed_white",
+   "model": "fal-ai/kling-video/v3/pro/image-to-video",
+   "attempt": 1,
+   "file": "EP_dinner_closed_white__fal-ai-kling-video-v3-pro-image-to-video_1.mp4",
+   "args": {
+    "prompt": "Static camera, warm candlelit room. Everyone keeps their seats. The man nods slowly and glances at the old woman; the old woman turns her head a little and smiles; the woman in the shawl lowers her eyes to her bowl and looks up again; the young woman at the samovar listens. The candle flame sways, a glint runs over the samovar, snow drifts past the window. The small grey creature on the stove shelf only blinks and twitches an ear, its paws stay empty and folded on its belly. Nobody picks anything up; nothing new appears in anyone's hands; the cup stays on the table. Painterly look unchanged, no new elements.",
+    "duration": "10",
+    "generate_audio": false
+   },
+   "seconds": 322.5,
+   "bytes": 27508628
+  },
+  {
+   "frame": "EP_dinner_open_white",
+   "model": "fal-ai/kling-video/v3/pro/image-to-video",
+   "attempt": 1,
+   "file": "EP_dinner_open_white__fal-ai-kling-video-v3-pro-image-to-video_1.mp4",
+   "args": {
+    "prompt": "Static camera, warm candlelit room. Everyone keeps their seats. The man nods slowly and glances at the old woman; the old woman turns her head a little and smiles; the woman in the shawl lowers her eyes to her bowl and looks up again; the young woman at the samovar listens. The candle flame sways, a glint runs over the samovar, snow drifts past the window. The small grey creature on the stove shelf only blinks and twitches an ear, its paws stay empty and folded on its belly. Nobody picks anything up; nothing new appears in anyone's hands; the cup stays on the table. Painterly look unchanged, no new elements. The girl by the door stays where she is and only smiles.",
+    "duration": "10",
+    "generate_audio": false
+   },
+   "seconds": 326.4,
+   "bytes": 27464826
+  },
+  {
+   "frame": "EP_dinner_closed_blue",
+   "model": "fal-ai/kling-video/v3/pro/image-to-video",
+   "attempt": 1,
+   "file": "EP_dinner_closed_blue__fal-ai-kling-video-v3-pro-image-to-video_1.mp4",
+   "args": {
+    "prompt": "Static camera, warm candlelit room. Everyone keeps their seats. The man nods slowly and glances at the old woman; the old woman turns her head a little and smiles; the woman in the shawl lowers her eyes to her bowl and looks up again; the young woman at the samovar listens. The candle flame sways, a glint runs over the samovar, snow drifts past the window. The small grey creature on the stove shelf only blinks and twitches an ear, its paws stay empty and folded on its belly. Nobody picks anything up; nothing new appears in anyone's hands; the cup stays on the table. Painterly look unchanged, no new elements.",
+    "duration": "10",
+    "generate_audio": false
+   },
+   "seconds": 364.0,
+   "bytes": 28143427
+  },
+  {
+   "frame": "EP_dinner_open_blue",
+   "model": "fal-ai/kling-video/v3/pro/image-to-video",
+   "attempt": 1,
+   "file": "EP_dinner_open_blue__fal-ai-kling-video-v3-pro-image-to-video_1.mp4",
+   "args": {
+    "prompt": "Static camera, warm candlelit room. Everyone keeps their seats. The man nods slowly and glances at the old woman; the old woman turns her head a little and smiles; the woman in the shawl lowers her eyes to her bowl and looks up again; the young woman at the samovar listens. The candle flame sways, a glint runs over the samovar, snow drifts past the window. The small grey creature on the stove shelf only blinks and twitches an ear, its paws stay empty and folded on its belly. Nobody picks anything up; nothing new appears in anyone's hands; the cup stays on the table. Painterly look unchanged, no new elements. The girl by the door stays where she is and only smiles.",
+    "duration": "10",
+    "generate_audio": false
+   },
+   "seconds": 387.6,
+   "bytes": 27701925
+  }
+ ]
+}

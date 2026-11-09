@@ -1,0 +1,14 @@
+run 42672988874 2026-11-09T18:24:10Z request: pipeline/requests/video_dinner_pro4.json
+== кадр EP_dinner_closed_blue: assets/incoming/video/dinner/base_closed_blue.png
+== кадр EP_dinner_closed_white: assets/incoming/video/dinner/base_closed_white.png
+== кадр EP_dinner_open_blue: assets/incoming/video/dinner/base_open_blue.png
+== кадр EP_dinner_open_white: assets/incoming/video/dinner/base_open_white.png
+   картинка 1672x941, 617 КБ
+   картинка 1672x941, 620 КБ
+   картинка 1672x941, 617 КБ
+   картинка 1672x941, 620 КБ
+   fal-ai/kling-video/v3/pro/image-to-video #1: OK 322.5 с, 26863 КБ
+   fal-ai/kling-video/v3/pro/image-to-video #1: OK 326.4 с, 26821 КБ
+   fal-ai/kling-video/v3/pro/image-to-video #1: OK 364.0 с, 27483 КБ
+   fal-ai/kling-video/v3/pro/image-to-video #1: OK 387.6 с, 27052 КБ
+готово: 4 клипов, 0 ошибок → assets/incoming/video/dinner_pro4
