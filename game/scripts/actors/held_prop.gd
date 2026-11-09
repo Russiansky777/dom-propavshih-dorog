@@ -12,6 +12,11 @@ extends Node2D
 ## data rt3d.props {clip: [spec]} — a picture shown only while that one-shot clip plays (`during`), between the
 ## shares `from`..`until` of it, fading with the clip; `grip` "wrist" — it turns with the hand (forearm → hand on
 ## screen, plus `turn_deg`), held `out_rel` of the figure's height past the wrist, not hanging on a bail.
+## Director 09.11, 11:34 («ключ приклеен на руку, а не в руке; Агата не забирает его в тот момент, он пропадает»):
+## `grip` "fingers" — the thing is in the fingers: a picture inside the figure's own 3D render at the hand's grip
+## (Actor3D.add_hand_prop: the fingers in front hide its gripped end), `size_m` its height, `anchor` the gripped px,
+## `turn_deg`, `hang` / `tip_k` / `lift_m` (Actor3D.add_hand_prop opts); on sheets (no live 3D) it falls back to "wrist". A hand-over (StoryRunner staging `handover`) hides the
+## giver's (`taken`) and shows the taker's from that moment (`shown_from`: the action's time; Agata — player.gd).
 
 var npc: Node2D = null
 var data: Dictionary = {}
@@ -19,6 +24,12 @@ var pic: Sprite2D = null
 var glow: Sprite2D = null
 var _t: float = 0.0
 var _seed: float = 0.0
+var hand3d: MeshInstance3D = null   # grip "fingers": the picture inside the 3D render
+var taken: bool = false             # a hand-over: the thing went to the other hand
+var fade_s: float = 0.0             # a hand-over: the giver's picture goes out over this long (the taker's comes in)
+var _fade_t: float = -1.0
+var _last_t: float = -1.0
+var _last_act: String = ""
 
 
 static func attach(the_npc: Node2D, spec: Dictionary) -> HeldProp:
@@ -75,18 +86,29 @@ static func _radial() -> Texture2D:
 	return _radial_tex
 
 
-## The share of its one-shot clip now and how much of the clip is shown (0 — not playing `during`).
-func _during_w() -> float:
+## The live figure's one-shot action now: {view, body, act, t, len, w} — a villager (NpcLive3D) or Agata (player.gd
+## held_act_state); {} on sheets.
+func _act_state() -> Dictionary:
+	if npc.has_method("held_act_state"):
+		return npc.call("held_act_state")
 	var live = npc.get("live")
 	if live == null or not is_instance_valid(live) or live.get("view") == null:
+		return {}
+	var act := String(live.get("act_name")) if bool(live.get("_once_clip")) else ""
+	var L: float = live.view.action_length(act) if act != "" else 1.0
+	return {"view": live.view, "body": live.get("body"), "act": act, "t": float(live.get("act_t")), "len": L,
+		"w": float(live.view.shown_act_w())}
+
+
+## The share of its one-shot clip now and how much of the clip is shown (0 — not playing `during`).
+func _during_w() -> float:
+	var st := _act_state()
+	if st.is_empty() or String(st.get("act", "")) != String(data["during"]):
 		return 0.0
-	if not bool(live.get("_once_clip")) or String(live.get("act_name")) != String(data["during"]):
-		return 0.0
-	var L: float = live.view.action_length(String(data["during"]))
-	var f := float(live.get("act_t")) / maxf(L, 0.01)
+	var f := float(st["t"]) / maxf(float(st["len"]), 0.01)
 	if f < float(data.get("from", 0.0)) or f > float(data.get("until", 1.0)):
 		return 0.0
-	return clampf(live.view.shown_act_w(), 0.0, 1.0)
+	return clampf(float(st["w"]), 0.0, 1.0)
 
 
 func flags_allow() -> bool:
@@ -100,11 +122,19 @@ func flags_allow() -> bool:
 
 
 ## The figure's height on screen now (px): the sheet's figure at the villager's depth scale.
+var _h_per_scale: float = 0.0   # the live figure's standing height per unit of its scale (the largest seen)
+
+
 func _figure_h() -> float:
-	# the live figure: feet to the top of the head as drawn now (the head bone sits ~0.9 of the height)
+	# the live figure: feet to the top of the head (the head bone sits ~0.9 of the height) — standing: 09.11, Mitya bent
+	# down to the lantern and it shrank with his lowered head; now the tallest seen per unit of the figure's scale, so
+	# a bow does not shrink the thing and a walk into the distance still does
 	var head := _bone_world("Head")
+	var sc := maxf(absf(npc.global_scale.y), 0.001)
 	if head != Vector2.INF and npc.global_position.y - head.y > 10.0:
-		return (npc.global_position.y - head.y) / 0.9
+		_h_per_scale = maxf(_h_per_scale, (npc.global_position.y - head.y) / 0.9 / sc)
+	if _h_per_scale > 0.0:
+		return _h_per_scale * sc
 	var sheet = npc.get("sheet")
 	var spr: Node2D = npc.get("sprite")
 	var fh := float(sheet.figure_height_px) if sheet != null else 380.0
@@ -114,14 +144,38 @@ func _figure_h() -> float:
 
 ## A bone of the live figure in the room's coordinates; Vector2.INF when drawn from sheets.
 func _bone_world(bone: String) -> Vector2:
-	var live = npc.get("live")
-	if live != null and is_instance_valid(live) and live.get("view") != null and live.get("body") != null:
-		var v3 = live.get("view")
-		var b3: Sprite2D = live.get("body")
+	var st := _act_state()
+	if st.get("view") != null and st.get("body") != null:
+		var v3 = st["view"]
+		var b3: Sprite2D = st["body"]
 		var px: Vector2 = v3.call("bone_frame_px", bone)
 		if px != Vector2.INF and b3.is_visible_in_tree():
 			return b3.global_transform * (px + b3.offset)
 	return Vector2.INF
+
+
+## grip "fingers": where the thing is held, in the room (the 3D grip projected); Vector2.INF on sheets.
+func grip_screen() -> Vector2:
+	var st := _act_state()
+	if st.get("view") == null or st.get("body") == null:
+		return Vector2.INF
+	var side := "Left" if String(data.get("bone", "RightHand")).begins_with("Left") else "Right"
+	var px: Vector2 = st["view"].call("hand_grip_frame_px", side)
+	var b3: Sprite2D = st["body"]
+	return b3.global_transform * (px + b3.offset) if px != Vector2.INF else Vector2.INF
+
+
+## The hand-over (StoryRunner `handover`): the giver's picture goes out over `seconds` (0 — at once).
+func give_away(seconds: float = 0.0) -> void:
+	fade_s = seconds
+	_fade_t = 0.0
+	if seconds <= 0.0:
+		taken = true
+
+
+## Whether the picture is on now (tests).
+func shown() -> bool:
+	return (hand3d != null and hand3d.visible) or (pic != null and visible and pic.visible)
 
 
 ## Where the hand is in the room: the live figure's bone, else the sheet fallback.
@@ -136,11 +190,32 @@ func hand_screen() -> Vector2:
 
 func _process(delta: float) -> void:
 	_t += delta
+	_figure_h()   # measured while hidden too: the standing height is known before the thing is first shown
 	var on := flags_allow() and npc.is_visible_in_tree()
 	var dw := 1.0
 	if data.has("during"):
 		dw = _during_w()
 		on = on and dw > 0.01
+	# the clip starts again (a scene replayed in the same room): the hand-over is undone
+	var st0 := _act_state()
+	var at := float(st0.get("t", 0.0))
+	var aa := String(st0.get("act", ""))
+	if taken and data.has("during") and (aa != _last_act or at < _last_t - 0.05) and aa == String(data["during"]):
+		taken = false
+		_fade_t = -1.0
+	_last_t = at
+	_last_act = aa
+	if taken:
+		on = false
+	if _fade_t >= 0.0 and not taken:
+		_fade_t += delta
+		dw *= clampf(1.0 - _fade_t / maxf(fade_s, 0.01), 0.0, 1.0)
+		if _fade_t >= fade_s:
+			taken = true
+			on = false
+	if String(data.get("grip", "")) in ["fingers", "body"] and _fingers(on, dw):
+		visible = false
+		return
 	visible = on
 	if not on or pic.texture == null:
 		return
@@ -175,3 +250,74 @@ func _process(delta: float) -> void:
 		glow.scale = Vector2.ONE * (r / 64.0)
 		var fl := 1.0 + float(g.get("flicker", 0.08)) * (sin(_t * 11.0 + _seed) * 0.6 + sin(_t * 23.7) * 0.4)
 		glow.modulate.a = float(g.get("alpha", 0.35)) * fl
+
+
+## grip "fingers" on a live 3D figure: the picture inside its render (built once); false on sheets (2D fallback).
+func _fingers(on: bool, dw: float) -> bool:
+	var st := _act_state()
+	var v3 = st.get("view")
+	if v3 == null or not is_instance_valid(v3) or not v3.has_method("add_hand_prop"):
+		return false
+	if hand3d == null or not is_instance_valid(hand3d) or hand3d.get_parent() != v3:
+		var side := "Left" if String(data.get("bone", "RightHand")).begins_with("Left") else "Right"
+		var a: Array = data.get("anchor", [0, 0])
+		var off: Array = data.get("offset_m", [0, 0, 0])
+		hand3d = v3.add_hand_prop(pic.texture, side, float(data.get("size_m", 0.1)), Vector2(float(a[0]), float(a[1])), float(data.get("turn_deg", 0.0)),
+			{"hang": bool(data.get("hang", false)), "tip_k": float(data.get("tip_k", 0.0)), "lift_m": float(data.get("lift_m", 0.0)),
+			"bone": String(data.get("bone", "")) if String(data.get("grip", "")) == "body" else "",
+			"offset": Vector3(float(off[0]), float(off[1]), float(off[2]))})
+	hand3d.visible = on and dw > 0.02
+	_strap(st, on and dw > 0.02)
+	var m := hand3d.material_override as ShaderMaterial
+	# the clip's fade in/out and a hand-over's fade: the picture's own alpha against the cut (alpha_cut 0.5 → thins
+	# out) is too crude for a 3D quad — it simply shows while the weight is up
+	if m != null:
+		m.set_shader_parameter("alpha_cut", 0.5)
+	return true
+
+
+func _exit_tree() -> void:
+	if hand3d != null and is_instance_valid(hand3d):
+		hand3d.queue_free()
+		hand3d = null
+	if strap != null and is_instance_valid(strap):
+		strap.queue_free()
+		strap = null
+
+
+var strap: Line2D = null
+
+
+## grip "body" + `strap` {to: bone, up_m, from_uv: [u, v], width_px, color}: the strap from the worn thing's top to a
+## shoulder, drawn over the figure (Tamara's bag: the strap across her back, as in the painted frame).
+func _strap(st: Dictionary, on: bool) -> void:
+	var sd: Dictionary = data.get("strap", {})
+	if sd.is_empty():
+		return
+	if strap == null:
+		strap = Line2D.new()
+		strap.name = "Strap"
+		strap.top_level = true
+		strap.antialiased = true
+		strap.width = float(sd.get("width_px", 4.0))
+		strap.default_color = Color.html(String(sd.get("color", "#5a3b24")))
+		npc.add_child(strap)   # not under this node: it is hidden while the picture is inside the 3D render
+	var v3 = st.get("view")
+	var b3: Sprite2D = st.get("body")
+	strap.visible = on and v3 != null and b3 != null
+	if not strap.visible:
+		return
+	var fu: Array = sd.get("from_uv", [0.85, 0.05])
+	var p0: Vector2 = v3.call("hand_prop_point_px", hand3d, Vector2(float(fu[0]), float(fu[1])))
+	var p1: Vector2 = v3.call("bone_point_px", String(sd.get("to", "LeftShoulder")), float(sd.get("up_m", 0.04)))
+	if p0 == Vector2.INF or p1 == Vector2.INF:
+		strap.visible = false
+		return
+	var a := b3.global_transform * (p0 + b3.offset)
+	var b := b3.global_transform * (p1 + b3.offset)
+	strap.clear_points()
+	for i in 7:
+		var t := float(i) / 6.0
+		strap.add_point(a.lerp(b, t) + Vector2(0.0, 6.0 * 4.0 * t * (1.0 - t)))
+	strap.z_index = clampi(int(npc.z_index) + 1, -4096, 4096)
+	strap.z_as_relative = false

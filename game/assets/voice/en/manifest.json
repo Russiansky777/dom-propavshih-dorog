@@ -6228,8 +6228,8 @@
       "index": 7,
       "alignment": "src/M20_7.align.json",
       "speaker": "narrator",
-      "text": "Later, Ilya's wife comes in carrying a lamp.",
-      "text_sha1": "ed2c820acb7be22e1aef98b21dae6a2ee33014e9",
+      "text": "Later, Ilya's wife comes in.",
+      "text_sha1": "d317dd930054be3708290b8ebde4c215e7a92600",
       "voice_id": "kPaCtwsoLpkcqnqv9PyA",
       "voice_name": "ZAKADR",
       "model_id": "eleven_v4",
@@ -6265,6 +6265,10 @@
           "language_code": "en",
           "seed": 4175592439
         }
+      },
+      "trimmed": {
+        "to_s": 2.255,
+        "from_text_sha1": "ed2c820acb7be22e1aef98b21dae6a2ee33014e9"
       }
     },
     "M20_8": {

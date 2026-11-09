@@ -7255,8 +7255,8 @@
       "index": 7,
       "alignment": "src/M20_7.align.json",
       "speaker": "narrator",
-      "text": "Позже жена Ильи приходит, лампу несёт.",
-      "text_sha1": "9aaa39e41fcf58799188a1ef1a7b5458f6d674b0",
+      "text": "Позже жена Ильи приходит.",
+      "text_sha1": "fde53310e7333f506605b5d3528670b90dd81b70",
       "voice_id": "kPaCtwsoLpkcqnqv9PyA",
       "voice_name": "ZAKADR",
       "model_id": "eleven_v4",
@@ -7292,6 +7292,10 @@
           "language_code": "ru",
           "seed": 3299312036
         }
+      },
+      "trimmed": {
+        "to_s": 2.2,
+        "from_text_sha1": "9aaa39e41fcf58799188a1ef1a7b5458f6d674b0"
       }
     },
     "M20_8": {

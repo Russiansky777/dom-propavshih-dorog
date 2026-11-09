@@ -543,6 +543,10 @@ func _test_frame_figures() -> void:
 			var tall: float = sheet.figure_height_px * absf(na.scale.y)
 			_check(absf(tall - float(h["figure_h"])) <= float(h["figure_h"]) * 0.03, "%s.%s: %.0f px tall, data %s" % [fid, id, tall, str(h["figure_h"])])
 			var fp := Vector2(float(h["face"][0]), float(h["face"][1]))
+			if h.has("face_dir"):
+				# 09.11 (Director 12:35): turned as the accepted painted frame — the v2 sheet's dir, not the face point
+				var yaw := deg_to_rad(-45.0 * float(h["face_dir"]))
+				fp = na.global_position + Vector2(sin(yaw), cos(yaw) * maxf(float(na.get("_floor_k")), 0.05)) * 200.0
 			var want: int = sheet.direction_index(fp - na.global_position)
 			_check(int(na.get("direction")) == want, "%s.%s: faces row %d, toward %s is %d" % [fid, id, int(na.get("direction")), str(fp), want])
 	_check(seen >= 15, "live figures in the frames: %d (the gallery, the council, the span, the epilogue)" % seen)

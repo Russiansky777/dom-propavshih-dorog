@@ -25,6 +25,33 @@ RU = ROOT / "assets" / "voice" / "ru"
 GAME_EN = ROOT / "game" / "assets" / "voice" / "en"
 
 
+
+
+def _voice_trim_module():
+    """tools/voice_trim.py (09.11): lines shortened for the game — the game's copy and manifest differ on purpose."""
+    import importlib.util as _u
+    sp = _u.spec_from_file_location("voice_trim", str(ROOT / "tools" / "voice_trim.py"))
+    mod = _u.module_from_spec(sp)
+    sp.loader.exec_module(mod)
+    return mod
+
+# 09.11: lines shortened for the game (data/story/voice_trim.json, tools/voice_trim.py)
+try:
+    TRIMS = json.loads((ROOT / "data/story/voice_trim.json").read_text(encoding="utf-8")).get("trims", {})
+except (OSError, ValueError):
+    TRIMS = {}
+
+
+def trimmed_copy_ok(src, game) -> bool:
+    mark = game.with_name(game.name + ".trim.json")
+    if not game.is_file() or not mark.is_file():
+        return False
+    try:
+        m = json.loads(mark.read_text(encoding="utf-8"))
+    except ValueError:
+        return False
+    return m.get("src_md5") == hashlib.md5(src.read_bytes()).hexdigest()
+
 def _voice_module():
     spec = importlib.util.spec_from_file_location("eleven_voice", ROOT / "pipeline" / "voice" / "eleven_voice.py")
     m = importlib.util.module_from_spec(spec)
@@ -56,17 +83,25 @@ def main() -> int:
         if cur is None:
             errors.append(f"{lid}: нет такой строки в game/data/story_en")
             continue
-        if hashlib.sha1(cur["text"].encode("utf-8")).hexdigest() != e.get("text_sha1"):
+        trim = TRIMS.get("en/" + str(e.get("file", "")))
+        if trim is not None:
+            # 09.11: a line shortened for the game (data/story/voice_trim.json): its text now is the trimmed one
+            if cur["text"] != trim.get("text"):
+                errors.append(f"{lid}: обрезка голоса (voice_trim.json) звучит «{trim.get('text')}», а текст строки «{cur['text']}»")
+        elif hashlib.sha1(cur["text"].encode("utf-8")).hexdigest() != e.get("text_sha1"):
             errors.append(f"{lid}: текст изменился после записи (sha1) — пометить stale запросом или перезаписать")
         f = EN / str(e.get("file", ""))
         if not f.is_file():
             errors.append(f"{lid}: нет файла {f.relative_to(ROOT)}")
             continue
         g = GAME_EN / str(e.get("file", ""))
-        if not g.is_file() or g.read_bytes() != f.read_bytes():
+        if trim is not None:
+            if not trimmed_copy_ok(f, g):
+                errors.append(f"{lid}: обрезанной копии игры {g.relative_to(ROOT)} нет или она не из этого исходника (tools/sync_voice.sh)")
+        elif not g.is_file() or g.read_bytes() != f.read_bytes():
             errors.append(f"{lid}: копия игры {g.relative_to(ROOT)} не совпадает (tools/sync_voice.sh)")
     gm = GAME_EN / "manifest.json"
-    if not gm.is_file() or gm.read_bytes() != man_p.read_bytes():
+    if not gm.is_file() or gm.read_text(encoding="utf-8") != _voice_trim_module().expected_manifest(man_p.read_text(encoding="utf-8"), "en"):
         errors.append("game/assets/voice/en/manifest.json не совпадает с assets/voice/en (tools/sync_voice.sh)")
     ru = json.loads((RU / "manifest.json").read_text(encoding="utf-8")).get("lines", {}) if (RU / "manifest.json").is_file() else {}
     missing = sorted(lid for lid, e in ru.items() if "stale" not in e and lid not in man)

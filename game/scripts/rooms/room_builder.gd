@@ -103,7 +103,7 @@ static func _build_background(room: Room, room_id: String, bg: Dictionary, horiz
 		var files: Array = FrameVideo.pick(bg)
 		if not files.is_empty():
 			var v := FrameVideo.new()
-			v.setup(files, s.position, Vector2(1920.0, roundf(tex_size.y * room.art_scale)))
+			v.setup(files, s.position, Vector2(1920.0, roundf(tex_size.y * room.art_scale)), bg)
 			container.add_child(v)
 		return
 	# Fallback: flat colours.

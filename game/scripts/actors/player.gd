@@ -851,6 +851,19 @@ func current_action() -> String:
 	return _action if _acting else ""
 
 
+## Her one-shot action now for a thing in her hand (HeldProp): {view, body, act, t, len, w}; {} on sheets.
+func held_act_state() -> Dictionary:
+	if view3d == null or body3d == null:
+		return {}
+	var act := _action if _acting else _act_fading
+	return {"view": view3d, "body": body3d, "act": act, "t": _act_t, "len": _act_len, "w": view3d.shown_act_w()}
+
+
+## A thing she holds during an action (StoryRunner `handover`: the key from Tamara's hand) — HeldProp on her.
+func hold_prop(spec: Dictionary) -> HeldProp:
+	return HeldProp.attach(self, spec)
+
+
 ## Key frame reached (or the clip ended without it): the interaction happens — exactly once.
 func _fire_action() -> void:
 	if _action_fired:

@@ -940,22 +940,7 @@
     },
     "_props": "Блок 3 (Директор 05.11: «На, нож бери», M25): нож в правой руке, пока Илья его протягивает (give_small, до доли 0,6); картинка — Meshy, assets/props_held/carving_knife.png",
     "props": {
-      "give_small": [
-        {
-          "image": "res://assets/props/held_knife.png",
-          "anchor": [
-            33,
-            70
-          ],
-          "height_rel": 0.09,
-          "bone": "RightHand",
-          "grip": "wrist",
-          "turn_deg": 0,
-          "out_rel": 0.02,
-          "from": 0.0,
-          "until": 0.6
-        }
-      ]
+      "give_small": [{"image": "res://assets/props/held_knife.png", "anchor": [33, 75], "size_m": 0.22, "bone": "RightHand", "grip": "fingers", "tip_k": 0.25, "turn_deg": 0, "from": 0.0, "until": 1.0, "_0911": "09.11 (Директор 11:34 «просмотри в других сценах»): нож в пальцах (3D, рукоять в кулаке), Илья держит его протянутым до затемнения (M25 hold_at) — прежде лежал поверх ладони и гас на 0,6 клипа при вытянутой руке"}]
     },
     "_comment": "30.10 (Директор: модели — живое 3D; «остальные можно чуточку попроще»): та же модель Meshy, что в листах ilya_v2 (релиз npc-v2-work → ilya_v2_game_r4.glb, после build_npc.py), сетка до 120 тыс. треугольников, ткань матовая (pipeline/3d/build_rt3d_glb.py, tools/build_npc_live.sh). Состояния — game/scripts/actors/npc_live_3d.gd: стойка (повтор с наплывом), «слушает» и «говорит» вперёд по клипу, конец прохода наплывает на начало следующего (30.10, 17:36: туда-обратно движение разворачивалось на полпути), ходьба в постановке — петля лучшего цикла (walk_loop). sheet_ppm = кадр листа / (2 × fit.frame_top_m) — рост на экране как у листов.",
     "scene": "res://assets/characters/ilya_v3/rt3d/ilya_rt.glb",

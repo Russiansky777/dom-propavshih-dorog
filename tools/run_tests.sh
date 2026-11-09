@@ -127,6 +127,9 @@ if command -v xvfb-run >/dev/null; then
   xvfb-run -a -s "-screen 0 1920x1080x24" "$GODOT" --path "$GAME_DIR" --display-driver x11 --rendering-driver opengl3 --resolution 1920x1080 --audio-driver Dummy -s res://tests/test_frame_video.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log"; [[ "${PIPESTATUS[0]}" -ne 0 ]] && code=1
   # 09.11 Steam Deck: the pad drives the mouse (PadInput) — stick, buttons, hints, vibration, settings
   xvfb-run -a -s "-screen 0 1920x1080x24" "$GODOT" --path "$GAME_DIR" --display-driver x11 --rendering-driver opengl3 --resolution 1920x1080 --fixed-fps 60 --audio-driver Dummy -s res://tests/test_gamepad.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log"; [[ "${PIPESTATUS[0]}" -ne 0 ]] && code=1
+  # 09.11 (Director 11:34–13:36): things in hands and turns as played — Tamara's key from hand to hand, Pelageya's line
+  # at the plate, the epilogue frames' turns, small actions taken out, the bag on the bridge (live 3D under xvfb)
+  xvfb-run -a -s "-screen 0 1920x1080x24" "$GODOT" --path "$GAME_DIR" --display-driver x11 --rendering-driver opengl3 --resolution 1920x1080 --fixed-fps 30 --audio-driver Dummy -s res://tests/test_handover.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log"; [[ "${PIPESTATUS[0]}" -ne 0 ]] && code=1
 else
   echo "[tests] test_frame_video skipped: no xvfb-run" | tee -a "$BUILD_DIR/logs/tests.log"
 fi

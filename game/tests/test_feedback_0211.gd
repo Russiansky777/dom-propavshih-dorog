@@ -445,7 +445,9 @@ func _test_dusk_colour() -> void:
 
 func _test_lantern_hand() -> void:
 	var st: Array = sd.scene("M18").get("stage", [])
-	_check(st.any(func(s): return int(s.get("at", -1)) == 9 and (s.get("sets", []) as Array).has("mitya_lantern_taken")), "M18: on «Митя поднимает фонарь…» the lantern is taken")
+	# 09.11: the flag goes with the clip itself (npc_act[].sets at sets_at — his hand at the lantern), not a cut after it
+	_check(st.any(func(s): return int(s.get("at", -1)) == 9 and ((s.get("sets", []) as Array).has("mitya_lantern_taken") \
+		or (s.get("npc_act", []) as Array).any(func(g): return (g.get("sets", []) as Array).has("mitya_lantern_taken")))), "M18: on «Митя поднимает фонарь…» the lantern is taken")
 	_fresh()
 	_flags_before("M18")
 	gs.set_flag("started_M18", true)

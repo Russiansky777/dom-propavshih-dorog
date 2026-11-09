@@ -23,6 +23,7 @@ uniform float alpha_cut = 0.5;
 uniform float inside_light = 0.45;   // back faces (the inside of the clothes): share of the light that reaches them
 uniform float debug_flat = -1.0;   // >= 0: output this grey (colour-pipeline probe)
 uniform bool debug_albedo = false; // output the texture as sampled (no light)
+uniform bool as_painted = false;   // a held thing's picture (Actor3D hand props): already painted with its light, shown as is
 
 // The Compatibility renderer samples and writes this viewport in sRGB codes (measured: a flat 0.5 comes
 // out as 128, the texture comes out as stored) — lighting is done in linear like Cycles, then encoded.
@@ -72,7 +73,7 @@ void fragment() {
 	}
 	vec3 lin = (to_linear(a.rgb) * light * (1.0 - fr_env) + spec * spec_gain) * inside;
 	ALBEDO = to_srgb(lin * gain);
-	if (debug_albedo) {
+	if (debug_albedo || as_painted) {
 		ALBEDO = a.rgb;
 	}
 	if (debug_flat >= 0.0) {

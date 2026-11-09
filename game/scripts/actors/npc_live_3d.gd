@@ -176,8 +176,12 @@ func play_once(clip: String, hold: bool = false, hold_at: float = -1.0, loop: bo
 
 
 ## The held action ends: the clip plays out to its end and the villager goes back to the stance.
-func release_once() -> void:
+func release_once(at_share: float = -1.0) -> void:
 	once_hold = false
+	# 09.11 (hand-over): the clip goes on from `at_share` — the same pose on its way back (give_small 0,25 ↔ 0,77), so
+	# an empty hand is lowered at once, not first held out further as the rest of the reach would
+	if at_share >= 0.0 and view != null and act_name != "":
+		act_t = clampf(at_share, 0.0, 1.0) * view.action_length(act_name)
 	if once_loop:
 		# a loop plays its current pass out to the clip's end, then back to the stance (no jump to the end)
 		once_loop = false

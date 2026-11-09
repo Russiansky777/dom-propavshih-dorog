@@ -13,6 +13,12 @@ SRC_ROOT="$ROOT/assets/voice"
 DST_ROOT="$ROOT/game/assets/voice"
 total=0
 changed=0
+# 09.11: lines shortened for the game (data/story/voice_trim.json → tools/voice_trim.py): looked up here once, so the
+# thousands of other lines do not each start a Python
+declare -A TRIM=()
+while IFS= read -r k; do
+  [[ -n "$k" ]] && TRIM["$k"]=1
+done < <(python3 -c 'import json,sys; [print(k) for k in json.load(open(sys.argv[1], encoding="utf-8")).get("trims", {})]' "$ROOT/data/story/voice_trim.json" 2>/dev/null || true)
 for src in "$SRC_ROOT"/*/; do
   src="${src%/}"
   [[ -f "$src/manifest.json" ]] || continue
@@ -22,15 +28,16 @@ for src in "$SRC_ROOT"/*/; do
   [[ "$lang" == *_takes ]] && continue
   dst="$DST_ROOT/$lang"
   mkdir -p "$dst"
-  if ! cmp -s "$src/manifest.json" "$dst/manifest.json"; then
-    cp "$src/manifest.json" "$dst/manifest.json"
-    echo "  voice/$lang/manifest.json updated"
-  fi
+  # the game's manifest: the pipeline's, with trimmed lines' text (tools/voice_trim.py --manifest)
+  python3 "$ROOT/tools/voice_trim.py" --manifest "$src/manifest.json" "$dst/manifest.json" "$lang"
   while IFS= read -r -d '' f; do
     name="${f#"$src"/}"
     total=$((total + 1))
     mkdir -p "$(dirname "$dst/$name")"
-    if ! cmp -s "$f" "$dst/$name"; then
+    # 09.11: a line shortened for the game (data/story/voice_trim.json — the lamp of Ilya's wife taken out of M20_7)
+    if [[ -n "${TRIM["$lang/$name"]:-}" ]] && python3 "$ROOT/tools/voice_trim.py" "$f" "$dst/$name" "$lang/$name"; then
+      :
+    elif ! cmp -s "$f" "$dst/$name"; then
       cp "$f" "$dst/$name"
       changed=$((changed + 1))
     fi
