@@ -631,6 +631,19 @@ func _run_stage(spec: Dictionary) -> void:
 			await get_tree().create_timer(act_s, false).timeout
 			if act_serial != _stage_serial:
 				return
+		# 09.11: a thing taken / hung at `sets_at` of the clip — the next line waits until it is (the clip may come in
+		# a little later than the call: the stance's gate)
+		var pending: Array = []
+		for g in spec.get("npc_act", []):
+			if g.has("sets_at"):
+				for f in g.get("sets", []):
+					pending.append(String(f))
+		var tw := 0.0
+		while tw < 3.0 and pending.any(func(f): return not GameState.has_flag(f)):
+			await get_tree().process_frame
+			tw += get_process_delta_time()
+			if act_serial != _stage_serial:
+				return
 		if not spec.has("fade_out_s") and not spec.has("room") and not spec.has("npc_go") and not spec.has("cut") \
 				and not spec.has("frame") and not spec.has("layer_go") and not spec.has("npc_face"):
 			_stage_running = false

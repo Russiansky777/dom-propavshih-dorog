@@ -146,14 +146,13 @@ func _enter(room: String) -> void:
 
 
 func _finish_dialogue() -> void:
-	for i in 40:
-		if sr.current_beat.is_empty():
-			# 09.11: a scene's last staging (M01: Tamara walks back to her place) runs before the scene completes
-			for k in 300:
-				if not sr.is_staging():
-					break
-				await _frames(1)
+	# 09.11: stagings (walks, the key from hand to hand) take seconds — they are waited for, not counted as clicks
+	for i in 900:
+		if sr.current_beat.is_empty() and not sr.is_staging():
 			return
+		if sr.is_staging() or sr.current_beat.is_empty():
+			await _frames(2)
+			continue
 		if String(sr.current_beat.get("type", "")) == "options":
 			var opts: Array = sr.current_options()
 			sr.choose(String(opts[0]["id"]))
