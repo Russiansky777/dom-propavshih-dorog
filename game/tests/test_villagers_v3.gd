@@ -249,7 +249,9 @@ func _t4() -> void:
 	for sc in scenes:
 		for st in (sc as Dictionary).get("stage", []):
 			n_act += ((st as Dictionary).get("npc_act", []) as Array).size()
-	_check(n_act >= 9, "only %d npc_act in the scenes (block 3 placed 9+)" % n_act)
+	# 09.11 (Director 12:40 «мелкие действия… красиво не сделаем — убрать»): the lamp, Nina's table and Mitya's second
+	# lift went (9 → 6+); the remaining ones are checked one by one in tests/test_handover.gd
+	_check(n_act >= 6, "only %d npc_act in the scenes (block 3 placed 9, three taken out 09.11)" % n_act)
 	# self-check: a made-up clip in a staging and a missing picture in a prop are both caught
 	var fake_sc := [{"id": "X", "stage": [{"npc_act": [{"id": "nina", "action": "juggle"}]}]}]
 	var fake_actors := actors.duplicate(true)

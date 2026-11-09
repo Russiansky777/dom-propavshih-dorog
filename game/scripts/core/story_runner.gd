@@ -618,6 +618,10 @@ func _run_stage(spec: Dictionary) -> void:
 			# clip came in later): `sets` with `sets_at` (share of the clip) — the flags go when the clip itself is there
 			if g.has("sets_at") and secs > 0.0:
 				_sets_at_share(an, float(g["sets_at"]), g.get("sets", []), _stage_serial)
+			elif g.has("sets"):
+				# on sheets (web, headless) no clip plays: the thing is taken / hung at once
+				for f in g.get("sets", []):
+					GameState.set_flag(String(f), true)
 			if g.has("rope_to") and secs > 0.0:
 				var rt: Array = g["rope_to"]
 				load("res://scripts/actors/hand_line.gd").attach(an, Vector2(float(rt[0]), float(rt[1])))
