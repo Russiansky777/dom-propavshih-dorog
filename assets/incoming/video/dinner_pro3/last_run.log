@@ -1,0 +1,17 @@
+run 42661213694 2026-11-09T17:10:34Z request: pipeline/requests/video_dinner_pro3.json
+== кадр EP_dinner_open_blue: assets/incoming/video/dinner/base_open_blue.png
+== кадр EP_dinner_open_white: assets/incoming/video/dinner/base_open_white.png
+== кадр EP_dinner_closed_white: assets/incoming/video/dinner/base_closed_white.png
+== кадр F_hug_pelageya: game/assets/rooms/F_hug_pelageya/bg.png
+== кадр F_hug_nina: game/assets/rooms/F_hug_nina/bg.png
+   картинка 1672x941, 732 КБ
+   картинка 1672x941, 617 КБ
+   картинка 1672x941, 620 КБ
+   картинка 1672x941, 617 КБ
+   картинка 1672x941, 696 КБ
+   fal-ai/kling-video/v3/pro/image-to-video #1: OK 421.0 с, 29569 КБ
+   fal-ai/kling-video/v3/pro/image-to-video #1: OK 433.9 с, 30992 КБ
+   fal-ai/kling-video/v3/pro/image-to-video #1: OK 465.1 с, 32089 КБ
+   fal-ai/kling-video/v3/pro/image-to-video #1: OK 478.6 с, 29757 КБ
+   fal-ai/kling-video/v3/pro/image-to-video #1: OK 510.1 с, 30004 КБ
+готово: 5 клипов, 0 ошибок → assets/incoming/video/dinner_pro3

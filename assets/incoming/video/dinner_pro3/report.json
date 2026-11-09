@@ -1,0 +1,70 @@
+{
+ "trial": "dinner_pro3",
+ "runs": [
+  {
+   "frame": "EP_dinner_closed_white",
+   "model": "fal-ai/kling-video/v3/pro/image-to-video",
+   "attempt": 1,
+   "file": "EP_dinner_closed_white__fal-ai-kling-video-v3-pro-image-to-video_1.mp4",
+   "args": {
+    "prompt": "Static camera, warm candlelit room. Everyone keeps their seats; they breathe softly, heads turn slightly as they listen to each other, a faint smile, the man nods. The candle flame sways, glints play on the samovar, snow drifts past the window. The small grey creature on the stove shelf only blinks and twitches an ear, its paws stay empty and folded on its belly. Nobody picks anything up; nothing new appears in anyone's hands. Painterly look unchanged, no new elements. Ends exactly in the starting pose.",
+    "duration": "10",
+    "generate_audio": false
+   },
+   "seconds": 421.0,
+   "bytes": 30278950
+  },
+  {
+   "frame": "F_hug_pelageya",
+   "model": "fal-ai/kling-video/v3/pro/image-to-video",
+   "attempt": 1,
+   "file": "F_hug_pelageya__fal-ai-kling-video-v3-pro-image-to-video_1.mp4",
+   "args": {
+    "prompt": "Static camera. The woman and the man hold their embrace; her hand slowly pats his back, both breathe gently. The lantern flame flickers, light snow drifts down, faint ripples on the dark water. Painterly look unchanged, no new elements. Ends exactly in the starting pose.",
+    "duration": "10",
+    "generate_audio": false
+   },
+   "seconds": 433.9,
+   "bytes": 31736555
+  },
+  {
+   "frame": "F_hug_nina",
+   "model": "fal-ai/kling-video/v3/pro/image-to-video",
+   "attempt": 1,
+   "file": "F_hug_nina__fal-ai-kling-video-v3-pro-image-to-video_1.mp4",
+   "args": {
+    "prompt": "Static camera. The old woman and the young woman keep their embrace; the mother's hand gently strokes the daughter's hair, both breathe softly. Lamp light flickers in the window, light snow drifts down. Painterly look unchanged, no new elements. Ends exactly in the starting pose.",
+    "duration": "10",
+    "generate_audio": false
+   },
+   "seconds": 465.1,
+   "bytes": 32859396
+  },
+  {
+   "frame": "EP_dinner_open_blue",
+   "model": "fal-ai/kling-video/v3/pro/image-to-video",
+   "attempt": 1,
+   "file": "EP_dinner_open_blue__fal-ai-kling-video-v3-pro-image-to-video_1.mp4",
+   "args": {
+    "prompt": "Static camera, warm candlelit room. Everyone keeps their seats; they breathe softly, heads turn slightly as they listen to each other, a faint smile, the man nods. The candle flame sways, glints play on the samovar, snow drifts past the window. The small grey creature on the stove shelf only blinks and twitches an ear, its paws stay empty and folded on its belly. Nobody picks anything up; nothing new appears in anyone's hands. Painterly look unchanged, no new elements. Ends exactly in the starting pose.",
+    "duration": "10",
+    "generate_audio": false
+   },
+   "seconds": 478.6,
+   "bytes": 30472048
+  },
+  {
+   "frame": "EP_dinner_open_white",
+   "model": "fal-ai/kling-video/v3/pro/image-to-video",
+   "attempt": 1,
+   "file": "EP_dinner_open_white__fal-ai-kling-video-v3-pro-image-to-video_1.mp4",
+   "args": {
+    "prompt": "Static camera, warm candlelit room. Everyone keeps their seats; they breathe softly, heads turn slightly as they listen to each other, a faint smile, the man nods. The candle flame sways, glints play on the samovar, snow drifts past the window. The small grey creature on the stove shelf only blinks and twitches an ear, its paws stay empty and folded on its belly. Nobody picks anything up; nothing new appears in anyone's hands. Painterly look unchanged, no new elements. Ends exactly in the starting pose.",
+    "duration": "10",
+    "generate_audio": false
+   },
+   "seconds": 510.1,
+   "bytes": 30724217
+  }
+ ]
+}
