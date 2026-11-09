@@ -54,7 +54,8 @@ func _run() -> void:
 			await process_frame
 		await RenderingServer.frame_post_draw
 		var img := root.get_viewport().get_texture().get_image()
-		img.resize(1280, 720, Image.INTERPOLATE_LANCZOS)
+		if OS.get_environment("SHOTS_FULL") != "1":   # 09.11: Steam screenshots need 1920×1080
+			img.resize(1280, 720, Image.INTERPOLATE_LANCZOS)
 		var path := out_dir.path_join("talk_%s_%s.png" % [rid, hid])
 		img.save_png(path)
 		made += 1

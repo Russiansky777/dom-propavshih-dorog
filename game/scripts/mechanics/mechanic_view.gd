@@ -146,6 +146,9 @@ func close_pressed() -> void:
 
 func play(sound_name: String) -> void:
 	sounds_played.append(sound_name)
+	var pad := get_node_or_null("/root/PadInput")
+	if pad != null:
+		pad.rumble_for(sound_name)   # Steam Deck: the jolt with the sound (data/story/rumble.json)
 	for p in _players:
 		if not p.playing:
 			p.stream = SynthSfx.stream(sound_name)

@@ -271,6 +271,9 @@ func play_synth(sound_name: String) -> void:
 	_closeup_player.stream = synth.stream(sound_name)
 	_closeup_player.play()
 	sound_played.emit("synth", sound_name, "")
+	var pad := get_node_or_null("/root/PadInput")
+	if pad != null:
+		pad.rumble_for(sound_name)   # Steam Deck: the jolt with the sound (data/story/rumble.json)
 
 
 ## The next room change opens no door (a scene staging moves Agata in the dark: the night by the stove).
