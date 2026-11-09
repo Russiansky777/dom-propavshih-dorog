@@ -66,8 +66,14 @@ def main() -> int:
     attempts = int(req.get("attempts", 1))
     report_p = os.path.join(out_dir, "report.json")
     report = json.load(open(report_p, encoding="utf-8")) if os.path.exists(report_p) else {"trial": trial, "runs": []}
-    for fr in req["frames"]:
-        print(f"== кадр {fr['id']}: {fr['image']}")
+    import threading
+    from concurrent.futures import ThreadPoolExecutor
+    lock = threading.Lock()
+
+    # все кадры разом (Директор 09.11, 17:49 — 6 клипов по ~4,5 мин подряд были бы полчаса): время прогона — самый
+    # медленный клип, не сумма; отчёт пишется под замком
+    def frame_job(fr):
+        print(f"== кадр {fr['id']}: {fr['image']}", flush=True)
         # картинка идёт прямо в запросе (data URI, JPEG до 1280 px): загрузка в хранилище fal отвечала 403 на
         # токен хранилища (run 42524225322) — ключу она не нужна
         from PIL import Image
@@ -92,12 +98,12 @@ def main() -> int:
             if os.path.exists(dst):
                 print(f"   {name}: уже есть")
                 return None
-            keys = m.get("image_key", "image_url")   # Wan 3.0: start_image_url; петля Kling: ["image_url", "tail_image_url"]
+            keys = m.get("image_key", "image_url")   # Wan 3.0 и Kling v3: start_image_url; петля Kling v3: ["start_image_url", "end_image_url"] (не tail_image_url — его v3 не знает, 09.11)
             args = {"prompt": fr["prompt"]}
             for k in (keys if isinstance(keys, list) else [keys]):
                 args[k] = image_url
             args.update(m.get("args", {}))
-            row = {"frame": fr["id"], "model": mid, "attempt": n, "file": name, "args": {k: v for k, v in args.items() if k != "image_url"}}
+            row = {"frame": fr["id"], "model": mid, "attempt": n, "file": name, "args": {k: v for k, v in args.items() if not str(v).startswith("data:")}}
             t1 = time.time()
             try:
                 res = fal_client.subscribe(mid, arguments=args, with_logs=False)
@@ -119,8 +125,12 @@ def main() -> int:
         with ThreadPoolExecutor(max_workers=max(1, len(jobs))) as ex:
             for row in ex.map(lambda j: one(*j), jobs):
                 if row is not None:
-                    report["runs"].append(row)
-                    json.dump(report, open(report_p, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+                    with lock:
+                        report["runs"].append(row)
+                        json.dump(report, open(report_p, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+
+    with ThreadPoolExecutor(max_workers=max(1, len(req["frames"]))) as fx:
+        list(fx.map(frame_job, req["frames"]))
     ok = sum(1 for r in report["runs"] if "error" not in r)
     print(f"готово: {ok} клипов, {len(report['runs']) - ok} ошибок → {out_dir}")
     return 0

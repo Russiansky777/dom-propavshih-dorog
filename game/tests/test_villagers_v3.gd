@@ -735,6 +735,12 @@ func _t11() -> void:
 		var tk: float = await _jelly(_spec(id), "talk")
 		print("    %s: shoulder skin slides %.1f mm standing, %.1f mm talking" % [id, st, tk])
 		_check(st <= 6.0 and tk <= 15.0, "%s: the shoulder skin slides %.1f mm standing (≤ 6), %.1f mm talking (≤ 15)" % [id, st, tk])
+	# 09.11 (livening, breath 1.5°): the breath on the lower chest bone (Spine01) slides the shoulder skin — 10 mm
+	# standing with all of it there, 6–7 mm at the old 0.6 share; on Spine02 0.7 mm. Self-check: the test sees it.
+	var sb := _spec("ilya")
+	(sb["rt3d"]["life"] as Dictionary)["breath_chest_k"] = 1.0
+	var low: float = await _jelly(sb, "idle")
+	_check(low > 6.0, "self-check: Ilya breathing on Spine01 — only %.1f mm standing (the test sees no breath jelly)" % low)
 	var sp := _spec("ilya")
 	_before_2100(sp)   # 08.11: the second AI's clips do not slide even uncalmed — the v2 talk clip's clavicles do
 	(sp["rt3d"] as Dictionary).erase("calm_shoulders")

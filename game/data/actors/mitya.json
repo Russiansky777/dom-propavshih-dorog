@@ -1029,6 +1029,8 @@
     "life": {
       "breath_deg": 1.5,
       "breath_period_s": 4.4,
+      "breath_chest_k": 0.0,
+      "_breath_chest_k": "09.11 (V3-11 после оживления): дыхание целиком на верхнем позвонке (Spine02) — при доле на Spine01 кожа верха плеч скользит по груди (6–7 мм вместо 3,5); на Spine02 — 0,7 мм",
       "head_drift_deg": 2.0,
       "glance_deg": 8.0,
       "glance_every_s": [

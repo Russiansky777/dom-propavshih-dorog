@@ -10,6 +10,8 @@ var idle_weight: float = 1.0
 var t: float = 0.0
 var breath_deg: float = 0.8
 var breath_period_s: float = 4.2
+## the breath's share on the chest bone (Spine01); the rest on the spine bone above it (Spine02)
+var breath_chest_k: float = 0.6
 var head_drift_deg: float = 2.0
 var glance_deg: float = 9.0
 var glance_every_s: Vector2 = Vector2(7.0, 13.0)
@@ -32,6 +34,7 @@ func setup(d: Dictionary, skel: Skeleton3D) -> void:
 	_skel = skel
 	breath_deg = float(d.get("breath_deg", breath_deg))
 	breath_period_s = float(d.get("breath_period_s", breath_period_s))
+	breath_chest_k = clampf(float(d.get("breath_chest_k", breath_chest_k)), 0.0, 1.0)
 	head_drift_deg = float(d.get("head_drift_deg", head_drift_deg))
 	glance_deg = float(d.get("glance_deg", glance_deg))
 	var ge: Array = d.get("glance_every_s", [glance_every_s.x, glance_every_s.y])
@@ -94,8 +97,8 @@ func offsets() -> Dictionary:
 	var out := {}
 	var br := sin(TAU * t / breath_period_s)
 	var b := deg_to_rad(breath_deg) * w
-	out[_chest] = Vector3(-b * 0.6 * br, 0, 0)
-	out[_spine] = Vector3(-b * 0.4 * br, 0, 0)
+	out[_chest] = Vector3(-b * breath_chest_k * br, 0, 0)
+	out[_spine] = Vector3(-b * (1.0 - breath_chest_k) * br, 0, 0)
 	var drift_y := deg_to_rad(head_drift_deg) * (0.6 * sin(TAU * t / 9.7) + 0.4 * sin(TAU * t / 5.3 + 1.3))
 	var drift_x := deg_to_rad(head_drift_deg) * 0.5 * (0.7 * sin(TAU * t / 7.9 + 0.4) + 0.3 * sin(TAU * t / 3.7))
 	var g := glance_amount(t)
