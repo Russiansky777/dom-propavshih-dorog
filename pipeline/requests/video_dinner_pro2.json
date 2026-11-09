@@ -1,0 +1,27 @@
+{
+  "_comment": "Kling 3.0 Pro, проверочный клип перед остальными (Директор 09.11, 17:49 «пополнил ещё на 10 долларов, давай делать что нужно»): по документации fal (llms.txt модели) вход — start_image_url, последний кадр — end_image_url (tail_image_url модель v3 не знает — поэтому прежние клипы не возвращались в начало), звук по умолчанию включён ($0.168/с) — выключен ($0.112/с). 10 с ≈ $1.12. Проверка: нет звуковой дорожки, конец совпадает с началом.",
+  "trial": "dinner_pro2",
+  "image_max": 0,
+  "jpeg_q": 95,
+  "attempts": 1,
+  "models": [
+    {
+      "id": "fal-ai/kling-video/v3/pro/image-to-video",
+      "image_key": [
+        "start_image_url",
+        "end_image_url"
+      ],
+      "args": {
+        "duration": "10",
+        "generate_audio": false
+      }
+    }
+  ],
+  "frames": [
+    {
+      "id": "EP_dinner_closed_blue",
+      "image": "assets/incoming/video/dinner/base_closed_blue.png",
+      "prompt": "Static camera, warm candlelit room. Everyone keeps their seats; they breathe softly, heads turn slightly as they listen to each other, a faint smile, the man nods. The candle flame sways, glints play on the samovar, snow drifts past the window. The small grey creature on the stove shelf only blinks and twitches an ear, its paws stay empty and folded on its belly. Nobody picks anything up; nothing new appears in anyone's hands. Painterly look unchanged, no new elements. Ends exactly in the starting pose."
+    }
+  ]
+}
