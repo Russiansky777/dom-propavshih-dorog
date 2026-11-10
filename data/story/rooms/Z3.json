@@ -69,7 +69,7 @@
         "timing_rect": [560, 925, 800, 56],
         "hint_pos": [1150, 110],
         "texts": {"label_letters": "@Z3d.plate.label_letters", "label_hint_brace": "@mech.plate.label_hint_brace", "label_hint_rope": "@mech.plate.label_hint_rope", "brace_jumped": "@mech.plate.brace_jumped", "knot_slipped": "@Z3d.plate.knot_wrong", "count_1": "@mech.plate.count_1", "count_2": "@mech.plate.count_2"},
-        "events": {"braced": {"sets": ["plate_braced"]}, "tied": {"sets": ["rope_on_ring"]}}
+        "events": {"braced": {"sets": ["plate_braced"]}, "tied": {"sets": ["rope_on_ring"], "close_black": {"wait_s": 0.8, "fade_out_s": 0.5, "hold_s": 0.4, "fade_in_s": 0.6}, "_close_1011": "Директор 10.11, 22:25 («после повешения каната на плиту Пелагея говорит на фоне плиты, странно, может убрать автоматически после натягивания»), ответ 23:26 «ну наверное так да» на В-12: узел затянут — нарисованный узел виден 0,8 с, крупный план уходит в короткое затемнение и закрывается сам; слова M15 («Вот так прежде и крепили») — уже в комнате, где Пелагея стоит на берегу (с вечера она там, телепорта нет). Тест test_review_1011 R-15"}}
       },
       "look": "@Z3d.plate_dry.look"
     },

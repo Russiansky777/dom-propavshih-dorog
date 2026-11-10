@@ -41,6 +41,27 @@ extends SceneTree
 ##       frame to another of the same picture (M25: the windlass → the log laid), every figure in both stands where it
 ##       stood (≤ 4 px); a move is a walk in the staging. Self-check — Agata's place in the second frame before 10.11
 ##       (1385, 890 against 775, 892) is caught.
+##   R-13 (Director 10.11: «у двери, когда мы взяли петли, но не нажимали на рисунок… добавить фразу, что нужно на чертёж
+##       посмотреть»): the hinges used on the school door with no drawing in the bag — the line about the drawing on the
+##       workshop wall (H3.puzzle.need_drawing); with neither — the common «Родные петли нужны да рисунок…».
+##   R-14 (Director 10.11, 21:50: «в начале после выхода с почты — подсвечивать мерцая немножко первую стрелку вниз, если
+##       юзер тупит допустим 10 секунд»): in the lane (Z4) after the post office, before the street was ever seen, the
+##       mark «На улицу» starts flickering after 10 s with no click and flickers on (its drawn alpha swings by > 0.15,
+##       brighter than idle); a key or click starts the count again; a dialogue pauses it; once the street was visited —
+##       no flicker. Self-check — the same mark without the nudge data stays calm after the same wait.
+##   R-15 (Director 10.11, 22:25: «после повешения каната на плиту Пелагея говорит на фоне плиты, странно, может убрать
+##       автоматически после натягивания»; 23:26 «ну наверное так да»): the knot tied — the painted knot is seen a moment,
+##       then the close-up goes black and is put away by itself; M15's first line («Канат натянулся ровно…») comes in the
+##       room. Self-check — without `close_black` on the event the line comes over the close-up.
+##   R-16 (Director 10.11, 22:21: «перетаскивать добавить возможность предметы в игре, если не сложно»): the hinges pressed
+##       in their pocket, carried with the button held onto the school door and let go there — used on the door (Agata
+##       says R-13's line about the drawing); carried to empty floor — back in the bag, nothing said; a press let go
+##       without carrying is the click it always was (the item stays in hand). Self-check — a «drag» of 5 px is a click.
+##   R-17 (Director 10.11, 22:47: «после сцены с управляющим все пропали, а Агаты положение изменилось»; 23:26 «после
+##       мельницы все остаются, если это ничего не нарушает»): after the council's frame (M23b) Pavel, the manager and
+##       Ilya stand in the mill yard where the frame had them (≤ 6 px), Agata where she stood in it; they are not
+##       clicked (no caption, no line); Agata leaves the yard — back there, they are gone. Self-check — the same yard
+##       before the council: none of the three.
 ## Exit code 0 only when every check passed.
 
 var _results: Array = []
@@ -63,6 +84,15 @@ func _check(cond: bool, message: String) -> void:
 
 
 func _test(test_name: String, fn: Callable) -> void:
+	# ONLY=R-13,R-14 — run just these (local checks; the full run takes all)
+	var only := OS.get_environment("ONLY")
+	if only != "":
+		var hit := false
+		for p in only.split(","):
+			if test_name.begins_with(p.strip_edges() + " "):
+				hit = true
+		if not hit:
+			return
 	_fails = []
 	var started := Time.get_ticks_msec()
 	await fn.call()
@@ -100,6 +130,11 @@ func _run() -> void:
 	await _test("R-10 Space and Enter take a line on, as a click on it; self-check — another key does not", _test_space_next_line)
 	await _test("R-11 the wedges: «Облегчить» is on screen while the bar runs and eases the bar at once", _test_wedges_ease)
 	await _test("R-12 a cut between two frames of one picture keeps the people where they stood; self-check — Agata's old place at the log is caught", _test_cut_keeps_places)
+	await _test("R-13 the hinges at the school door without Dunya's drawing: Agata says to look at the drawing first; self-check — with nothing in the bag the common line", _test_hinges_need_drawing)
+	await _test("R-15 the knot tied: the plate's close-up goes black and away by itself, M15 is spoken in the room; self-check — without close_black it is spoken over the close-up", _test_plate_closes)
+	await _test("R-16 an item dragged from the bag onto the school door is used there, onto empty floor goes back; a press is still a click; self-check — 5 px is a click", _test_drag_item)
+	await _test("R-17 after the council the people stay in the mill yard where the frame had them, Agata too; not clicked; gone once she leaves; self-check — none before the council", _test_council_stays)
+	await _test("R-14 the lane after the post office: the arrow down flickers after 10 s with no click; a click resets it; not once the street was seen; self-check — no data, no flicker", _test_idle_nudge)
 	gs.reset()
 	if main_node != null and is_instance_valid(main_node):
 		root.remove_child(main_node)
@@ -721,3 +756,331 @@ func _test_cut_keeps_places() -> void:
 	var before := _frame_feet("F_span")
 	var old_place := Vector2(1385, 890)
 	_check((before.get("agata", Vector2.ZERO) as Vector2).distance_to(old_place) > 4.0, "self-check: Agata's old place in the laid-log frame would be read as a jump")
+
+
+## Every line shown after a click on the school door (with the item in hand, if any), read to the end.
+func _door_lines(item: String) -> Array:
+	await _wait_idle()   # a click while she still acts (the last use's gesture) is ignored, as in the game
+	if item != "":
+		sr.select_item(item)
+	var h: Node2D = rm.current_room.get_node_or_null("Hotspots/school_door")
+	if h == null:
+		return []
+	player.call("click_at", h.global_position)
+	var seen: Array = []
+	var g := 0
+	while g < 900:
+		g += 1
+		await physics_frame
+		if not sr.current_beat.is_empty():
+			seen.append(String(sr.current_beat.get("text", "")))
+			sr.advance()
+		elif g > 120 and not player.call("is_walking") and not sr.call("is_staging"):
+			break
+	if sr.puzzle_open:
+		sr.close_puzzle()
+	if sr.selected_item != "":
+		sr.select_item(sr.selected_item)   # put it back
+	return seen
+
+
+func _test_hinges_need_drawing() -> void:
+	_flags_before("M05")
+	gs.remove_item("door_drawing")
+	gs.add_item("door_hinges")
+	await _enter("H3")
+	await _read_out("")
+	var want: String = sd.text("@H3.puzzle.need_drawing")
+	var common: String = sd.text("@H3.puzzle.need")
+	var with_hinges := await _door_lines("door_hinges")
+	_check(with_hinges.has(want), "hinges in hand, no drawing: «%s» (got %s)" % [want.left(40), str(with_hinges)])
+	gs.remove_item("door_hinges")
+	var with_none := await _door_lines("")
+	_check(with_none.has(common) and not with_none.has(want), "self-check: nothing in the bag — the common line (got %s)" % str(with_none))
+
+
+## The mark of the Z4 → Z2 exit (the lane → the street) in the room now on screen.
+func _street_cue() -> Node2D:
+	if rm.current_room == null:
+		return null
+	for e in rm.current_room.get_exits():
+		if String(e.get("target_room")) == "Z2":
+			return e.get("cue")
+	return null
+
+
+## The mark's drawn alpha over `s` seconds of game time: [min, max].
+func _alpha_range(cue: Node2D, s: float) -> Array:
+	var lo := 9.0
+	var hi := -9.0
+	var t := 0.0
+	while t < s:
+		await process_frame
+		t += cue.get_process_delta_time()
+		var a: float = cue.call("look")["alpha"]
+		lo = minf(lo, a)
+		hi = maxf(hi, a)
+	return [lo, hi]
+
+
+## Waits `s` seconds of game time (the frames' own deltas: fixed fps or the clock); returns the time waited.
+func _game_wait(node: Node, s: float) -> float:
+	var t := 0.0
+	while t < s:
+		await process_frame
+		t += node.get_process_delta_time()
+	return t
+
+
+func _test_idle_nudge() -> void:
+	_flags_before("M02")
+	gs.set_flag("visited_Z2", false)
+	await _enter("Z4", "from_Z1")
+	await _read_out("")
+	var cue := _street_cue()
+	_check(cue != null, "Z4 has the mark «На улицу» (Z2)")
+	if cue == null:
+		return
+	_check(is_equal_approx(float(cue.get("nudge_after_s")), 10.0), "the nudge waits 10 s (data: %s)" % str(cue.get("nudge_after_s")))
+	# the count runs with time: half a second on the clock — about half a second counted
+	cue.set("_idle_s", 0.0)
+	var dt: float = await _game_wait(cue, 0.5)
+	var counted := float(cue.get("_idle_s"))
+	_check(absf(counted - dt) < 0.1, "the idle count follows game time (%.2f s counted in %.2f s)" % [counted, dt])
+	_check(not bool(cue.call("is_nudging")), "before 10 s — no flicker")
+	var calm: Array = await _alpha_range(cue, 1.2)
+	# 10 s with no click (the clock is jumped to 9.8 s: the count itself was checked above)
+	cue.set("_idle_s", 9.8)
+	await _game_wait(cue, 0.4)
+	_check(bool(cue.call("is_nudging")), "after 10 s with no click — the mark flickers (idle %.1f s)" % float(cue.get("_idle_s")))
+	var g := 0
+	while float(cue.call("nudge_k")) < 0.99 and g < 600:
+		await process_frame
+		g += 1
+	var fl: Array = await _alpha_range(cue, 1.3)
+	# calm, the mark breathes 0.58…0.74 (alpha ±11 %); nudging it flickers up to full and back
+	_check(fl[1] > 0.9 and fl[1] - fl[0] > 0.2, "the flicker shows: drawn alpha %.2f…%.2f" % [fl[0], fl[1]])
+	_check(fl[1] > calm[1] + 0.1, "brighter than calm (calm max %.2f, flicker max %.2f)" % [calm[1], fl[1]])
+	# a key (Q does nothing in the game) — the count starts again
+	await _press_key(KEY_Q)
+	_check(not bool(cue.call("is_nudging")) and float(cue.get("_idle_s")) < 1.0, "a key resets the count (idle %.2f s)" % float(cue.get("_idle_s")))
+	# a dialogue pauses the count
+	_check(await _use("post_sign"), "the post's sign is looked at (a line on screen)")
+	var g0 := 0
+	while not bool(sr.call("is_busy")) and g0 < 600:
+		await process_frame
+		g0 += 1
+	await _frames(3)
+	cue.set("_idle_s", 5.0)
+	await _game_wait(cue, 0.5)
+	_check(bool(sr.call("is_busy")) and float(cue.get("_idle_s")) < 5.05, "under a line on screen the count stands (%.2f s, busy %s)" % [float(cue.get("_idle_s")), str(sr.call("is_busy"))])
+	await _read_out("")
+	await _frames(5)
+	# once the street was seen — no flicker
+	gs.set_flag("visited_Z2", true)
+	cue.set("_idle_s", 30.0)
+	await _frames(10)
+	_check(not bool(cue.call("is_nudging")), "the street already seen — no flicker")
+	# self-check: the same mark without the nudge data stays calm after the same wait
+	gs.set_flag("visited_Z2", false)
+	cue.set("nudge_after_s", -1.0)
+	cue.set("_idle_s", 30.0)
+	g = 0
+	while float(cue.call("nudge_k")) > 0.0 and g < 600:
+		await process_frame
+		g += 1
+	var still: Array = await _alpha_range(cue, 1.3)
+	_check(not bool(cue.call("is_nudging")) and still[1] < 0.8, "self-check: no data — the test sees no flicker (alpha %.2f…%.2f)" % [still[0], still[1]])
+
+
+## The knot tied on the plate's close-up (`keep` false — the event without its close_black): [the close-up still open at
+## M15's first line, the darkest black seen, seconds from the knot to the black starting].
+func _tie_and_watch(keep: bool) -> Array:
+	_flags_before("M15")
+	for f in ["house_unlocked", "evening_dusk", "done_M15a", "skoba_on_plate", "plate_braced", "rope_brought", "done_M15s"]:
+		gs.set_flag(f, true)
+	gs.set_flag("rope_on_ring", false)
+	await _enter("Z3")
+	await _read_out("")
+	var h = rm.current_room.get_node_or_null("Hotspots/pier_plate")
+	if h == null:
+		return [true, 0.0, 0.0]
+	sr.open_mechanic(sr.mechanic_spec(h), "pier_plate")
+	await _frames(3)
+	if not keep:
+		(sr.mechanic["events"]["tied"] as Dictionary).erase("close_black")
+	var mv = main_node.get_node_or_null("MechanicView")
+	var panel = mv.get("panel") if mv != null else null
+	if panel == null:
+		return [true, 0.0, 0.0]
+	panel.call("event", "tied")
+	var t := 0.0
+	var darkest := 0.0
+	var black_at := -1.0
+	var open_at_line := true
+	var g := 0
+	while g < 3000:
+		await process_frame
+		g += 1
+		t += panel.get_process_delta_time()
+		var dim := float(sr.get("stage_dim"))
+		darkest = maxf(darkest, dim)
+		if black_at < 0.0 and dim > 0.1:
+			black_at = t
+		var b: Dictionary = sr.current_beat
+		if String(b.get("scene", "")) == "M15" and String(b.get("type", "")) == "line" and not bool(sr.call("is_staging")):
+			open_at_line = bool(sr.mechanic_open)
+			break
+	await _read_out("")
+	if sr.mechanic_open:
+		sr.close_mechanic()
+	await _frames(3)
+	return [open_at_line, darkest, black_at]
+
+
+func _test_plate_closes() -> void:
+	var r: Array = await _tie_and_watch(true)
+	_check(not bool(r[0]), "M15's first line comes with the plate's close-up put away")
+	_check(float(r[1]) > 0.9, "through a black (darkest %.2f)" % float(r[1]))
+	_check(float(r[2]) >= 0.7, "the painted knot is seen a moment before the black (%.2f s)" % float(r[2]))
+	var self_r: Array = await _tie_and_watch(false)
+	_check(bool(self_r[0]), "self-check: without close_black the line comes over the close-up — the test tells the two apart")
+
+
+func _mouse(pos: Vector2, button: MouseButton, pressed: bool) -> void:
+	var ev := InputEventMouseButton.new()
+	ev.button_index = button
+	ev.pressed = pressed
+	ev.position = pos
+	ev.global_position = pos
+	if pressed:
+		ev.button_mask = MOUSE_BUTTON_MASK_LEFT
+	root.push_input(ev)
+	await _frames(1)
+
+
+func _motion(pos: Vector2, held: bool) -> void:
+	var ev := InputEventMouseMotion.new()
+	ev.position = pos
+	ev.global_position = pos
+	ev.button_mask = MOUSE_BUTTON_MASK_LEFT if held else 0
+	root.push_input(ev)
+	await _frames(1)
+
+
+## The item pressed in its pocket, carried to `to` (screen) in steps, let go there. Then the lines said (read out).
+func _drag(item: String, to: Vector2) -> Array:
+	var ui = root.get_tree().get_first_node_in_group("game_ui")
+	var slot = ui.get("bag").call("slot_of", item) if ui != null else null
+	if slot == null:
+		return ["<no slot>"]
+	var from: Vector2 = (slot as Control).get_global_rect().get_center() + Vector2(-8, -8)   # off the magnifier corner
+	await _mouse(from, MOUSE_BUTTON_LEFT, true)
+	for k in range(1, 9):
+		await _motion(from.lerp(to, float(k) / 8.0), true)
+	await _mouse(to, MOUSE_BUTTON_LEFT, false)
+	var seen: Array = []
+	var g := 0
+	while g < 900:
+		g += 1
+		await physics_frame
+		if not sr.current_beat.is_empty():
+			seen.append(String(sr.current_beat.get("text", "")))
+			sr.advance()
+		elif g > 120 and not player.call("is_walking") and not sr.call("is_staging"):
+			break
+	if sr.puzzle_open:
+		sr.close_puzzle()
+	return seen
+
+
+func _test_drag_item() -> void:
+	_flags_before("M05")
+	gs.remove_item("door_drawing")
+	gs.add_item("door_hinges")
+	await _enter("H3")
+	await _read_out("")
+	sr.select_item("")
+	var want: String = sd.text("@H3.puzzle.need_drawing")
+	var door: Node2D = rm.current_room.get_node_or_null("Hotspots/school_door")
+	_check(door != null, "the school door in the gallery")
+	if door == null:
+		return
+	var door_screen: Vector2 = rm.current_room.get_viewport().get_canvas_transform() * door.global_position
+	await _wait_idle()
+	var on_door := await _drag("door_hinges", door_screen)
+	_check(on_door.has(want), "dragged onto the door: used there — «%s» (got %s)" % [want.left(40), str(on_door)])
+	if sr.selected_item != "":
+		sr.select_item("")
+	# empty floor: back in the bag, nothing said
+	await _wait_idle()
+	var floor_pt := Vector2(960, 1040)
+	var picked = rm.current_room.call("pick", rm.current_room.get_viewport().get_canvas_transform().affine_inverse() * floor_pt)
+	_check(picked == null, "the floor point (960, 1040) is no place or person (%s)" % str(picked))
+	var on_floor := await _drag("door_hinges", floor_pt)
+	_check(on_floor.is_empty() and sr.selected_item == "" and gs.has_item("door_hinges"), "dropped on empty floor — back in the bag, nothing said (held «%s», said %s)" % [sr.selected_item, str(on_floor)])
+	# a press let go where it was — the click it always was: the item in hand
+	var ui = root.get_tree().get_first_node_in_group("game_ui")
+	var slot: Control = ui.get("bag").call("slot_of", "door_hinges")
+	var c := slot.get_global_rect().get_center() + Vector2(-8, -8)
+	await _mouse(c, MOUSE_BUTTON_LEFT, true)
+	await _mouse(c, MOUSE_BUTTON_LEFT, false)
+	_check(sr.selected_item == "door_hinges", "a press without carrying: the hinges in hand (held «%s»)" % sr.selected_item)
+	sr.select_item("")
+	# self-check: 5 px is no drag — a click, the item stays in hand, nothing used
+	await _mouse(c, MOUSE_BUTTON_LEFT, true)
+	await _motion(c + Vector2(5, 0), true)
+	await _mouse(c + Vector2(5, 0), MOUSE_BUTTON_LEFT, false)
+	await _frames(10)
+	_check(sr.selected_item == "door_hinges" and not bool(player.call("is_walking")), "self-check: 5 px — a click, not a drag (held «%s»)" % sr.selected_item)
+	sr.select_item("")
+
+
+## The council's people in the yard now: id → their figure (visible) or null.
+func _yard_people() -> Dictionary:
+	var out := {}
+	for id in ["pavel", "manager", "ilya"]:
+		var n := rm.current_room.get_node_or_null("npc_" + id) as Node2D
+		out[id] = n if n != null and n.is_visible_in_tree() and n.modulate.a > 0.5 else null
+	return out
+
+
+func _test_council_stays() -> void:
+	_flags_before("M23b")
+	await _enter("M1", "from_Z2")
+	var before := _yard_people()
+	_check(sr.active_scene == "M23b" or String(sr.current_beat.get("scene", "")) == "M23b", "M23b begins on entering the yard (scene %s)" % sr.active_scene)
+	await _read_out("")
+	await _wait_idle()
+	await _frames(10)
+	var frame: Dictionary = sd.room("F_mill_manager")
+	var feet := {}
+	for h in frame.get("hotspots", []):
+		feet[String(h.get("id", ""))] = Vector2(float(h["feet"][0]), float(h["feet"][1]))
+	var now := _yard_people()
+	for id in ["pavel", "manager", "ilya"]:
+		var n: Node2D = now[id]
+		_check(n != null, "%s stands in the yard after the council" % id)
+		if n == null:
+			continue
+		var off: Vector2 = n.get("sheet").feet_offset if n.get("sheet") != null else Vector2.ZERO
+		var at: Vector2 = n.global_position - off
+		_check(at.distance_to(feet[id]) <= 6.0, "%s where the frame had him: %s (frame %s)" % [id, str(at.round()), str(feet[id])])
+		var picked = rm.current_room.call("pick", at + Vector2(0, -120))
+		_check(picked == null or String(picked.name) != id, "%s is not clicked (picked %s)" % [id, str(picked.name) if picked != null else "nothing"])
+	_check(player.global_position.distance_to(feet["agata"]) <= 6.0, "Agata where she stood in the frame: %s (frame %s)" % [str(player.global_position.round()), str(feet["agata"])])
+	# she leaves the yard (to the street) and comes back — they have gone
+	var ex: Node = null
+	for e in rm.current_room.get_exits():
+		if String(e.get("target_room")) == "Z2":
+			ex = e
+	_check(ex != null, "the yard's way to the street")
+	if ex != null:
+		sr.call("use_exit", ex)
+		await _frames(20)
+		await _enter("M1", "from_Z2")
+		await _read_out("")
+		var after := _yard_people()
+		_check(after["pavel"] == null and after["manager"] == null and after["ilya"] == null, "back in the yard after leaving: nobody of the council (%s)" % str(after))
+	_check(before["pavel"] == null and before["manager"] == null and before["ilya"] == null, "self-check: before the council none of them in the yard (%s)" % str(before))
+

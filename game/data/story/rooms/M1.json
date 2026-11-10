@@ -33,12 +33,24 @@
   "hotspots": [
     {
       "id": "pavel", "kind": "npc", "label": "@char.pavel", "rect": [1085, 395, 139, 295], "stand": [960, 730], "_rect_note": "H10 (Директор 24.10: «стоит будто на доме»): ноги — на дворе перед завалинкой (y 690), не на камнях фундамента (было y 615)", "draw": false, "pick_priority": 2,
-      "hidden_if": ["pavel_blessed_mirror", "office_unbolted"],
+      "hidden_when": [{"all": ["pavel_blessed_mirror"], "not": ["council_yard"]}, {"all": ["office_unbolted"], "not": ["council_yard"]}, {"all": ["council_left"]}, {"all": ["council_yard", "done_M24"]}],
       "_hidden_note": "G18: после добра на зеркало Павел ушёл в сени (M2) и ждёт там у двери конторы",
+      "_hidden_1111": "11.11 (Директор 10.11, 22:47 «после сцены с управляющим все пропали»; 23:26 «после мельницы все остаются, если это ничего не нарушает»): после совета (кадр F_mill_manager) Павел стоит во дворе там, где стоял в кадре, пока Агата не уйдёт со двора (council_left — on_pass выходов M1)",
+      "states": [{"if": ["council_yard"], "unless": ["council_left", "done_M24"], "rect": [644, 283, 90, 377], "face": [907, 655], "pickable": false, "_k": "место из кадра совета (ноги 689, 660), лицом к управляющему; не щёлкается — слова «Из мастерской звони…» тут уже не к месту, а новых реплик сценарий не даёт"}],
       "talk": {"scenes": ["M09", "M09b"], "before_text": {"M09": "@M1.pavel.day1", "M09b": "@M1.pavel.before_agree"}, "after_text": "@M1.pavel.after"}
     },
     {
-      "id": "schedule", "kind": "object", "label": "@M1.schedule.label", "rect": [850, 300, 215, 140], "stand": [930, 650], "draw": false,
+      "id": "ilya", "kind": "npc", "label": "@char.ilya", "rect": [1075, 285, 90, 404], "face": [907, 655], "footprint": [80, 30], "draw": false, "pickable": false,
+      "visible_if": ["council_yard"], "hidden_if": ["council_left", "done_M24"],
+      "_k1111": "11.11 (Директор 10.11, 22:47 / 23:26): после совета Илья стоит во дворе на своём месте из кадра F_mill_manager (ноги 1120, 689), лицом к управляющему; уходит, когда Агата покидает двор (council_left). Не щёлкается — реплик сценарий не даёт"
+    },
+    {
+      "id": "manager", "kind": "npc", "label": "@char.manager", "rect": [862, 305, 90, 372], "face": [689, 660], "footprint": [80, 30], "draw": false, "pickable": false,
+      "visible_if": ["council_yard"], "hidden_if": ["council_left", "done_M24"],
+      "_k1111": "11.11 (Директор 10.11, 22:47 / 23:26): после совета управляющий стоит во дворе на своём месте из кадра (ноги 907, 677), лицом к Павлу; уходит вместе с Ильёй, когда Агата покидает двор"
+    },
+    {
+      "id": "schedule", "kind": "object", "label": "@M1.schedule.label", "rect": [850, 300, 215, 140], "stand": [930, 650], "draw": false, "states": [{"if": ["council_yard"], "unless": ["council_left", "done_M24"], "stand": [1250, 690], "_k": "11.11: пока у доски стоят управляющий и Илья (после совета), Агата читает её, встав правее Ильи — ближе места без того, чтобы зайти в кого-то из них, нет (validate_rooms 9b)"}],
       "use": {"sets": ["seen_shift_schedule"], "text": "@M1.schedule.use", "once_flag": "seen_shift_schedule", "scene": "M09s"},
       "look": "@M1.schedule.look",
       "view": {"id": "shift_board", "type": "papers", "zoom_from": [852, 292, 210, 148],
@@ -57,14 +69,14 @@
       "look": "@M1.wheel.look"
     },
     {
-      "id": "bench", "kind": "object", "label": "@M1.bench.label", "rect": [770, 455, 215, 140], "stand": [860, 650], "draw": false,
+      "id": "bench", "kind": "object", "label": "@M1.bench.label", "rect": [770, 455, 215, 140], "stand": [860, 650], "draw": false, "states": [{"if": ["council_yard"], "unless": ["council_left", "done_M24"], "stand": [570, 635], "_k": "11.11: пока перед завалинкой стоят Павел и управляющий (после совета), Агата смотрит на неё, встав левее Павла (между ними места нет — validate_rooms 9b)"}],
       "look": "@M1.bench.look"
     }
   ],
   "exits": [
-    {"to": "Z2", "label": "@M1.exit_Z2.label", "cue": "up", "cue_at": [180, 455], "_cue_k0211b": "Директор 02.11 вечер, № 1 («стрелку на мельнице Павла на улицу совсем немного сместить левее»): x 195 → 180", "cue_deg": -45, "_cue_note": "H11 (Директор 24.10): метка «на улицу» чуть правее и на северо-восток (прямоугольник не касается края — метка «вглубь»); 25.10 стр. 18 «стрелку на улицу у Павла поднять чуть-чуть повыше» — 500 → 455 (аудит 30.10: строку прежде отнесли к M2)", "rect": [14, 380, 236, 300], "stand": [80, 540], "spawn": "from_M1", "draw": false},
-    {"to": "M2", "label": "@M1.exit_M2.label", "cue": "door", "rect": [612, 315, 140, 250], "stand": [690, 615], "spawn": "from_M1", "closed_text": "@M1.exit_M2.closed", "draw": false},
-    {"to": "M4", "label": "@M1.exit_M4.label", "cue": "right", "rect": [1800, 860, 120, 220], "stand": [1840, 960], "spawn": "from_M1", "closed_text": "@M1.exit_M4.closed", "draw": false}
+    {"to": "Z2", "label": "@M1.exit_Z2.label", "cue": "up", "cue_at": [180, 455], "_cue_k0211b": "Директор 02.11 вечер, № 1 («стрелку на мельнице Павла на улицу совсем немного сместить левее»): x 195 → 180", "cue_deg": -45, "_cue_note": "H11 (Директор 24.10): метка «на улицу» чуть правее и на северо-восток (прямоугольник не касается края — метка «вглубь»); 25.10 стр. 18 «стрелку на улицу у Павла поднять чуть-чуть повыше» — 500 → 455 (аудит 30.10: строку прежде отнесли к M2)", "rect": [14, 380, 236, 300], "stand": [80, 540], "spawn": "from_M1", "on_pass": {"if": ["council_yard"], "sets": ["council_left"], "_k": "11.11: люди совета уходят со двора вместе с Агатой"}, "draw": false},
+    {"to": "M2", "label": "@M1.exit_M2.label", "cue": "door", "rect": [612, 315, 140, 250], "stand": [690, 615], "spawn": "from_M1", "on_pass": {"if": ["council_yard"], "sets": ["council_left"], "_k": "11.11: люди совета уходят со двора вместе с Агатой"}, "closed_text": "@M1.exit_M2.closed", "draw": false},
+    {"to": "M4", "label": "@M1.exit_M4.label", "cue": "right", "rect": [1800, 860, 120, 220], "stand": [1840, 960], "spawn": "from_M1", "on_pass": {"if": ["council_yard"], "sets": ["council_left"], "_k": "11.11: люди совета уходят со двора вместе с Агатой"}, "closed_text": "@M1.exit_M4.closed", "draw": false}
   ],
   "scenes": {
     "M09": {"trigger": "talk:pavel"},

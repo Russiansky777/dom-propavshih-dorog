@@ -10,6 +10,13 @@ extends Control
 
 signal clicked(slot: BagSlot, button_index: int)
 signal examine_requested(slot: BagSlot)
+## Director 10.11, 22:21 («перетаскивать добавить возможность предметы в игре, если не сложно»): the item pressed in its
+## pocket and carried off with the button held (past DRAG_PX) — `drag_started`; let go anywhere — `drag_released` with
+## the screen point (the bag decides: on a place in the room — used there, elsewhere — back in the bag). A press let go
+## without carrying is the plain click it always was.
+signal drag_started(slot: BagSlot)
+signal drag_released(slot: BagSlot, screen_pos: Vector2)
+const DRAG_PX := 12.0
 
 const BADGE := 24.0   # the magnifier in the pocket's lower right corner
 
@@ -55,6 +62,8 @@ var arriving: bool = false:   # the item's icon is still flying in: the pocket w
 			queue_redraw()
 var loose: bool = false
 var _pulse_tween: Tween = null
+var _press_at := Vector2.INF   # where the left button went down on the item (screen), INF — not held
+var dragging: bool = false
 
 
 func _init() -> void:
@@ -73,11 +82,30 @@ func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and \
 			(event.button_index == MOUSE_BUTTON_LEFT or event.button_index == MOUSE_BUTTON_RIGHT):
 		accept_event()
+		_press_at = Vector2.INF
+		dragging = false
 		if event.button_index == MOUSE_BUTTON_LEFT and item_id != "" and not loose and \
 				(event.double_click or badge_rect().has_point(event.position)):
 			examine_requested.emit(self)
 			return
+		if event.button_index == MOUSE_BUTTON_LEFT and item_id != "" and not loose:
+			_press_at = (event as InputEventMouseButton).global_position
 		clicked.emit(self, event.button_index)
+		return
+	# the press is held: carried past DRAG_PX — a drag; the release (it comes here wherever the pointer is) ends it
+	if event is InputEventMouseMotion and _press_at != Vector2.INF and not dragging \
+			and ((event as InputEventMouseMotion).button_mask & MOUSE_BUTTON_MASK_LEFT) != 0 \
+			and (event as InputEventMouseMotion).global_position.distance_to(_press_at) > DRAG_PX:
+		dragging = true
+		drag_started.emit(self)
+	if event is InputEventMouseButton and not event.pressed and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT \
+			and _press_at != Vector2.INF:
+		accept_event()
+		var was := dragging
+		_press_at = Vector2.INF
+		dragging = false
+		if was:
+			drag_released.emit(self, (event as InputEventMouseButton).global_position)
 
 
 ## The magnifier's rect in the pocket (local px).

@@ -95,13 +95,20 @@ static func state_of(d: Dictionary) -> Dictionary:
 	return {}
 
 
+## `pickable` false (11.11; the hotspot's or its state's): a figure that only stands there — no caption, no click, not in
+## the reveal (the people of the council in the mill yard after its frame stay where they stood until Agata leaves).
+func is_pickable() -> bool:
+	return bool(current_state().get("pickable", data.get("pickable", true)))
+
+
 func refresh() -> void:
 	var active := is_active()
 	visible = active
+	var st := current_state()
+	var pickable := bool(st.get("pickable", data.get("pickable", true)))
 	for c in get_children():  # "Shape" and the extra `pick_rects` shapes (PickShape0…)
 		if c is CollisionShape2D:
-			c.set_deferred("disabled", not active or c.has_meta("no_pick"))   # `click_rect`: the rect only places
-	var st := current_state()
+			c.set_deferred("disabled", not active or not pickable or c.has_meta("no_pick"))   # `click_rect`: the rect only places
 	_apply_geometry(st)
 	if fill != null:
 		var c := base_color

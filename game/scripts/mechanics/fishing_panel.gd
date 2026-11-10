@@ -86,6 +86,13 @@ var _taut_snd: float = 0.0       # time to the next creak of the taut string
 var in_room: bool = false
 var simple: bool = false
 var _mitya_float: Vector2 = Vector2.ZERO
+## Director 10.11, 22:46 («когда Агата поймала рыбу, то можно убрать удочку у Мити»; 23:26 «да, убрать его удочку после
+## того, как она вылавливает рыбу»): the perch hung on her line right under Mitya's rod, as if he had caught it. With
+## `mitya.rod_off_after_catch` his rod and float fade out at her first catch (he puts his rod down to look at her
+## perch) and stay away for «Ещё». Drawn on a layer of its own (MityaRod, under the water layer) to fade as one.
+const MITYA_ROD_FADE_S := 0.6
+var mitya_rod_k: float = 1.0        # 1 — Mitya's rod seen, 0 — put away
+var _mitya_layer: Control = null
 var _tex: Dictionary = {}           # sprite id -> {tex, anchor, scale}
 
 
@@ -132,6 +139,14 @@ func build() -> void:
 			var tr := crop(img, r, _pic.position, _pic.size.x / float(r[2]), self)
 			tr.name = "River"
 			tr.size = _pic.size
+	if in_room and _mitya_float != Vector2.ZERO:
+		_mitya_layer = Control.new()
+		_mitya_layer.name = "MityaRod"
+		_mitya_layer.size = Vector2(1920, 1080)
+		_mitya_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_mitya_layer.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+		_mitya_layer.draw.connect(_on_draw_mitya)
+		add_child(_mitya_layer)
 	_draw = Control.new()
 	_draw.name = "Water"
 	_draw.size = Vector2(1920, 1080)
@@ -213,6 +228,12 @@ func _to_wait() -> void:
 func tick(delta: float) -> void:
 	# «Ещё» waits for Mitya's word to be read (the text box would cover it)
 	_sync_again()
+	if _mitya_layer != null:
+		var off := caught > 0 and bool(spec.get("mitya", {}).get("rod_off_after_catch", false))
+		mitya_rod_k = move_toward(mitya_rod_k, 0.0 if off else 1.0, delta / MITYA_ROD_FADE_S)
+		_mitya_layer.modulate.a = mitya_rod_k
+		_mitya_layer.visible = mitya_rod_k > 0.0
+		_mitya_layer.queue_redraw()
 	if dialogue_up():
 		_draw.queue_redraw()
 		return
@@ -356,13 +377,16 @@ func _float_pos() -> Vector2:
 	return p
 
 
+## Mitya's rod and float (their own layer, under the water layer, faded by mitya_rod_k).
+func _on_draw_mitya() -> void:
+	_rod(_mitya_layer, _hands("npc_mitya", 1.1), _mitya_float, 0.0, 0.1)
+	_float_shape(_mitya_layer, _mitya_float + Vector2(0.0, sin(clock * 1.7 + 1.0) * 2.0), false)
+
+
 func _on_draw() -> void:
 	var c := _draw
 	var fp := _float_pos()
 	var taut := tension if phase == "fight" else 0.1
-	if in_room and _mitya_float != Vector2.ZERO:
-		_rod(c, _hands("npc_mitya", 1.1), _mitya_float, 0.0, 0.1)
-		_float_shape(c, _mitya_float + Vector2(0.0, sin(clock * 1.7 + 1.0) * 2.0), false)
 	# the rod: from her hands below the lower left corner up over the water; it bends to the fish as the string tightens
 	var butt := Vector2(_pic.position.x + 64.0, _pic.end.y - 3.0)   # it comes in at the frame's lower edge
 	var tip0 := Vector2(_pic.position.x + _pic.size.x * 0.24, _pic.position.y + _pic.size.y * 0.16)
@@ -788,6 +812,7 @@ func probe() -> Dictionary:
 		"green": [green.x, green.y], "again": again_btn.visible, "picture": {"x": _pic.get_center().x, "y": _pic.get_center().y},
 		"slow": {"x": slow_check.get_global_rect().get_center().x, "y": slow_check.get_global_rect().get_center().y} if slow_check != null else {},
 		"in_room": in_room, "simple": simple, "float": {"x": _float_pos().x, "y": _float_pos().y},
+		"mitya_rod": mitya_rod_k if _mitya_layer != null else 0.0,
 		"dist": fight.dist if fight != null else 0.0, "zone": fight.zone() if fight != null else "",
 		"slack_risk": fight.slack_risk if fight != null else 0.0, "over_risk": fight.over_risk if fight != null else 0.0,
 		"last_end": last_end, "easy": TimingBar.slow_k() > 1.0,

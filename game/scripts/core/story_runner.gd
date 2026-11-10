@@ -561,6 +561,12 @@ func _run_stage(spec: Dictionary) -> void:
 		return
 	# Timers below stop with the tree (create_timer(…, false)): the pause menu holds a staging where it is.
 	_stage_running = true
+	# 11.11: `wait_s` — a moment before anything (the knot tied: its painted knot is seen before the close-up goes black)
+	if float(spec.get("wait_s", 0.0)) > 0.0:
+		var w_serial := _stage_serial
+		await get_tree().create_timer(float(spec["wait_s"]), false).timeout
+		if w_serial != _stage_serial:
+			return
 	# H39 (Director 24.10: «перед „мама“ Агата должна побежать к маме и обнять»): `agata_go` {to, face, action, run} —
 	# Agata runs there by herself (speed × run), turns to `face` and plays `action`; a staging with only that has no fade.
 	if spec.has("agata_go"):
@@ -658,30 +664,73 @@ func _run_stage(spec: Dictionary) -> void:
 			_stage_running = false
 			_next()
 			return
+	# Director 10.11 («Нина не кладёт — может, пусть зеркальце [лежит], а она показывает на зеркальце»): `npc_point`
+	# [{id, at: [x, y], hand: "Right"|"Left", s}] — the villager turns to the point and holds her hand out to it for `s`
+	# seconds (HandHoldModifier: the arm reaches toward it as far as it goes, the body stays), then lets it down. The
+	# line goes on at once.
+	if spec.has("npc_point"):
+		var room_p := _stage_room()
+		for g in spec["npc_point"]:
+			var np: Node = room_p.get_node_or_null("npc_" + String(g.get("id", ""))) if room_p != null else null
+			if np == null or not np.has_method("hold_hand_at"):
+				continue
+			var at: Array = g.get("at", [0, 0])
+			var pt := Vector2(float(at[0]), float(at[1]))
+			if np.has_method("face_towards"):
+				np.set("partner", null)
+				np.call("face_towards", pt)
+			var side := String(g.get("hand", "Right"))
+			var secs := float(g.get("s", 2.4))
+			var ser := _stage_serial
+			# after the turn (the target is taken in her own frame — before the turn it would point the old way)
+			get_tree().create_timer(float(g.get("turn_s", 0.6)), false).timeout.connect(func():
+				if ser == _stage_serial and is_instance_valid(np):
+					np.call("hold_hand_at", side, pt, 1.0, true))
+			get_tree().create_timer(float(g.get("turn_s", 0.6)) + secs, false).timeout.connect(func():
+				if is_instance_valid(np):
+					np.call("hold_hand_at", side, pt, 0.0, true))
+		if not spec.has("fade_out_s") and not spec.has("room") and not spec.has("npc_go") and not spec.has("cut") \
+				and not spec.has("frame") and not spec.has("layer_go") and not spec.has("npc_face"):
+			for f in spec.get("sets", []):
+				GameState.set_flag(String(f), true)
+			_stage_running = false
+			_next()
+			return
 	# J (Director 29.10, стр. 139: «Пелагея в этот момент повёрнута в другую сторону»): `npc_face` [{id, face}] — villagers
 	# turn to each other where they stand (no walk, no fade); a staging with only that goes straight on.
 	if spec.has("npc_face"):
-		var room := RoomManager.current_room
+		# 10.11 (M25: Ilya gives Agata the knife in the frame of the laid log): in a frame the people are the frame's —
+		# «agata» is the frame's Agata, not the player in the room under it (Ilya held the knife out to the wrong side)
+		var room := _stage_room()
 		for g in spec["npc_face"]:
 			var fc = g.get("face", "")
 			if fc is Array and (fc as Array).size() >= 2:
 				# 10.11 (Director: «Пелагея не поворачивается к лодке, даже когда „запускает её“»): a point to look at — the
 				# boat going off along the rope — not a person
 				var np := room.get_node_or_null("npc_" + String(g.get("id", ""))) if room != null else null
+				if np == null and RoomManager.current_room != null:
+					np = RoomManager.current_room.get_node_or_null("npc_" + String(g.get("id", "")))
 				if np != null and np.has_method("face_towards"):
 					np.set("partner", null)
 					np.call("face_towards", Vector2(float(fc[0]), float(fc[1])))
 				continue
 			var other := _actor_node(room, String(g.get("face", "")))
-			if String(g.get("face", "")) == "agata":
+			if String(g.get("face", "")) == "agata" and other == null:
 				other = RoomManager.player   # 31.10 (стр. 86): a villager turns to Agata herself
-			if String(g.get("id", "")) == "agata":
+			if String(g.get("id", "")) == "agata" and room.get_node_or_null("npc_agata") == null:
 				# J, стр. 167: «agata» — Agata herself turns to that villager where she stands
 				var pl: Node2D = RoomManager.player
 				if pl != null and other != null and pl.has_method("face_towards"):
 					pl.call("face_towards", other.global_position)
 				continue
 			var npc := room.get_node_or_null("npc_" + String(g.get("id", ""))) if room != null else null
+			if npc == null and RoomManager.current_room != null and room != RoomManager.current_room:
+				# a frame over the room without that person: the one in the room turns (as `npc_go` looks — M18)
+				npc = RoomManager.current_room.get_node_or_null("npc_" + String(g.get("id", "")))
+				if other == null or String(g.get("face", "")) == "agata":
+					other = _actor_node(RoomManager.current_room, String(g.get("face", "")))
+					if other == null and String(g.get("face", "")) == "agata":
+						other = RoomManager.player
 			if npc != null and other != null and npc.has_method("set_partner"):
 				npc.call("set_partner", other)
 		if not spec.has("fade_out_s") and not spec.has("room") and not spec.has("npc_go") and not spec.has("cut") \
@@ -1143,6 +1192,22 @@ func _stage_apply(spec: Dictionary) -> void:
 		elif fc is Array and npc.has_method("face_towards"):
 			npc.set("partner", null)
 			npc.call("face_towards", Vector2(float(fc[0]), float(fc[1])))
+	# 11.11 (Director 10.11, 22:47: «после сцены с управляющим все пропали, а Агаты положение изменилось»): `player_to`
+	# {to: [x, y], face: [x, y]} — Agata is where the frame had her, put there while black (a frame over the same
+	# picture as the room: the yard after the council)
+	var pt: Dictionary = spec.get("player_to", {})
+	if not pt.is_empty() and rm_now != null and RoomManager.player != null:
+		var pl := RoomManager.player
+		var at: Array = pt.get("to", [pl.global_position.x, pl.global_position.y])
+		var pos := Vector2(float(at[0]), float(at[1]))
+		if pl.has_method("enter_room"):
+			pl.call("enter_room", rm_now, pos)
+		else:
+			pl.global_position = pos
+		GameState.player_pos = pos
+		var pf: Array = pt.get("face", [])
+		if pf.size() == 2 and pl.has_method("face_towards"):
+			pl.call("face_towards", Vector2(float(pf[0]), float(pf[1])))
 	_stage_layer_reset(spec)
 	if spec.has("layer_write"):
 		call_deferred("_stage_layer_write", spec["layer_write"])
@@ -1579,7 +1644,7 @@ func interact(h: StoryHotspot) -> void:
 			open_puzzle(h)
 			return
 		if _use_state(d) != "ready":
-			narrate_key(String(pz.get("fail_text", d.get("look", "@ui.nothing_here"))))
+			narrate_key(_puzzle_fail_text(pz, String(pz.get("fail_text", d.get("look", "@ui.nothing_here")))))
 			return
 
 	if d.has("choice"):
@@ -1797,7 +1862,7 @@ func _run_action(h: StoryHotspot, act: Dictionary, item_id: String) -> void:
 		if h.data.has("puzzle") and requires_met(h.data["puzzle"].get("requires", {})):
 			open_puzzle(h)
 		else:
-			narrate_key(String(h.data.get("puzzle", {}).get("fail_text", "@ui.item_no_effect")))
+			narrate_key(_puzzle_fail_text(h.data.get("puzzle", {}), String(h.data.get("puzzle", {}).get("fail_text", "@ui.item_no_effect"))))
 		return
 	if not requires_met(act.get("requires", {})):
 		narrate_key(String(act.get("fail_text", h.data.get("look", "@ui.nothing_here"))))
@@ -1910,6 +1975,10 @@ func use_exit(e: StoryExit) -> void:
 	# I-T2 (Director, lines 34–35): exit `on_pass` {sets} — flags set when Agata walks through (the gallery side door:
 	# «Отпереть дверь» until the first pass, then her line in the lane, then the usual label).
 	var op: Dictionary = e.data.get("on_pass", {})
+	# 11.11: `if`/`unless` on it — only then (the people of the council leave the mill yard when Agata does; a pass before
+	# the council sets nothing)
+	if not _flags_allow(op):
+		op = {}
 	# K (Director 31.10, стр. 31: the side door unlocked the first time — no sound): `sounds` play on the passes that
 	# still set something (the first one), before the door's own sound in the change of room
 	var first := (op.get("sets", []) as Array).any(func(f): return not GameState.has_flag(String(f)))
@@ -2060,6 +2129,21 @@ func _puzzle_error_text(spec: Dictionary) -> String:
 			pieces_ok = false
 	var key := "error_text_pieces" if not pieces_ok else "error_text_mark"
 	return String(spec.get(key, spec.get("error_text", "")))
+
+
+## The refusal of a close-up whose things are not all in the bag (Director 10.11: «петли — у двери, когда мы взяли петли,
+## но не нажимали на рисунок… добавить фразу, что нужно на чертёж посмотреть»): `fail_texts` [{has: [items], missing:
+## [items], text}] — the first whose `has` are all in the bag and `missing` all not; else the common `fail_text`.
+func _puzzle_fail_text(pz: Dictionary, common: String) -> String:
+	for ft in pz.get("fail_texts", []):
+		var ok := true
+		for it in ft.get("has", []):
+			ok = ok and GameState.has_item(String(it))
+		for it in ft.get("missing", []):
+			ok = ok and not GameState.has_item(String(it))
+		if ok:
+			return String(ft.get("text", common))
+	return common
 
 
 ## "Close the door": evaluates the placement. Returns true on success.

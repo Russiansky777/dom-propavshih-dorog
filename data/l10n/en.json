@@ -1383,6 +1383,10 @@
    "ru": "Родные петли нужны да рисунок посадки из мастерской. Без них дверь как следует не поставить.",
    "en": "I need the original hinges and the fitting diagram from the workshop. Without them, I can't fit the door properly."
   },
+  "text:H3.puzzle.need_drawing": {
+   "ru": "Петли есть. А как их сажать — на Дунином рисунке, что в мастерской на стене. Сперва бы его посмотреть.",
+   "en": "I have the hinges. But how they go is on Dunya's drawing on the workshop wall. I'd better look at it first."
+  },
   "text:H3.puzzle.intro": {
    "ru": "Три родные петли — на свои места, как на Дунином рисунке, да зарубку на пороге с меткой свести. Тогда и дверь закрыть можно.",
    "en": "Three original hinges in their proper places, as in Dunya's drawing. Then align the notch on the threshold with the mark. After that I can close the door."
@@ -6268,8 +6272,8 @@
    "en": "The hands raced in the mirror. Here they keep time with mine."
   },
   "scene:M19c/lines[1].text": {
-   "ru": "На стол Нина кладёт маленькое зеркальце в деревянной оправе.",
-   "en": "Nina sets a little wooden-framed mirror on the table."
+   "ru": "Нина показывает на столе маленькое зеркальце в деревянной оправе.",
+   "en": "Nina points to a little wooden-framed mirror on the table."
   },
   "scene:M19c/lines[2].text": {
    "ru": "У Дуни над печью висело. В тот день мне в подарок несла. Тут оно и осталось. А показывает её печь.",

@@ -53,6 +53,15 @@ var angle_deg: float = NAN
 var hot: bool = false          # pointer on the exit (GameUi)
 var revealed: bool = false     # reveal key (GameUi → HotspotReveal)
 var exit_node: Node = null     # StoryExit, for is_open()
+## Idle nudge (Director 10.11, 21:50: «в начале после выхода с почты — подсвечивать мерцая немножко первую стрелку
+## вниз, если юзер тупит допустим 10 секунд»). Data — the exit's "idle_nudge": {"after_s": 10, "unless": [flags]}:
+## after `after_s` seconds in the room with no click (dialogues and panels pause the count), while none of `unless`
+## is set, the mark flickers brighter until the player clicks or leaves. −1 — no nudge.
+const NUDGE_PERIOD_S := 1.1
+var nudge_after_s: float = -1.0
+var nudge_unless: Array = []
+var _idle_s: float = 0.0
+var _nudge_k: float = 0.0      # 0 … 1 nudging, eased
 var _t: float = 0.0
 var _alpha: float = 0.0        # eased (rooms fade the marks in on entry)
 var _hot_k: float = 0.0        # 0 idle … 1 hot, eased
@@ -187,6 +196,28 @@ func is_hot() -> bool:
 	return hot or revealed
 
 
+## True while the idle nudge is on (the mark flickers to be noticed).
+func is_nudging() -> bool:
+	if nudge_after_s < 0.0 or _idle_s < nudge_after_s or suppressed:
+		return false
+	# GameState by path, not by name: tests (godot -s, no autoloads) load this script for its static helpers.
+	var gs := get_node_or_null("/root/GameState")
+	for f in nudge_unless:
+		if gs != null and bool(gs.call("has_flag", String(f))):
+			return false
+	return true
+
+
+func nudge_k() -> float:
+	return _nudge_k
+
+
+func _input(event: InputEvent) -> void:
+	# A click (or a key) means the player is doing something: the count starts again.
+	if (event is InputEventMouseButton and event.pressed) or (event is InputEventKey and event.pressed):
+		_idle_s = 0.0
+
+
 func _ready() -> void:
 	z_index = 4096            # above the occluders and the drizzle; the UI CanvasLayer stays above it
 	z_as_relative = false
@@ -198,6 +229,9 @@ func _process(delta: float) -> void:
 	var open := true
 	if exit_node != null and is_instance_valid(exit_node) and exit_node.has_method("is_open"):
 		open = bool(exit_node.call("is_open")) and (not exit_node.has_method("target_exists") or bool(exit_node.call("target_exists")))
+	if not suppressed:
+		_idle_s += delta
+	_nudge_k = move_toward(_nudge_k, 1.0 if is_nudging() and not is_hot() else 0.0, delta * 1.5)
 	var want_hot := 1.0 if is_hot() else 0.0
 	_hot_k = move_toward(_hot_k, want_hot, delta * 6.0)
 	var base := ALPHA_IDLE if open else ALPHA_CLOSED
@@ -206,14 +240,32 @@ func _process(delta: float) -> void:
 	queue_redraw()
 
 
-func _draw() -> void:
-	if _alpha <= 0.003:
-		return
+## How the mark looks this frame: alpha, colour, scale, lean (px towards the exit). _draw uses it; tests read it.
+func look() -> Dictionary:
 	var breath := 0.5 + 0.5 * sin(_t * TAU / BREATH_S)            # 0…1
 	var a := _alpha * lerpf(0.78 + 0.22 * breath, 1.0, _hot_k)    # idle: alpha breathes ±11 %
 	var lean := lerpf(3.0 * breath, 6.0, _hot_k)                    # leans towards the exit
 	var s := lerpf(1.0, 1.18, _hot_k)
 	var col := COLOR_IDLE.lerp(COLOR_HOT, _hot_k)
+	if _nudge_k > 0.0:
+		# Nudge: a quicker flicker between the idle look and nearly the hot one, a little lean and growth with it.
+		var fl := 0.5 + 0.5 * sin(_t * TAU / NUDGE_PERIOD_S)
+		var nk := _nudge_k * fl
+		a = lerpf(a, minf(1.0, _alpha / ALPHA_IDLE), nk)
+		col = col.lerp(COLOR_HOT, nk * 0.8)
+		s = maxf(s, lerpf(1.0, 1.12, nk))
+		lean = maxf(lean, lerpf(lean, 7.0, nk))
+	return {"alpha": a, "color": col, "scale": s, "lean": lean}
+
+
+func _draw() -> void:
+	if _alpha <= 0.003:
+		return
+	var lk := look()
+	var a: float = lk["alpha"]
+	var lean: float = lk["lean"]
+	var s: float = lk["scale"]
+	var col: Color = lk["color"]
 	var rot := 0.0
 	if not is_nan(angle_deg):
 		rot = deg_to_rad(angle_deg - 90.0)   # the texture points down (90°)

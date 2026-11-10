@@ -21,6 +21,8 @@ extends PanelContainer
 signal sound_requested(kind: String)
 signal pocket_hover_changed(old_item: String, new_item: String)
 signal examine_requested(item_id: String)
+## An item carried out of its pocket and let go at `screen_pos` (BagSlot drag): GameUi uses it there or puts it back.
+signal item_dropped(item_id: String, screen_pos: Vector2)
 
 ## Директор 01.11, стр. 15 («сколько всего может быть предметов… будто на 1–2 больше, чем слотов без листания —
 ## расширить и выровнять по центру»): at most 9 things are in the bag at once over the whole game (M13–M14: watch, photo,
@@ -99,6 +101,8 @@ func _init() -> void:
 		s.mouse_filter = Control.MOUSE_FILTER_PASS   # clicks are accepted by the pocket, the wheel goes on
 		s.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		s.clicked.connect(_on_slot_clicked)
+		s.drag_started.connect(_on_slot_drag_started)
+		s.drag_released.connect(_on_slot_drag_released)
 		s.examine_requested.connect(_on_slot_examine)
 		s.mouse_entered.connect(_on_slot_hover.bind(s))
 		s.mouse_exited.connect(_on_slot_unhover.bind(s))
@@ -383,6 +387,17 @@ func _on_slot_clicked(s: BagSlot, button_index: int) -> void:
 		put_back()
 		return
 	click_item(s.item_id)
+
+
+## A drag began: the item is in hand whatever the press did (a press on the held item had put it back).
+func _on_slot_drag_started(s: BagSlot) -> void:
+	if s.item_id != "" and StoryRunner.selected_item != s.item_id:
+		click_item(s.item_id)
+
+
+func _on_slot_drag_released(s: BagSlot, screen_pos: Vector2) -> void:
+	if s.item_id != "":
+		item_dropped.emit(s.item_id, screen_pos)
 
 
 ## The same as a left click on the item's pocket: take it in hand, or put it back when already held.

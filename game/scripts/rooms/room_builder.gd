@@ -522,6 +522,7 @@ static func _build_hotspots(room: Room, room_id: String, spec: Dictionary) -> vo
 			picks.append(h["click_rect"])
 			shape.set_meta("no_pick", true)
 			shape.disabled = true
+
 		for pr in picks:
 			var extra := CollisionShape2D.new()
 			extra.name = "PickShape%d" % pi
@@ -707,6 +708,9 @@ static func _build_exits(room: Room, room_id: String, spec: Dictionary, idx: Dic
 			if ex.has("cue_deg"):
 				cue.angle_deg = float(ex["cue_deg"])   # a path leaving at a slant (F20)
 			cue.exit_node = node
+			if ex.get("idle_nudge") is Dictionary:   # flicker after a while with no click (Z4 → Z2, Director 10.11)
+				cue.nudge_after_s = float(ex["idle_nudge"].get("after_s", 10.0))
+				cue.nudge_unless = ex["idle_nudge"].get("unless", [])
 			cue.position = Vector2(cue_info["at"]) - node.position
 			node.add_child(cue)
 			node.cue = cue

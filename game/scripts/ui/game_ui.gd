@@ -227,6 +227,7 @@ func _build() -> void:
 	bag.sound_requested.connect(func(kind): bag_sound_requested.emit(kind))
 	bag.pocket_hover_changed.connect(_on_pocket_hover_changed)
 	bag.examine_requested.connect(func(id): StoryRunner.examine_item(id))
+	bag.item_dropped.connect(drop_item)
 	bag_center.add_child(bag)
 	journal_button = _button(StoryData.text("@ui.button_journal"), 140, &"BarButton")
 	journal_button.name = "JournalButton"
@@ -1512,6 +1513,27 @@ func _input(event: InputEvent) -> void:
 		hide_hint_panel()
 
 
+## Director 10.11, 22:21 («перетаскивать предметы»): an item carried out of the bag and let go at `screen_pos` — on a
+## place or a person in the room it is used there, as a click there with the item in hand; anywhere else (the bag,
+## empty floor, the top bar, a dialogue) it goes back into the bag. Returns what was dropped on ("" — put back).
+func drop_item(item_id: String, screen_pos: Vector2) -> String:
+	if StoryRunner.selected_item != item_id:
+		return ""
+	var room := RoomManager.current_room
+	var blocked := room == null or not is_instance_valid(room) or StoryRunner.is_busy() or modal.visible or map_view.visible \
+			or screen_pos.y < TOP_H or bag.get_global_rect().has_point(screen_pos)
+	var node: Node2D = null
+	var world := Vector2.ZERO
+	if not blocked:
+		world = room.get_viewport().get_canvas_transform().affine_inverse() * screen_pos
+		node = room.pick(world)
+	if node == null or RoomManager.player == null:
+		bag.put_back()
+		return ""
+	RoomManager.player.call("click_at", world)
+	return String(node.name)
+
+
 ## F11 and the menu switch: full screen ⇄ window, saved; the menu's switch shows the new state.
 func toggle_fullscreen() -> bool:
 	var on := DisplaySettings.toggle()
@@ -1707,7 +1729,7 @@ func reveal_targets() -> Array:
 	if room == null or not is_instance_valid(room):
 		return out
 	for h in room.get_hotspots():
-		if h is StoryHotspot and (h as StoryHotspot).is_active():
+		if h is StoryHotspot and (h as StoryHotspot).is_active() and (h as StoryHotspot).is_pickable():
 			# The node sits at the centre of its rect (a state may move it — StoryHotspot._apply_geometry).
 			out.append({"kind": "hotspot", "id": (h as StoryHotspot).hotspot_id, "label": (h as StoryHotspot).label_text(), "at": h.global_position, "dir": ""})
 	for e in room.get_exits():

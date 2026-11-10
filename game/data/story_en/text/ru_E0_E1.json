@@ -1985,6 +1985,11 @@
    "text": "I need the original hinges and the fitting diagram from the workshop. Without them, I can't fit the door properly.",
    "draft": false
   },
+  "H3.puzzle.need_drawing": {
+   "text": "I have the hinges. But how they go is on Dunya's drawing on the workshop wall. I'd better look at it first.",
+   "draft": false,
+   "_1011": "Директор 10.11 («у двери, когда мы взяли петли, но не нажимали на рисунок… добавить фразу, что нужно на чертёж посмотреть»)"
+  },
   "H3.puzzle.intro": {
    "text": "Three original hinges in their proper places, as in Dunya's drawing. Then align the notch on the threshold with the mark. After that I can close the door.",
    "draft": false

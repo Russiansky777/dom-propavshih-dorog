@@ -365,6 +365,12 @@ func _test_fishing_fight(sp: Dictionary) -> void:
 	var right := await _fish_fight(sp, "right", 8)
 	_check(String(right["phase"]) == "caught" and int(right["caught"]) == 1 and String(right["last_end"]) == "landed", "the string held in the green — landed: %s" % str(right))
 	_check(float(right["min_dist"]) < 0.5 and bool(right["came_in"]), "it comes in by the metres, visibly: %s" % str(right))
+	# Director 10.11, 22:46 / 23:26: Mitya fishes beside her until her perch, then his rod is put away (it hung right under
+	# his rod, as if his catch); no perch — his rod stays. Self-check: the setting off — the test sees his rod stay.
+	_check(float(right["rod_in_fight"]) > 0.99 and float(right["rod_after"]) < 0.01, "Mitya's rod: with him in the fight (%.2f), put away after her perch (%.2f)" % [float(right["rod_in_fight"]), float(right["rod_after"])])
+	_check(float(none["rod_after"]) > 0.99, "no perch — Mitya's rod stays (%.2f)" % float(none["rod_after"]))
+	var keep_rod := await _fish_fight(sp, "right", 8, 0)
+	_check(String(keep_rod["phase"]) == "caught" and float(keep_rod["rod_after"]) > 0.99, "self-check: rod_off_after_catch off — his rod stays after the perch (%.2f), the test tells the two apart" % float(keep_rod["rod_after"]))
 	var hard := await _fish_fight(sp, "hard", 9)
 	_check(String(hard["phase"]) != "caught" and int(hard["caught"]) == 0 and String(hard["last_end"]) == "snapped", "held too hard — the string snaps, the perch lost: %s" % str(hard))
 	# the gauge: on the water, clear of the float, of the perch's way, of «Ещё»/«Хватит» (y 990)
@@ -397,10 +403,12 @@ func _test_fishing_fight(sp: Dictionary) -> void:
 
 ## One fight on a fresh panel from the R3 spec (`seed` fixed): the float dives, a strike, then `how` — "none" (let go),
 ## "right" (hold below the green's middle, let go above), "hard" (hold all along) — for up to 20 s of game time.
-func _fish_fight(sp: Dictionary, how: String, seed_v: int) -> Dictionary:
+func _fish_fight(sp: Dictionary, how: String, seed_v: int, rod_off: int = -1) -> Dictionary:
 	var sr: Node = root.get_node("StoryRunner")
 	var spec := sp.duplicate(true)
 	spec["seed"] = seed_v
+	if rod_off >= 0:   # the self-check: Mitya's rod with the setting off
+		spec["mitya"]["rod_off_after_catch"] = rod_off == 1
 	var fp = load("res://scripts/mechanics/fishing_panel.gd").new()
 	fp.spec = spec
 	root.add_child(fp)
@@ -413,7 +421,8 @@ func _fish_fight(sp: Dictionary, how: String, seed_v: int) -> Dictionary:
 	fp.call("press", true)
 	var pr: Dictionary = fp.call("probe")
 	var start := float(pr["dist"])
-	var out := {"start": start, "max_dist": start, "min_dist": start, "came_in": false, "green": pr["green"], "toggle": fp.get("slow_check") != null}
+	var out := {"start": start, "max_dist": start, "min_dist": start, "came_in": false, "green": pr["green"], "toggle": fp.get("slow_check") != null,
+		"rod_in_fight": float(pr.get("mitya_rod", 0.0))}
 	var t := 0.0
 	var last_d := start
 	var steps_in := 0
@@ -430,6 +439,7 @@ func _fish_fight(sp: Dictionary, how: String, seed_v: int) -> Dictionary:
 		fp.call("tick", 1.0 / 60.0)
 		t += 1.0 / 60.0
 		if String(fp.get("phase")) == "fight":
+			out["rod_in_fight"] = minf(float(out["rod_in_fight"]), float(fp.call("probe")["mitya_rod"]))
 			var d := float(fp.call("probe")["dist"])
 			out["max_dist"] = maxf(float(out["max_dist"]), d)
 			out["min_dist"] = minf(float(out["min_dist"]), d)
@@ -438,6 +448,9 @@ func _fish_fight(sp: Dictionary, how: String, seed_v: int) -> Dictionary:
 			last_d = d
 		else:
 			out["min_dist"] = minf(float(out["min_dist"]), float(fp.get("fight").dist))
+	for i in 45:   # 0.75 s after the end (Mitya's word on screen): his rod put away or not
+		fp.call("tick", 1.0 / 60.0)
+	out["rod_after"] = float(fp.call("probe")["mitya_rod"])
 	pr = fp.call("probe")
 	out["came_in"] = steps_in > 60
 	out["phase"] = pr["phase"]

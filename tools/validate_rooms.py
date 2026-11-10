@@ -439,6 +439,34 @@ def _cue_selfcheck() -> None:
     d, at, _src, edg = exit_cue(ex_ok, ex_ok["rect"])
     if cue_path_problems(room, ex_ok, ex_ok["rect"], d, at, edg):
         err("validate_rooms 9б: самопроверка — исправленная стрелка Z2 «Спуск к причалу» (северо-восток) не прошла")
+    # 9в: мерцание стрелки — только у метки, с числом секунд и известными флагами
+    bad = [({"idle_nudge": {"after_s": 10}}, "door"), ({"idle_nudge": {"after_s": "10"}}, "down"),
+           ({"idle_nudge": {"after_s": 10, "unless": ["no_such_flag_x"]}}, "down"), ({"idle_nudge": 10}, "down")]
+    for ex_b, d_b in bad:
+        if not idle_nudge_problems(ex_b, d_b):
+            err(f"validate_rooms 9в: самопроверка не сработала — {ex_b} ({d_b}) прошло бы")
+    if idle_nudge_problems({"idle_nudge": {"after_s": 10, "unless": ["visited_Z2"]}}, "down"):
+        err("validate_rooms 9в: самопроверка — мерцание стрелки Z4 → Z2 не прошло")
+
+
+def idle_nudge_problems(ex: dict, d: str) -> list:
+    """Мерцание стрелки, если игрок стоит (Директор 10.11, 21:50; ExitCue.nudge_*): у выхода с меткой (не дверь),
+    after_s — число 3…60 с, unless — известные флаги."""
+    if "idle_nudge" not in ex:
+        return []
+    n = ex["idle_nudge"]
+    if not isinstance(n, dict):
+        return ["idle_nudge — объект {after_s, unless}"]
+    out = []
+    if d == "door":
+        out.append("idle_nudge у выхода без метки (дверь в арте) — мерцать нечему")
+    a = n.get("after_s", 10)
+    if isinstance(a, bool) or not isinstance(a, (int, float)) or not 3 <= a <= 60:
+        out.append(f"idle_nudge.after_s {a!r} — число секунд 3…60")
+    for f in n.get("unless", []):
+        if not flag_known(f):
+            out.append(f"idle_nudge.unless: неизвестный флаг {f}")
+    return out
 
 
 SFX_SOUNDS = set(load(STORY / "sfx.json").get("sounds", {}).keys()) if (STORY / "sfx.json").exists() else set()
@@ -1095,12 +1123,20 @@ for rid, room in rooms.items():
         # Комнаты-исключения (_index.json agata_ref.npc_overlap_warn_rooms: стоянки правит владелец комнаты) —
         # предупреждение вместо ошибки, пока их не поправят.
         report9b = warn if rid in aref9.get("npc_overlap_warn_rooms", []) else err
-        for where, src, (sx, sy) in places9b:
-            a_s = depth_scale(sy)
-            a_hw, a_h = hw0 * a_s, fig0 * a_s
+        for where, src, (sx0, sy0) in places9b:
             for nh, fx, fy, factor in npcs9b:
                 if apart(src, nh):
                     continue
+                # 11.11: while the NPC is shown (its visible_if), the object's state for those flags may stand Agata
+                # elsewhere (M1: the schedule and the bench while the people of the council stand in the yard)
+                sx, sy = sx0, sy0
+                nv = set(nh.get("visible_if", []))
+                for st_ in (src.get("states", []) if nv else []):
+                    if "stand" in st_ and nv <= set(st_.get("if", [])):
+                        sx, sy = st_["stand"]
+                        break
+                a_s = depth_scale(sy)
+                a_hw, a_h = hw0 * a_s, fig0 * a_s
                 n_s = depth_scale(fy) * factor
                 n_hw, n_h = hw0 * n_s, fig0 * n_s
                 ox = min(sx + a_hw, fx + n_hw) - max(sx - a_hw, fx - n_hw)
@@ -1382,6 +1418,8 @@ for rid, room in rooms.items():
         icon_problem = exit_icon_problem(ex)
         if icon_problem:
             err(f"{ctx}: выход в {to}: {icon_problem}")
+        for prob in idle_nudge_problems(ex, d):
+            err(f"{ctx}: выход в {to}: {prob}")
         if src == "default":
             warn(f"{ctx}: выход в {to} внутри кадра без cue — считается нарисованной дверью; пометьте \"cue\": \"door\" (или направление, если это дорожка вглубь)")
         if d == "door":
@@ -1411,11 +1449,14 @@ for rid, room in rooms.items():
 
     def hs_rects(h: dict) -> list:
         """Базовый прямоугольник хотспота, прямоугольники его состояний (states[].rect) и добавочные места щелчка
-        (pick_rects — J, Z1: Тамару щёлкают и сквозь стойку)."""
+        (pick_rects — J, Z1: Тамару щёлкают и сквозь стойку). Фигура с pickable false (11.11: люди совета во дворе
+        мельницы) не щёлкается — её прямоугольников (или прямоугольника такого состояния) тут нет."""
+        if h.get("pickable", True) is False:
+            return [s_["rect"] for s_ in h.get("states", []) if "rect" in s_ and s_.get("pickable", True) is not False]
         if isinstance(h.get("click_rect"), list):
             # click_rect (Директор 01.11, стр. 1): щёлкают только его, rect лишь ставит фигуру (ноги NPC на полу)
             return [h["click_rect"]] + list(h.get("pick_rects", []))
-        return [h["rect"]] + [s["rect"] for s in h.get("states", []) if "rect" in s] + list(h.get("pick_rects", []))
+        return [h["rect"]] + [s["rect"] for s in h.get("states", []) if "rect" in s and s.get("pickable", True) is not False] + list(h.get("pick_rects", []))
 
     for h in room.get("hotspots", []):
         if "rect" not in h:
@@ -1464,6 +1505,8 @@ for rid, room in rooms.items():
         ids.add(hid)
         if room.get("frame") and h.get("kind") == "npc":
             pass   # фигура кадра: ноги и рост вместо stand (проверено выше, п. 12)
+        elif h.get("kind") == "npc" and h.get("pickable", True) is False and "rect" in h:
+            pass   # фигура, которая только стоит (pickable false): к ней не подходят — стоянка не нужна
         elif "rect" not in h or "stand" not in h:
             err(f"{hctx}: нет rect/stand")
         elif not walkable_point(h["stand"]):
