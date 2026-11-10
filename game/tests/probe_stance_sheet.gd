@@ -66,7 +66,14 @@ func _run() -> void:
 			for sh in shots:
 				if String(sh[0]) != state:
 					state = String(sh[0])
-					if state.begins_with("act_"):
+					if state.begins_with("walk"):
+						# walk[<turn deg>]: sets off walking, turning by that much as she goes (as npc_go: face + walk);
+						# speed 0.9 m/s at the room scale the probe's fake npc has
+						var turn := float(state.trim_prefix("walk")) if state.length() > 4 else 0.0
+						var y2 := yaw + deg_to_rad(turn)
+						live.face(Vector2(sin(y2), cos(y2) * 0.55) * 100.0, 0.55, false)
+						live.walk(true, 0.9 * live.view.ppm * 0.55, 0.55)
+					elif state.begins_with("act_"):
 						# a one-shot action (rt3d.clips role): act_write_board
 						print("  %s %s: %.2f s" % [id, state, live.view.action_length(state.trim_prefix("act_"))])
 						live.play_once(state.trim_prefix("act_"))

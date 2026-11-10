@@ -1,12 +1,14 @@
 extends SkeletonModifier3D
 ## The villager's mouth follows the voice of their own line (Director 09.11, 21:19–21:21: «добавить, чтобы была…
-## открытие рта при разговорах… давай делать»). The models have had a jaw since v2 (pipeline/3d/npc_v2/build_npc.py
-## "jaw": the chin and the lower lip on a bone Jaw, a dark mouth cavity behind), but the second AI's stance and talk
-## clips (accepted 08.11) keep it shut — 0° in every frame (the old v2 talk clip swung it 4.5°). Here, after the clip,
-## the jaw opens about its own axis by the loudness of the voice while this villager's line sounds — louder, wider;
-## a pause — shut. Where the bus has no meter (the web: samples bypass it) — a steady chatter, as Tikhon's mouth.
-## Data rt3d.jaw: {bone, axis (bone-local, from the v2 talk clip: +X), max_deg, db_closed, db_open, attack_s,
-## release_s}. Tests: tests/test_jaw.gd.
+## открытие рта при разговорах… давай делать»): louder — wider; a pause — shut. Where the bus has no meter (the web:
+## samples bypass it) — a steady chatter, as Tikhon's mouth.
+## The mouth is PAINTED (Director 21:56 «рот сделан плохо», 22:18 «рты открывающиеся и нормальные»): turning the bone
+## Jaw tore the models' closed surface along the lips into a jagged slit with cloth texture showing behind (the first
+## try, 6°). Now a dark lens on the face along the lip line opens with the voice (shaders/actor_3d.gdshader mouth_*; the
+## line is measured from each model — tests/bake_mouth.gd); the bone is left alone (max_deg 0: at the figures' size on
+## screen a chin's 3 mm is a third of a pixel).
+## Data rt3d.jaw: {bone, axis, max_deg, db_closed, db_open, attack_s, release_s, open_m, w_share, up_share, shift_mm}.
+## Tests: tests/test_jaw.gd.
 
 const NO_METER_DB := -150.0
 ## the chatter where there is no meter: open share per step
@@ -14,7 +16,7 @@ const CHATTER := [0.55, 0.15, 0.8, 0.3, 0.65, 0.1]
 
 var bone: int = -1
 var axis := Vector3.RIGHT
-var max_deg: float = 6.0
+var max_deg: float = 0.0
 var db_closed: float = -42.0     # at or below — shut
 var db_open: float = -12.0       # at or above — fully open
 var attack_s: float = 0.03       # opening follows the voice this fast
@@ -29,11 +31,15 @@ var speaking_override: int = -1
 
 var _chatter_t: float = 0.0
 var _chatter_i: int = 0
-## the inside of the mouth (shader mouth_center / mouth_r): the mouth's point in the head bone's space, from the cavity
-## mesh behind the lips (pipeline/3d/npc_v2/build_npc.py "cavity"); no cavity (Mitya, under the beard) — off
-var mouth_r_m: float = 0.035
+## The painted mouth (shader mouth_*): the lip line of this model in the head bone's frame (tests/bake_mouth.gd →
+## res://data/actors_rest/mouth_<id>.json); no file or no parting in the model (Mitya, under the beard) — nothing painted.
+var open_m: float = 0.0065       # the opening's height when fully open (m)
+var w_share: float = 0.85        # the opening's width, a share of the lips' width
+var up_share: float = 0.3        # how much of it opens above the lip line (the upper lip lifts a little)
+var shift_mm := Vector3.ZERO     # the lip line as painted against the model's cut: [to the villager's right, up, out of the face], mm
 var _head: int = -1
-var _mouth_local := Vector3.INF
+var _frame_local := Transform3D.IDENTITY
+var _shape := Vector4.ZERO
 var _mat: ShaderMaterial = null
 
 
@@ -50,31 +56,55 @@ func setup(d: Dictionary, skel: Skeleton3D, id: String) -> bool:
 	release_s = maxf(0.001, float(d.get("release_s", release_s)))
 	chatter_step_s = maxf(0.02, float(d.get("chatter_step_s", chatter_step_s)))
 	speaker_id = id
-	mouth_r_m = float(d.get("mouth_r_m", mouth_r_m))
+	open_m = float(d.get("open_m", open_m))
+	w_share = float(d.get("w_share", w_share))
+	up_share = float(d.get("up_share", up_share))
+	var sh: Array = d.get("shift_mm", [0.0, 0.0])
+	shift_mm = Vector3(float(sh[0]), float(sh[1]), float(sh[2]) if sh.size() > 2 else 0.0)
 	return true
 
 
-## The mouth's point for the shader: the centre of the cavity mesh at rest, kept in the head bone's space.
-func setup_mouth(meshes: Array, mat: ShaderMaterial, skel: Skeleton3D) -> bool:
+## The painted mouth of this model: its lip line (data file) → the frame in the head bone's space and the shape.
+func setup_mouth(mat: ShaderMaterial, skel: Skeleton3D, id: String) -> bool:
 	_head = skel.find_bone("Head")
-	if _head < 0 or mat == null:
+	for e in OS.get_environment("MOUTH_SHIFTS").split(",", false):   # probes: MOUTH_SHIFTS=id:dx:dy,… (mm) instead of the data
+		if e.get_slice(":", 0) == id:
+			shift_mm = Vector3(float(e.get_slice(":", 1)), float(e.get_slice(":", 2)), float(e.get_slice(":", 3)) if e.get_slice_count(":") > 3 else 0.0)
+	var path := "res://data/actors_rest/mouth_%s.json" % id
+	if _head < 0 or mat == null or not FileAccess.file_exists(path):
 		return false
-	for mi in meshes:
-		if not String((mi as MeshInstance3D).name).contains("cavity"):
-			continue
-		var c: Vector3 = (mi as MeshInstance3D).get_aabb().get_center()
-		var to_skel: Transform3D = skel.global_transform.affine_inverse() * (mi as MeshInstance3D).global_transform
-		_mouth_local = skel.get_bone_global_rest(_head).affine_inverse() * (to_skel * c)
-		_mat = mat
-		return true
-	return false
+	var d = JSON.parse_string(FileAccess.get_file_as_string(path))
+	if not (d is Dictionary) or d.has("none") or not d.has("at"):
+		return false
+	var v3 := func(a: Array) -> Vector3: return Vector3(float(a[0]), float(a[1]), float(a[2]))
+	_frame_local = Transform3D(Basis(v3.call(d["right"]), v3.call(d["up"]), v3.call(d["fwd"])), v3.call(d["at"]))
+	var u := float(d.get("unit_per_m", 100.0))
+	# set right by hand against the picture of the lips (the model's cut is not always on the painted lip line):
+	# shift_mm [to the villager's right, up, out of the face]
+	_frame_local.origin += (_frame_local.basis.x * shift_mm.x + _frame_local.basis.y * shift_mm.y + _frame_local.basis.z * shift_mm.z) * (0.001 * u)
+	# the opening is narrower than the lips: its corners sit on the lip line's own curve at that width
+	_shape = Vector4(float(d["half_w"]) * w_share, open_m * u, float(d.get("sag", 0.0)) * w_share * w_share,
+		float(d.get("back", 0.0)) * w_share * w_share)
+	_mat = mat
+	_mat.set_shader_parameter("mouth_shape", _shape)
+	_mat.set_shader_parameter("mouth_up_share", up_share)
+	_mat.set_shader_parameter("mouth_depth", 0.016 * u)
+	_mat.set_shader_parameter("mouth_soft", 0.0005 * u)
+	_mat.set_shader_parameter("mouth_open", 0.0)
+	return true
 
 
-func mouth_world() -> Vector3:
+## Has a painted mouth (tests).
+func painted() -> bool:
+	return _mat != null
+
+
+## The mouth's frame in the figure's world (x across, y up, z out of the face), as the shader gets it.
+func mouth_frame() -> Transform3D:
 	var skel := get_skeleton()
-	if skel == null or _mouth_local == Vector3.INF:
-		return Vector3.INF
-	return skel.global_transform * (skel.get_bone_global_pose(_head) * _mouth_local)
+	if skel == null or _head < 0:
+		return Transform3D.IDENTITY
+	return skel.global_transform * skel.get_bone_global_pose(_head) * _frame_local
 
 
 func speaking() -> bool:
@@ -124,10 +154,10 @@ func _process_modification_with_delta(delta: float) -> void:
 		return
 	step(delta)
 	if _mat != null:
-		_mat.set_shader_parameter("mouth_r", mouth_r_m if open > 0.0 else 0.0)
+		_mat.set_shader_parameter("mouth_open", open)
 		if open > 0.0:
-			_mat.set_shader_parameter("mouth_center", mouth_world())
-	if open <= 0.0:
+			_mat.set_shader_parameter("mouth_inv", mouth_frame().affine_inverse())
+	if open <= 0.0 or max_deg <= 0.0:
 		return
 	var q := skel.get_bone_pose_rotation(bone)
 	skel.set_bone_pose_rotation(bone, q * Quaternion(axis, deg_to_rad(max_deg * open)))

@@ -20,6 +20,8 @@
   "kind": "interior",
   "image": "res://assets/rooms/EP_dinner/bg.png",
   "horizon": 700,
+  "video_motion_min": 0.1,
+  "_video_motion_min": "мерка живости (tools/validate_video_loops.py): клипы ужина Kling Pro — 0,14–0,30 (движения мелкие: взгляды, свеча); ниже 0,1 — стоп-кадр",
   "videos": [
    {
     "if": [

@@ -265,6 +265,21 @@ func _test_tikhon_start() -> void:
 	var t := _puppet(room)
 	var hs := _hotspot(room, "tikhon")
 	_check(t != null and hs != null, "H1 holds Tikhon's puppet and hotspot on the first entry")
+	# Director 09.11, 22:18 («у Тихона будто бы микро-баги какие-то по телу»): his pictures are drawn many times smaller
+	# than painted — without their smaller copies the fur aliased into a crawling grid of dots. Every picture he is
+	# drawn from has them (PuppetActor.with_mipmaps); self-check — as imported they have none.
+	if t != null:
+		var PA = load("res://scripts/actors/puppet_actor.gd")
+		var body: Polygon2D = t.get("poly")
+		_check(body != null and body.texture != null and body.texture.get_image().has_mipmaps(), "Tikhon's body picture has its smaller copies (mipmaps) — no dotted fur")
+		_check(body != null and body.texture_filter == CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS, "Tikhon's body is drawn through the smaller copies (filter)")
+		var raw: Texture2D = load(String(spec.get("image", "")))
+		if raw != null and not raw.get_image().has_mipmaps():
+			_check(PA.with_mipmaps(raw) != raw and PA.with_mipmaps(raw).get_image().has_mipmaps(), "self-check: the imported picture has no mipmaps and with_mipmaps adds them")
+		for mf in t.get("mouth_frames"):
+			_check((mf as Texture2D).get_image().has_mipmaps(), "a mouth cut-out of Tikhon without mipmaps")
+		for gp in t.get("gesture_polys"):
+			_check((gp as Polygon2D).texture.get_image().has_mipmaps(), "a gesture picture of Tikhon without mipmaps")
 	if t == null or hs == null:
 		return
 	_check(not gs.has_flag("started_M03") and t.visible and hs.visible, "Tikhon is there before M03 (no «appearing»)")

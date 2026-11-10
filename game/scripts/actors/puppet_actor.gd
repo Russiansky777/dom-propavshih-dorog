@@ -205,7 +205,7 @@ func _build_mouth() -> void:
 		return
 	for path in m.get("images", []):
 		if ResourceLoader.exists(String(path)):
-			mouth_frames.append(load(String(path)))
+			mouth_frames.append(with_mipmaps(load(String(path))))
 	if mouth_frames.is_empty():
 		return
 	var r: Array = m.get("region", [0, 0, 0, 0])
@@ -351,13 +351,41 @@ func _apply_variant(name: String) -> void:
 		spec.erase("gestures")
 
 
+## The picture with its smaller copies (Director 09.11, 22:18: «у Тихона будто бы микро-баги какие-то по телу, это слои
+## сходятся или что»): the pictures are imported without them (mipmaps/generate=false), and Tikhon is drawn 4–8 times
+## smaller than painted — a screen pixel then takes 2×2 texels out of every 8×8, the fur's strokes alias into a grid of
+## dots that crawls as he breathes (frames tests/probe_play.gd, the house). With the smaller copies the filter the mesh
+## already asks for (LINEAR_WITH_MIPMAPS) averages the whole area. Made here, once per picture, whatever the import says.
+static var _mip_cache := {}
+
+
+static func with_mipmaps(t: Texture2D) -> Texture2D:
+	if t == null:
+		return t
+	var key := t.resource_path
+	if key != "" and _mip_cache.has(key):
+		return _mip_cache[key]
+	var img := t.get_image()
+	if img == null:
+		return t
+	if img.has_mipmaps():
+		return t
+	if img.is_compressed():
+		img.decompress()
+	img.generate_mipmaps()
+	var out := ImageTexture.create_from_image(img)
+	if key != "":
+		_mip_cache[key] = out
+	return out
+
+
 ## The picture, the rig, the mouth, the place, the shadow and the animations from `spec`.
 func _build_all(room: Node, h: Node2D) -> bool:
 	var tex_path := String(spec.get("image", ""))
 	if not ResourceLoader.exists(tex_path):
 		push_warning("PuppetActor %s: no image %s" % [actor_id, tex_path])
 		return false
-	var tex: Texture2D = load(tex_path)
+	var tex: Texture2D = with_mipmaps(load(tex_path))
 	var src: float = float(spec.get("source_size", tex.get_width()))
 	tex_scale = float(tex.get_width()) / src
 	_build_rig(tex)
@@ -749,7 +777,7 @@ func _build_gestures() -> void:
 		var path := String(g.get("image", ""))
 		if not ResourceLoader.exists(path):
 			continue
-		var t: Texture2D = load(path)
+		var t: Texture2D = with_mipmaps(load(path))
 		var k := float(t.get_width()) / maxf(base_w, 1.0)
 		var gp := Polygon2D.new()
 		gp.name = "Gesture%d" % i

@@ -63,6 +63,7 @@ static func wanted(spec: Dictionary) -> bool:
 func setup(the_npc: Node2D, spec: Dictionary, floor_k: float) -> bool:
 	npc = the_npc
 	rt = spec.get("rt3d", {})
+	model_id = String(spec.get("id", ""))
 	view = Actor3D.new()
 	add_child(view)
 	if not view.setup(spec):
@@ -94,10 +95,11 @@ func setup(the_npc: Node2D, spec: Dictionary, floor_k: float) -> bool:
 	return true
 
 
-## The mouth by the voice of the villager's own line (data rt3d.jaw; Director 09.11, 21:21) — after the clip and the
-## life: the jaw of the model opens with the loudness (scripts/actors/jaw_modifier.gd).
+## The mouth by the voice of the villager's own line (data rt3d.jaw; Director 09.11, 21:21): a mouth painted on the
+## face along the model's lip line opens with the loudness (scripts/actors/jaw_modifier.gd).
 const JawModifier := preload("res://scripts/actors/jaw_modifier.gd")
 var jaw: SkeletonModifier3D = null
+var model_id: String = ""           # the actor's id (data/actors/<id>.json): per-model data files
 
 
 func _setup_jaw() -> void:
@@ -108,9 +110,9 @@ func _setup_jaw() -> void:
 	jm.name = "Jaw"
 	view.skeleton.add_child(jm)
 	var id = npc.get("actor_id") if npc != null else null
-	if jm.setup(d, view.skeleton, String(id) if id != null else ""):
+	if jm.setup(d, view.skeleton, String(id) if id != null and String(id) != "" else model_id):
 		jaw = jm
-		jm.setup_mouth(view.meshes, view.material, view.skeleton)
+		jm.setup_mouth(view.material, view.skeleton, model_id)   # the lip line is the model's (data/actors_rest/mouth_<id>.json)
 	else:
 		jm.queue_free()
 
@@ -281,7 +283,15 @@ func walk(on: bool, speed_px: float = 0.0, s: float = 1.0) -> void:
 	walking = on
 	if on and view != null:
 		var mps := speed_px / maxf(view.ppm * maxf(s, 0.01), 1.0)
-		walk_rate = clampf(mps / maxf(view.stride_m, 0.1), 0.2, 2.5)
+		# a shorter stride (data walk_stride_k < 1: the walk shown at that weight over the stance — Pelageya's skirt hangs
+		# on her legs, a full stride tore it in two) is taken quicker, so the feet still keep the floor
+		walk_rate = clampf(mps / maxf(view.stride_m * _stride_k(), 0.1), 0.2, 2.5)
+
+
+func _stride_k() -> float:
+	if OS.get_environment("DPD_STRIDE_K") != "":   # probes
+		return clampf(float(OS.get_environment("DPD_STRIDE_K")), 0.2, 1.0)
+	return clampf(float(rt.get("walk_stride_k", 1.0)), 0.2, 1.0)
 
 
 ## Optional authored-dialogue exit: ease the outgoing clip's clock to rest while its pose fades.
@@ -354,7 +364,7 @@ func process(delta: float) -> void:
 		lt = Actor3D.loop_times(act_t, maxf(view.action_length(act_name), 0.1), float(rt.get("loop_crossfade_s", 0.8)))
 	if _once_clip and not once and act_w <= 0.0 and view.shown_act_w() <= 0.001:
 		_once_clip = false
-	view.pose(delta, fposmod(walk_phase, 1.0), maxf(walk_w, step_w), act_w, act_name, float(lt[0]), float(lt[1]), float(lt[2]))
+	view.pose(delta, fposmod(walk_phase, 1.0), maxf(walk_w * _stride_k(), step_w), act_w, act_name, float(lt[0]), float(lt[1]), float(lt[2]))
 	if act_arm != null:
 		var aw: float = view.shown_act_w() if (_once_clip and act_name == String(act_arm.clip)) else 0.0
 		act_arm.weight = aw if aw >= float(act_arm.weight) else move_toward(float(act_arm.weight), aw, delta / 0.25)

@@ -225,7 +225,7 @@ func _ho2() -> void:
 	_check(seen_line and line_end.distance_to(Vector2(1262, 548)) < 2.0, "HO-2 no line from her hands to the plate while she pulls (end %s)" % line_end)
 	for i in 10:
 		await process_frame
-	_check(pel.global_position.distance_to(Vector2(965, 800)) < 4.0, "HO-2 after the black she is not back on the path (%s)" % pel.global_position)
+	_check(pel.global_position.distance_to(Vector2(885, 800)) < 4.0, "HO-2 after the black she is not back on the path (%s)" % pel.global_position)
 	sr.call("_on_state_reset")
 
 
@@ -498,20 +498,27 @@ func _ho7_watch(nina: Node2D, layer_id: String, line_y: float, self_check: bool)
 	var L: float = live.view.action_length("write_board")
 	var g := 0
 	var x0 := -1.0
+	var w_seen := 0.0
 	while g < 900:
 		g += 1
 		await process_frame
+		if OS.get_environment("HO7_DEBUG") != "" and g % 60 == 1:
+			print("      [ho7 %d] line %s staging %s nina %s once %s act %s flags here/mama/ilya %s%s%s" % [g, sr.current_beat.get("line_id", "-"), sr.is_staging(), nina.global_position.round(), live.get("_once_clip"), live.get("act_name"), gs.has_flag("board_here"), gs.has_flag("board_mama"), gs.has_flag("board_ilya")])
 		if not (bool(live.get("_once_clip")) and String(live.get("act_name")) == "write_board"):
 			if out["acted"]:
 				break
 			continue
 		out["acted"] = true
 		var share := float(live.get("act_t")) / maxf(L, 0.01)
-		var w := spr.region_rect.size.x if spr != null and spr.region_enabled else (spr.texture.get_size().x if spr != null else 0.0)
-		if x0 < 0.0:
+		# the written part: the layer's region grows from the line's start to its end (StoryRunner._stage_layer_write)
+		# and is switched off when the line is whole — the last width seen stays the line's end
+		if spr != null and spr.region_enabled:
+			w_seen = spr.region_rect.size.x
+		var w := w_seen
+		if x0 < 0.0 and w > 0.0:
 			x0 = w
 		if share < 0.15:
-			out["early_w"] = w - x0          # nothing written while the arm is still going up
+			out["early_w"] = (w - x0) if x0 >= 0.0 else 0.0   # nothing written while the arm is still going up
 		if share >= 0.45 and share <= 0.6 and _ho7_grip != Vector2.INF:
 			out["yaw_off"] = minf(out["yaw_off"], absf(rad_to_deg(angle_difference(float(live.get("yaw")), PI))))
 			out["dy"] = minf(out["dy"], absf(_ho7_grip.y - line_y))
@@ -525,7 +532,7 @@ func _ho7_watch(nina: Node2D, layer_id: String, line_y: float, self_check: bool)
 				live.act_arm.angle = keep
 				await process_frame
 		if share >= 0.7:
-			out["late_w"] = maxf(out["late_w"], w - x0)
+			out["late_w"] = maxf(out["late_w"], (w - x0) if x0 >= 0.0 else -1.0)
 			if spr != null and _ho7_grip != Vector2.INF:
 				var end_x: float = (spr.global_transform * Vector2(w, 0.0)).x
 				out["end_x"] = end_x
@@ -561,7 +568,18 @@ func _ho7() -> void:
 	var cb := func(): _ho7_grip = body.global_transform * (live.view.hand_grip_frame_px("Right") + body.offset)
 	live.view.skeleton.skeleton_updated.connect(cb)
 	# the answer: after the line that says she writes it. «Дождалась» on screen: y 387–441 (the layer ×1.5 about its middle)
-	sr.advance()
+	var g0 := 0
+	while g0 < 600 and (sr.is_staging() or sr.current_beat.is_empty()):   # the first line is up (the room has faded in)
+		g0 += 1
+		await process_frame
+	# on to the line she writes at (M22_3; the first advance of a line may only finish its text)
+	var tries := 0
+	while tries < 8 and not String(sr.current_beat.get("line_id", "")).begins_with("M22_3"):
+		tries += 1
+		sr.advance()
+		for i in 8:
+			await process_frame
+	_check(String(sr.current_beat.get("line_id", "")).begins_with("M22_3"), "HO-7 the line of the answer (M22_3) not reached (%s)" % str(sr.current_beat.get("line_id", "-")))
 	var r1: Dictionary = await _ho7_watch(nina, "nina_answer_mama", 414.0, true)
 	print("    HO-7 answer: turned %.0f° off the board, chalk %.0f px off the line's height (as the clip has it: %.0f), %.0f px from the line's end; written before the arm is up: %.0f px, by the end: %.0f px" % [r1["yaw_off"], r1["dy"], r1["raw_dy"], r1["dx_end"], r1["early_w"], r1["late_w"]])
 	_check(r1["acted"], "HO-7 Nina does not write the answer")

@@ -679,6 +679,68 @@ for s in scenes:
         check_conditions(f"{gctx}.items[{j}]", it)
 
 
+CLEAR_OF_MAX_PX = 8
+
+
+def _room_depth_scale(room: dict, index: dict, y: float) -> float:
+    kind = room.get("background", {}).get("kind", "interior")
+    dep = room.get("depth", index["defaults"].get("depth_exterior" if kind == "exterior" else "depth", {}))
+    span = dep["bottom_y"] - dep["top_y"]
+    t = 1.0 if span == 0 else min(1.0, max(0.0, (y - dep["top_y"]) / span))
+    return dep["scale_top"] + (dep["scale_bottom"] - dep["scale_top"]) * t
+
+
+def clear_of_problems(scene: dict, st: dict, ag: dict) -> list[str]:
+    """agata_go.clear_of: фигура Агаты в точке to не закрывает предмет слоя (см. постановки ниже)."""
+    out: list[str] = []
+    co = ag.get("clear_of")
+    rect = co.get("rect") if isinstance(co, dict) else None
+    to = ag.get("to")
+    if not (isinstance(rect, list) and len(rect) == 4 and isinstance(to, list) and len(to) == 2 and co.get("layer")):
+        return ["agata_go.clear_of — {layer, rect [x, y, w, h]} и to [x, y]"]
+    rid = st.get("room") or (scene.get("locations") or [""])[-1]
+    room_f = STORY / "rooms" / f"{rid}.json"
+    if not room_f.exists():
+        return [f"agata_go.clear_of: нет комнаты {rid}"]
+    room = json.loads(room_f.read_text(encoding="utf-8"))
+    index = json.loads((STORY / "rooms" / "_index.json").read_text(encoding="utf-8"))
+    aref = index.get("agata_ref", {})
+    layer = next((l for l in room.get("layers", []) if l.get("id") == co["layer"]), None)
+    if layer is None:
+        return [f"agata_go.clear_of: в комнате {rid} нет слоя {co['layer']}"]
+    k = _room_depth_scale(room, index, float(to[1]))
+    hw, fig = aref.get("figure_half_width_px", 74) * k, aref.get("figure_px", 345) * k
+    over_x = min(to[0] + hw, rect[0] + rect[2]) - max(to[0] - hw, rect[0])
+    over_y = min(to[1], rect[1] + rect[3]) - max(to[1] - fig, rect[1])
+    if over_x > CLEAR_OF_MAX_PX and over_y > CLEAR_OF_MAX_PX:
+        out.append(f"Агата в точке {to} закрывает «{co['layer']}» на {over_x:.0f} px по ширине (её рамка x "
+                   f"{to[0] - hw:.0f}–{to[0] + hw:.0f}, предмет x {rect[0]}–{rect[0] + rect[2]}) — она «стоит на нём»; "
+                   f"отодвинуть точку")
+    # rect — правда о картинке слоя (если есть Pillow): непрозрачная часть на экране 1920
+    try:
+        from PIL import Image
+        img_p = ROOT / "game" / str(layer.get("image", "")).replace("res://", "")
+        if img_p.exists():
+            im = Image.open(img_p).convert("RGBA")
+            bb = im.split()[3].point(lambda v: 255 if v > 40 else 0).getbbox()
+            if bb:
+                kx = 1920.0 / im.size[0]
+                real = [bb[0] * kx, bb[1] * kx, (bb[2] - bb[0]) * kx, (bb[3] - bb[1]) * kx]
+                if any(abs(a - b) > 16 for a, b in zip(real, rect)):
+                    out.append(f"agata_go.clear_of.rect {rect} не совпадает с картинкой слоя {co['layer']} "
+                               f"{[round(v) for v in real]} (допуск 16 px)")
+    except ImportError:
+        pass
+    return out
+
+
+# самопроверка правила: прежняя точка M17 (у кормы, [1110, 700]) — ошибка; без неё правило ничего не ловит
+if (STORY / "rooms" / "Z3.json").exists():
+    _co_old = clear_of_problems({"locations": ["Z3"]}, {}, {"to": [1110, 700], "clear_of": {"layer": "boat_dusk", "rect": [1082, 543, 201, 123]}})
+    if not any("закрывает" in m for m in _co_old):
+        err("самопроверка clear_of: прежняя точка M17 [1110, 700] у лодки не поймана")
+
+
 _sfx_doc = load("sfx.json") if (STORY / "sfx.json").exists() else {}
 _sfx_ids = set((_sfx_doc.get("sounds") or {}).keys())
 # J (стр. 145, 169): «synth:<имя>» — звук, который делает движок (SynthSfx), имена — ветки match в synth_sfx.gd
@@ -725,6 +787,14 @@ for s in scenes:
             if fl not in granted_flags and fl not in declared_flags:
                 err(f"{sctx}: sets {fl} — флаг нигде не описан и не выдаётся")
         check_conditions(sctx, st)
+        # 09.11 (Директор 22:18: «Агата в сцене с Пелагеей будто бы стоит на лодке»): постановка ведёт Агату к предмету
+        # на картине — её фигура там не должна закрывать сам предмет (иначе она «стоит на нём»). agata_go.clear_of
+        # {layer, rect [x, y, w, h]} — непрозрачная часть слоя на экране; рамка Агаты в точке to (полуширина и рост
+        # agata_ref × масштаб глубины комнаты) не заходит на неё по x больше чем на CLEAR_OF_MAX_PX.
+        ag = st.get("agata_go")
+        if isinstance(ag, dict) and "clear_of" in ag:
+            for msg in clear_of_problems(s, st, ag):
+                err(f"{sctx}: {msg}")
     # условия реплик (if / unless / if_any / switch): флаги известны, переключатель есть в meta.json
     for i, ln in enumerate(s.get("mandatory_lines", [])):
         check_conditions(f"{s['id']}.mandatory_lines[{i}]", ln)

@@ -24,13 +24,22 @@ uniform float inside_light = 0.45;   // back faces (the inside of the clothes): 
 uniform float debug_flat = -1.0;   // >= 0: output this grey (colour-pipeline probe)
 uniform bool debug_albedo = false; // output the texture as sampled (no light)
 uniform bool as_painted = false;   // a held thing's picture (Actor3D hand props): already painted with its light, shown as is
-// The inside of the mouth (villagers' jaw by the voice, 09.11): back faces near the mouth are the inside of the head seen
-// through the opened lips — painted with the coat/shawl texture they showed yellow or knitted; here they are the dark
-// of a mouth. World point (JawModifier, follows the head) and radius; 0 — off (Agata, things in hands).
-uniform vec3 mouth_center = vec3(0.0);
-uniform float mouth_r = 0.0;
-uniform vec3 mouth_color : source_color = vec3(0.09, 0.035, 0.03);
-uniform bool debug_mouth = false;   // probe: in the mouth radius front faces green, back faces red
+// The villagers' mouths by the voice (Director 09.11, 21:21; 21:56 «рот сделан плохо»; 22:18 «рты открывающиеся и
+// нормальные»): the models are one closed surface with the lips cut apart — turning the jaw tore it into a jagged slit
+// with whatever lay behind showing through. The mouth is painted instead: a dark lens on the face along the lip line
+// (measured from the model: tests/bake_mouth.gd → data/actors_rest/mouth_<id>.json), opening down and a little up with
+// the voice (JawModifier). mouth_inv — world → the mouth's frame (x across, y up, z out of the face; model units);
+// mouth_shape — half width of the opening, its height fully open, how much higher the lips' corners are than the middle,
+// how far behind it. mouth_open 0 — nothing is painted (Agata, things in hands, a shut mouth).
+uniform mat4 mouth_inv = mat4(1.0);
+uniform float mouth_open = 0.0;
+uniform vec4 mouth_shape = vec4(0.0);
+uniform float mouth_up_share = 0.3;
+uniform float mouth_depth = 1.6;      // the paint lies on the face within this of the lip line, front and back (model units)
+uniform vec3 mouth_color : source_color = vec3(0.16, 0.05, 0.045);   // the depth of the mouth
+uniform vec3 mouth_rim : source_color = vec3(0.36, 0.13, 0.11);      // just inside the lips
+uniform float mouth_soft = 0.05;      // the edge's softness (model units: half a millimetre)
+uniform bool debug_mouth = false;   // probe: the whole lens at full opening in green
 
 // The Compatibility renderer samples and writes this viewport in sRGB codes (measured: a flat 0.5 comes
 // out as 128, the texture comes out as stored) — lighting is done in linear like Cycles, then encoded.
@@ -80,16 +89,24 @@ void fragment() {
 	}
 	vec3 lin = (to_linear(a.rgb) * light * (1.0 - fr_env) + spec * spec_gain) * inside;
 	ALBEDO = to_srgb(lin * gain);
-	if (mouth_r > 0.0 && !FRONT_FACING) {
-		vec3 wp = (INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
-		if (distance(wp, mouth_center) < mouth_r) {
-			ALBEDO = mouth_color;
-		}
-	}
-	if (debug_mouth && mouth_r > 0.0) {
-		vec3 wp2 = (INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
-		if (distance(wp2, mouth_center) < mouth_r) {
-			ALBEDO = FRONT_FACING ? vec3(0.0, 1.0, 0.0) : vec3(1.0, 0.0, 0.0);
+	if ((mouth_open > 0.004 || debug_mouth) && mouth_shape.x > 0.0) {
+		vec3 mp = (mouth_inv * INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
+		float x = mp.x / mouth_shape.x;
+		float z = mp.z + mouth_shape.w * x * x;
+		if (abs(x) < 1.0 && z > -mouth_depth && z < mouth_depth * 0.6) {
+			float prof = pow(1.0 - x * x, 0.6);
+			float yl = mp.y - mouth_shape.z * x * x;
+			float h = mouth_shape.y * (debug_mouth ? 1.0 : mouth_open) * prof;
+			// inside the lens: + towards its middle, 0 on its edge (model units)
+			float d = min(h * mouth_up_share - yl, yl + h * (1.0 - mouth_up_share));
+			float soft = max(fwidth(mp.y) * 1.2, mouth_soft);
+			float k = smoothstep(-soft * 0.4, soft, d);
+			// the lips' inner edge is lit, the depth of the mouth is not
+			vec3 inner = mix(mouth_rim, mouth_color, smoothstep(0.0, max(h * 0.45, soft), d));
+			ALBEDO = mix(ALBEDO, debug_mouth ? vec3(0.0, 1.0, 0.0) : inner, debug_mouth ? k * 0.55 : k);
+			if (debug_mouth && abs(yl) < mouth_soft * 0.6) {
+				ALBEDO = vec3(1.0, 0.0, 0.0);   // the lip line itself
+			}
 		}
 	}
 	if (debug_albedo || as_painted) {

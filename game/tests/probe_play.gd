@@ -7,6 +7,9 @@ extends SceneTree
 ##   wait:S          — S seconds (engine time)
 ##   click:X,Y       — Agata clicks the room point (as the player)
 ##   walkend         — wait until Agata stops walking (≤ 20 s)
+##   tp:X,Y[,FX,FY]  — put Agata there at once, facing the point FX,FY
+##   perf            — where a frame's time goes
+##   feet:S          — S seconds of Agata's feet: lifts and set-downs, slowing, standing (give the click before it)
 ##   scene:ID        — start the scene
 ##   adv             — advance the current line (option 0 for a choice) once its staging is done
 ##   adv:N           — N times, each after the staging and `line_s` seconds (default 0.3)
@@ -43,7 +46,14 @@ func _shot(name: String) -> void:
 		var r := Rect2i(int(crop.position.x * k), int(crop.position.y * k), int(crop.size.x * k), int(crop.size.y * k))
 		img = img.get_region(r.intersection(Rect2i(0, 0, img.get_width(), img.get_height())))
 	img.save_jpg("%s/%s.jpg" % [out, name], 0.9)
-	print("shot ", name)
+	print("shot ", name, "  [", Time.get_ticks_msec() / 1000.0, " s, frame ", Engine.get_process_frames(), "]")
+
+
+var _feet_drawn: Array = []
+
+
+func _feet_upd(v) -> void:
+	_feet_drawn = v.feet_model()
 
 
 func _npc(id: String) -> Node:
@@ -55,7 +65,10 @@ func _npc(id: String) -> Node:
 
 
 func _wait(s: float) -> void:
-	var n := int(ceil(s * 30.0))
+	# engine seconds whatever --fixed-fps is (FPS=15 halves the frames a survey costs)
+	var n := int(ceil(s * float(maxi(Engine.max_fps if Engine.max_fps > 0 else 30, 1))))
+	if OS.get_environment("PLAY_FPS") != "":
+		n = int(ceil(s * float(OS.get_environment("PLAY_FPS"))))
 	for i in n:
 		await process_frame
 
@@ -89,6 +102,8 @@ func _run() -> void:
 		await process_frame
 	for i in range(2, a.size()):
 		var c: String = a[i]
+		if OS.get_environment("PLAY_TIMES") != "":
+			print("  · ", c, "  [", Time.get_ticks_msec() / 1000.0, " s, frame ", Engine.get_process_frames(), "]")
 		var k := c.split(":", true, 1)
 		var cmd := k[0]
 		var arg := k[1] if k.size() > 1 else ""
@@ -98,6 +113,59 @@ func _run() -> void:
 			"click":
 				var p := arg.split(",")
 				rm.player.call("click_at", Vector2(float(p[0]), float(p[1])))
+			"tp":
+				# tp:X,Y[,FX,FY] — put Agata there at once (no walk), facing the point FX,FY
+				var p := arg.split(",")
+				rm.player.global_position = Vector2(float(p[0]), float(p[1]))
+				if p.size() > 3 and rm.player.has_method("face_towards"):
+					rm.player.call("face_towards", Vector2(float(p[2]), float(p[3])))
+				await _wait(0.4)
+			"feet":
+				# feet:S — S seconds of Agata's drawn feet: every lift off the floor and set-down, with the moment she
+				# starts slowing and the moment she stands (as tests/probe_stop_steps.gd, in the game's own flow)
+				var pl = rm.player
+				var v = pl.get("view3d")
+				if v == null:
+					print("feet: no live figure")
+				else:
+					if not v.skeleton.skeleton_updated.is_connected(_feet_upd.bind(v)):
+						v.skeleton.skeleton_updated.connect(_feet_upd.bind(v))
+					var t := 0.0
+					var up: Array = [false, false]
+					var lifts := 0
+					var lifts_after := 0
+					var was_walking := false
+					var slowing := false
+					var still_t := -1.0
+					var ev := ""
+					var yaw0 := float(pl.get("yaw3d"))
+					while t < float(arg):
+						await process_frame
+						t += pl.get_process_delta_time()
+						var w: bool = pl.call("is_walking")
+						if w and not was_walking:
+							ev += " |walk %.2f" % t
+						if w and not slowing and float(pl.get("walk_w")) < 0.99 and float(pl.get("walk_time")) > 0.6:
+							slowing = true
+							ev += " |slow %.2f" % t
+						if was_walking and not w:
+							still_t = t
+							slowing = false
+							ev += " |still %.2f" % t
+						was_walking = w
+						var f: Array = _feet_drawn if not _feet_drawn.is_empty() else v.feet_model()
+						for fi in 2:
+							var h: float = minf(f[fi * 2].y - float(v.stride_floor[fi * 2]), f[fi * 2 + 1].y - float(v.stride_floor[fi * 2 + 1]))
+							var now_up: bool = h > 0.02
+							if now_up and not up[fi]:
+								lifts += 1
+								if still_t >= 0.0 or slowing:
+									lifts_after += 1
+								ev += " %s↑%.2f%s" % ["L" if fi == 0 else "R", t, ("(step)" if v._foot_step[fi] != null else ("(lock)" if v._foot_lock[fi] != null else ""))]
+							elif not now_up and up[fi]:
+								ev += " %s↓%.2f" % ["L" if fi == 0 else "R", t]
+							up[fi] = now_up
+					print("feet %s s: %d lifts, %d from slowing on; yaw %.0f° → %.0f°; at %s:%s" % [arg, lifts, lifts_after, rad_to_deg(yaw0), rad_to_deg(float(pl.get("yaw3d"))), pl.global_position.round(), ev])
 			"walkend":
 				var g := 0
 				await _wait(0.2)
@@ -123,6 +191,17 @@ func _run() -> void:
 						done = true
 						break
 				print("  mech ", arg, " → ", done)
+			"perf":
+				# perf — where a frame's time goes: scripts (process/physics) against the whole frame
+				var t0 := Time.get_ticks_usec()
+				var acc_p := 0.0
+				var acc_ph := 0.0
+				for j in 20:
+					await process_frame
+					acc_p += Performance.get_monitor(Performance.TIME_PROCESS)
+					acc_ph += Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS)
+				var whole := (Time.get_ticks_usec() - t0) / 1e6 / 20.0
+				print("perf: frame %.3f s, scripts process %.3f s, physics %.3f s, draw calls %d, objects %d, nodes %d" % [whole, acc_p / 20.0, acc_ph / 20.0, int(Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)), int(Performance.get_monitor(Performance.RENDER_TOTAL_OBJECTS_IN_FRAME)), int(Performance.get_monitor(Performance.OBJECT_NODE_COUNT))])
 			"info":
 				print("scene %s staging %s frame %s beat %s" % [sr.active_scene, sr.is_staging(), sr.get("current_frame"), str(sr.current_beat).substr(0, 160)])
 			"adv":

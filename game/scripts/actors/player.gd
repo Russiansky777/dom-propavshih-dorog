@@ -1222,6 +1222,8 @@ func _process_3d(delta: float) -> void:
 	_root_motion_3d(probe, blend)
 	if foot_lock_3d:
 		var ppm_s := view3d.ppm * maxf(absf(scale.y), 0.01)
+		# standing and turning to something: the feet know where the turn ends and step there once (Actor3D.feet_turn_to)
+		view3d.feet_turn_to = yaw3d_target if (not _walking and not _acting and absf(angle_difference(yaw3d, yaw3d_target)) > 0.02) else NAN
 		view3d.feet_step(delta, global_position, Vector2(ppm_s, ppm_s * maxf(floor_foreshortening(), 0.05)))
 	view3d.arm_clear_step(delta)
 	_sync_facade_3d()

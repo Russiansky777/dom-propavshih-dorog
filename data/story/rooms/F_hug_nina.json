@@ -18,6 +18,8 @@
     "image": "res://assets/rooms/F_hug_nina/bg.png",
     "horizon": 700,
     "video": "res://assets/rooms/F_hug_nina/loop.ogv",
+    "video_motion_min": 1.0,
+    "_video_0911n": "Ночь 09→10.11 (Директор 22:18: «сцена с Агатой и мамой почему-то не живая — мы же её сделали и утвердили»): вечерняя замена на Kling Pro с последним кадром = первому вышла почти неподвижной (движение 0,26 и 0,61 против 1,5 и 4,2 у утверждённых 08.11) — возвращены утверждённые клипы (assets/incoming/video/hug_kling10/*_loop.mp4, Kling 3.0, 720p, петля наплывом), один ключевой кадр, Theora q 10; video_motion_min — проверка живости (tools/validate_video_loops.py)",
     "_video": "08.11 (Директор 23:26): картина оживлена — Kling 3.0 (fal.ai, pipeline/requests/video_hug_kling10.json), 10 с, петля наплывом хвоста в первый кадр (tools/video_loop.py); снег — в видео, эффект снега кадра снят 09.11 вечер (Директор 17:49): переделано на Kling 3.0 Pro, 1080p, без звука, последний кадр = картина (end_image_url) — петля без наплыва (pipeline/requests/video_dinner_pro3.json)."
   },
   "walkable": [

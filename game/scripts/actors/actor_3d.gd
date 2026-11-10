@@ -69,6 +69,7 @@ var frame_px: Vector2 = Vector2(320, 420)   # frame in sheet px (node scale 1)
 var pivot: Vector2 = Vector2(0.5, 0.94)
 var ppm: float = 214.8           # sheet px per ortho metre at this elevation
 var render_scale: float = 1.0    # texture px per sheet px
+var _fast_k: float = 0.0         # probes only (DPD_FIG_FAST): a fixed rough render scale, no smoothing
 var _sized: bool = false
 
 # Idle slots (A/B crossfade)
@@ -102,6 +103,12 @@ func setup(actor_spec: Dictionary) -> bool:
 	own_world_3d = true
 	render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	msaa_3d = [Viewport.MSAA_DISABLED, Viewport.MSAA_2X, Viewport.MSAA_4X, Viewport.MSAA_8X][clampi(int(log(maxf(float(spec.get("msaa", 4)), 1.0)) / log(2.0)), 0, 3)]
+	# survey probes only (tests/probe_play.gd on a software renderer: a frame of a figure costs half a second there):
+	# DPD_FIG_FAST=<scale> draws the figures without smoothing at that share of their size — motion and places are the
+	# same, the picture is rough. Never set in the game.
+	_fast_k = float(OS.get_environment("DPD_FIG_FAST")) if OS.get_environment("DPD_FIG_FAST") != "" else 0.0
+	if _fast_k > 0.0:
+		msaa_3d = Viewport.MSAA_DISABLED
 	# a number, or "room": the room's floor foreshortening k = sin(elevation) (set_elevation per room) —
 	# then a step towards the viewer moves the drawn foot exactly as much as the floor under it
 	var ev = spec.get("camera_elev_deg", 14.0)
@@ -1247,6 +1254,13 @@ func _floor_screen(p: Vector3, o: Vector2, k: Vector2) -> Vector3:
 
 var _feet_yaw: float = 0.0
 var _feet_yaw_v: float = 0.0
+## The yaw a turn on the spot ends at (Player: its turn's target while she stands and turns); NAN — not turning on the
+## spot or the end is not known. Director 09.11, 22:18: «ноги Агаты перебираются слишком часто в конце движения — именно
+## и только ноги»: arriving, she turned to what she came to and each foot stepped «where the stance will be a moment
+## later» — two or three times per turn, right after the stop's closing step (the same foot lifted twice in 0,2 s).
+## With the end known a foot steps once, straight to where it will stand when the turn is over (data
+## feet.turn_to_end; a turn over feet.turn_step_max_deg is taken in parts).
+var feet_turn_to: float = NAN
 var _feet_still_t: float = 0.0
 
 ## Planting in the stride (data rt3d.feet.stride; with walk.root "even"): the figure goes on evenly while the clip's
@@ -1413,6 +1427,17 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 	var lead_b := Basis(Vector3.UP, yaw + _feet_yaw_v * float(fk.get("lead_s", 0.12)))
 	var turning := absf(_feet_yaw_v) > 0.6
 	var walking := _w_s > float(fk.get("walk_off", 0.97)) or stride_hold
+	# a turn on the spot whose end is known: what is left of it (signed, the way she is turning), a step's share of it
+	var turn_rem := 0.0
+	if bool(fk.get("turn_to_end", false)) and not is_nan(feet_turn_to) and not walking and shuffle.is_empty():
+		turn_rem = angle_difference(yaw, feet_turn_to)
+		if absf(turn_rem) > deg_to_rad(150.0) and absf(_feet_yaw_v) > 0.6 and signf(turn_rem) != signf(_feet_yaw_v):
+			turn_rem -= signf(turn_rem) * TAU   # round the long way
+		if absf(turn_rem) < deg_to_rad(float(fk.get("turn_end_min_deg", 6.0))):
+			turn_rem = 0.0
+	var to_end := turn_rem != 0.0
+	var turn_max := deg_to_rad(float(fk.get("turn_step_max_deg", 100.0)))
+	var end_b := Basis(Vector3.UP, yaw + clampf(turn_rem, -turn_max, turn_max))
 	# block 3 (Director 06.11, 12:30: «Митя и Пелагея постоянно дёргаются, мельтешат»): a whole-body action clip (act_body
 	# full — the villager bends for the lantern, hauls the rope, tars the boat) moves the legs itself; the foot locks
 	# fought it and stepped 6–16 times in one action. While such a clip is shown the feet follow it, the locks let go;
@@ -1493,9 +1518,14 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 			_foot_step[i] = st
 		elif lock != null:
 			err = Vector2(lock.x - a.x, lock.z - a.z).length()
+			if to_end:
+				# measured against where it will stand when the turn is over: a foot already there stays, one that is
+				# not steps there once
+				var ae: Vector3 = end_b * f[i * 2]
+				err = Vector2(lock.x - ae.x, lock.z - ae.z).length()
 			if not closing_to.is_empty():
 				# measured against the stance she is coming to, where it will stand once the body's glide is over
-				var ac: Vector3 = yaw_b * ((closing_to[i * 2] as Vector3) + Vector3(0.0, 0.0, _close_unit * _w_s))
+				var ac: Vector3 = (end_b if to_end else yaw_b) * ((closing_to[i * 2] as Vector3) + Vector3(0.0, 0.0, _close_unit * _w_s))
 				err = Vector2(lock.x - ac.x, lock.z - ac.z).length()
 			dbg_reach[i] = reach - Vector3(lock.x, _planted_y(i, a), lock.z).distance_to(hip)
 			if lifted or walking or act_free or (err > float(fk.get("release_m", 0.3)) and shuffle.is_empty()):
@@ -1519,7 +1549,7 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 				stride_off[i] = Vector3.ZERO
 			if not closing_to.is_empty():
 				# after a stop the foot left behind may step in this same frame — no setting its heel down first
-				var ac0: Vector3 = yaw_b * ((closing_to[i * 2] as Vector3) + Vector3(0.0, 0.0, _close_unit * _w_s))
+				var ac0: Vector3 = (end_b if to_end else yaw_b) * ((closing_to[i * 2] as Vector3) + Vector3(0.0, 0.0, _close_unit * _w_s))
 				err = Vector2(lock.x - ac0.x, lock.z - ac0.z).length()
 		locks.append(lock)
 		errs.append(err)
@@ -1532,9 +1562,11 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 	var still := not turning and _w_s < 0.05
 	_feet_still_t = (_feet_still_t + delta) if still else 0.0
 	var settling := _feet_still_t > 0.15 and _feet_still_t < float(fk.get("settle_s", 0.8))
-	var need := float(fk.get("step_turn_m", 0.035)) if turning else (float(fk.get("settle_m", 0.035)) if settling else float(fk.get("step_m", 0.07)))
+	var need := float(fk.get("step_turn_m", 0.035)) if (turning or to_end) else (float(fk.get("settle_m", 0.035)) if settling else float(fk.get("step_m", 0.07)))
 	_shuffle_grace = maxf(_shuffle_grace - delta, 0.0) if w_cmd < 0.05 else 0.0
 	var first := 0 if float(errs[0]) >= float(errs[1]) else 1
+	if to_end and absf(float(errs[0]) - float(errs[1])) < 0.02:
+		first = 0 if turn_rem > 0.0 else 1   # the foot on the side she turns to leads (her left is +yaw)
 	for i in [first, 1 - first]:
 		var other = _foot_step[1 - i]
 		var need_i := need
@@ -1553,6 +1585,8 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 			# and lands where the stance will be when it is set down (the turn going on at its present speed)
 			var t_land := float(fk.get("lead_s", 0.08)) + step_s * 0.85
 			var land_b := Basis(Vector3.UP, yaw + _feet_yaw_v * t_land)
+			if to_end:
+				land_b = end_b   # straight to where it stands when the turn is over
 			var land_src: Vector3 = closing_to[i * 2] if not closing_to.is_empty() else f[i * 2]
 			var land := _clear_of_other(land_b * land_src, i, yaw_b, f, o, k, float(fk.get("min_sep_m", 0.12)))
 			# kept by the body (it goes with her as she still comes to a stop), not turned with her
@@ -1945,6 +1979,8 @@ func _place_camera() -> void:
 func set_render_scale(q: float) -> void:
 	var step := 0.125
 	q = clampf(round(q / step) * step, float(spec.get("min_render_scale", 0.5)), float(spec.get("max_render_scale", 3.0)))
+	if _fast_k > 0.0:
+		q = _fast_k
 	if is_equal_approx(q, render_scale) and _sized:
 		return
 	_sized = true
