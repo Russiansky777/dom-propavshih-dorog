@@ -1,0 +1,57 @@
+{
+  "_comment": "Kling 3.0 Pro, ужин «середина» — остальные семь роликов (Директор 10.11, 18:59: «Агату принимаю, делай» — на вопрос «принимаете ли; если да, нужно „да“ на остальные семь роликов, $7,84»). Восьмой (open_blue_a) — принятая проба dinner_live2. Варианты a — промпт пробы live2 (говорит Илья), b — другие переглядывания (говорит Нина; девочка смотрит на Тихона), чтобы два ролика одного варианта различались. Агата во всех восьми заменяется отдельно оживлённой (dinner_agata1, tools/video_inset.py --soften 0.7) — здесь о ней одна фраза и запрет тянуться через её место. Конец = картина (end_image_url). 10 с, без звука: 7 × $1.12 = $7.84.",
+  "trial": "dinner_mid",
+  "image_max": 0,
+  "jpeg_q": 95,
+  "attempts": 1,
+  "frames": [
+    {
+      "id": "EP_dinner_open_blue_b",
+      "image": "assets/incoming/video/dinner/base_open_blue.png",
+      "prompt": "Static camera, warm candlelit room, a family supper in quiet, friendly conversation. Gentle, slow, continuous movement — nothing sudden; everyone stays seated in place and is back in the same pose by the end. The dark-haired young woman in the grey shawl behind the samovar sits calmly and listens; nobody leans toward her or reaches across her place. The old woman says a few words with one small gesture of her hand and smiles. The bearded man listens to her, nods and chuckles quietly. The woman in the patterned shawl turns her head slightly toward the old woman, smiles and looks back; her hands rest. The little girl in the doorway stays standing on the same spot the whole time: she looks up toward the small grey creature on the stove shelf, smiles, blinks and sways very slightly; she does not walk, does not step aside, does not hide behind anyone, does not wave. The candle flame sways, a glint runs over the samovar, snow drifts past the window. The small grey creature on the stove shelf blinks and twitches an ear; its paws stay empty and folded on its belly. Nobody picks anything up from the table; nothing new appears in anyone's hands; the blue-and-white cup stays on the table untouched. Faces keep their features and age. Painterly look unchanged, no new elements."
+    },
+    {
+      "id": "EP_dinner_open_white_a",
+      "image": "assets/incoming/video/dinner/base_open_white.png",
+      "prompt": "Static camera, warm candlelit room, a family supper in quiet, friendly conversation. Gentle, slow, continuous movement — nothing sudden; everyone stays seated in place and is back in the same pose by the end. The dark-haired young woman in the grey shawl behind the samovar sits calmly and listens; nobody leans toward her or reaches across her place. The bearded man speaks calmly with one small gesture of his hand and a slight nod. The old woman listens, nods a little and smiles. The woman in the patterned shawl smiles, tilts her head slightly and breathes; her hands rest. The little girl in the doorway stays standing on the same spot the whole time: she only sways very slightly, blinks, smiles and tilts her head a little; she does not walk, does not step aside, does not hide behind anyone, does not wave. The candle flame sways, a glint runs over the samovar, snow drifts past the window. The small grey creature on the stove shelf blinks and twitches an ear; its paws stay empty and folded on its belly. Nobody picks anything up from the table; nothing new appears in anyone's hands; the white cup stays on the table untouched. Faces keep their features and age. Painterly look unchanged, no new elements."
+    },
+    {
+      "id": "EP_dinner_open_white_b",
+      "image": "assets/incoming/video/dinner/base_open_white.png",
+      "prompt": "Static camera, warm candlelit room, a family supper in quiet, friendly conversation. Gentle, slow, continuous movement — nothing sudden; everyone stays seated in place and is back in the same pose by the end. The dark-haired young woman in the grey shawl behind the samovar sits calmly and listens; nobody leans toward her or reaches across her place. The old woman says a few words with one small gesture of her hand and smiles. The bearded man listens to her, nods and chuckles quietly. The woman in the patterned shawl turns her head slightly toward the old woman, smiles and looks back; her hands rest. The little girl in the doorway stays standing on the same spot the whole time: she looks up toward the small grey creature on the stove shelf, smiles, blinks and sways very slightly; she does not walk, does not step aside, does not hide behind anyone, does not wave. The candle flame sways, a glint runs over the samovar, snow drifts past the window. The small grey creature on the stove shelf blinks and twitches an ear; its paws stay empty and folded on its belly. Nobody picks anything up from the table; nothing new appears in anyone's hands; the white cup stays on the table untouched. Faces keep their features and age. Painterly look unchanged, no new elements."
+    },
+    {
+      "id": "EP_dinner_closed_blue_a",
+      "image": "assets/incoming/video/dinner/base_closed_blue.png",
+      "prompt": "Static camera, warm candlelit room, a family supper in quiet, friendly conversation. Gentle, slow, continuous movement — nothing sudden; everyone stays seated in place and is back in the same pose by the end. The dark-haired young woman in the grey shawl behind the samovar sits calmly and listens; nobody leans toward her or reaches across her place. The bearded man speaks calmly with one small gesture of his hand and a slight nod. The old woman listens, nods a little and smiles. The woman in the patterned shawl smiles, tilts her head slightly and breathes; her hands rest. The door at the back stays closed; nobody comes in. The candle flame sways, a glint runs over the samovar, snow drifts past the window. The small grey creature on the stove shelf blinks and twitches an ear; its paws stay empty and folded on its belly. Nobody picks anything up from the table; nothing new appears in anyone's hands; the blue-and-white cup stays on the table untouched. Faces keep their features and age. Painterly look unchanged, no new elements."
+    },
+    {
+      "id": "EP_dinner_closed_blue_b",
+      "image": "assets/incoming/video/dinner/base_closed_blue.png",
+      "prompt": "Static camera, warm candlelit room, a family supper in quiet, friendly conversation. Gentle, slow, continuous movement — nothing sudden; everyone stays seated in place and is back in the same pose by the end. The dark-haired young woman in the grey shawl behind the samovar sits calmly and listens; nobody leans toward her or reaches across her place. The old woman says a few words with one small gesture of her hand and smiles. The bearded man listens to her, nods and chuckles quietly. The woman in the patterned shawl turns her head slightly toward the old woman, smiles and looks back; her hands rest. The door at the back stays closed; nobody comes in. The candle flame sways, a glint runs over the samovar, snow drifts past the window. The small grey creature on the stove shelf blinks and twitches an ear; its paws stay empty and folded on its belly. Nobody picks anything up from the table; nothing new appears in anyone's hands; the blue-and-white cup stays on the table untouched. Faces keep their features and age. Painterly look unchanged, no new elements."
+    },
+    {
+      "id": "EP_dinner_closed_white_a",
+      "image": "assets/incoming/video/dinner/base_closed_white.png",
+      "prompt": "Static camera, warm candlelit room, a family supper in quiet, friendly conversation. Gentle, slow, continuous movement — nothing sudden; everyone stays seated in place and is back in the same pose by the end. The dark-haired young woman in the grey shawl behind the samovar sits calmly and listens; nobody leans toward her or reaches across her place. The bearded man speaks calmly with one small gesture of his hand and a slight nod. The old woman listens, nods a little and smiles. The woman in the patterned shawl smiles, tilts her head slightly and breathes; her hands rest. The door at the back stays closed; nobody comes in. The candle flame sways, a glint runs over the samovar, snow drifts past the window. The small grey creature on the stove shelf blinks and twitches an ear; its paws stay empty and folded on its belly. Nobody picks anything up from the table; nothing new appears in anyone's hands; the white cup stays on the table untouched. Faces keep their features and age. Painterly look unchanged, no new elements."
+    },
+    {
+      "id": "EP_dinner_closed_white_b",
+      "image": "assets/incoming/video/dinner/base_closed_white.png",
+      "prompt": "Static camera, warm candlelit room, a family supper in quiet, friendly conversation. Gentle, slow, continuous movement — nothing sudden; everyone stays seated in place and is back in the same pose by the end. The dark-haired young woman in the grey shawl behind the samovar sits calmly and listens; nobody leans toward her or reaches across her place. The old woman says a few words with one small gesture of her hand and smiles. The bearded man listens to her, nods and chuckles quietly. The woman in the patterned shawl turns her head slightly toward the old woman, smiles and looks back; her hands rest. The door at the back stays closed; nobody comes in. The candle flame sways, a glint runs over the samovar, snow drifts past the window. The small grey creature on the stove shelf blinks and twitches an ear; its paws stay empty and folded on its belly. Nobody picks anything up from the table; nothing new appears in anyone's hands; the white cup stays on the table untouched. Faces keep their features and age. Painterly look unchanged, no new elements."
+    }
+  ],
+  "models": [
+    {
+      "id": "fal-ai/kling-video/v3/pro/image-to-video",
+      "image_key": [
+        "start_image_url",
+        "end_image_url"
+      ],
+      "args": {
+        "duration": "10",
+        "generate_audio": false
+      }
+    }
+  ]
+}
