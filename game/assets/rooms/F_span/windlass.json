@@ -1,0 +1,63 @@
+{
+ "_comment": "tools/make_windlass_layers.py — части ворота для WindlassSpin; холст 1672×941",
+ "clean": {
+  "file": "windlass_clean.png",
+  "at": [
+   887,
+   553
+  ]
+ },
+ "axles": {
+  "l": [
+   921,
+   604
+  ],
+  "r": [
+   1051,
+   616
+  ]
+ },
+ "arm": {
+  "ry": 34.0,
+  "rx": 9.0,
+  "skew": 3.0,
+  "width": 6.0
+ },
+ "grips": {
+  "l": {
+   "file": "windlass_grip_l.png",
+   "at": [
+    891,
+    564
+   ],
+   "joint": [
+    926,
+    569
+   ]
+  },
+  "r": {
+   "file": "windlass_grip_r.png",
+   "at": [
+    1057,
+    641
+   ],
+   "joint": [
+    1064,
+    648
+   ]
+  }
+ },
+ "drum": {
+  "file": "windlass_drum.png",
+  "at": [
+   948,
+   588
+  ],
+  "size": [
+   49,
+   54
+  ],
+  "pitch": 7.0,
+  "slope": -0.102
+ }
+}

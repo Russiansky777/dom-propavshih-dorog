@@ -41,6 +41,11 @@ func build() -> void:
 	var art: Dictionary = spec.get("art", {})
 	var full := [0, 0, 1672, 941]
 	crop(String(art.get("waiting", "")), full, Vector2.ZERO, _k).name = "Waiting"
+	# 10.11 (Director: «чтобы реально крутился ворот у Ильи»): the windlass's own parts over the painting — the cranks
+	# and the rope's coils turn while Ilya cranks (WindlassSpin; without the parts the painting stays as it is)
+	spin = WindlassSpin.make(String(art.get("waiting", "")), _k)
+	if spin != null:
+		add_child(spin)
 	beam = crop(String(art.get("beam", "")), full, Vector2.ZERO, _k)
 	beam.name = "Beam"
 	beam.pivot_offset = v2(spec.get("pivot", [1240, 575])) * _k
@@ -163,10 +168,30 @@ func tick(delta: float) -> void:
 	if not dialogue_up():
 		logic.step(delta)
 	_ilya_cranks(logic.state in ["down", "up"])
+	_turn_windlass(delta)
 	if clock - _call_t > 2.2 and logic.state != "bumped":
 		call_label.text = ""
 		reply_label.text = ""
 	_redraw()
+
+
+## 10.11 (Director 16:15: «чтобы как-то крутился реально ворот у Ильи… оживить его, установку эту»): the windlass turns
+## while the log goes — a turn in `crank_turn_s` seconds (data; Ilya's cranking clip makes its round in as long), one
+## way letting the log down, the other way lifting it; let go, the crank comes round to the painted pose and stops
+## there (the frame under the close-up has the painted windlass — nothing jumps when the close-up closes).
+var spin: WindlassSpin = null
+var _spin_dir := 1.0
+
+
+func _turn_windlass(delta: float) -> void:
+	if spin == null:
+		return
+	var speed := TAU / maxf(float(spec.get("crank_turn_s", 1.6)), 0.2)
+	if logic.state in ["down", "up"]:
+		_spin_dir = 1.0 if logic.state == "down" else -1.0
+		spin.angle += _spin_dir * speed * delta
+	else:
+		spin.angle = move_toward(spin.angle, WindlassSpin.rest_after(spin.angle, _spin_dir), speed * delta)
 
 
 ## Block 3 (Director 05.11: «Илья крутит ворот»): while the log goes down or up, Ilya's live figure (borrowed from the

@@ -249,6 +249,10 @@
   "rope_brought": {
    "desc": "Pelageya released the bridge rope from her clamp and rowed it to the pier"
   },
+  "m17_boat_hauled": {
+   "desc": "",
+   "_note": "служебный: расстановка фигур — Пелагея вытянула пустую лодку бечевой и стоит у её носа (M17, затемнение; rooms/Z3.json pelageya.states). Директор 10.11, 16:15"
+  },
   "rope_on_ring": {
    "desc": "I tied the bridge rope to the plate's ring, as it was before",
    "_k": "K (сверка журнала 01.11 по просьбе Директора 31.10, стр. 27; отчёт — Docs/ai_checks/journal_review_2026-11-01.md); было: «Канат моста завязан на кольце плиты, как раньше»"

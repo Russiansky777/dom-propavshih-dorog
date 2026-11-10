@@ -6,6 +6,15 @@ extends SceneTree
 ##       tikhon_knows_dunya came only with the scene's grants. Now a short fade after the narrator's words sets it:
 ##       «Значит, вечер кончился» he says from the bench by the stove. The test plays the scene and looks where his
 ##       figure is at each line; self-check — the same scene without that staging is caught (he is still in the chair).
+##   R-2 (Director 16:15: «Пелагея в кадре где лодку смолят снова стоит повёрнута вправо, а не влево»): EP_boat —
+##       Pelageya faces left, Mitya faces her.
+##   R-3 (16:15: «чтобы она доходила до начала лестницы и мама ждала там»): M19 — Nina waits at the foot of her porch
+##       stairs, Agata runs up to there.
+##   R-4 (16:15: «когда она говорит „тянут, вон тянут“ — развернуть её в сторону реки»): the line is said to the river.
+##   R-5 (16:15: «Агата проходит сквозь Пелагею в этом же кадре»): M17 played as the player starts it (a click on
+##       Pelageya): from the boat's return to the ribbon Agata never comes nearer than a figure's width to her; her
+##       place then is her hotspot's state (the click and the obstacle at her feet are there too). Self-check — the
+##       night's point (885, 800) is caught.
 ## Exit code 0 only when every check passed.
 
 var _results: Array = []
@@ -54,6 +63,10 @@ func _run() -> void:
 	player.set("walk_speed", 1600.0)
 	player.set("speed_factor", 6.0)
 	await _test("R-1 M23d: Tikhon moves to Agata's bench after the narrator's words, before «Значит, вечер кончился»; self-check — without the staging he is still in the chair", _test_tikhon_moves)
+	await _test("R-2 the epilogue's boat: Pelageya faces left, Mitya faces her", _test_boat_facing)
+	await _test("R-3 M19: Nina waits at the foot of her porch stairs, Agata runs up to there", _test_porch_stairs)
+	await _test("R-4 M17: «Тянут. Вон, тянут!» is said to the river", _test_line_to_river)
+	await _test("R-5 M17: Agata does not walk through Pelageya on her way to the ribbon; self-check — the night's place is caught", _test_ribbon_walk)
 	gs.reset()
 	if main_node != null and is_instance_valid(main_node):
 		root.remove_child(main_node)
@@ -197,3 +210,131 @@ func _test_tikhon_moves() -> void:
 	var after2 := _line(log2, "Значит, вечер кончился")
 	_check(not after2.is_empty() and not bool(after2["knows"]) and absf((after2["pos"] as Vector2).y - chair.y) < 40.0,
 		"self-check: without the staging he is still in the armchair at his answer, and the check tells (%s)" % str(after2.get("pos", null)))
+
+
+# --- R-2 … R-5 --------------------------------------------------------------------------------
+
+func _room_hotspot(room_id: String, id: String) -> Dictionary:
+	for h in sd.rooms.get(room_id, {}).get("hotspots", []):
+		if String(h.get("id", "")) == id:
+			return h
+	return {}
+
+
+static func _feet(h: Dictionary) -> Vector2:
+	if h.has("feet"):
+		return Vector2(float(h["feet"][0]), float(h["feet"][1]))
+	var r: Array = h.get("rect", [0, 0, 0, 0])
+	return Vector2(float(r[0]) + float(r[2]) * 0.5, float(r[1]) + float(r[3]))
+
+
+func _test_boat_facing() -> void:
+	var pel := _room_hotspot("EP_boat", "pelageya")
+	var mit := _room_hotspot("EP_boat", "mitya")
+	_check(not pel.is_empty() and not mit.is_empty(), "EP_boat has both figures")
+	if pel.is_empty() or mit.is_empty():
+		return
+	var pf := _feet(pel)
+	var mf := _feet(mit)
+	_check(float(pel["face"][0]) < pf.x - 100.0, "Pelageya looks left of where she stands (face %s, feet %s)" % [str(pel["face"]), str(pf)])
+	_check(float(mit["face"][0]) < mf.x - 100.0 and absf(float(mit["face"][0]) - pf.x) < 60.0, "Mitya looks at her (face %s)" % str(mit["face"]))
+	# self-check: the night's point (to Mitya, on her right) fails the same test
+	_check(not (1217.0 < pf.x - 100.0), "self-check: the night's facing (to the right) would be caught")
+
+
+func _test_porch_stairs() -> void:
+	var nina := _room_hotspot("O4", "nina")
+	var nf := _feet(nina)
+	# the bottom step of her porch on the picture: x 1440–1530, y 630–670 (the gate's post, where she stood, is at 1385, 705)
+	var foot := Rect2(1440, 630, 90, 40)
+	_check(foot.has_point(nf), "Nina's feet at the foot of the stairs (%s)" % str(nf))
+	_check(not foot.has_point(Vector2(1385, 705)), "self-check: the gate's post is not the foot of the stairs")
+	var go := {}
+	for st in sd.scene("M19").get("stage", []):
+		if st.has("agata_go"):
+			go = st["agata_go"]
+	_check(not go.is_empty(), "M19 has Agata's run")
+	if go.is_empty():
+		return
+	var to := Vector2(float(go["to"][0]), float(go["to"][1]))
+	_check(to.distance_to(nf) < 110.0 and to.distance_to(nf) > 40.0, "Agata stops by her, not in her (%s, %.0f px from Nina)" % [str(to), to.distance_to(nf)])
+	var poly := PackedVector2Array()
+	for p in sd.rooms.get("O4", {}).get("walkable", []):
+		poly.append(Vector2(float(p[0]), float(p[1])))
+	_check(Geometry2D.is_point_in_polygon(to, poly), "the spot is on the street's floor")
+	_check(Vector2(1305, 722).distance_to(nf) > 110.0, "self-check: the old spot (the gate) is too far from the stairs")
+
+
+func _test_line_to_river() -> void:
+	var pel := _feet(_room_hotspot("Z3", "pelageya"))
+	var ln := {}
+	for l in sd.scene("M17").get("mandatory_lines", []):
+		if String(l.get("text", "")).begins_with("Тянут"):
+			ln = l
+	_check(not ln.is_empty(), "M17 has the line")
+	var f: Array = ln.get("face", [])
+	_check(f.size() >= 2 and float(f[1]) < pel.y - 200.0, "the line has a point out on the river to be said to (%s; she stands at %s)" % [str(f), str(pel)])
+	_check(not ({} as Dictionary).has("face"), "self-check: a line without `face` is said to Agata")
+
+
+## Plays M17 from the click on Pelageya; returns the nearest Agata's feet came to Pelageya's feet (px, floor-scaled:
+## the vertical distance counts double — figures overlap by x) after the boat is back, and where Pelageya stood.
+func _ribbon_walk() -> Dictionary:
+	_flags_before("M17")
+	gs.set_flag("m17_boat_hauled", false)
+	await _enter("Z3", "from_R1")
+	await _read_out("")
+	if not await _use("pelageya"):
+		return {}
+	var nearest := 1e9
+	var pel_at := Vector2.ZERO
+	var back := false
+	var guard := 0
+	while (not sr.current_beat.is_empty() or sr.call("is_staging")) and guard < 20000:
+		guard += 1
+		var pel: Node2D = rm.current_room.get_node_or_null("npc_pelageya")
+		if back and pel != null:
+			var d: Vector2 = player.global_position - pel.global_position
+			nearest = minf(nearest, Vector2(d.x, d.y * 2.0).length())
+			pel_at = pel.global_position
+		if sr.call("is_staging"):
+			await process_frame
+			continue
+		var b: Dictionary = sr.current_beat
+		if String(b.get("text", "")).begins_with("Сама назад не пришла"):
+			back = true
+		if b.get("type") == "options":
+			sr.choose(String(b.get("options", [{}])[0].get("id", "")))
+		else:
+			sr.advance()
+		await process_frame
+	await _frames(2)
+	return {"nearest": nearest, "pelageya": pel_at, "done": gs.has_flag("done_M17")}
+
+
+func _test_ribbon_walk() -> void:
+	var r := await _ribbon_walk()
+	_check(not r.is_empty() and bool(r.get("done", false)), "M17 played from the click on Pelageya")
+	if r.is_empty():
+		return
+	_check(float(r["nearest"]) > 150.0, "Agata keeps clear of Pelageya from the boat's return to the ribbon (nearest %.0f px)" % float(r["nearest"]))
+	var st_feet := Vector2.ZERO
+	for st in _room_hotspot("Z3", "pelageya").get("states", []):
+		if (st.get("if", []) as Array).has("m17_boat_hauled"):
+			st_feet = _feet(st)
+	_check(st_feet != Vector2.ZERO and (r["pelageya"] as Vector2).distance_to(st_feet) < 12.0,
+		"she stands where her hotspot's state has her (figure %s, state %s)" % [str(r["pelageya"]), str(st_feet)])
+	# Self-check: the night's staging (she at 885, 800, on the way) — the same measure sees Agata walk through her.
+	var sc: Dictionary = sd.scene("M17")
+	var kept := {}
+	for st in sc.get("stage", []):
+		for g in st.get("npc_to", []):
+			if String(g.get("id", "")) == "pelageya":
+				kept = {"g": g, "to": g["to"], "st": st, "sets": st.get("sets", [])}
+				g["to"] = [885, 800]
+				st["sets"] = []
+	var r2 := await _ribbon_walk()
+	if not kept.is_empty():
+		kept["g"]["to"] = kept["to"]
+		kept["st"]["sets"] = kept["sets"]
+	_check(not r2.is_empty() and float(r2["nearest"]) < 90.0, "self-check: with the night's place Agata walks through her, and the check tells (nearest %.0f px)" % float(r2.get("nearest", -1.0)))

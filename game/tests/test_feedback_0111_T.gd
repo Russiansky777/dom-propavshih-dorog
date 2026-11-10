@@ -204,8 +204,13 @@ func _test_tikhon_bridge() -> void:
 			continue
 		var seq: Array[String] = []
 		var guard := 0
-		while not sr.current_beat.is_empty() and guard < 100:
+		# 10.11: the scene has a staging between its lines now (Tikhon moves to the bench after the narrator's words —
+		# a short fade): while it runs there is no beat, and the read-out waits for it instead of stopping
+		while (not sr.current_beat.is_empty() or sr.call("is_staging")) and guard < 4000:
 			guard += 1
+			if sr.call("is_staging"):
+				await process_frame
+				continue
 			var b: Dictionary = sr.current_beat
 			if b.get("type") == "options":
 				var pick := ""

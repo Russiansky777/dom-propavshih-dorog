@@ -171,6 +171,7 @@ func setup(actor_spec: Dictionary) -> bool:
 	life.setup(spec.get("life", {}), skeleton)
 	skeleton.add_child(life)
 	_setup_arm_tone()
+	_setup_stance_tone()
 	_setup_limit()   # the clips' pose first: the IKs and the look come after it and are not slowed by it
 	_setup_feet()    # legs first: the skirt's pushers ride on the legs as the IK leaves them
 	_setup_arm_clear()
@@ -856,6 +857,32 @@ func _setup_arm_tone() -> void:
 	arm_tone.hand_bones = hb
 	arm_tone.rest_fore = rf
 	arm_tone.rest_hand = rh
+
+
+## The standing arms and shoulders (StanceToneModifier, right after the walking tone; data rt3d.stance_tone
+## {upper_fwd_deg, elbow_keep, shoulder_drop_deg}): nothing when absent. Director 10.11, 16:15 — Pelageya «скукоженная»,
+## Mitya's and her arms held out forward.
+const StanceTone := preload("res://scripts/actors/stance_tone_modifier.gd")
+var stance_tone: SkeletonModifier3D = null    # StanceTone
+
+
+func _setup_stance_tone() -> void:
+	var st: Dictionary = spec.get("stance_tone", {})
+	if st.is_empty() or OS.get_environment("DPD_STANCE_TONE_OFF") != "":
+		return
+	stance_tone = StanceTone.new()
+	stance_tone.name = "StanceTone"
+	skeleton.add_child(stance_tone)
+	stance_tone.upper_fwd_deg = float(st.get("upper_fwd_deg", 6.0))
+	stance_tone.elbow_keep = float(st.get("elbow_keep", 1.0))
+	stance_tone.shoulder_drop_deg = float(st.get("shoulder_drop_deg", 0.0))
+	stance_tone.to_model = _skel_to_model().basis.orthonormalized()
+	for side in ["Left", "Right"]:
+		stance_tone.shoulder_bones.append(skeleton.find_bone(side + "Shoulder"))
+		stance_tone.arm_bones.append(skeleton.find_bone(side + "Arm"))
+		stance_tone.fore_bones.append(skeleton.find_bone(side + "ForeArm"))
+		stance_tone.hand_bones.append(skeleton.find_bone(side + "Hand"))
+	stance_tone.weight = 1.0
 
 
 ## The standing spread of each upper arm (frontal plane, rad), from the stance as posed — the walking arm is brought in
@@ -2284,6 +2311,8 @@ func _apply(walk_phase: float, w: float, act_w: float, act_name: String, act_t: 
 		tree.set("parameters/actb_body/blend_amount", (clampf(act_w, 0.0, 1.0) * _act_body_now()) if _act_name != "" else 0.0)
 	if arm_tone != null:
 		arm_tone.weight = clampf(w, 0.0, 1.0) * (1.0 - (clampf(act_w, 0.0, 1.0) if _act_name != "" else 0.0))
+	if stance_tone != null:
+		stance_tone.weight = (1.0 - clampf(w, 0.0, 1.0)) * (1.0 - (clampf(act_w, 0.0, 1.0) if _act_name != "" else 0.0))
 	if bool(spec.get("center_feet", true)):
 		var ib := _idle_blend()
 		var idle_mid := _mid_of(_slot_name[0]).lerp(_mid_of(_slot_name[1]), ib)
