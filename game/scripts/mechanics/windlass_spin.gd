@@ -64,6 +64,7 @@ static func make(waiting_path: String, p_k: float) -> WindlassSpin:
 		cs.centered = false
 		cs.position = Vector2(float(clean["at"][0]), float(clean["at"][1])) * p_k
 		cs.scale = Vector2(p_k, p_k)
+		cs.show_behind_parent = true   # under the cranks this node draws: at rest they stand right over the patch
 		s.add_child(cs)
 	var drum: Dictionary = m.get("drum", {})
 	var dt := s._tex(dir, String(drum.get("file", "")))
@@ -82,6 +83,7 @@ static func make(waiting_path: String, p_k: float) -> WindlassSpin:
 		mat.set_shader_parameter("height_px", float(drum["size"][1]))
 		mat.set_shader_parameter("slope", float(drum.get("slope", -0.1)))
 		ds.material = mat
+		ds.show_behind_parent = true
 		s.add_child(ds)
 		s._drum = ds
 	for side in m.get("grips", {}):

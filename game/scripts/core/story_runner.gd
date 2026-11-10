@@ -912,6 +912,17 @@ func _stage_npc_go(spec: Dictionary) -> float:
 	var scale_room: Node = null if (current_frame != "" and room != RoomManager.current_room) else room
 	for g in spec.get("npc_go", []):
 		var npc := room.get_node_or_null("npc_" + String(g.get("id", "")))
+		# 10.11 (Director 16:15: «Митя и мама где кадр — пересмотреть, чьи руки за какими руками… он дальше фонарь
+		# поднимает же»): a staging that goes while a frame is still shown may move the people of the room under it —
+		# after the hug's frame the mother and the son step apart (M18, J стр. 140). Since the frames have live figures
+		# of their own (05.11) the walk looked only among those, found nobody in the hug's frame and was dropped: the
+		# two stood one in the other to the end of the scene, and Mitya took the lantern through her. A figure the
+		# frame does not have is looked for in the room itself.
+		var npc_room: Node = room
+		if npc == null and room != RoomManager.current_room and RoomManager.current_room != null:
+			npc = RoomManager.current_room.get_node_or_null("npc_" + String(g.get("id", "")))
+			npc_room = RoomManager.current_room
+		var scale_here: Node = npc_room if npc_room == RoomManager.current_room else scale_room
 		if npc != null and npc.has_method("go_off") and (npc as CanvasItem).visible:
 			var to: Array = g.get("to", [0, 0])
 			npc_went.emit(String(g.get("id", "")))
@@ -919,11 +930,11 @@ func _stage_npc_go(spec: Dictionary) -> float:
 			# J (Директор 29.10, стр. 172; 25.10, стр. 140): `in_black` — she walks into the open doorway and is gone
 			# in the black that follows: no fading on screen, the door is shut while black (no dissolve to be seen).
 			var in_black := bool(g.get("in_black", false))
-			longest = maxf(longest, float(npc.call("go_off", Vector2(float(to[0]), float(to[1])), secs, bool(g.get("fade", true)) and not in_black, scale_room)))
+			longest = maxf(longest, float(npc.call("go_off", Vector2(float(to[0]), float(to[1])), secs, bool(g.get("fade", true)) and not in_black, scale_here)))
 			if in_black:
 				_black_hide.append(npc)
 			if g.has("door"):
-				var door_s := _stage_door(room, g["door"], secs, in_black)
+				var door_s := _stage_door(npc_room, g["door"], secs, in_black)
 				longest = maxf(longest, secs + 0.15 if in_black else door_s)
 			# I-T2 (lines 128–129): `face` "<id>" — on arrival the villager turns to that one and keeps to them.
 			var fc = g.get("face", "")
@@ -935,7 +946,7 @@ func _stage_npc_go(spec: Dictionary) -> float:
 						npc.set("partner", null)
 						npc.call("face_towards", fp))
 				fc = ""
-			var other := room.get_node_or_null("npc_" + String(fc)) as Node2D
+			var other := npc_room.get_node_or_null("npc_" + String(fc)) as Node2D
 			if String(fc) == "agata":
 				other = RoomManager.player   # 09.11: back to her place, turned to Agata
 			if other != null and npc.has_method("set_partner"):

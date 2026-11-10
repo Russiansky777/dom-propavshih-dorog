@@ -16,6 +16,12 @@ extends SceneTree
 ##       Pelageya): from the boat's return to the ribbon Agata never comes nearer than a figure's width to her; her
 ##       place then is her hotspot's state (the click and the obstacle at her feet are there too). Self-check — the
 ##       night's point (885, 800) is caught.
+##   R-6 (16:15: «Митя и мама где кадр — пересмотреть, чьи руки за какими руками должны быть… он дальше фонарь
+##       поднимает же»): M18 — after the hug's frame the mother and the son stand a step apart (the staging's walk goes
+##       while the frame is still shown and has to reach the people of the room under it; since 05.11 it looked only
+##       among the frame's own figures and was dropped — they stood one in the other, Mitya took the lantern through
+##       her). At «Мне уж тридцать семь» and at the lantern they are more than a figure apart, the lantern's place is
+##       between them. Self-check — before the frame (the embrace) they are close, and the measure tells.
 ## Exit code 0 only when every check passed.
 
 var _results: Array = []
@@ -68,6 +74,7 @@ func _run() -> void:
 	await _test("R-3 M19: Nina waits at the foot of her porch stairs, Agata runs up to there", _test_porch_stairs)
 	await _test("R-4 M17: «Тянут. Вон, тянут!» is said to the river", _test_line_to_river)
 	await _test("R-5 M17: Agata does not walk through Pelageya on her way to the ribbon; self-check — the night's place is caught", _test_ribbon_walk)
+	await _test("R-6 M18: after the hug's frame Pelageya and Mitya stand a step apart, the lantern between them; self-check — in the embrace they are close", _test_apart_after_hug)
 	gs.reset()
 	if main_node != null and is_instance_valid(main_node):
 		root.remove_child(main_node)
@@ -344,3 +351,52 @@ func _test_ribbon_walk() -> void:
 		kept["g"]["to"] = kept["to"]
 		kept["st"]["sets"] = kept["sets"]
 	_check(not r2.is_empty() and float(r2["nearest"]) < 90.0, "self-check: with the night's place Agata walks through her, and the check tells (nearest %.0f px)" % float(r2.get("nearest", -1.0)))
+
+
+# --- R-6 ------------------------------------------------------------------------------------
+
+func _test_apart_after_hug() -> void:
+	_flags_before("M18")
+	await _enter("R3", "from_R2")
+	var lx := -1.0
+	# the layer's picture is the room's canvas with the lantern alone on it: its place on screen = canvas × art scale
+	for l in sd.rooms.get("R3", {}).get("layers", []):
+		if String(l.get("id", "")) == "mitya_lantern" and ResourceLoader.exists(String(l.get("image", ""))):
+			var used := (load(String(l["image"])) as Texture2D).get_image().get_used_rect()
+			var off: Array = l.get("offset", [0, 0])
+			lx = (float(used.position.x) + float(used.size.x) * 0.5) * float(rm.current_room.art_scale) + float(off[0])
+	var dist := {}     # line text start → distance between the two (px)
+	var at := {}
+	var guard := 0
+	while (not sr.current_beat.is_empty() or sr.call("is_staging")) and guard < 20000:
+		guard += 1
+		if sr.call("is_staging"):
+			await process_frame
+			continue
+		var b: Dictionary = sr.current_beat
+		if b.get("type") == "options":
+			sr.choose(String(b.get("options", [{}])[0].get("id", "")))
+		else:
+			await _frames(2)
+			var pel: Node2D = rm.current_room.get_node_or_null("npc_pelageya")
+			var mit: Node2D = rm.current_room.get_node_or_null("npc_mitya")
+			if pel != null and mit != null:
+				var key := String(b.get("text", "")).left(18)
+				dist[key] = absf(pel.global_position.x - mit.global_position.x)
+				at[key] = [mit.global_position, pel.global_position]
+			sr.advance()
+		await process_frame
+	await _frames(2)
+	_check(gs.has_flag("done_M18"), "M18 played (%d lines seen)" % dist.size())
+	var hug := float(dist.get("Пелагея с лодки на", -1.0))
+	var after := float(dist.get("Мне уж тридцать се", -1.0))
+	var lantern := float(dist.get("Пелагея всё держит", -1.0))
+	_check(after > 140.0, "at «Мне уж тридцать семь» they stand a step apart (%.0f px)" % after)
+	_check(lantern > 100.0, "at the lantern's line they are apart too (%.0f px)" % lantern)
+	# the lantern on the snow (the room's layer `mitya_lantern`): between them, so that he takes it in front of him
+	_check(lx > 0.0, "the lantern's layer is in the room (x %.0f)" % lx)
+	if lx > 0.0 and at.has("Мне уж тридцать се"):
+		var mx: float = (at["Мне уж тридцать се"][0] as Vector2).x
+		var px: float = (at["Мне уж тридцать се"][1] as Vector2).x
+		_check(lx > minf(mx, px) + 20.0 and lx < maxf(mx, px) - 20.0, "the lantern (x %.0f) is between them (Mitya %.0f, Pelageya %.0f)" % [lx, mx, px])
+	_check(hug >= 0.0 and hug < 80.0, "self-check: in the embrace, before the frame, they are close (%.0f px) — the measure tells close from apart" % hug)
