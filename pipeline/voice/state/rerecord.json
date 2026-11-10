@@ -202,6 +202,37 @@
       },
       "credits_spent": 2454,
       "subscription_delta": 2127
+    },
+    {
+      "run": "42923574190",
+      "at": "2026-11-10T23:31:47+00:00",
+      "request": "pipeline/requests/voice_rerecord.json",
+      "synthesized": [
+        "M19c_1",
+        "H3.puzzle.need_drawing",
+        "agata:H4.bed.early_d2",
+        "agata:O1.board.use"
+      ],
+      "reprocessed": [],
+      "characters_text": 305,
+      "failed": [],
+      "pruned": [],
+      "subscription_before": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 166840,
+        "character_limit": 179889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "subscription_after": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 166840,
+        "character_limit": 179889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "credits_spent": 134,
+      "subscription_delta": 0
     }
   ]
 }

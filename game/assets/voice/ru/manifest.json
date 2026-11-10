@@ -5,7 +5,7 @@
   "format": "ogg_vorbis_mono_44100",
   "loudness_target_lufs": -17.0,
   "loudness_measure": "EBU R128 integrated, моно на оба канала (как играет Godot)",
-  "updated_at": "2026-11-02T23:26:38+00:00",
+  "updated_at": "2026-11-10T23:31:45+00:00",
   "lines": {
     "M01_0": {
       "scene": "M01",
@@ -6367,8 +6367,8 @@
       "index": 1,
       "alignment": "src/M19c_1.align.json",
       "speaker": "narrator",
-      "text": "На стол Нина кладёт маленькое зеркальце в деревянной оправе.",
-      "text_sha1": "eb4bfdf8fd069d3110c445a70f6ddc327a9b5542",
+      "text": "Нина показывает на столе маленькое зеркальце в деревянной оправе.",
+      "text_sha1": "3f7690ca668a6b1a8971908371e8811234942415",
       "voice_id": "kPaCtwsoLpkcqnqv9PyA",
       "voice_name": "ZAKADR",
       "model_id": "eleven_v4",
@@ -6378,31 +6378,31 @@
       },
       "file": "M19c_1.ogg",
       "source": "src/M19c_1.mp3",
-      "voice_text": "На стол Нина кладёт маленькое зеркальце в деревянной оправе.",
-      "voice_sha1": "eb4bfdf8fd069d3110c445a70f6ddc327a9b5542",
+      "voice_text": "Нина показывает на столе маленькое зеркальце в деревянной оправе.",
+      "voice_sha1": "3f7690ca668a6b1a8971908371e8811234942415",
       "tags": [],
-      "characters": 60,
+      "characters": 65,
       "loudness_target_lufs": -17.0,
-      "duration_s": 4.27,
+      "duration_s": 4.3,
       "lufs": -17.0,
-      "true_peak_db": -5.7,
-      "gain_db": -3.7,
+      "true_peak_db": -5.8,
+      "gain_db": -3.3,
       "limiter_extra_db": 0.0,
-      "source_lufs": -13.3,
-      "source_true_peak_db": -2.0,
+      "source_lufs": -13.7,
+      "source_true_peak_db": -2.3,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-24T14:41:26+00:00",
-      "run": "40103286671",
+      "generated_at": "2026-11-10T23:31:39+00:00",
+      "run": "42923574190",
       "api": {
-        "request_id": "dnNgeBkIqJtG04iXjXQn",
-        "history_item_id": "I8ox2FEHqYkEHhunTmBN",
-        "character_cost": "26",
+        "request_id": "B4VDM7qERbjFimuAQAnF",
+        "history_item_id": "J5AMhnMRcRO9aBOTVG2f",
+        "character_cost": "29",
         "dropped_params": [],
         "output_format": "mp3_44100_192",
         "sent": {
           "language_code": "ru",
-          "seed": 3075582047
+          "seed": 2977598445
         }
       }
     },
@@ -7293,6 +7293,7 @@
           "seed": 3299312036
         }
       },
+      "stale": "текст изменён",
       "trimmed": {
         "to_s": 2.2,
         "from_text_sha1": "9aaa39e41fcf58799188a1ef1a7b5458f6d674b0"
@@ -18650,6 +18651,51 @@
         }
       }
     },
+    "H3.puzzle.need_drawing": {
+      "kind": "narration",
+      "key": "H3.puzzle.need_drawing",
+      "source_text": "ru_E0_E1",
+      "alignment": "src/narrator/H3.puzzle.need_drawing.align.json",
+      "speaker": "narrator",
+      "text": "Петли есть. А как их сажать — на Дунином рисунке, что в мастерской на стене. Сперва бы его посмотреть.",
+      "text_sha1": "29e83138947dd9a2f30edd9d6f7069c383c108e3",
+      "voice_id": "kPaCtwsoLpkcqnqv9PyA",
+      "voice_name": "ZAKADR",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.65,
+        "similarity_boost": 0.75
+      },
+      "file": "narrator/H3.puzzle.need_drawing.ogg",
+      "source": "src/narrator/H3.puzzle.need_drawing.mp3",
+      "voice_text": "Петли есть. А как их сажать — на Дунином рисунке, что в мастерской на стене. Сперва бы его посмотреть.",
+      "voice_sha1": "29e83138947dd9a2f30edd9d6f7069c383c108e3",
+      "tags": [],
+      "characters": 102,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 7.6,
+      "lufs": -16.9,
+      "true_peak_db": -5.6,
+      "gain_db": -2.8,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -14.2,
+      "source_true_peak_db": -2.9,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-11-10T23:31:41+00:00",
+      "run": "42923574190",
+      "api": {
+        "request_id": "Pk8gsPpVNj40DUQMsbWG",
+        "history_item_id": "si8Cr2FkO3GRWwSmtGxA",
+        "character_cost": "45",
+        "dropped_params": [],
+        "output_format": "mp3_44100_192",
+        "sent": {
+          "language_code": "ru",
+          "seed": 664903006
+        }
+      }
+    },
     "H3.puzzle.seat_hint": {
       "kind": "narration",
       "key": "H3.puzzle.seat_hint",
@@ -27310,7 +27356,7 @@
       "voice_name": "Agata",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.45,
+        "stability": 0.35,
         "similarity_boost": 0.75
       },
       "file": "character_lines/H4.bed.early_d2.ogg",
@@ -27320,40 +27366,27 @@
       "tags": [],
       "characters": 42,
       "loudness_target_lufs": -17.0,
-      "duration_s": 3.09,
-      "lufs": -16.9,
+      "duration_s": 3.15,
+      "lufs": -17.0,
       "true_peak_db": -5.0,
-      "gain_db": -3.2,
+      "gain_db": -2.8,
       "limiter_extra_db": 0.0,
-      "source_lufs": -13.8,
-      "source_true_peak_db": -1.9,
+      "source_lufs": -14.2,
+      "source_true_peak_db": -2.2,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-11-02T16:06:56+00:00",
-      "run": "41477848858",
-      "adopted_from": "probe/K3/W305_2",
+      "generated_at": "2026-11-10T23:31:43+00:00",
+      "run": "42923574190",
       "api": {
-        "history_item_id": "TwqxYLSPrNfPWN3Ko5P9",
+        "request_id": "lcCRfVJtAQhMePBk169A",
+        "history_item_id": "nCCWkcyAqgmzXjOjmz6M",
         "character_cost": "18",
-        "previous_text": "Какой теперь сон — самый день. Я ещё дел не переделала.",
-        "probe_run": "41464696975"
-      },
-      "stt": {
-        "model": "scribe_v2",
-        "text": "Не до сна мне сейчас, дела не переделаны",
-        "words": [
-          "Не",
-          "до",
-          "сна",
-          "мне",
-          "сейчас,",
-          "дела",
-          "не",
-          "переделаны"
-        ],
-        "missing": [],
-        "extra": [],
-        "ratio": 1.0
+        "dropped_params": [],
+        "output_format": "mp3_44100_192",
+        "sent": {
+          "language_code": "ru",
+          "seed": 2916283107
+        }
       }
     },
     "agata:H4.bed.early_d3": {
@@ -28427,7 +28460,7 @@
       "voice_name": "Agata",
       "model_id": "eleven_v4",
       "voice_settings": {
-        "stability": 0.65,
+        "stability": 0.6,
         "similarity_boost": 0.75
       },
       "file": "agata_thoughts/O1.board.use.ogg",
@@ -28437,46 +28470,33 @@
       "tags": [],
       "characters": 96,
       "loudness_target_lufs": -17.0,
-      "duration_s": 6.84,
+      "duration_s": 6.89,
       "lufs": -16.9,
-      "true_peak_db": -3.3,
-      "gain_db": 2.1,
+      "true_peak_db": -2.6,
+      "gain_db": 2.2,
       "limiter_extra_db": 0.0,
-      "source_lufs": -19.1,
-      "source_true_peak_db": -5.5,
+      "source_lufs": -19.2,
+      "source_true_peak_db": -4.8,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-10-31T20:42:20+00:00",
-      "run": "41239964908",
-      "adopted_from": "probe/K3/W038_2",
-      "api": {
-        "history_item_id": "wYIk5uMgdrPXVnDgoZQv",
-        "character_cost": "42",
-        "previous_text": "",
-        "probe_run": "41062710030"
+      "generated_at": "2026-11-10T23:31:45+00:00",
+      "run": "42923574190",
+      "tag_check": {
+        "tags": 1,
+        "prev_duration_s": 6.84,
+        "delta_s": 0.05,
+        "suspect": false
       },
-      "stt": {
-        "model": "scribe_v2",
-        "text": "Доску недавно вытирали, мел свежий. Учились тут. Вот бы и мое послание кто прочел",
-        "words": [
-          "Доску",
-          "недавно",
-          "вытирали,",
-          "мел",
-          "свежий.",
-          "Учились",
-          "тут.",
-          "Вот",
-          "бы",
-          "и",
-          "мое",
-          "послание",
-          "кто",
-          "прочел"
-        ],
-        "missing": [],
-        "extra": [],
-        "ratio": 1.0
+      "api": {
+        "request_id": "uVH8PeYYxhafr0Z6q5bH",
+        "history_item_id": "HILshqGKM0vcLTdmA7TX",
+        "character_cost": "42",
+        "dropped_params": [],
+        "output_format": "mp3_44100_192",
+        "sent": {
+          "language_code": "ru",
+          "seed": 4041907303
+        }
       }
     },
     "agata:O1.enter.winter": {
@@ -34285,6 +34305,7 @@
           "seed": 2402718712
         }
       },
+      "stale": "текст изменён",
       "trimmed": {
         "to_s": 1.9,
         "from_text_sha1": "f79836441c3c65a0989172f8d5b1bb66558e8617"
