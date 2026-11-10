@@ -357,6 +357,12 @@ func set_state(st: String) -> void:
 ## Block 3 (Director 05.11: villagers do what the story says): a one-shot clip of the live model (rt3d.clips role) —
 ## from the stance into the action and back; `hold` keeps the last pose until `release_action`. Returns its seconds
 ## (0 — drawn from sheets or no such clip: the staging goes on without it).
+## The next action's arm lowered or raised (stage data npc_act[].arm — NpcLive3D.set_act_arm); nothing on sheets.
+func act_arm(d: Dictionary, role: String) -> void:
+	if live != null:
+		live.set_act_arm(d, role)
+
+
 func play_action(role: String, hold: bool = false, hold_at: float = -1.0, loop: bool = false) -> float:
 	if live == null or not live.play_once(role, hold, hold_at, loop):
 		return 0.0

@@ -214,8 +214,12 @@ func _process(delta: float) -> void:
 			taken = true
 			on = false
 	if String(data.get("grip", "")) in ["fingers", "body"] and _fingers(on, dw):
-		visible = false
+		# 09.11 (Director 22:18: Mitya's lantern «странно выглядит, когда рука становится впереди его», «к кисти иногда не
+		# привязан»): the lantern is inside his 3D render too — hidden by his own body when the hand is beyond it, in
+		# the fingers at every moment; its light stays a 2D glow, at the glass of the 3D picture
+		visible = on and glow != null and _glow_3d()
 		return
+	pic.visible = true
 	visible = on
 	if not on or pic.texture == null:
 		return
@@ -250,6 +254,34 @@ func _process(delta: float) -> void:
 		glow.scale = Vector2.ONE * (r / 64.0)
 		var fl := 1.0 + float(g.get("flicker", 0.08)) * (sin(_t * 11.0 + _seed) * 0.6 + sin(_t * 23.7) * 0.4)
 		glow.modulate.a = float(g.get("alpha", 0.35)) * fl
+
+
+## The glow of a thing held inside the 3D render (grip "fingers"): at the picture's `glow.at` point as the render shows
+## it. False — nowhere to put it.
+func _glow_3d() -> bool:
+	var st := _act_state()
+	var v3 = st.get("view")
+	var b3: Sprite2D = st.get("body")
+	if v3 == null or b3 == null or hand3d == null or not hand3d.visible or pic.texture == null:
+		return false
+	var g: Dictionary = data["glow"]
+	var ts := pic.texture.get_size()
+	var gc: Array = g.get("at", [ts.x * 0.5, ts.y * 0.55])
+	var p: Vector2 = v3.call("hand_prop_point_px", hand3d, Vector2(float(gc[0]) / maxf(ts.x, 1.0), float(gc[1]) / maxf(ts.y, 1.0)))
+	if p == Vector2.INF:
+		return false
+	pic.visible = false
+	global_position = b3.global_transform * (p + b3.offset)
+	rotation = 0.0
+	modulate.a = 1.0
+	glow.position = Vector2.ZERO
+	var r := _figure_h() * float(g.get("radius_rel", 0.35))
+	glow.scale = Vector2.ONE * (r / 64.0)
+	var fl := 1.0 + float(g.get("flicker", 0.08)) * (sin(_t * 11.0 + _seed) * 0.6 + sin(_t * 23.7) * 0.4)
+	glow.modulate.a = float(g.get("alpha", 0.35)) * fl
+	z_index = clampi(int(npc.z_index) + 1, -4096, 4096)
+	z_as_relative = false
+	return true
 
 
 ## grip "fingers" on a live 3D figure: the picture inside its render (built once); false on sheets (2D fallback).

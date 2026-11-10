@@ -21,6 +21,7 @@ extends SceneTree
 ##   film:NAME,S,STEP — a frame every STEP s for S s → <out>/<NAME>_NNN.jpg
 ##   npc:ID          — print the villager's position, yaw, state, act
 ##   agata           — print Agata's position, walking, acting, action
+##   hand:ID[,Left]  — print where the villager's hand is on screen
 ## Prints "shot NAME" per shot; the screen is 1920×1080 in design px (the viewport is scaled).
 
 
@@ -160,6 +161,18 @@ func _run() -> void:
 				else:
 					var live = n.get("live")
 					print("npc %s pos %s state %s act %s yaw %s" % [arg, n.global_position.round(), live.get("state") if live else "-", live.get("once") if live else "-", rad_to_deg(float(live.get("yaw"))) if live else "-"])
+			"hand":
+				# hand:ID[,Left] — where the villager's hand is on screen (design px)
+				var hp := arg.split(",")
+				var hn = _npc(hp[0])
+				var hl = hn.get("live") if hn != null else null
+				if hl == null:
+					print("hand %s: no live figure" % arg)
+				else:
+					var b: Sprite2D = hl.get("body")
+					var side := hp[1] if hp.size() > 1 else "Right"
+					var aa = hl.get("act_arm")
+					print("hand %s %s: %s  (feet %s, act %s w %.2f; arm tweak %s)" % [hp[0], side, (b.global_transform * (hl.view.hand_grip_frame_px(side) + b.offset)).round(), hn.global_position.round(), hl.get("act_name"), hl.view.shown_act_w(), ("%.2f × %.0f° bone %d clip %s" % [aa.weight, rad_to_deg(aa.angle), aa.bone, aa.clip]) if aa != null else "none"])
 			"agata":
 				var pl = rm.player
 				print("agata pos %s walking %s acting %s action %s" % [pl.global_position.round(), pl.call("is_walking"), pl.call("is_acting"), pl.call("current_action")])

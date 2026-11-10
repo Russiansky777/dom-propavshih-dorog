@@ -221,6 +221,24 @@ func play_once(clip: String, hold: bool = false, hold_at: float = -1.0, loop: bo
 	return true
 
 
+## The next one-shot action's arm lowered or raised (stage data npc_act[].arm {side, drop_deg}; act_arm_modifier.gd):
+## it holds for that clip only, coming and going with it.
+const ActArm := preload("res://scripts/actors/act_arm_modifier.gd")
+var act_arm: SkeletonModifier3D = null
+
+
+func set_act_arm(d: Dictionary, clip: String) -> void:
+	if view == null:
+		return
+	if act_arm == null:
+		act_arm = ActArm.new()
+		act_arm.name = "ActArm"
+		view.skeleton.add_child(act_arm)
+		if arm_body != null:
+			view.skeleton.move_child(act_arm, arm_body.get_index())   # before BodyClear: it sees the arm where it is shown
+	act_arm.setup(view.skeleton, String(d.get("side", "Right")), float(d.get("drop_deg", 0.0)), clip)
+
+
 ## The held action ends: the clip plays out to its end and the villager goes back to the stance.
 func release_once(at_share: float = -1.0) -> void:
 	once_hold = false
@@ -337,6 +355,9 @@ func process(delta: float) -> void:
 	if _once_clip and not once and act_w <= 0.0 and view.shown_act_w() <= 0.001:
 		_once_clip = false
 	view.pose(delta, fposmod(walk_phase, 1.0), maxf(walk_w, step_w), act_w, act_name, float(lt[0]), float(lt[1]), float(lt[2]))
+	if act_arm != null:
+		var aw: float = view.shown_act_w() if (_once_clip and act_name == String(act_arm.clip)) else 0.0
+		act_arm.weight = aw if aw >= float(act_arm.weight) else move_toward(float(act_arm.weight), aw, delta / 0.25)
 	if arm_body != null and bool(rt.get("arm_body", {}).get("stance_free", false)):
 		arm_body.strength = view.shown_act_w()
 	elif arm_body != null and _rested:

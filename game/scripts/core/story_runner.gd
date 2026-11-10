@@ -610,6 +610,10 @@ func _run_stage(spec: Dictionary) -> void:
 			if an == null or not an.has_method("play_action"):
 				continue
 			var hold: bool = bool(g.get("hold", false)) or g.has("hold_at")
+			# 09.11 (Director 22:18: Nina «пишет невпопад»): `arm` {side, drop_deg} — the acting arm lowered or raised for
+			# this action (the chalk at the height of the line being written)
+			if g.has("arm") and an.has_method("act_arm"):
+				an.call("act_arm", g["arm"], String(g.get("action", "")))
 			var secs := float(an.call("play_action", String(g.get("action", "")), hold, float(g.get("hold_at", -1.0)), bool(g.get("loop", false))))
 			npc_acted.emit(String(g.get("id", "")), String(g.get("action", "")), secs)
 			# 09.11 (Director 12:35: Pelageya pulls the line of the boat, not the air): `rope_to` [x, y] — a line from her
@@ -622,6 +626,11 @@ func _run_stage(spec: Dictionary) -> void:
 				# on sheets (web, headless) no clip plays: the thing is taken / hung at once
 				for f in g.get("sets", []):
 					GameState.set_flag(String(f), true)
+			# 09.11 (the same note: «до того, как проигрывается анимация, а должна во время»): `layer_write` inside the
+			# action — the chalk line appears while the clip plays (its own `delay`: the arm is up by then), not after
+			# the staging's wait; on sheets it appears at once, as before
+			if g.has("layer_write"):
+				_stage_layer_write(g["layer_write"])
 			if g.has("rope_to") and secs > 0.0:
 				var rt: Array = g["rope_to"]
 				load("res://scripts/actors/hand_line.gd").attach(an, Vector2(float(rt[0]), float(rt[1])))

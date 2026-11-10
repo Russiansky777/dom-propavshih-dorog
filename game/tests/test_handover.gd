@@ -101,6 +101,8 @@ func _run() -> void:
 		await _ho5()
 	if only == "" or only == "6":
 		await _ho6()
+	if only == "" or only == "7":
+		await _ho7()
 	_ho4()
 	print("==== handover: %d tests, %d passed, %d failed ====" % [passes + fails, passes, fails])
 	quit(1 if fails > 0 else 0)
@@ -478,6 +480,128 @@ static func _inside(p: Vector2, poly: Array) -> bool:
 		if (float(a[1]) > p.y) != (float(b[1]) > p.y) and p.x < (float(b[0]) - float(a[0])) * (p.y - float(a[1])) / (float(b[1]) - float(a[1])) + float(a[0]):
 			c = not c
 	return c
+
+
+## HO-7 (Director 09.11, 22:18: «сцена с мамой в классе — она пишет невпопад, и до того, как проигрывается анимация, а
+## должна во время анимации написания на доске и в том же месте… Нина выводит число — пусть бы и выводила с мелом в
+## руке… а потом возвращалась в ту стойку, где была»): in M22 Nina stands at the board with her back to the room, the
+## chalk at the height of the line she writes and by its end, the line comes out while her arm is up; the date too —
+## with the chalk raised to the board's corner; after each she steps back to the right, facing Agata.
+## Self-check: the arm as the clip has it (no `arm` turn) holds the chalk far above the answer's line.
+var _ho7_grip := Vector2.INF
+
+
+func _ho7_watch(nina: Node2D, layer_id: String, line_y: float, self_check: bool) -> Dictionary:
+	var live = nina.get("live")
+	var out := {"acted": false, "yaw_off": 999.0, "dy": 999.0, "dx_end": 999.0, "early_w": -1.0, "late_w": -1.0, "raw_dy": 0.0, "end_x": 0.0}
+	var spr: Sprite2D = rm.current_room.get_node_or_null("Layers/%s/Image" % layer_id)
+	var L: float = live.view.action_length("write_board")
+	var g := 0
+	var x0 := -1.0
+	while g < 900:
+		g += 1
+		await process_frame
+		if not (bool(live.get("_once_clip")) and String(live.get("act_name")) == "write_board"):
+			if out["acted"]:
+				break
+			continue
+		out["acted"] = true
+		var share := float(live.get("act_t")) / maxf(L, 0.01)
+		var w := spr.region_rect.size.x if spr != null and spr.region_enabled else (spr.texture.get_size().x if spr != null else 0.0)
+		if x0 < 0.0:
+			x0 = w
+		if share < 0.15:
+			out["early_w"] = w - x0          # nothing written while the arm is still going up
+		if share >= 0.45 and share <= 0.6 and _ho7_grip != Vector2.INF:
+			out["yaw_off"] = minf(out["yaw_off"], absf(rad_to_deg(angle_difference(float(live.get("yaw")), PI))))
+			out["dy"] = minf(out["dy"], absf(_ho7_grip.y - line_y))
+			if self_check and live.get("act_arm") != null and out["raw_dy"] == 0.0:
+				# the arm as the clip has it, for two frames
+				var keep: float = live.act_arm.angle
+				live.act_arm.angle = 0.0
+				await process_frame
+				await process_frame
+				out["raw_dy"] = absf(_ho7_grip.y - line_y)
+				live.act_arm.angle = keep
+				await process_frame
+		if share >= 0.7:
+			out["late_w"] = maxf(out["late_w"], w - x0)
+			if spr != null and _ho7_grip != Vector2.INF:
+				var end_x: float = (spr.global_transform * Vector2(w, 0.0)).x
+				out["end_x"] = end_x
+				out["dx_end"] = minf(out["dx_end"], absf(_ho7_grip.x - end_x))
+	return out
+
+
+func _ho7() -> void:
+	# the data: the walk to the board ends facing it, the writing has the arm's turn and writes the line itself
+	var m22: Dictionary = sd.scene("M22")
+	var acts := 0
+	for st in m22.get("stage", []):
+		for a in st.get("npc_act", []):
+			if String(a.get("action", "")) == "write_board":
+				acts += 1
+				_check(a.has("arm") and not (a.get("layer_write", []) as Array).is_empty() and float(a["layer_write"][0].get("delay", 0.0)) >= 0.8,
+					"HO-7 M22: a write_board without its arm turn or with the line written outside the action (%s)" % str(a).substr(0, 120))
+		_check(not st.has("layer_write"), "HO-7 M22: a chalk line written by the staging, not by Nina's action (at %s)" % str(st.get("at")))
+	_check(acts == 2, "HO-7 M22: Nina writes twice — the answer and the date (%d)" % acts)
+	gs.reset()
+	_flags_before("M22")
+	gs.set_flag("board_mama", true)
+	rm.change_room("O1", "from_O2")
+	for i in 40:
+		await process_frame
+	_check(String(sr.active_scene) == "M22", "HO-7 M22 does not start in the class (%s)" % sr.active_scene)
+	var nina: Node2D = rm.current_room.get_node_or_null("npc_nina")
+	var live = nina.get("live") if nina != null else null
+	if live == null:
+		_check(false, "HO-7 no live Nina in the class (x11 needed)")
+		return
+	var body: Sprite2D = live.get("body")
+	var cb := func(): _ho7_grip = body.global_transform * (live.view.hand_grip_frame_px("Right") + body.offset)
+	live.view.skeleton.skeleton_updated.connect(cb)
+	# the answer: after the line that says she writes it. «Дождалась» on screen: y 387–441 (the layer ×1.5 about its middle)
+	sr.advance()
+	var r1: Dictionary = await _ho7_watch(nina, "nina_answer_mama", 414.0, true)
+	print("    HO-7 answer: turned %.0f° off the board, chalk %.0f px off the line's height (as the clip has it: %.0f), %.0f px from the line's end; written before the arm is up: %.0f px, by the end: %.0f px" % [r1["yaw_off"], r1["dy"], r1["raw_dy"], r1["dx_end"], r1["early_w"], r1["late_w"]])
+	_check(r1["acted"], "HO-7 Nina does not write the answer")
+	_check(r1["yaw_off"] <= 25.0, "HO-7 writing the answer Nina is turned %.0f° off the board (≤ 25)" % r1["yaw_off"])
+	_check(r1["dy"] <= 45.0, "HO-7 the chalk is %.0f px off the height of the line it writes (≤ 45)" % r1["dy"])
+	_check(r1["dx_end"] <= 80.0, "HO-7 the chalk is %.0f px from the end of the written line (≤ 80)" % r1["dx_end"])
+	_check(r1["early_w"] == 0.0 and r1["late_w"] > 60.0, "HO-7 the line is not written while the arm is at the board (before: %.0f px, by the end: %.0f)" % [r1["early_w"], r1["late_w"]])
+	_check(r1["raw_dy"] > 80.0, "self-check HO-7: with the arm as the clip has it the chalk is only %.0f px off the line — the test sees no miss" % r1["raw_dy"])
+	# she steps back to the right of what she wrote, facing Agata
+	var g := 0
+	while g < 400 and (sr.is_staging() or sr.current_beat.is_empty()):
+		g += 1
+		await process_frame
+	_check(nina.global_position.x > 1280.0, "HO-7 after the answer Nina stays in front of it (x %.0f)" % nina.global_position.x)
+	# on to the date (the line «Под своим числом Агатино написала…» is the one before it)
+	var guard := 0
+	while guard < 12 and not String(sr.current_beat.get("text", "")).begins_with("Нина помедлила"):
+		guard += 1
+		sr.advance()
+		for i in 12:
+			await process_frame
+		while sr.is_staging():
+			await process_frame
+	_check(String(sr.current_beat.get("text", "")).begins_with("Нина помедлила"), "HO-7 the date's line not reached (%s)" % String(sr.current_beat.get("text", "")).substr(0, 40))
+	sr.advance()
+	# «25 октября» on screen: x 1187–1316, y 195–241
+	var r2: Dictionary = await _ho7_watch(nina, "nina_answer_date", 218.0, false)
+	print("    HO-7 date: turned %.0f° off the board, chalk %.0f px off its height, %.0f px from its end; before the arm is up: %.0f px, by the end: %.0f px" % [r2["yaw_off"], r2["dy"], r2["dx_end"], r2["early_w"], r2["late_w"]])
+	_check(r2["acted"] and r2["yaw_off"] <= 25.0, "HO-7 the date: Nina does not write it at the board (acted %s, %.0f° off)" % [r2["acted"], r2["yaw_off"]])
+	_check(r2["dy"] <= 60.0, "HO-7 the date: the chalk is %.0f px off its height (≤ 60)" % r2["dy"])
+	_check(r2["dx_end"] <= 110.0, "HO-7 the date: the chalk is %.0f px from its end (≤ 110)" % r2["dx_end"])
+	_check(r2["early_w"] == 0.0 and r2["late_w"] > 40.0, "HO-7 the date is not written while the arm is up (before: %.0f, by the end: %.0f)" % [r2["early_w"], r2["late_w"]])
+	g = 0
+	while g < 400 and (sr.is_staging() or sr.current_beat.is_empty()):
+		g += 1
+		await process_frame
+	_check(nina.global_position.x > 1280.0 and not bool(live.get("_once_clip")), "HO-7 after the date Nina is not back in her place (x %.0f, acting %s)" % [nina.global_position.x, live.get("_once_clip")])
+	if live.view.skeleton.skeleton_updated.is_connected(cb):
+		live.view.skeleton.skeleton_updated.disconnect(cb)
+	gs.reset()
 
 
 func _off_floor() -> Array:

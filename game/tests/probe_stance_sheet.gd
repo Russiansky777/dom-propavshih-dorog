@@ -60,13 +60,18 @@ func _run() -> void:
 				continue
 			live.view.render_target_update_mode = SubViewport.UPDATE_DISABLED
 			var yaw := deg_to_rad(yaw_deg)
-			live.face(Vector2(sin(yaw), cos(yaw) * 0.55), 0.55, true)
+			live.face(Vector2(sin(yaw), cos(yaw) * 0.55) * 100.0, 0.55, true)   # (shorter than 1 px is ignored)
 			var state := ""
 			var t := 0.0
 			for sh in shots:
 				if String(sh[0]) != state:
 					state = String(sh[0])
-					live.set_state(state)
+					if state.begins_with("act_"):
+						# a one-shot action (rt3d.clips role): act_write_board
+						print("  %s %s: %.2f s" % [id, state, live.view.action_length(state.trim_prefix("act_"))])
+						live.play_once(state.trim_prefix("act_"))
+					else:
+						live.set_state(state)
 					t = 0.0
 				while t < float(sh[1]):
 					live.process(DT)

@@ -320,6 +320,8 @@ func _test_data() -> void:
 	var writes := 0
 	for st in m22.get("stage", []):
 		writes += (st.get("layer_write", []) as Array).size()
+		for a in st.get("npc_act", []):   # 09.11: the chalk lines are written by Nina's own action (npc_act[].layer_write)
+			writes += (a.get("layer_write", []) as Array).size()
 	_check(writes >= 4, "M22: Nina's answers and the date are written in (layer_write ×%d)" % writes)
 	var mama: Dictionary = {}
 	for l in sd.room("O1").get("layers", []):
