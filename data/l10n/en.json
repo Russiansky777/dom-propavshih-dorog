@@ -2199,10 +2199,6 @@
    "ru": "Коробка пуста. Все три петли теперь на школьной двери.",
    "en": "The box is empty. All three hinges are on the school door now."
   },
-  "text:ui.day2_end": {
-   "ru": "Дальше по тропе — улица Ольховки и встреча с мамой. Эта часть игры ещё собирается.",
-   "en": "The path leads on to Olkhovka and Mama. This part of the game is still being made."
-  },
   "text:M1.pavel.day1": {
    "ru": "Скоро вечер. Поутру приходи, по свету. Тогда и поговорим.",
    "en": "Evening soon. Come in the morning, while it's light. We'll talk then."
@@ -3186,10 +3182,6 @@
   "text:ui.page_next": {
    "ru": "Дальше ›",
    "en": "Next ›"
-  },
-  "text:ui.block3_end": {
-   "ru": "Дальше — совет и мост. Эта часть игры ещё собирается.",
-   "en": "Next: the village council and the bridge. This part is still being made."
   },
   "text:O4.tamara.after": {
    "ru": "За год вон сколько писем набралось… А тут за этот год двадцать лет прошло. Как же так-то?",

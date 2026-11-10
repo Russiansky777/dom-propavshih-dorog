@@ -873,7 +873,12 @@ for _old, _new in (meta.get("flag_renames") or {}).items():
 
 # Снятое решением Директора не возвращается в то, что видит игрок (сверка 30.10: Р10 убрал нижнюю улицу «со всеми
 # упоминаниями», а две бумаги в горнице Нины её ещё называли): тексты text/*.json и имена зон/локаций.
-_GONE = [(re.compile(r"нижн\w*\s+улиц", re.I), "Р10 (29.10): нижняя улица убрана со всеми упоминаниями")]
+_GONE = [(re.compile(r"нижн\w*\s+улиц", re.I), "Р10 (29.10): нижняя улица убрана со всеми упоминаниями"),
+         # Обзор 10.11: в текстах лежали заглушки недостроенных частей («Эта часть игры ещё собирается» — ui.day2_end на
+         # выходе R3→O4 и ui.block3_end); игра собрана целиком, показать их было нечем, но и лежать им незачем.
+         (re.compile(r"ещ[её]\s+собирается", re.I), "заглушка недостроенной части: игра собрана целиком (обзор 10.11)")]
+# Самопроверка: правило видит обе снятые заглушки и не трогает обычный текст.
+assert _GONE[1][0].search("Дальше — совет и мост. Эта часть игры ещё собирается.") and not _GONE[1][0].search("Илья собирается к повороту"), "_GONE: правило заглушек не работает"
 def _player_strings():
     for _p in sorted((STORY / "text").glob("*.json")):
         for _k, _v in json.loads(_p.read_text(encoding="utf-8")).get("texts", {}).items():
@@ -885,6 +890,14 @@ def _player_strings():
         yield f"locations.json zones.{_z}", str(_n)
     for _l in _loc.get("locations", []):
         yield f"locations.json {_l.get('id')}", str(_l.get("name", ""))
+# Выход, ведущий в построенную комнату, не носит запасного текста «не построено» (обзор 10.11: R3→O4 держал
+# unbuilt_text с заглушкой дня второго, хотя улица Ольховки давно в игре).
+for _p in sorted((STORY / "rooms").glob("*.json")):
+    if _p.name.startswith("_"):
+        continue
+    for _e in json.loads(_p.read_text(encoding="utf-8")).get("exits", []):
+        if "unbuilt_text" in _e and (STORY / "rooms" / f"{_e.get('to')}.json").is_file():
+            err(f"rooms/{_p.name}: выход в {_e.get('to')} держит unbuilt_text, а комната построена — убрать")
 for _where, _t in _player_strings():
     for _rx, _why in _GONE:
         if _rx.search(_t):
