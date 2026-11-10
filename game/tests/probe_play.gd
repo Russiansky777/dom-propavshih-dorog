@@ -12,6 +12,9 @@ extends SceneTree
 ##   adv:N           — N times, each after the staging and `line_s` seconds (default 0.3)
 ##   line_s:S        — seconds a line stays before `adv:N` advances it
 ##   flag:F          — set a flag
+##   room:ID[,spawn] — change the room (a scene with trigger `enter` starts as in the game)
+##   info            — print the scene, its line, the frame
+##   mech:METHOD[,ARG] — call the open mechanic panel's method (windlass: mech:signal_pressed,lower)
 ##   frame:ID        — show a frame (FrameView)
 ##   shot:NAME       — screenshot <out>/<NAME>.jpg (whole screen)
 ##   crop:X,Y,W,H    — later shots are cropped (source px 1920×1080 space); crop:- resets
@@ -83,7 +86,6 @@ func _run() -> void:
 	rm.start_at(a[1])
 	for i in 30:
 		await process_frame
-	sr.call("_on_state_reset")
 	for i in range(2, a.size()):
 		var c: String = a[i]
 		var k := c.split(":", true, 1)
@@ -103,11 +105,31 @@ func _run() -> void:
 					await process_frame
 			"scene":
 				sr.start_scene(arg)
+			"room":
+				var rp := arg.split(",")
+				rm.change_room(rp[0], rp[1] if rp.size() > 1 else "default")
+				await _wait(1.0)
+			"mech":
+				# the open mechanic's own input by name: mech:signal_pressed,lower
+				var mp := arg.split(",")
+				var done := false
+				for nd in root.find_children("*", "", true, false):
+					if nd.has_method(mp[0]) and nd is CanvasItem and (nd as CanvasItem).is_visible_in_tree():
+						if mp.size() > 1:
+							nd.call(mp[0], mp[1])
+						else:
+							nd.call(mp[0])
+						done = true
+						break
+				print("  mech ", arg, " → ", done)
+			"info":
+				print("scene %s staging %s frame %s beat %s" % [sr.active_scene, sr.is_staging(), sr.get("current_frame"), str(sr.current_beat).substr(0, 160)])
 			"adv":
 				var n := int(arg) if arg != "" else 1
 				for j in n:
 					await _advance_once()
 					await _wait(line_s)
+					print("  adv → ", sr.current_beat.get("line_id", sr.current_beat.get("type", "-")), " frame ", sr.get("current_frame"))
 			"line_s":
 				line_s = float(arg)
 			"flag":

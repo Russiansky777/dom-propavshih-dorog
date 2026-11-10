@@ -278,6 +278,14 @@ func _borrow_live(ids: Array) -> bool:
 		add_child(n)
 		(n as Node2D).position = gp   # the panel spans the screen from (0, 0)
 		n.name = "Live_" + String(n.name)
+	# Director 09.11, 22:18 («когда ему командуешь по бревну, он повёрнут в обратную сторону от того, где крутить надо»):
+	# for the time of the close-up a figure turns to its work — data `live_face` {id: [x, y]} (Ilya to the windlass's
+	# crank; in the frame before it he faces Agata, whom he talks to)
+	var lf: Dictionary = spec.get("live_face", {})
+	for n in found:
+		var id := String(n.name).trim_prefix("Live_npc_")
+		if lf.has(id) and n.has_method("face_towards"):
+			n.call("face_towards", v2(lf[id]))
 	return true
 
 

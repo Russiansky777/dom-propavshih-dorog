@@ -143,7 +143,16 @@ func _setup_arm_body() -> void:
 			if not _rest_cache.has(rest_path):
 				var parsed = JSON.parse_string(FileAccess.get_file_as_string(rest_path)) if FileAccess.file_exists(rest_path) else null
 				_rest_cache[rest_path] = parsed if parsed is Dictionary else {}
-			_rested = ArmRest.apply(view.skeleton, view.anim, _rest_cache[rest_path], float(rest.get("scale", 1.0))) > 0
+			ArmRest.apply(view.skeleton, view.anim, _rest_cache[rest_path], float(rest.get("scale", 1.0)))
+			# rested — when the clips this figure stands, talks and listens with are all in the data (a test's figure on
+			# other clips keeps BodyClear as before)
+			var baked: Dictionary = (_rest_cache[rest_path] as Dictionary).get("clips", {})
+			_rested = not baked.is_empty()
+			for role in ["idle", "talk", "listen"]:
+				if view.clips.has(role):
+					var cn := String(view.clips[role])
+					if not baked.has(cn.get_slice("/", cn.get_slice_count("/") - 1)):
+						_rested = false
 			if _rested:
 				bc.strength = 0.0
 		# the clearing baked into the stance clips (data arm_body.bake; BodyClear.bake)

@@ -186,6 +186,7 @@ func _test_states() -> void:
 
 # --- Bodies in a conversation (Director 01.11) ---------------------------------------------------------------------
 
+const Pen := preload("res://tests/probe_hand_penetration.gd")
 const DT := 1.0 / 60.0
 const BODY_SEQ := [["idle", 2.0], ["talk", 4.5], ["idle", 1.5], ["listen", 3.0], ["idle", 1.0]]
 const TOE_MAX_DEG := 6.0        # a set-down boot's toe above the model's own foot line (old: 13–27° in «talk»)
@@ -278,6 +279,17 @@ func _body_run(id: String, old: bool, clear_off: bool = false, old_clips: bool =
 	_body_m = {}
 	var cb := func(): _body_m = _body_measure(v)
 	v.skeleton.skeleton_updated.connect(cb)
+	# 09.11 (arms along the body): a rested figure's hands are measured against the real surface of the clothes
+	# (probe_hand_penetration: a hand vertex behind the nearest body vertex) — BodyClear's hull, the farthest fold per
+	# sector, is no longer what the arms are kept out of while standing and talking
+	var rested: bool = bool(live.get("_rested")) and not clear_off
+	var grab = null
+	var prepped: Array = []
+	if rested:
+		grab = Pen.Grab.new()
+		v.skeleton.add_child(grab)
+		prepped = Pen.prep(v.skeleton, v.meshes)
+	var frame_n := 0
 	var prev_lean := Vector2.INF
 	var stepping := [false, false]
 	var talk_side := [INF, -INF]
@@ -311,7 +323,13 @@ func _body_run(id: String, old: bool, clear_off: bool = false, old_clips: bool =
 				legs = [minf(legs[0], float(m["legs"])), maxf(legs[1], float(m["legs"]))]
 			# (06.11, 23:0x: standing and listening the arms hang as the clip has them — the Director's choice; the
 			# hands are kept out of the clothes while talking)
-			if live.arm_body != null and t > 0.3 and ((seg[0] == "talk" and v.shown_act_w() > 0.95) or clear_off):
+			frame_n += 1
+			if rested:
+				if t > 0.3 and frame_n % 15 == 0 and not grab.out.is_empty():
+					var pm: Array = Pen.measure(prepped, grab.out, float(live.arm_body.get("_unit")))
+					for i in 2:
+						out["hand"] = maxf(out["hand"], float(pm[0][i]))
+			elif live.arm_body != null and t > 0.3 and ((seg[0] == "talk" and v.shown_act_w() > 0.95) or clear_off):
 				for i in 2:
 					out["hand_in"] = maxf(out["hand_in"], float(live.arm_body.depth_m[i]))
 					out["hand"] = maxf(out["hand"], float(live.arm_body.shown_m[i]))

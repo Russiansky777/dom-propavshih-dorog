@@ -453,8 +453,12 @@ func _hand_depth(spec: Dictionary) -> Array:
 func _t7() -> void:
 	for id in ALL:
 		var w: Array = await _hand_depth(_spec(id))
-		_check(float(w[0]) <= 2.0, "%s: a hand %.1f cm inside the body's silhouette (≤ 2), %s" % [id, float(w[0]), w[2]])
-		_check(float(w[1]) <= 2.0, "%s: a hand %.1f cm behind the clothes (≤ 2)" % [id, float(w[1])])
+		# 09.11 (arms along the body, arm_rest): the hands now hang as near the clothes as the real surface lets them —
+		# beside an apron's flared edge they are up to ~3 cm inside the posed silhouette (the farthest fold per sector)
+		# while in full view (Pavel 2.9, shots 09.11); the silhouette's limit is 3.5, and the real surface — how far a
+		# hand vertex is behind the clothes — is held to 1 cm (was 2; measured 0.0–0.8 for all nine)
+		_check(float(w[0]) <= 3.5, "%s: a hand %.1f cm inside the body's silhouette (≤ 3.5), %s" % [id, float(w[0]), w[2]])
+		_check(float(w[1]) <= 1.0, "%s: a hand %.1f cm behind the clothes (≤ 1)" % [id, float(w[1])])
 	var sp := _spec("pavel")
 	(sp["rt3d"]["arm_body"] as Dictionary).erase("shell")
 	(sp["rt3d"]["arm_body"] as Dictionary).erase("bake")
