@@ -97,6 +97,8 @@ echo "[godot] geometry exit code: $geo_code"
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_l10n.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # английский (03.11): копия story_en, английские субтитры поверх русского голоса, «без субтитров», меню языка с предупреждением
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_feedback_0511.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # замечания 05.11, блок 1: «Облегчить» у колокола, язык в мини-игре, Павел к двери конторы, Агата не идёт на месте
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_villagers_v3.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # блок 3: жители v3 (модель, кончики пальцев не в теле, разовые действия)
+"$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/bake_mouth.gd -- all check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # линия губ жителей (data/actors_rest/mouth_<id>.json) совпадает с моделью
+bash "$ROOT/tools/bake_arm_rest.sh" all check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log"; [[ "${PIPESTATUS[0]}" -ne 0 ]] && code=1  # руки вдоль тела: кривые data/actors_rest/<id>.json совпадают с моделью и клипами
 "$GODOT" --headless --audio-driver Dummy --fixed-fps 60 --path "$GAME_DIR" -s res://tests/test_animation_state.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # 06.11: свои копии клипов у каждой фигуры, «слушает»=стойка без второй копии idle (предложение второго ИИ)
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_body_clear_state.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # 06.11: BodyClear — проходы без шага времени, догон, выключение
 # K (31.10): правки дефектов генератора — третий сапог Пелагеи (F_hug_pelageya), одинаковые зарубки бруса и обведённая
@@ -131,8 +133,12 @@ if command -v xvfb-run >/dev/null; then
   # 09.11 (Director 11:34–13:36): things in hands and turns as played — Tamara's key from hand to hand, Pelageya's line
   # at the plate, the epilogue frames' turns, small actions taken out, the bag on the bridge (live 3D under xvfb)
   xvfb-run -a -s "-screen 0 1920x1080x24" "$GODOT" --path "$GAME_DIR" --display-driver x11 --rendering-driver opengl3 --resolution 1920x1080 --fixed-fps 30 --audio-driver Dummy -s res://tests/test_handover.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log"; [[ "${PIPESTATUS[0]}" -ne 0 ]] && code=1
+  # the villagers' painted mouths (Director 09.11, 21:56 / 22:18): open by the voice, dark, on the lip line, the jaw bone
+  # left alone; self-check — no shape, no mouth (the figures alone, rendered)
+  xvfb-run -a -s "-screen 0 1280x720x24" "$GODOT" --path "$GAME_DIR" --display-driver x11 --rendering-driver opengl3 --resolution 320x180 --fixed-fps 60 --audio-driver Dummy -s res://tests/test_jaw.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log"; [[ "${PIPESTATUS[0]}" -ne 0 ]] && code=1
 else
   echo "[tests] test_frame_video skipped: no xvfb-run" | tee -a "$BUILD_DIR/logs/tests.log"
+  "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_jaw.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # без экрана — данные и раскрытие по голосу
 fi
 # 09.11 вечер: петли-картины без рывков — один ключевой кадр на ролик (Theora выдавала скачок раз в 0,5 с), шов ≤ 3/255,
 # без звука; самопроверка: ролик с ключевым кадром каждые 12 кадров ловится

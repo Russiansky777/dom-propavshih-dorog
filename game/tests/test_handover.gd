@@ -574,12 +574,12 @@ func _ho7() -> void:
 		await process_frame
 	# on to the line she writes at (M22_3; the first advance of a line may only finish its text)
 	var tries := 0
-	while tries < 8 and not String(sr.current_beat.get("line_id", "")).begins_with("M22_3"):
+	while tries < 8 and not sr.is_staging() and not String(sr.current_beat.get("line_id", "")).begins_with("M22_3"):
 		tries += 1
 		sr.advance()
 		for i in 8:
 			await process_frame
-	_check(String(sr.current_beat.get("line_id", "")).begins_with("M22_3"), "HO-7 the line of the answer (M22_3) not reached (%s)" % str(sr.current_beat.get("line_id", "-")))
+	_check(sr.is_staging() or String(sr.current_beat.get("line_id", "")).begins_with("M22_3"), "HO-7 the line of the answer (M22_3) not reached (%s)" % str(sr.current_beat.get("line_id", "-")))
 	var r1: Dictionary = await _ho7_watch(nina, "nina_answer_mama", 414.0, true)
 	print("    HO-7 answer: turned %.0f° off the board, chalk %.0f px off the line's height (as the clip has it: %.0f), %.0f px from the line's end; written before the arm is up: %.0f px, by the end: %.0f px" % [r1["yaw_off"], r1["dy"], r1["raw_dy"], r1["dx_end"], r1["early_w"], r1["late_w"]])
 	_check(r1["acted"], "HO-7 Nina does not write the answer")

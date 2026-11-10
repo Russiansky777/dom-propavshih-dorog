@@ -12,7 +12,8 @@ extends RefCounted
 ## Actor3D copies the model's clips for each one). An arm lifted in a gesture is not «hanging» and is left alone (the
 ## baker weighs the turn by how much the arm points down).
 ##
-## Test: tests/test_arm_rest.gd (the arms hang closer, the hands stay out of the clothes, the data matches the model).
+## Tests: tests/test_villagers_v3.gd V3-13 (the arms hang closer than the clips have them), V3-7 (the hands stay out of
+## the clothes); tools/bake_arm_rest.sh all check (the data matches the model; tools/run_tests.sh).
 
 const META := "arms_rested"
 

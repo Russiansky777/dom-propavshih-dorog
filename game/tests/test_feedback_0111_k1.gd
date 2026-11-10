@@ -372,7 +372,7 @@ func _test_mitya_m19() -> void:
 func _test_chair() -> void:
 	for night in [false, true]:
 		var sfx := "_night" if night else ""
-		for part in [["chair_back", 1020], ["chair_leg_near", 1066], ["chair_far", 990]]:
+		for part in [["chair_back", 1080], ["chair_leg_near", 1080], ["chair_far", 990]]:
 			var l := _layer("O3", String(part[0]) + sfx)
 			_check(bool(l.get("occluder", false)) and int(l.get("z", 0)) == int(part[1]), "%s%s: an occluder at z %d" % [part[0], sfx, part[1]])
 	_fresh(["done_M19", "done_M21b", "morning_day3"])
@@ -387,6 +387,23 @@ func _test_chair() -> void:
 	player.global_position = Vector2(1080, 830)
 	await _frames(3)
 	_check(int(player.z_index) < int(occ.z_index if occ != null else 0), "Agata at the table (z %d) under the chair (z %d)" % [int(player.z_index), int(occ.z_index if occ != null else 0)])
+	# Director 09.11, 22:18 («опять момент со стулом выглядит странно»): where she comes in from the street and where she
+	# stands to talk (the floor's left edge, y 1050–1055) her figure is wider than the gap to the chair — drawn over the
+	# chair's back she stood «in» it, and a step up across y 1020 threw her behind it. The back is the chair's near side:
+	# it is over her at every place of the floor's left edge. Self-check: at the old z 1020 the entry place was over it.
+	var room_d: Dictionary = sd.room("O3")
+	var places: Array = [room_d.get("spawns", {}).get("from_O4", [0, 0])]
+	for h in room_d.get("hotspots", []):
+		if h.has("stand") and float(h["stand"][0]) < 1180.0:
+			places.append(h["stand"])
+	var over_old := 0
+	for pl in places:
+		player.global_position = Vector2(float(pl[0]), float(pl[1]))
+		await _frames(2)
+		_check(int(player.z_index) < int(occ.z_index if occ != null else 0), "at %s by the chair Agata (z %d) is drawn over its back (z %d) — she stands «in» the chair" % [str(pl), int(player.z_index), int(occ.z_index if occ != null else 0)])
+		if int(player.z_index) >= 1020:
+			over_old += 1
+	_check(over_old > 0, "self-check K1-54: no place by the chair below the back's old z 1020 — the check sees nothing")
 	# at night the painted night layer is over the picture: the night chair goes by the same flags
 	var night := _layer("O3", "night")
 	for part in ["chair_back", "chair_leg_near", "chair_far"]:

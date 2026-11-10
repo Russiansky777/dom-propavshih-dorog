@@ -9,6 +9,7 @@ extends SceneTree
 ##   walkend         — wait until Agata stops walking (≤ 20 s)
 ##   tp:X,Y[,FX,FY]  — put Agata there at once, facing the point FX,FY
 ##   perf            — where a frame's time goes
+##   tour:N[,PREFIX] — N lines of the running scene, a shot of each once its staging is done
 ##   feet:S          — S seconds of Agata's feet: lifts and set-downs, slowing, standing (give the click before it)
 ##   scene:ID        — start the scene
 ##   adv             — advance the current line (option 0 for a choice) once its staging is done
@@ -210,6 +211,31 @@ func _run() -> void:
 					await _advance_once()
 					await _wait(line_s)
 					print("  adv → ", sr.current_beat.get("line_id", sr.current_beat.get("type", "-")), " frame ", sr.get("current_frame"))
+			"tour":
+				# tour:N[,PREFIX] — N lines of the scene that is on: each line once its staging is done, half a second
+				# later a shot <PREFIX>_<k>_<line id>.jpg; stops when no scene is on
+				var tp := arg.split(",")
+				var tn := int(tp[0]) if tp[0] != "" else 10
+				var pre := tp[1] if tp.size() > 1 else "tour"
+				for j in tn:
+					var g := 0
+					while g < 500 and (sr.is_staging() or (sr.current_beat.is_empty() and String(sr.active_scene) != "")):
+						g += 1
+						await process_frame
+					if sr.current_beat.is_empty():
+						print("  tour: no line (scene %s) after %d" % [sr.active_scene, j])
+						break
+					await _wait(0.5)
+					var lid := String(sr.current_beat.get("line_id", sr.current_beat.get("type", "x"))).replace(":", "_").replace("/", "_")
+					await _shot("%s_%02d_%s" % [pre, j, lid])
+					if sr.current_beat.get("type") == "options":
+						sr.choose(String(sr.current_beat["options"][0]["id"]))
+					else:
+						sr.advance()
+					await _wait(0.15)
+					if not sr.current_beat.is_empty() and String(sr.current_beat.get("line_id", "")).replace(":", "_").replace("/", "_") == lid and not sr.is_staging():
+						sr.advance()   # the first advance only finished the line's text
+						await _wait(0.15)
 			"line_s":
 				line_s = float(arg)
 			"flag":

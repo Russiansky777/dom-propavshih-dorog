@@ -1572,7 +1572,7 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 		var need_i := need
 		if _closing > 0 and not closing_to.is_empty():
 			need_i = float(fk.get("close_need_m", 0.03))   # the closing step itself: taken even from a little behind
-		elif _closing == 0 and not turning:
+		elif _closing == 0 and not (turning or to_end):
 			need_i = maxf(need, float(fk.get("close_m", 0.15)))   # closed up: the other foot stays unless far off
 		if _shuffle_grace > 0.0:
 			need_i = maxf(need_i, float(fk.get("close_m", 0.15)))

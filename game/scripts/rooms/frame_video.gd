@@ -30,6 +30,9 @@ var hold_enabled := true
 var _hold: TextureRect = null
 var _hold_frames := 0
 const HOLD_FRAMES := 3
+const HOLD_MIN_S := 0.1          # of the new stream played before the cover goes
+const HOLD_MAX_FRAMES := 30
+var _hold_total := 0
 
 
 static func pick(bg: Dictionary) -> Array:
@@ -133,6 +136,7 @@ func _cover(tex: Texture2D) -> void:
 	_hold.texture = tex
 	_hold.visible = true
 	_hold_frames = HOLD_FRAMES
+	_hold_total = 0
 	set_process(true)
 
 
@@ -141,6 +145,12 @@ func _process(_delta: float) -> void:
 		set_process(false)
 		return
 	_hold_frames -= 1
+	_hold_total += 1
+	# not before the new clip has really drawn: a few frames AND a tenth of a second of the new stream played (a slow
+	# disk or decoder — the Director's machine showed the blink as «a whole black screen» — takes longer than three
+	# frames to give the first picture); half a second at the most
+	if _hold_frames == 0 and stream_position < HOLD_MIN_S and _hold_total < HOLD_MAX_FRAMES:
+		_hold_frames = 1
 	if _hold_frames == 0 and _hold != null:
 		_hold.visible = false
 		_hold.texture = null

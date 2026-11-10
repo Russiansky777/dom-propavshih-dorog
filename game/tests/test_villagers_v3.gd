@@ -93,6 +93,9 @@ func _run() -> void:
 	await _test("V3-11 shoulders not jelly: the skin of the shoulder tops stays on the chest; self-check — the clips' clavicles slide it", _t11)
 	await _test("V3-9 listening: shoulders square, hands not behind the back; self-check — the v2 listen clip rolls them", _t9)
 	await _test("V3-5 no stepping about standing or in the action clips (Mitya, Pelageya…); self-check — locks held through the clips step", _t5)
+	await _test("V3-12 a skirt hanging on the legs is not torn by the stride (Pelageya walking to the rope); self-check — the full stride spreads the knees", _t12)
+	await _test("V3-13 arms along the body standing (Director 09.11, 22:18 «руки не вдоль, а будто в воздухе под углом»); self-check — the clips as they are hold them out", _t13)
+	await _test("V3-14 not soldiers: standing, the weight goes from foot to foot (Director 09.11, 22:18); self-check — without the sway the hips stand still", _t14)
 	var failed := _results.filter(func(r): return not r[1]).size()
 	print("\n%d/%d passed" % [_results.size() - failed, _results.size()])
 	quit(1 if failed > 0 or _results.is_empty() else 0)
@@ -731,6 +734,132 @@ func _jelly(spec: Dictionary, state: String, secs := 5.0) -> float:
 	nl[0].queue_free()
 	await process_frame
 	return mean / maxf(1.0, picks.size())
+
+
+## The widest the knees get apart walking for 2 s (m): what tears a skirt that hangs on the leg bones.
+func _knee_spread(spec: Dictionary) -> float:
+	var r: Array = _live(spec)
+	var live = r[1]
+	if live == null:
+		return -1.0
+	var sk: Skeleton3D = live.view.skeleton
+	var kl := sk.find_bone("LeftLeg")
+	var kr := sk.find_bone("RightLeg")
+	var unit := sk.global_transform.basis.get_scale().y
+	live.walk(true, 0.9 * live.view.ppm * 0.55, 0.55)
+	var worst := 0.0
+	var t := 0.0
+	while t < 2.0:
+		live.process(1.0 / 60.0)
+		await process_frame
+		t += 1.0 / 60.0
+		if t > 0.5:
+			worst = maxf(worst, sk.get_bone_global_pose(kl).origin.distance_to(sk.get_bone_global_pose(kr).origin) * unit)
+	(r[0] as Node).queue_free()
+	await process_frame
+	return worst
+
+
+## V3-12 (Director 09.11, 22:18: «Пелагею коробит, будто из двух частей, когда идёт тянуть бечеву»): Pelageya's skirt has
+## no bones of its own (Nina's, Tamara's and Ilya's wife's have — data rt3d.skirt): it hangs on her leg bones, and the
+## full stride tore it in two with the grey lining stretched between the halves. Until her model gets a skirt rig the
+## stride is shown at half its swing (data walk_stride_k), the knees no further apart than a skirt takes.
+func _t12() -> void:
+	for id in ["nina", "pelageya", "ilya_wife", "tamara"]:
+		var sp := _spec(id)
+		var rigged: bool = not (sp["rt3d"] as Dictionary).get("skirt", {}).is_empty()
+		var k := float((sp["rt3d"] as Dictionary).get("walk_stride_k", 1.0))
+		_check(rigged or k <= 0.6, "%s: a skirt without its own bones walks the full stride (walk_stride_k %.2f > 0,6) — it tears on the legs" % [id, k])
+	var sp_p := _spec("pelageya")
+	var now: float = await _knee_spread(sp_p)
+	(sp_p["rt3d"] as Dictionary)["walk_stride_k"] = 1.0
+	var full: float = await _knee_spread(sp_p)
+	print("    pelageya: knees up to %.0f mm apart walking (the full stride: %.0f mm)" % [now * 1000.0, full * 1000.0])
+	_check(now >= 0.0 and now <= 0.28, "Pelageya's knees get %.0f mm apart walking (≤ 280 — 263 at half the stride, 348 at the full: her skirt hangs on them)" % (now * 1000.0))
+	_check(full > now + 0.05, "self-check: the full stride spreads them only %.0f mm (now %.0f) — the test sees no stride" % [full * 1000.0, now * 1000.0])
+
+
+## Standing for `secs`: [left arm's mean spread from straight down (°, in the body's frontal plane), right arm's, the
+## hips' travel across (cm, peak to peak)] — as shown, after every modifier.
+func _stand_measure(spec: Dictionary, secs := 6.0) -> Array:
+	var nl := _live(spec)
+	if nl[1] == null:
+		return [99.0, 99.0, 0.0]
+	var live = nl[1]
+	var sk: Skeleton3D = live.view.skeleton
+	var AR = load("res://scripts/actors/arm_rest.gd")
+	var ax: Array = AR.axes(sk)
+	var ids := {}
+	for b in ["Hips", "LeftArm", "RightArm", "LeftForeArm", "RightForeArm"]:
+		ids[b] = sk.find_bone(b)
+	var got := {}
+	var cb := func():
+		for b in ids:
+			got[b] = sk.get_bone_global_pose(ids[b])
+	sk.skeleton_updated.connect(cb)
+	var unit := sk.global_transform.basis.get_scale().y
+	var hr: Transform3D = sk.get_bone_global_rest(ids["Hips"])
+	var across: Vector3 = hr.basis * (ax[1] as Vector3)
+	live.set_state("idle")
+	var sum := [0.0, 0.0]
+	var n := 0
+	var lo := INF
+	var hi := -INF
+	var t := 0.0
+	while t < secs:
+		live.process(DT)
+		await process_frame
+		t += DT
+		if t < 1.0 or got.is_empty():
+			continue
+		var inv: Transform3D = (got["Hips"] as Transform3D).affine_inverse()
+		for i in 2:
+			var sd: String = ["Left", "Right"][i]
+			var d: Vector3 = inv.basis * ((got[sd + "ForeArm"] as Transform3D).origin - (got[sd + "Arm"] as Transform3D).origin)
+			sum[i] += rad_to_deg((AR.spread_of(d, ax, i == 0) as Vector2).x)
+		n += 1
+		var x: float = (got["Hips"] as Transform3D).origin.dot(across.normalized()) * unit * 100.0
+		lo = minf(lo, x)
+		hi = maxf(hi, x)
+	sk.skeleton_updated.disconnect(cb)
+	(nl[0] as Node).queue_free()
+	await process_frame
+	return [sum[0] / maxf(1.0, n), sum[1] / maxf(1.0, n), hi - lo]
+
+
+## V3-13 (Director 09.11, 22:18: «руки у них не вдоль, а будто в воздухе под углом… у Нины торчит… как у многих»): the
+## stance clips hold the upper arms 14–26° out; each is turned in as far as the hand stays clear of the clothes' real
+## surface (scripts/actors/arm_rest.gd, the curves — tools/bake_arm_rest.sh). Standing, no arm is further out than 20°.
+func _t13() -> void:
+	var worst_raw := 0.0
+	for id in ["nina", "pelageya", "ilya", "ilya_wife", "ulyana", "mitya", "pavel", "tamara", "manager"]:
+		var m: Array = await _stand_measure(_spec(id), 4.0)
+		var sp := _spec(id)
+		((sp["rt3d"] as Dictionary)["arm_body"] as Dictionary).erase("rest")
+		var raw: Array = await _stand_measure(sp, 4.0)
+		worst_raw = maxf(worst_raw, maxf(float(raw[0]), float(raw[1])))
+		print("    %s: arms %.0f° / %.0f° from straight down (the clip alone: %.0f° / %.0f°)" % [id, m[0], m[1], raw[0], raw[1]])
+		_check(float(m[0]) <= 20.0 and float(m[1]) <= 20.0, "%s: an arm hangs %.0f° / %.0f° out standing (≤ 20; the widest now — Ulyana's right over her coat, 19)" % [id, m[0], m[1]])
+		_check(float(m[0]) <= float(raw[0]) + 1.0 and float(m[1]) <= float(raw[1]) + 1.0, "%s: an arm is further out than the clip has it (%.0f° / %.0f° against %.0f° / %.0f°)" % [id, m[0], m[1], raw[0], raw[1]])
+	_check(worst_raw > 22.0, "self-check: the clips alone hold no arm further than %.0f° out — the test sees no arm in the air" % worst_raw)
+
+
+## V3-14 (Director 09.11, 22:18: «они слишком статичные, будто солдаты стоят, Агата у нас более живая, потому что
+## покачивается»): standing, the weight goes from foot to foot (ActorLife3D sway, data rt3d.life.sway_*): the hips
+## travel across by a centimetre and a half or more within a period.
+func _t14() -> void:
+	var still_max := 0.0
+	for id in ["nina", "pelageya", "ilya", "ilya_wife", "ulyana", "mitya", "pavel", "tamara", "manager"]:
+		var m: Array = await _stand_measure(_spec(id), 10.0)
+		var sp := _spec(id)
+		var lf: Dictionary = (sp["rt3d"] as Dictionary).get("life", {})
+		for k in ["sway_cm", "sway_fore_cm", "sway_roll_deg", "sway_yaw_deg"]:
+			lf[k] = 0.0
+		var still: Array = await _stand_measure(sp, 10.0)
+		still_max = maxf(still_max, float(still[2]))
+		print("    %s: the hips travel %.1f cm across standing (without the sway: %.1f)" % [id, m[2], still[2]])
+		_check(float(m[2]) >= 1.5 and float(m[2]) <= 7.0, "%s: the hips travel %.1f cm across standing (1,5–7: alive, not rocking)" % [id, m[2]])
+		_check(float(m[2]) > float(still[2]) + 1.0, "self-check %s: without the sway the hips travel %.1f cm, with it %.1f — the test sees no sway" % [id, still[2], m[2]])
 
 
 func _t11() -> void:

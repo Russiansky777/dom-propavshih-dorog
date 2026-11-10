@@ -114,7 +114,7 @@ func _run() -> void:
 	await _test("Walk rhythm (Director 31.10, 02:14 «плывёт… равномерно, а не идёт»): the body is quickest between the steps and slowest over the planted foot, no lurch; the feet on the floor stay; arms swing by her sides; she looks ahead", _test_walk_rhythm)
 	await _test("Right arm without jerks (Director 01.11, line 20 «правая рука иногда резко дёргается»): the arm kept out of the bag changes its way out softly — no jump", _test_arm_no_jerk)
 	await _test("Short moves (Director 01.11, line 3 «мельтешит… куча перестановок ног»): 15–45 cm from standing is a step and the other foot closing up — two lifts, at the target", _test_short_moves)
-	await _test("After arriving (Director 02.11, line 7 «переставляются зачем-то много раз после того, как она доходит»): a walk, then the turn to what she came to — the closing step and a few turn steps (≤ 4, 3,4 on average), fewer than the old 3,5-cm turn steps", _test_after_arrive)
+	await _test("After arriving (Director 02.11, line 7 «переставляются зачем-то много раз после того, как она доходит»): a walk, then the turn to what she came to — the closing step and one step per foot to where the turn ends (≤ 4 lifts, 2,7 on average; 09.11, 22:18 «ноги перебираются слишком часто в конце движения»)", _test_after_arrive)
 	await _test("Skirt with the legs (Director 01.11, line 3 «ботинки сами шагают… юбка не двигается»): walking, the hem goes with the shins — they do not step out from under it", _test_skirt_with_legs)
 	PlayerScript.forced_render = ""
 	gs.reset()
@@ -1862,21 +1862,20 @@ func _test_after_arrive() -> void:
 		mean += float(r[0]) / float(runs.size())
 	print("        after arriving: %s (mean %.2f)" % [str(runs), mean])
 	for i in runs.size():
-		_check(int(runs[i][0]) <= 4, "walk %d: %d lifts after arriving, the last %.2f s after (≤ 4: the closing step and up to three turn steps)" % [i + 1, int(runs[i][0]), float(runs[i][1])])
-	_check(mean <= 3.4, "on average %.2f lifts after arriving (≤ 3,4)" % mean)
-	# self-check: the turn as before (steps every 3,5 cm of the stance's drift, the walk's stepping mixed in) — more lifts on the same walks
+		_check(int(runs[i][0]) <= 4, "walk %d: %d lifts after arriving, the last %.2f s after (≤ 4: the closing step and the turn's steps)" % [i + 1, int(runs[i][0]), float(runs[i][1])])
+	# Director 09.11, 22:18 («ноги Агаты перебираются слишком часто в конце движения — именно и только ноги»): with the
+	# turn's end known to the feet each steps once, straight to where it will stand (data feet.turn_to_end) — 2,2 lifts
+	# on average on these walks (3,4 before: a step «where the stance will be a moment later», two or three per turn)
+	_check(mean <= 2.7, "on average %.2f lifts after arriving (≤ 2,7)" % mean)
+	# self-check: the feet not told where the turn ends — more lifts on the same walks
 	var fk: Dictionary = player.view3d.spec.get("feet", {})
-	var tk: Dictionary = player.get("_rt").get("turn", {})
-	var keep := float(fk.get("step_turn_m", 0.085))
-	var keep_w := float(tk.get("step_weight", 0.0))
-	fk["step_turn_m"] = 0.035
-	tk["step_weight"] = 0.3   # and the walk's stepping mixed into a standing turn over 50°, as before
+	var keep := bool(fk.get("turn_to_end", false))
+	fk["turn_to_end"] = false
 	var old: Array = await _after_arrive_runs()
-	fk["step_turn_m"] = keep
-	tk["step_weight"] = keep_w
+	fk["turn_to_end"] = keep
 	var old_mean := 0.0
 	for r in old:
 		old_mean += float(r[0]) / float(old.size())
-	print("        as before (3,5 cm): %s (mean %.2f)" % [str(old), old_mean])
-	_check(old_mean > mean, "self-check: the old 3,5 cm turn steps give more lifts (%.2f > %.2f)" % [old_mean, mean])
+	print("        the turn's end not known to the feet: %s (mean %.2f)" % [str(old), old_mean])
+	_check(keep and old_mean > mean + 0.3, "self-check: without the turn's end the feet lift more (%.2f against %.2f)" % [old_mean, mean])
 	_completed = true
