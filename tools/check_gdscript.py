@@ -9,7 +9,10 @@ shade / draw_rail объявлены дважды, класс CarvedFrame не �
     (StoryData, GameState…, прямо или через другой класс): тест компилируется раньше, чем они появятся, — «Identifier
     not found: StoryData», тест не загружается (J, ночь 30.10: TimingBar.slow в test_batch_j.gd). Такой класс
     загружают в тесте по пути: load("res://scripts/…");
-  - такой тест называет саму автозагрузку (RoomManager.player): её берут узлом root.get_node("RoomManager").
+  - такой тест называет саму автозагрузку (RoomManager.player): её берут узлом root.get_node("RoomManager");
+  - метод скрипта с именем метода движка его класса (11.11: is_pickable() в story_hotspot.gd — Area2D уже его имеет;
+    Godot: «overrides a method from native class», предупреждение = ошибка, файл не компилируется, а с ним и вся игра).
+    Имена методов движка — tools/godot_native_methods.json (из godot --dump-extension-api); самопроверка — тот случай.
 Код 0 — чисто; 1 — ошибки (печатает файл:строка). Запуск: python3 tools/check_gdscript.py [--quiet]"""
 import re
 import sys
@@ -46,7 +49,87 @@ def autoload_classes(files) -> dict:
     return {c: cls[c] for c in bad}
 
 
+NATIVE = Path(__file__).resolve().parent / "godot_native_methods.json"
+EXTENDS = re.compile(r"^extends\s+(\w+)", re.M)
+FUNC = re.compile(r"^func\s+([A-Za-z]\w*)\s*\(")
+
+
+def native_overrides(files) -> list:
+    """file:line of every script function named as a (non-virtual) method of the engine class it extends, through the
+    chain of the game's own classes (extends <class_name>) down to the engine's."""
+    import json
+    if not NATIVE.exists():
+        return [f"нет {NATIVE.name} — пересоздайте: python3 tools/check_gdscript.py --refresh-native <extension_api.json>"]
+    nat = json.loads(NATIVE.read_text(encoding="utf-8"))["classes"]
+    texts = {f: f.read_text(encoding="utf-8", errors="replace") for f in files}
+    own = {}
+    for f, t in texts.items():
+        m = re.search(r"^class_name\s+(\w+)", t, re.M)
+        if m:
+            own[m.group(1)] = f
+
+    def native_methods(base: str, depth: int = 0) -> set:
+        if depth > 20:
+            return set()
+        if base in own:
+            m = EXTENDS.search(texts[own[base]])
+            return native_methods(m.group(1), depth + 1) if m else set()
+        out = set()
+        while base in nat:
+            out |= set(nat[base]["methods"])
+            base = nat[base]["inherits"]
+        return out
+
+    errs = []
+    for f, t in texts.items():
+        m = EXTENDS.search(t)
+        if not m:
+            continue
+        names = native_methods(m.group(1))
+        for n, ln in enumerate(t.splitlines(), 1):
+            fm = FUNC.match(ln)
+            if fm and fm.group(1) in names:
+                errs.append(f"{f.relative_to(ROOT)}:{n}: метод «{fm.group(1)}» — так уже называется метод движка у {m.group(1)}: "
+                            f"Godot не скомпилирует файл (overrides a method from native class); назовите иначе")
+    return errs
+
+
+def _native_selfcheck() -> list:
+    """The defect of 11.11 must be caught: a hotspot (Area2D) with func is_pickable()."""
+    import tempfile
+    with tempfile.TemporaryDirectory() as d:
+        f = Path(d) / "probe.gd"
+        f.write_text("extends Area2D\nfunc is_pickable() -> bool:\n\treturn true\nfunc can_click() -> bool:\n\treturn true\n", encoding="utf-8")
+        global ROOT
+        keep = ROOT
+        ROOT = Path(d)
+        try:
+            got = native_overrides([f])
+        finally:
+            ROOT = keep
+    if len(got) != 1 or "is_pickable" not in got[0]:
+        return [f"самопроверка: is_pickable() у Area2D не пойман (или пойман лишний): {got}"]
+    return []
+
+
 def main() -> int:
+    if "--refresh-native" in sys.argv:
+        import json
+        api = json.loads(Path(sys.argv[sys.argv.index("--refresh-native") + 1]).read_text(encoding="utf-8"))
+        cls = {c["name"]: c for c in api["classes"]}
+        old = json.loads(NATIVE.read_text(encoding="utf-8")) if NATIVE.exists() else {}
+        need = set()
+        for f in ROOT.rglob("*.gd"):
+            m = EXTENDS.search(f.read_text(encoding="utf-8", errors="replace"))
+            c = m.group(1) if m else ""
+            while c in cls:
+                need.add(c)
+                c = cls[c].get("inherits", "")
+        out = {"_comment": old.get("_comment", ""), "version": api["header"].get("version_full_name"),
+               "classes": {n: {"inherits": cls[n].get("inherits", ""), "methods": sorted(m["name"] for m in cls[n].get("methods", []) if not m.get("is_virtual"))} for n in sorted(need)}}
+        NATIVE.write_text(json.dumps(out, ensure_ascii=False, indent=0), encoding="utf-8")
+        print(f"{NATIVE.name}: {len(need)} классов")
+        return 0
     quiet = "--quiet" in sys.argv
     errors = []
     classes = {}
@@ -92,6 +175,8 @@ def main() -> int:
                     errors.append(f"{f.relative_to(ROOT)}:{n}: класс {c} по имени в тесте (godot -s) — ему нужны автозагрузки, "
                                   f"тест не скомпилируется; загрузите его: load(\"res://{need_auto[c].relative_to(ROOT)}\")")
                     break
+    errors += native_overrides(files)
+    errors += _native_selfcheck()
     for name, where in classes.items():
         if len(where) > 1:
             errors.append(f"class_name {name} в нескольких файлах: {', '.join(where)}")

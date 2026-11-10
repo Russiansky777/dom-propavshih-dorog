@@ -1,0 +1,24 @@
+{
+  "mode": "generate",
+  "set": "EN_rerecord",
+  "lang": "en",
+  "probe": true,
+  "only_changed": true,
+  "scenes": [
+    "M19c"
+  ],
+  "narration": {
+    "texts": [
+      "ru_E0_E1"
+    ]
+  },
+  "credits_per_char_assumed": 0.5,
+  "note": "2026-11-11: английская копия того, что перезаписано по-русски после прохождения Директора 10.11 (run 42923574190): M19c_1 «Nina points to a little wooden-framed mirror on the table.», H3.puzzle.need_drawing (новая фраза про рисунок) — тем же голосом, что русская строка, один дубль",
+  "order": {
+    "by": "Директор 10.11, 23:26 («фраза подходит, делай да, кредиты есть у елевен»)",
+    "date": "2026-11-11",
+    "what": "английская копия перезаписанных строк: M19c_1, H3.puzzle.need_drawing и что ещё изменилось в этих сценах/текстах после записи",
+    "max_lines": 6,
+    "max_chars": 700
+  }
+}

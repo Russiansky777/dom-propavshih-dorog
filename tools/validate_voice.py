@@ -540,7 +540,9 @@ def check(lines: dict, manifests: dict[str, dict], cast: dict | None, voices: di
                 else:
                     (errors if strict else warns).append(f"{tag}: {reason}, а запись не помечена stale — перегенерировать (pipeline-voice)")
                 continue
-            if "stale" in e:
+            if "stale" in e and not (cur is not None and _trimmed_now(src_dir.name, e, cur) and str(e["stale"]).startswith("текст изменён")):
+                # 11.11: a line shortened for the game (voice_trim) the pipeline marks stale against the full recording
+                # (run 42923574190: M20_7, O3.ilya_wife.after) — the game's copy sounds it trimmed (voice_trim.py lifts the mark)
                 errors.append(f"{tag}: помечена stale ({e['stale']}), но совпадает с текущей репликой")
             # запасная запись другого голоса (ключ читает персонаж) не перезаписывается — её теги/произношение не сверяем
             if cur is not None and _trimmed_now(src_dir.name, e, cur):
@@ -1048,6 +1050,18 @@ def main() -> int:
     if not check_coverage(_cl, {"lines": {}}, {})[0] or check_coverage(_cl, {"lines": {}}, {"lines": {"T_1": "K"}})[0]:
         errors.append("самопроверка: строка без записи не поймана (или поймана, хотя ждёт выбора)")
     missed = selftest(lines, cast, voice_cfg, scenes)
+    # самопроверка 11.11 (run 42923574190): укороченная для игры запись, помеченная конвейером stale «текст изменён», в
+    # игровой копии манифеста звучит (метки нет); запись с другой причиной stale — остаётся немой
+    _vt = _voice_trim_module()
+    _keep = _vt.load_trims
+    _vt.load_trims = lambda: {"ru/T_1.ogg": {"text": "Коротко.", "to_s": 1.0}}
+    try:
+        _gm = json.loads(_vt.expected_manifest(json.dumps({"lines": {"T_1": {"file": "T_1.ogg", "text": "Коротко. И длинно.", "stale": "текст изменён"},
+                                                                   "T_2": {"file": "T_2.ogg", "text": "Иное.", "stale": "текст изменён"}}}), "ru"))["lines"]
+    finally:
+        _vt.load_trims = _keep
+    if "stale" in _gm["T_1"] or "stale" not in _gm["T_2"]:
+        errors.append("самопроверка: укороченная запись с меткой stale в игре немая (или метка снята не с той)")
     # самопроверка H5/H4: шёпот вне списка ожидания и вопрос персонажа без ограничения повтора — ошибки
     _sp = {"lines": {f"T_{i}": {"speaker": "tst", "source_lufs": -16.0} for i in range(5)}}
     _sp["lines"]["T_q"] = {"speaker": "tst", "source_lufs": -24.0}

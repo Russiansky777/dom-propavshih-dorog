@@ -1729,7 +1729,7 @@ func reveal_targets() -> Array:
 	if room == null or not is_instance_valid(room):
 		return out
 	for h in room.get_hotspots():
-		if h is StoryHotspot and (h as StoryHotspot).is_active() and (h as StoryHotspot).is_pickable():
+		if h is StoryHotspot and (h as StoryHotspot).is_active() and (h as StoryHotspot).can_click():
 			# The node sits at the centre of its rect (a state may move it — StoryHotspot._apply_geometry).
 			out.append({"kind": "hotspot", "id": (h as StoryHotspot).hotspot_id, "label": (h as StoryHotspot).label_text(), "at": h.global_position, "dir": ""})
 	for e in room.get_exits():

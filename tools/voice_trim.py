@@ -38,6 +38,10 @@ def expected_manifest(src_manifest_text: str, lang: str) -> str:
             e["text"] = t["text"]
             e["text_sha1"] = hashlib.sha1(t["text"].encode("utf-8")).hexdigest()
             e["trimmed"] = {"to_s": t["to_s"], "from_text_sha1": e.get("voice_sha1", "")}
+            # 11.11 (run 42923574190): the pipeline marks a trimmed line stale — its full text is not the line's any more;
+            # the trimmed copy is what the line reads now (validate_voice compares the two), so the game plays it
+            if str(e.get("stale", "")).startswith("текст изменён"):
+                e.pop("stale")
     return json.dumps(m, ensure_ascii=False, indent=2) + "\n"   # the pipeline writes it so: a minimal diff
 
 

@@ -97,7 +97,7 @@ static func state_of(d: Dictionary) -> Dictionary:
 
 ## `pickable` false (11.11; the hotspot's or its state's): a figure that only stands there — no caption, no click, not in
 ## the reveal (the people of the council in the mill yard after its frame stay where they stood until Agata leaves).
-func is_pickable() -> bool:
+func can_click() -> bool:
 	return bool(current_state().get("pickable", data.get("pickable", true)))
 
 

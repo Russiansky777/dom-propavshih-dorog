@@ -62,6 +62,10 @@ extends SceneTree
 ##       Ilya stand in the mill yard where the frame had them (≤ 6 px), Agata where she stood in it; they are not
 ##       clicked (no caption, no line); Agata leaves the yard — back there, they are gone. Self-check — the same yard
 ##       before the council: none of the three.
+##   R-18 (Director 10.11, 22:15: «Павел, выходя из конторы, становится чуть больше двери»): in the office the depth is
+##       measured by the door's leaf (y 163–668, 505 px), not with the lintel board above it (550): Pavel in the doorway
+##       where M13 takes him is lower than the leaf, Agata at the threshold 0.85–0.95 of it. Self-check — the old depth
+##       (1.504 … 2.826) makes Pavel taller than the door.
 ## Exit code 0 only when every check passed.
 
 var _results: Array = []
@@ -134,6 +138,7 @@ func _run() -> void:
 	await _test("R-15 the knot tied: the plate's close-up goes black and away by itself, M15 is spoken in the room; self-check — without close_black it is spoken over the close-up", _test_plate_closes)
 	await _test("R-16 an item dragged from the bag onto the school door is used there, onto empty floor goes back; a press is still a click; self-check — 5 px is a click", _test_drag_item)
 	await _test("R-17 after the council the people stay in the mill yard where the frame had them, Agata too; not clicked; gone once she leaves; self-check — none before the council", _test_council_stays)
+	await _test("R-18 the office: Pavel in the doorway is lower than the door's leaf, Agata at the threshold 0.85–0.95 of it; self-check — the old depth makes him taller", _test_pavel_door)
 	await _test("R-14 the lane after the post office: the arrow down flickers after 10 s with no click; a click resets it; not once the street was seen; self-check — no data, no flicker", _test_idle_nudge)
 	gs.reset()
 	if main_node != null and is_instance_valid(main_node):
@@ -1083,4 +1088,34 @@ func _test_council_stays() -> void:
 		var after := _yard_people()
 		_check(after["pavel"] == null and after["manager"] == null and after["ilya"] == null, "back in the yard after leaving: nobody of the council (%s)" % str(after))
 	_check(before["pavel"] == null and before["manager"] == null and before["ilya"] == null, "self-check: before the council none of them in the yard (%s)" % str(before))
+
+
+
+
+func _test_pavel_door() -> void:
+	_flags_before("M13")
+	await _enter("M3")
+	await _read_out("")
+	var room = rm.current_room
+	var pv := room.get_node_or_null("npc_pavel") as Node2D
+	_check(pv != null, "Pavel in the office")
+	if pv == null:
+		return
+	var ref: Dictionary = (sd.room("M3").get("height_refs", []) as Array)[0]
+	var leaf := float(ref["px"])
+	_check(leaf <= 510.0, "the door's height is the leaf's (%.0f px; with the lintel board it was 550)" % leaf)
+	var to := Vector2.ZERO
+	for st in sd.scene("M13").get("stage", []):
+		for g in st.get("npc_go", []):
+			if String(g.get("id", "")) == "pavel":
+				to = Vector2(float(g["to"][0]), float(g["to"][1]))
+	var sh = pv.get("sheet")
+	var per := float(sh.scale_factor) * float(sh.figure_height_px)
+	var h := float(room.depth_scale_at(to)) * per
+	_check(to != Vector2.ZERO and h < leaf, "Pavel in the doorway (%s) %.0f px — lower than the leaf %.0f" % [str(to), h, leaf])
+	var ag := float(room.depth_scale_at(Vector2(to.x, float(ref["y"])))) * float(player.get("sheet").figure_height_px) if player.get("sheet") != null else 0.0
+	_check(ag >= 0.85 * leaf and ag <= 0.95 * leaf, "Agata at the threshold %.0f px — 0.85–0.95 of the leaf %.0f" % [ag, leaf])
+	# self-check: the depth as it was (1.504 at y 690 … 2.826 at y 1070) — Pavel taller than the door
+	var old_s := 1.504 + (to.y - 690.0) / 380.0 * (2.826 - 1.504)
+	_check(maxf(old_s, 1.504) * per > leaf, "self-check: the old depth gives Pavel %.0f px — taller than the leaf, the test tells" % (maxf(old_s, 1.504) * per))
 
