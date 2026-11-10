@@ -5,7 +5,7 @@
   "format": "ogg_vorbis_mono_44100",
   "loudness_target_lufs": -17.0,
   "loudness_measure": "EBU R128 integrated, моно на оба канала (как играет Godot)",
-  "updated_at": "2026-11-03T14:48:42+00:00",
+  "updated_at": "2026-11-10T23:40:12+00:00",
   "lines": {
     "M01_0": {
       "scene": "M01",
@@ -5472,8 +5472,8 @@
       "index": 1,
       "alignment": "src/M19c_1.align.json",
       "speaker": "narrator",
-      "text": "Nina sets a little wooden-framed mirror on the table.",
-      "text_sha1": "6d04e3dd839327f4b24631852efd92294851557f",
+      "text": "Nina points to a little wooden-framed mirror on the table.",
+      "text_sha1": "d23c9293c2776e112f69e1487046724c13fe09c5",
       "voice_id": "kPaCtwsoLpkcqnqv9PyA",
       "voice_name": "ZAKADR",
       "model_id": "eleven_v4",
@@ -5483,31 +5483,31 @@
       },
       "file": "M19c_1.ogg",
       "source": "src/M19c_1.mp3",
-      "voice_text": "Nina sets a little wooden-framed mirror on the table.",
-      "voice_sha1": "6d04e3dd839327f4b24631852efd92294851557f",
+      "voice_text": "Nina points to a little wooden-framed mirror on the table.",
+      "voice_sha1": "d23c9293c2776e112f69e1487046724c13fe09c5",
       "tags": [],
-      "characters": 53,
+      "characters": 58,
       "loudness_target_lufs": -17.0,
-      "duration_s": 3.31,
+      "duration_s": 3.5,
       "lufs": -17.0,
-      "true_peak_db": -4.6,
-      "gain_db": -3.2,
+      "true_peak_db": -5.7,
+      "gain_db": -3.6,
       "limiter_extra_db": 0.0,
-      "source_lufs": -13.8,
-      "source_true_peak_db": -1.5,
+      "source_lufs": -13.4,
+      "source_true_peak_db": -2.2,
       "vorbis_q": 7,
       "output_format": "mp3_44100_192",
-      "generated_at": "2026-11-03T14:14:40+00:00",
-      "run": "41650498378",
+      "generated_at": "2026-11-10T23:40:10+00:00",
+      "run": "42924844288",
       "api": {
-        "request_id": "FjG187scTrG27z75alUI",
-        "history_item_id": "Lw4Ps1IvNcl71udG2F3h",
-        "character_cost": "23",
+        "request_id": "M5lvgocgVn8oNkfIT9dZ",
+        "history_item_id": "RjHogn449ImRCLWnyxBS",
+        "character_cost": "26",
         "dropped_params": [],
         "output_format": "mp3_44100_192",
         "sent": {
           "language_code": "en",
-          "seed": 3966548437
+          "seed": 1715932776
         }
       }
     },
@@ -6265,7 +6265,8 @@
           "language_code": "en",
           "seed": 4175592439
         }
-      }
+      },
+      "stale": "текст изменён"
     },
     "M20_8": {
       "scene": "M20",
@@ -16292,6 +16293,51 @@
         "sent": {
           "language_code": "en",
           "seed": 1804851786
+        }
+      }
+    },
+    "H3.puzzle.need_drawing": {
+      "kind": "narration",
+      "key": "H3.puzzle.need_drawing",
+      "source_text": "ru_E0_E1",
+      "alignment": "src/narrator/H3.puzzle.need_drawing.align.json",
+      "speaker": "narrator",
+      "text": "I have the hinges. But how they go is on Dunya's drawing on the workshop wall. I'd better look at it first.",
+      "text_sha1": "38840e583efd55bec3cb5c1327eaed1ded4d7754",
+      "voice_id": "kPaCtwsoLpkcqnqv9PyA",
+      "voice_name": "ZAKADR",
+      "model_id": "eleven_v4",
+      "voice_settings": {
+        "stability": 0.65,
+        "similarity_boost": 0.75
+      },
+      "file": "narrator/H3.puzzle.need_drawing.ogg",
+      "source": "src/narrator/H3.puzzle.need_drawing.mp3",
+      "voice_text": "I have the hinges. But how they go is on Dunya's drawing on the workshop wall. I'd better look at it first.",
+      "voice_sha1": "38840e583efd55bec3cb5c1327eaed1ded4d7754",
+      "tags": [],
+      "characters": 107,
+      "loudness_target_lufs": -17.0,
+      "duration_s": 6.84,
+      "lufs": -17.0,
+      "true_peak_db": -3.6,
+      "gain_db": -2.4,
+      "limiter_extra_db": 0.0,
+      "source_lufs": -14.6,
+      "source_true_peak_db": -1.3,
+      "vorbis_q": 7,
+      "output_format": "mp3_44100_192",
+      "generated_at": "2026-11-10T23:40:12+00:00",
+      "run": "42924844288",
+      "api": {
+        "request_id": "nlCRicTB1q7MXQrK3TCJ",
+        "history_item_id": "6YDTNKwWDNR4FnAfbQSK",
+        "character_cost": "47",
+        "dropped_params": [],
+        "output_format": "mp3_44100_192",
+        "sent": {
+          "language_code": "en",
+          "seed": 3974978024
         }
       }
     },
@@ -30551,7 +30597,8 @@
           "language_code": "en",
           "seed": 3529466121
         }
-      }
+      },
+      "stale": "текст изменён"
     },
     "intro.opening_1": {
       "kind": "narration",

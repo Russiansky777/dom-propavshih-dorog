@@ -1,0 +1,34 @@
+{
+  "set": "EN_rerecord",
+  "runs": [
+    {
+      "run": "42924844288",
+      "at": "2026-11-10T23:40:13+00:00",
+      "request": "pipeline/requests/voice_EN_rerecord.json",
+      "synthesized": [
+        "M19c_1",
+        "H3.puzzle.need_drawing"
+      ],
+      "reprocessed": [],
+      "characters_text": 165,
+      "failed": [],
+      "pruned": [],
+      "subscription_before": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 166974,
+        "character_limit": 179889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "subscription_after": {
+        "tier": "creator",
+        "status": "active",
+        "character_count": 166974,
+        "character_limit": 179889,
+        "next_character_count_reset_unix": 1794939642
+      },
+      "credits_spent": 73,
+      "subscription_delta": 0
+    }
+  ]
+}
