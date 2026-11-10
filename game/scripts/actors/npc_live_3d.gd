@@ -117,6 +117,57 @@ func _setup_jaw() -> void:
 		jm.queue_free()
 
 
+## A hand held at a point of the screen (Director 10.11, 18:59 — Ilya's hands on the windlass's crank as it turns):
+## `screen` — canvas px, as the figure is drawn there; `weight` 1 holds, 0 lets go (eased in the modifier); `helps` —
+## the second hand: the body does not go down for it, it reaches as far as the leading hand's posture lets it. The point
+## is taken into the figure's own space on the plane the hand works in — between its shoulder and the chest's middle,
+## across the camera's view — and HandHoldModifier (the last of the skeleton's modifiers) brings the hand there.
+const HandHold := preload("res://scripts/actors/hand_hold_modifier.gd")
+var hand_hold: SkeletonModifier3D = null
+
+
+func hold_hand_at(side: String, screen: Vector2, weight: float, helps: bool = false) -> void:
+	if view == null or body == null or view.camera == null or not view.camera.is_inside_tree():
+		return
+	if hand_hold == null:
+		if weight <= 0.0:
+			return
+		hand_hold = HandHold.new()
+		hand_hold.name = "HandHold"
+		view.skeleton.add_child(hand_hold)
+		hand_hold.setup(view.skeleton, view._skel_to_model().basis.orthonormalized())
+		for s in ["Left", "Right"]:
+			hand_hold.grip_local[s] = view.hand_grip_local(s)[0]
+	var sk: Skeleton3D = view.skeleton
+	var a := sk.find_bone(side + "Arm")
+	var o := sk.find_bone(("Left" if side == "Right" else "Right") + "Arm")
+	var ll := sk.find_bone("LeftUpLeg")
+	var rl := sk.find_bone("RightUpLeg")
+	if a < 0 or o < 0 or ll < 0 or rl < 0:
+		return
+	var px: Vector2 = body.global_transform.affine_inverse() * screen - body.offset
+	var cam: Camera3D = view.camera
+	var inv_sk: Transform3D = sk.global_transform.affine_inverse()
+	# The point of the screen is a line into the picture; the hand takes the place on it that lies in front of its own
+	# side of the body — halfway from the body's middle to its shoulder (the shoulders' places as the model is built,
+	# not as the clip leans them). Seen from the side that line runs across the body, and the place is one; seen
+	# from the front it runs along the body's front-back and any depth is at the same side — then the plane between
+	# the shoulders as posed.
+	var to_model: Basis = view._skel_to_model().basis.orthonormalized()
+	var mid_rest: Vector3 = (sk.get_bone_global_rest(ll).origin + sk.get_bone_global_rest(rl).origin) * 0.5
+	var want_x: float = (to_model * (sk.get_bone_global_rest(a).origin - mid_rest)).x * 0.5
+	var mid: Vector3 = (sk.get_bone_global_pose(ll).origin + sk.get_bone_global_pose(rl).origin) * 0.5
+	var pa: Vector3 = sk.global_transform * sk.get_bone_global_pose(a).origin
+	var po: Vector3 = sk.global_transform * sk.get_bone_global_pose(o).origin
+	var depth := -(cam.global_transform.affine_inverse() * pa.lerp(po, 0.3)).z
+	var x0: float = (to_model * (inv_sk * cam.project_position(px, depth) - mid)).x
+	var x1: float = (to_model * (inv_sk * cam.project_position(px, depth + 1.0) - mid)).x
+	var per_m := x1 - x0
+	if absf(per_m) > absf((to_model * (inv_sk.basis * cam.global_transform.basis.z)).length()) * 0.35:
+		depth += clampf((want_x - x0) / per_m, -0.6, 0.6)
+	hand_hold.hold(side, inv_sk * cam.project_position(px, depth), weight, helps)
+
+
 ## Hands kept out of the body (data rt3d.arm_body; Director 01.11, lines 10 and 52): a BodyClear modifier after all the
 ## others on the villager's skeleton.
 const BodyClear := preload("res://scripts/actors/body_clear_modifier.gd")

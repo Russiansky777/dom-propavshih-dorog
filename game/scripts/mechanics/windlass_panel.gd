@@ -175,23 +175,33 @@ func tick(delta: float) -> void:
 	_redraw()
 
 
-## 10.11 (Director 16:15: «чтобы как-то крутился реально ворот у Ильи… оживить его, установку эту»): the windlass turns
-## while the log goes — a turn in `crank_turn_s` seconds (data; Ilya's cranking clip makes its round in as long), one
-## way letting the log down, the other way lifting it; let go, the crank comes round to the painted pose and stops
-## there (the frame under the close-up has the painted windlass — nothing jumps when the close-up closes).
+## 10.11 (Director 16:15: «чтобы как-то крутился реально ворот у Ильи… оживить его, установку эту»; 18:59: «и руки
+## нужно доделать»): the windlass turns with the log — the crank's angle is the log's place (WindlassSpin.angle_for,
+## data `crank_turns` whole turns from the start to the ring): it turns only while the log goes, the other way when
+## the log is lifted, and stands as painted before the first «Пускай» and with the log laid (the frame under the
+## close-up has the painted windlass — nothing jumps when the close-up opens or closes). Ilya's hands are on the left
+## crank's grip all the while (HandHoldModifier: the arms follow the grip round; in the low half of the turn he leans
+## and goes down to it, the feet where they stand) and let go when the log is laid.
 var spin: WindlassSpin = null
-var _spin_dir := 1.0
+const HAND_R_ALONG := 0.15   # along the grip from the crank's arm (0) to its free end (1): the hand nearer to us
+const HAND_L_ALONG := 0.6    # the far hand, nearer to him
 
 
-func _turn_windlass(delta: float) -> void:
+func _turn_windlass(_delta: float) -> void:
 	if spin == null:
 		return
-	var speed := TAU / maxf(float(spec.get("crank_turn_s", 1.6)), 0.2)
-	if logic.state in ["down", "up"]:
-		_spin_dir = 1.0 if logic.state == "down" else -1.0
-		spin.angle += _spin_dir * speed * delta
-	else:
-		spin.angle = move_toward(spin.angle, WindlassSpin.rest_after(spin.angle, _spin_dir), speed * delta)
+	spin.angle = WindlassSpin.angle_for(logic.pos, logic.rest, float(spec.get("crank_turns", 4.0)))
+	_hands_on_crank(0.0 if (laid_sent or logic.state == "solved") else 1.0)
+
+
+func _hands_on_crank(weight: float) -> void:
+	if spin == null:
+		return
+	for b in borrowed:
+		var n: Node = b[0]
+		if is_instance_valid(n) and String(n.name).trim_prefix("Live_") == "npc_ilya" and n.has_method("hold_hand_at"):
+			n.call("hold_hand_at", "Right", spin.to_global(spin.grip_point("l", HAND_R_ALONG)), weight)
+			n.call("hold_hand_at", "Left", spin.to_global(spin.grip_point("l", HAND_L_ALONG)), weight, true)
 
 
 ## Block 3 (Director 05.11: «Илья крутит ворот»): while the log goes down or up, Ilya's live figure (borrowed from the
@@ -315,6 +325,7 @@ func _borrow_live(ids: Array) -> bool:
 
 
 func _return_live() -> void:
+	_hands_on_crank(0.0)   # nobody sets the hands' place once the close-up is gone: they let go
 	for b in borrowed:
 		var n: Node = b[0]
 		var parent: Node = b[1]

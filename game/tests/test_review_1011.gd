@@ -26,6 +26,8 @@ extends SceneTree
 ##       of the first span turns (WindlassSpin) — its parts are there; at rest the cranks stand exactly as painted (the
 ##       arm ends at the painted grip, both sides); while the log goes down the crank's angle grows, lifting — goes
 ##       back; let go, it comes to the painted pose and stays. Self-check — a crank that does not turn is caught.
+##   R-8 (Director 18:59: «Лого Godot убрать вовсе, если можно»): the engine's logo is not shown at start —
+##       application/boot_splash/show_image is off, the start screen is the dark background alone.
 ## Exit code 0 only when every check passed.
 
 var _results: Array = []
@@ -80,6 +82,7 @@ func _run() -> void:
 	await _test("R-5 M17: Agata does not walk through Pelageya on her way to the ribbon; self-check — the night's place is caught", _test_ribbon_walk)
 	await _test("R-6 M18: after the hug's frame Pelageya and Mitya stand a step apart, the lantern between them; self-check — in the embrace they are close", _test_apart_after_hug)
 	await _test("R-7 the windlass turns while the log goes and rests as painted; self-check — a still crank is caught", _test_windlass_turns)
+	await _test("R-8 no engine logo at start: boot_splash/show_image is off, the background is dark", _test_no_boot_logo)
 	gs.reset()
 	if main_node != null and is_instance_valid(main_node):
 		root.remove_child(main_node)
@@ -443,9 +446,20 @@ func _test_windlass_turns() -> void:
 	_check(sp.tip("l").y > top.y + 40.0 and sp.tip("r").y < sp.tip("l").y, "half a turn on, the left crank is down and the right one up")
 	sp.angle = WindlassSpin.REST + TAU
 	_check(sp.tip("l").distance_to(top) < 0.01, "a whole turn brings it back")
-	_check(is_equal_approx(WindlassSpin.rest_after(WindlassSpin.REST + 0.5, 1.0), WindlassSpin.REST + TAU)
-		and is_equal_approx(WindlassSpin.rest_after(WindlassSpin.REST + 0.5, -1.0), WindlassSpin.REST),
-		"let go, the crank goes on to the painted pose in the way it was turning")
+	_check(sp.grip_point("l", 1.0).x < sp.grip_point("l", 0.0).x - 20.0, "the left grip's free end is towards Ilya (the hands' place)")
+	# the crank is the log: painted pose at the start and with the log laid, whole turns between
+	_check(absf(fposmod((WindlassSpin.angle_for(0.0, 0.66, 4.0) - WindlassSpin.REST) / TAU + 0.5, 1.0) - 0.5) < 1e-4
+		and is_equal_approx(WindlassSpin.angle_for(0.66, 0.66, 4.0), WindlassSpin.REST),
+		"the crank stands as painted before the first «Пускай» and with the log on the ring")
+	# the coils: the shift never leaves one coil (18:59 «дальше его корёжит» — the old shift wrapped round the picture)
+	var mat := (sp.get_node("Drum") as Sprite2D).material as ShaderMaterial
+	var pitch := float(sp.meta["drum"]["pitch"])
+	var worst := 0.0
+	for i in 200:
+		sp.angle = WindlassSpin.REST + float(i) * 0.37
+		worst = maxf(worst, float(mat.get_shader_parameter("shift")))
+	_check(worst <= pitch + 0.001 and worst > pitch * 0.8, "the coils' shift stays within one coil over many turns (max %.2f of %.2f px)" % [worst, pitch])
+	_check(not (pitch * 200.0 * 0.37 / TAU <= pitch + 0.001), "self-check: a shift that grows with the turns (the old one) would be caught")
 	sp.free()
 	# in the close-up: the angle follows the log
 	_flags_before("M25")
@@ -458,19 +472,20 @@ func _test_windlass_turns() -> void:
 	if panel == null or panel.spin == null:
 		return
 	var a0: float = panel.spin.angle
+	_check(absf(fposmod((a0 - WindlassSpin.REST) / TAU + 0.5, 1.0) - 0.5) < 0.01, "it opens with the crank as painted (%.3f turns off)" % ((a0 - WindlassSpin.REST) / TAU))
 	panel.signal_pressed("lower")
 	await _frames(20)
 	var a1: float = panel.spin.angle
 	_check(a1 > a0 + 0.2, "«Пускай»: the crank turns (%.2f → %.2f rad)" % [a0, a1])
 	panel.signal_pressed("stop")
-	for i in 240:
-		await process_frame
+	await _frames(3)
 	var a2: float = panel.spin.angle
-	var turns := (a2 - WindlassSpin.REST) / TAU
-	_check(absf(turns - roundf(turns)) < 0.002 and a2 >= a1 - 0.001, "«Стой»: it comes round to the painted pose and stays (%.3f turns)" % turns)
+	await _frames(30)
+	_check(panel.logic.state in ["settling", "solved"] or absf(panel.spin.angle - a2) < 0.001, "«Стой»: the log stands — the crank stands (%.3f → %.3f)" % [a2, panel.spin.angle])
 	_check(not (a0 > a0 + 0.2), "self-check: a crank that does not turn fails the same test")
-	panel.signal_pressed("raise")
-	await _frames(20)
-	_check(panel.spin.angle < a2 - 0.2 or panel.logic.state != "up", "«Подымай»: it turns the other way (%.2f → %.2f)" % [a2, panel.spin.angle])
+	if panel.logic.state == "stopped":
+		panel.signal_pressed("raise")
+		await _frames(20)
+		_check(panel.spin.angle < a2 - 0.2, "«Подымай»: it turns the other way (%.2f → %.2f)" % [a2, panel.spin.angle])
 	sr.close_mechanic()
 	await _frames(3)

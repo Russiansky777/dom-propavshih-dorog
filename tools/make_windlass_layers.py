@@ -41,7 +41,7 @@ GRIPS = {   # брусок ручки: ось от конца до конца и
 AXLES = {"l": (921, 604), "r": (1051, 616)}
 ARM = {"rx": 9.0, "width": 6.0}   # высоту овала и его сдвиг вдоль оси игра берёт из нарисованных плеч (ось → точка ручки)
 # Витки каната на барабане: прямоугольник и шаг витка (px холста).
-DRUM = {"rect": (948, 588, 49, 54), "pitch": 7.0,
+DRUM = {"rect": (948, 588, 49, 54), "pitch": 6.0,   # шаг витка вдоль оси — замер автокорреляцией по середине барабана (5,75–6,5)
         "poly": [(948, 595), (997, 590), (997, 636), (948, 641)]}
 
 
@@ -92,7 +92,8 @@ def build() -> dict:
         ys, xs = np.where(m > 8)
         x0, x1, y0, y1 = int(xs.min()) - 1, int(xs.max()) + 2, int(ys.min()) - 1, int(ys.max()) + 2
         out[f"windlass_grip_{k}.png"] = np.dstack([im[y0:y1, x0:x1], m[y0:y1, x0:x1]])
-        meta["grips"][k] = {"file": f"windlass_grip_{k}.png", "at": [x0, y0], "joint": list(g["joint"])}
+        meta["grips"][k] = {"file": f"windlass_grip_{k}.png", "at": [x0, y0], "joint": list(g["joint"]),
+                            "far": list(g["line"][0] if k == "l" else g["line"][1])}   # свободный конец ручки
     dx, dy, dw, dh = DRUM["rect"]
     dm = poly_mask(im.shape, DRUM["poly"], feather=0.8)
     out["windlass_drum.png"] = np.dstack([im[dy:dy + dh, dx:dx + dw], dm[dy:dy + dh, dx:dx + dw]])

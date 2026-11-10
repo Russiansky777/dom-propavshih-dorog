@@ -363,6 +363,13 @@ func act_arm(d: Dictionary, role: String) -> void:
 		live.set_act_arm(d, role)
 
 
+## 10.11 (the windlass's crank): a hand of the live figure held at a point of the screen (NpcLive3D.hold_hand_at);
+## nothing on sheets.
+func hold_hand_at(side: String, screen: Vector2, weight: float, helps: bool = false) -> void:
+	if live != null:
+		live.hold_hand_at(side, screen, weight, helps)
+
+
 func play_action(role: String, hold: bool = false, hold_at: float = -1.0, loop: bool = false) -> float:
 	if live == null or not live.play_once(role, hold, hold_at, loop):
 		return 0.0

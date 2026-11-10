@@ -11,8 +11,9 @@ extends Node2D
 ##     the right crank is half a turn from the left one, as painted;
 ##   · the rope's coils on the drum slide along it (windlass_drum.png, a shader shifts them by one coil per turn —
 ##     what a wound drum looks like when it turns), inside the drum's own outline.
-## `angle` — the left crank's angle (rad): 0 — straight up; the panel turns it while Ilya cranks and lets it come to
-## the painted pose when he stops (rest()). Coordinates: canvas px of the painting × `k` = screen px.
+## `angle` — the left crank's angle (rad): 0 — straight up; the panel sets it from the log's place (angle_for): the
+## crank turns only while the log goes and stands as painted at the start and with the log laid. Ilya's hands hold the
+## left crank's grip (grip_point → NpcActor.hold_hand_at). Coordinates: canvas px of the painting × `k` = screen px.
 
 const ARM_DARK := Color(0.2, 0.165, 0.145)
 const ARM_LIGHT := Color(0.44, 0.38, 0.33)
@@ -20,14 +21,22 @@ const REST := 0.35      # the painted pose: the left crank up and a little towar
 
 const DRUM_SHADER := "
 shader_type canvas_item;
-uniform float shift = 0.0;      // texture px along the drum
+// The rope's coils slide along the drum as it turns. 10.11 (Director 18:59: «ворот норм поворачивается только
+// первые секунды, а дальше его корёжит»): the first version shifted the picture round its own width — the seam
+// where its right edge met its left one crept out into the middle of the drum after a turn or two. The coils repeat
+// every `pitch_px`, so the shift never needs to be more than one coil: two copies, one coil apart, are blended by
+// how far the shift has gone — at 0 and at a whole coil the picture is exactly the painted one, in between the two
+// copies nearly coincide. Nothing wraps, nothing jumps.
+uniform float shift = 0.0;      // texture px along the drum, 0..pitch_px
+uniform float pitch_px = 6.0;
 uniform float width_px = 49.0;
-uniform float slope = 0.0;      // the drum's tilt on the picture: dy per dx (texture px)
 uniform float height_px = 54.0;
+uniform float slope = 0.0;      // the drum's tilt on the picture: dy per dx (texture px)
 void fragment() {
-	float dx = fract(UV.x + shift / width_px) - UV.x;
-	vec2 uv = vec2(UV.x + dx, clamp(UV.y + slope * dx * width_px / height_px, 0.0, 1.0));
-	COLOR = vec4(texture(TEXTURE, uv).rgb, texture(TEXTURE, UV).a);
+	vec2 d = vec2(1.0 / width_px, slope / height_px);
+	vec3 a = texture(TEXTURE, clamp(UV + d * shift, vec2(0.0), vec2(1.0))).rgb;
+	vec3 b = texture(TEXTURE, clamp(UV + d * (shift - pitch_px), vec2(0.0), vec2(1.0))).rgb;
+	COLOR = vec4(mix(a, b, clamp(shift / pitch_px, 0.0, 1.0)), texture(TEXTURE, UV).a);
 }
 "
 
@@ -82,6 +91,7 @@ static func make(waiting_path: String, p_k: float) -> WindlassSpin:
 		mat.set_shader_parameter("width_px", float(drum["size"][0]))
 		mat.set_shader_parameter("height_px", float(drum["size"][1]))
 		mat.set_shader_parameter("slope", float(drum.get("slope", -0.1)))
+		mat.set_shader_parameter("pitch_px", float(drum.get("pitch", 6.0)))
 		ds.material = mat
 		ds.show_behind_parent = true
 		s.add_child(ds)
@@ -117,16 +127,25 @@ func tip(side: String) -> Vector2:
 	return (Vector2(float(a[0]), float(a[1])) + Vector2(cx + rx * sin(ph), -ry * cos(ph))) * k
 
 
-## The angle the crank comes to when let go: the painted pose, the nearest one ahead in the turning direction `dir`.
-static func rest_after(now: float, dir: float) -> float:
-	var turns := (now - REST) / TAU
-	return REST + (ceilf(turns - 0.0001) if dir >= 0.0 else floorf(turns + 0.0001)) * TAU
+## A point on a crank's wooden grip, screen px: `along` 0 — at the arm, 1 — at the grip's free end (the hands).
+func grip_point(side: String, along: float) -> Vector2:
+	var g: Dictionary = meta.get("grips", {}).get(side, {})
+	var j: Array = g.get("joint", [0, 0])
+	var f: Array = g.get("far", j)
+	return tip(side) + Vector2(float(f[0]) - float(j[0]), float(f[1]) - float(j[1])) * k * along
+
+
+## The crank's angle for the log's place: the windlass and the log are one machine — it turns only while the log goes,
+## the other way when the log is lifted, and stands as painted both before the first «Пускай» (pos 0) and with the log
+## laid on the ring (pos = rest): `turns` whole turns between the two.
+static func angle_for(pos: float, rest: float, turns: float) -> float:
+	return REST + TAU * turns * (pos - rest) / maxf(rest, 0.01)
 
 
 func _apply() -> void:
 	if _drum != null and _drum.material != null:
-		var pitch := float(meta.get("drum", {}).get("pitch", 7.0))
-		(_drum.material as ShaderMaterial).set_shader_parameter("shift", pitch * angle / TAU)
+		var pitch := float(meta.get("drum", {}).get("pitch", 6.0))
+		(_drum.material as ShaderMaterial).set_shader_parameter("shift", pitch * fposmod(angle / TAU, 1.0))
 	queue_redraw()
 
 
