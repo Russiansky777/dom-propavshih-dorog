@@ -6,6 +6,12 @@ extends SkeletonModifier3D
 ## it as a working man's does — by one measure of «effort» (0..1), as little as brings every hand within reach:
 ## the trunk leans forward (mostly at the hips, the rest in the lower back), the hips go back under it and down, the
 ## knees give — the feet stay exactly where they stand.
+## While a hand holds he stands in a working stance (`work_lean_deg`, `work_squat`: the trunk inclined, the knees given)
+## — 10.11, the windlass in the game: its crank goes round from 0,63 m to 1,27 m above his feet, 0,3–0,45 m in front;
+## standing upright he reached the top half with his arms alone and then bowed 52° and back within an eighth of a turn
+## (0,2 s), every turn. From the working stance the whole round is within his arms' reach, and the back follows the
+## hands: the lower the leading hand's place under the shoulder, the more he leans and gives in the knees
+## (`sway_lean_deg`, `sway_squat`) — a smooth sway in time with the thing he turns, not a clip's own swing.
 ## Last of the skeleton's modifiers (after the clothes' clearance and the feet): the hand is where the thing is.
 ## `targets` / `want` are set every frame by the owner (NpcLive3D.hold_hand_at); the weight eases in and out here.
 
@@ -22,12 +28,20 @@ var spine: int = -1
 var hips: int = -1
 var legs: Array = []            # [[upper leg, lower leg, foot], …] left, right
 var to_model := Basis.IDENTITY  # skeleton space → model space (x across: + her left, y up, z forward)
+var work_lean_deg: float = 8.0  # the working stance (while a hand that does not merely help holds): the trunk's lean…
+var work_squat: float = 0.06    # …and the hips lower by this share of the leg's length
+var sway_lean_deg: float = 16.0 # more lean with the leading hand an arm's length under the shoulder (none with it level)…
+var sway_squat: float = 0.08    # …and the hips lower by this share of the leg's length more
+                                # (10.11, tried on the windlass: 18° + 10° and 12 % + 4 % — a man crouching all the
+                                # turn, the hand at the top of it right under his chin)
 var max_lean_deg: float = 65.0  # the trunk's lean at full effort
 var hip_share: float = 0.7      # of the lean at the hips, the rest in the lower back
 var hinge_k: float = 0.3       # the hips go back by this share of the trunk's forward reach
 var squat_k: float = 0.08       # at full effort the hips are lower by this share of the leg's length
 var reach_k: float = 0.97       # of the arm's length: never quite straight
-var effort_now: float = 0.0     # 0..1, the last frame's (tests)
+var effort_now: float = 0.0     # 0..1 over the working stance, the last frame's (tests)
+var stance_now: float = 0.0     # 0..1: how much of the working stance is on (tests)
+var low_now: float = 0.0        # 0..1: how low the leading hand's place is under its shoulder (tests)
 var lean_now: float = 0.0       # rad (tests)
 
 
@@ -74,6 +88,8 @@ func _process_modification_with_delta(delta: float) -> void:
 		top = maxf(top, w)
 	effort_now = 0.0
 	lean_now = 0.0
+	stance_now = 0.0
+	low_now = 0.0
 	if top <= 0.001:
 		return
 	var inv := to_model.inverse()
@@ -88,23 +104,36 @@ func _process_modification_with_delta(delta: float) -> void:
 		goals[side] = grip.lerp(targets[side] as Vector3, w)
 	if goals.is_empty():
 		return
-	# the body: the least effort that brings every goal within the arm's reach
+	# the body: the working stance (as much as the leading hands hold), and over it the least effort that brings every
+	# goal within the arm's reach
 	if spine >= 0 and hips >= 0 and legs.size() == 2:
 		var f := _frame(sk, inv)
+		var st := 0.0
+		var low := 0.0
+		for side in goals:
+			if not bool(helping.get(side, false)):
+				st = maxf(st, _smooth(float(weights[side])))
+				var bs: Array = sides[side]
+				var sh: Vector3 = sk.get_bone_global_pose(int(bs[0])).origin
+				var arm: float = (sk.get_bone_global_pose(int(bs[1])).origin - sh).length() + (sk.get_bone_global_pose(int(bs[2])).origin - sk.get_bone_global_pose(int(bs[1])).origin).length()
+				low = maxf(low, clampf((sh - (goals[side] as Vector3)).dot(f["up"] as Vector3) / maxf(arm, 1e-5), 0.0, 1.0))
+		low = _smooth(low)
+		stance_now = st
+		low_now = low
 		var e := 0.0
-		if not _reachable(sk, goals, f, 0.0):
+		if not _reachable(sk, goals, f, 0.0, st, low):
 			var lo := 0.0
 			var hi := 1.0
 			for i in 10:
 				var mid := (lo + hi) * 0.5
-				if _reachable(sk, goals, f, mid):
+				if _reachable(sk, goals, f, mid, st, low):
 					hi = mid
 				else:
 					lo = mid
 			e = hi
 		effort_now = e
-		if e > 0.0005:
-			var p := _posture(f, e)
+		if e > 0.0005 or st > 0.0005:
+			var p := _posture(f, e, st, low)
 			lean_now = float(p["lean"])
 			var feet_were: Array = []
 			var legs_were: Array = []
@@ -124,15 +153,16 @@ func _process_modification_with_delta(delta: float) -> void:
 				sk.set_bone_global_pose(int(lg[2]), feet_were[i])   # the foot stands as it stood
 			var gs: Transform3D = sk.get_bone_global_pose(spine)
 			sk.set_bone_global_pose(spine, Transform3D(Basis(p["qs"] as Quaternion) * gs.basis, gs.origin))
-	# the arms: a few passes — the grip point turns with the forearm, each pass takes up what the last one left
+	# the arms: the upper arm and the forearm with the hand as it is on it — the chain ends in the grip point itself
+	# (10.11: it ended in the wrist and the grip point, 13 cm on, was brought up in passes; with the goal near the
+	# shoulder — the top of the turn from the working stance — the passes did not meet: the hand stood 15 cm off)
 	for side in goals:
 		var b: Array = sides[side]
 		var sgn := 1.0 if side == "Left" else -1.0
-		var pole := (inv * Vector3(sgn * 0.35, -0.55, -0.75)).normalized()   # the elbow: back, down, a little out
-		for pass_i in 4:
-			var gh: Transform3D = sk.get_bone_global_pose(int(b[2]))
-			var grip: Vector3 = gh * (grip_local.get(side, Vector3.ZERO) as Vector3)
-			_reach(sk, int(b[0]), int(b[1]), int(b[2]), gh.origin + ((goals[side] as Vector3) - grip), pole, reach_k)
+		# the elbow: down, a touch out and back (10.11: «back» first — with the grip near the chest, at the top of the
+		# turn, the far arm's elbow stood out behind the back like a wing)
+		var pole := (inv * Vector3(sgn * 0.25, -1.0, -0.15)).normalized()
+		_reach(sk, int(b[0]), int(b[1]), int(b[2]), goals[side] as Vector3, pole, reach_k, grip_local.get(side, Vector3.ZERO) as Vector3)
 
 
 static func _smooth(w: float) -> float:
@@ -155,21 +185,22 @@ func _frame(sk: Skeleton3D, inv: Basis) -> Dictionary:
 		"side": (inv * Vector3(1, 0, 0)).normalized(), "up": (inv * Vector3(0, 1, 0)).normalized(), "fwd": (inv * Vector3(0, 0, 1)).normalized()}
 
 
-## The body's posture at effort `e` (0..1): the lean at the hips and in the lower back, the hips' shift back and down.
-func _posture(f: Dictionary, e: float) -> Dictionary:
-	var lean := deg_to_rad(max_lean_deg) * e
+## The body's posture with `st` (0..1) of the working stance, the leading hand `low` (0..1) under its shoulder and
+## effort `e` (0..1) over them: the lean at the hips and in the lower back, the hips' shift back and down.
+func _posture(f: Dictionary, e: float, st: float, low: float) -> Dictionary:
+	var base := (work_lean_deg + sway_lean_deg * low) * st
+	var lean := deg_to_rad(base) + deg_to_rad(maxf(max_lean_deg - base, 0.0)) * e
 	var back := hinge_k * float(f["trunk"]) * sin(lean * hip_share)
-	var down := squat_k * float(f["leg"]) * e
+	var down := ((work_squat + sway_squat * low) * st + squat_k * e) * float(f["leg"])
 	return {"lean": lean, "qh": Quaternion(f["side"] as Vector3, lean * hip_share), "qs": Quaternion(f["side"] as Vector3, lean * (1.0 - hip_share)),
 		"shift": (f["fwd"] as Vector3) * -back + (f["up"] as Vector3) * -down}
 
 
-## Would every goal be within reach of its shoulder at effort `e`?
-func _reachable(sk: Skeleton3D, goals: Dictionary, f: Dictionary, e: float) -> bool:
-	var p := _posture(f, e)
+## Would every goal be within reach of its shoulder at effort `e` over the working stance (`st`, `low`)?
+func _reachable(sk: Skeleton3D, goals: Dictionary, f: Dictionary, e: float, st: float, low: float) -> bool:
+	var p := _posture(f, e, st, low)
 	var qh: Quaternion = p["qh"]
 	var qs: Quaternion = p["qs"]
-	var q := qh * qs
 	var hp: Vector3 = f["hip_pivot"]
 	var sp: Vector3 = f["spine_pivot"]
 	for side in goals:
@@ -178,23 +209,21 @@ func _reachable(sk: Skeleton3D, goals: Dictionary, f: Dictionary, e: float) -> b
 		var b: Array = sides[side]
 		var s0: Vector3 = sk.get_bone_global_pose(int(b[0])).origin
 		var e0: Vector3 = sk.get_bone_global_pose(int(b[1])).origin
-		var h0: Transform3D = sk.get_bone_global_pose(int(b[2]))
-		var arm_len := (e0 - s0).length() + (h0.origin - e0).length()
+		var g0: Vector3 = sk.get_bone_global_pose(int(b[2])) * (grip_local.get(side, Vector3.ZERO) as Vector3)
+		var arm_len := (e0 - s0).length() + (g0 - e0).length()   # shoulder — elbow — grip point (the hand as it is on the forearm)
 		var s1: Vector3 = hp + (p["shift"] as Vector3) + qh * ((sp + qs * (s0 - sp)) - hp)
-		# the wrist's goal: the grip's goal less the hand's own length to its grip (turned with the body)
-		var wrist_goal: Vector3 = (goals[side] as Vector3) - q * (h0 * (grip_local.get(side, Vector3.ZERO) as Vector3) - h0.origin)
-		if (wrist_goal - s1).length() > arm_len * reach_k:
+		if ((goals[side] as Vector3) - s1).length() > arm_len * reach_k:
 			return false
 	return true
 
 
-## Two-bone reach: the end bone's origin to `goal`, the middle joint on the `pole` side; never straighter than `max_k`
-## of the two bones' length.
-func _reach(sk: Skeleton3D, a: int, f: int, h: int, goal: Vector3, pole: Vector3, max_k: float) -> void:
+## Two-bone reach: the chain's end — the point `tip_local` of the end bone `h` (its origin by default), carried by the
+## middle bone as it is — to `goal`, the middle joint on the `pole` side; never straighter than `max_k` of the chain.
+func _reach(sk: Skeleton3D, a: int, f: int, h: int, goal: Vector3, pole: Vector3, max_k: float, tip_local: Vector3 = Vector3.ZERO) -> void:
 	var ga: Transform3D = sk.get_bone_global_pose(a)
 	var s := ga.origin
 	var e: Vector3 = sk.get_bone_global_pose(f).origin
-	var hp: Vector3 = sk.get_bone_global_pose(h).origin
+	var hp: Vector3 = sk.get_bone_global_pose(h) * tip_local
 	var l1 := (e - s).length()
 	var l2 := (hp - e).length()
 	if l1 < 1e-5 or l2 < 1e-5:
@@ -214,5 +243,5 @@ func _reach(sk: Skeleton3D, a: int, f: int, h: int, goal: Vector3, pole: Vector3
 	var g2 := s + dir * d
 	sk.set_bone_global_pose(a, Transform3D(Basis(Quaternion((e - s).normalized(), (e2 - s).normalized())) * ga.basis, s))
 	var gf: Transform3D = sk.get_bone_global_pose(f)
-	var h2: Vector3 = sk.get_bone_global_pose(h).origin
+	var h2: Vector3 = sk.get_bone_global_pose(h) * tip_local
 	sk.set_bone_global_pose(f, Transform3D(Basis(Quaternion((h2 - gf.origin).normalized(), (g2 - gf.origin).normalized())) * gf.basis, gf.origin))

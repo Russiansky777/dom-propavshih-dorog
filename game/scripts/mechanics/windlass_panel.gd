@@ -167,7 +167,10 @@ func _on_logic_event(name: String) -> void:
 func tick(delta: float) -> void:
 	if not dialogue_up():
 		logic.step(delta)
-	_ilya_cranks(logic.state in ["down", "up"])
+	# 10.11: with the windlass's parts there (spin) his hands are on the turning crank itself and the body stands in
+	# the working stance (HandHoldModifier) — the clip's own swing, in its own time, would fight the crank's; the clip
+	# stays for a site picture without the parts
+	_ilya_cranks(spin == null and logic.state in ["down", "up"])
 	_turn_windlass(delta)
 	if clock - _call_t > 2.2 and logic.state != "bumped":
 		call_label.text = ""

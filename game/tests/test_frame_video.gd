@@ -10,6 +10,11 @@ extends SceneTree
 ##        picture's snow effect is off (the snow falls in the video);
 ##   FV-4 the scene leaves the hug frame with a 2-second fade (E3 M18 staging), both hug frames' exits ≥ 2 s where
 ##        a video exists.
+##   FV-8 (Director 10.11, 19:04, the hugs: «ок, давай второй вариант») the frame names an intro beside the loop
+##        (background.video_intro): the intro plays once, from the painting, over the loop that waits paused at its
+##        start; at the intro's end the loop goes on and no drawn frame through the join differs from the one before
+##        it by more than the clip's own motion; self-check — with the intro off the first picture on screen is the
+##        loop's own beginning, far from the painting.
 ##   godot --path game --display-driver x11 --rendering-driver opengl3 -s res://tests/test_frame_video.gd
 
 var fails := 0
@@ -41,6 +46,8 @@ func _run() -> void:
 		await process_frame
 	for fid in ["F_hug_pelageya", "F_hug_nina"]:
 		await _frame(fid, sd, sr, main_node)
+	for fid in ["F_hug_pelageya", "F_hug_nina"]:
+		await _intro_join(fid, sd, sr, main_node)
 	# FV-5: the dinner (09.11) — the clip follows the player's choices; the people and the cup are inside it, so their
 	# layers go; a variant without a clip yet falls back to the painting with its layers
 	var fv = main_node.find_child("FrameView", true, false)
@@ -273,6 +280,101 @@ func _frame(fid: String, sd, sr, main_node) -> void:
 	await _seam(v)
 	sr.set_frame("", false)
 	await process_frame
+
+
+## FV-8: the intro, then the loop (see the header).
+func _intro_join(fid: String, sd, sr, main_node) -> void:
+	print("  -- %s: intro → loop" % fid)
+	var spec: Dictionary = sd.room(fid)
+	var intro_path := String(spec.get("background", {}).get("video_intro", ""))
+	_check(intro_path != "" and ResourceLoader.exists(intro_path), "FV-8 %s names no intro (%s)" % [fid, intro_path])
+	if intro_path == "" or not ResourceLoader.exists(intro_path):
+		return
+	var starts: Dictionary = {}
+	var fv_script: GDScript = load("res://scripts/rooms/frame_video.gd")
+	for with_intro in [false, true]:
+		fv_script.set("intro_enabled", with_intro)
+		sr.set_frame(fid, false)
+		for i in 3:
+			await process_frame
+		fv_script.set("intro_enabled", true)
+		var fv = main_node.find_child("FrameView", true, false)
+		var v: VideoStreamPlayer = fv.room.get_node_or_null("Background/Video") if fv != null and fv.room != null else null
+		if v == null:
+			_check(false, "FV-8 %s: no player on the frame" % fid)
+			continue
+		var intro: VideoStreamPlayer = v.get_node_or_null("Intro")
+		if with_intro:
+			_check(intro != null and intro.is_playing() and intro.volume_db <= -60.0 and intro.size == v.size, "FV-8 %s: no intro playing over the loop (%s)" % [fid, intro])
+			_check(v.paused and v.stream_position <= 0.001 and v.loop and v.stream != null, "FV-8 %s: the loop does not wait at its start under the intro (paused %s, position %.2f, loop %s)" % [fid, v.paused, v.stream_position, v.loop])
+			if intro == null:
+				continue
+		else:
+			_check(intro == null and not v.paused, "FV-8 self-check: with the intro off there is still an intro (%s) or the loop waits (%s)" % [intro, v.paused])
+		# the painting as the game draws it: the player hidden for one drawn frame
+		v.visible = false
+		await RenderingServer.frame_post_draw
+		var painting := _small()
+		v.visible = true
+		# a quarter of a second in: what is on screen against the painting
+		var lead: VideoStreamPlayer = intro if with_intro else v
+		var n := 0
+		while lead.stream_position < 0.25 and n < 300:
+			n += 1
+			await process_frame
+		await RenderingServer.frame_post_draw
+		starts[with_intro] = _part_diff(_small(), painting)
+		if with_intro:
+			# the join: every drawn frame from 0.7 s before the intro's end till the loop is well on
+			intro.stream_position = maxf(intro.get_stream_length() - 0.7, 0.3)
+			var prev: Image = null
+			var worst := 0.0
+			var worst_at := -1
+			var gone_at := -1
+			var k := 0
+			while k < 300 and (gone_at < 0 or k - gone_at < 12):
+				k += 1
+				await RenderingServer.frame_post_draw
+				var shot := _small()
+				if prev != null:
+					var d := _part_diff(shot, prev)
+					if d > worst:
+						worst = d
+						worst_at = k
+				prev = shot
+				if gone_at < 0 and v.get_node_or_null("Intro") == null:
+					gone_at = k
+			print("    FV-8 %s: the intro went at frame %d of the watch; frame-to-frame difference through the join at most %.2f/255 (at frame %d); the loop at %.2f s" % [fid, gone_at, worst, worst_at, v.stream_position])
+			_check(gone_at > 0, "FV-8 %s: the intro never gave way to the loop" % fid)
+			_check(worst <= JOIN_MAX, "FV-8 %s: a frame at the join differs from the one before by %.2f/255 (> %.1f) — a jump or an empty frame" % [fid, worst, JOIN_MAX])
+			_check(not v.paused and v.is_playing() and v.loop and v.stream_position > 0.0, "FV-8 %s: after the intro the loop does not play (paused %s, playing %s, position %.2f)" % [fid, v.paused, v.is_playing(), v.stream_position])
+		sr.set_frame("", false)
+		await process_frame
+	if starts.has(true) and starts.has(false):
+		print("    FV-8 %s: a quarter of a second in, the screen against the painting — with the intro %.2f/255, without %.2f/255" % [fid, float(starts[true]), float(starts[false])])
+		_check(float(starts[true]) <= START_MAX, "FV-8 %s: the intro does not begin in the painting (%.2f/255 > %.1f)" % [fid, float(starts[true]), START_MAX])
+		_check(float(starts[false]) > START_MAX * 1.5, "FV-8 self-check: without the intro the frame also begins in the painting (%.2f/255) — the measure tells nothing" % float(starts[false]))
+
+
+const JOIN_MAX := 3.0
+const START_MAX := 3.0
+
+
+func _small() -> Image:
+	var shot: Image = root.get_viewport().get_texture().get_image()
+	shot.resize(96, 54, Image.INTERPOLATE_BILINEAR)
+	return shot
+
+
+## Mean difference of the middle of the picture (design px 600..1320 × 200..880 — the people), 0..255.
+func _part_diff(a: Image, b: Image) -> float:
+	var sum := 0.0
+	var cnt := 0
+	for y in range(10, 44):
+		for x in range(30, 66):
+			sum += absf(a.get_pixel(x, y).get_luminance() - b.get_pixel(x, y).get_luminance())
+			cnt += 1
+	return sum / maxf(1.0, cnt) * 255.0
 
 
 func _seam(v: VideoStreamPlayer) -> void:

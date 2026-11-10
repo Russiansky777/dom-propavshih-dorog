@@ -22,8 +22,24 @@ extends VideoStreamPlayer
 ## empty room, the family gone for a blink. Now the picture the player showed last stays over it (`Hold`, the old
 ## stream's own texture — no copy) until the new clip has drawn. Test FV-7 (the clip's natural end, every frame watched).
 
+## Director 10.11, 16:01 / 19:04 (the hugs in 1080p: «это явно не кадр в кадр склейка» → «ок, давай второй вариант»):
+## `"video_intro": "res://…/intro.ogv"` beside `video` — the intro plays once, from the painting to the pose where the
+## loop begins; the loop then goes round with no cross-fade into the painting (tools/video_loop.py --from --to --intro:
+## the loop's last frame is the clip's frame right before its first one). Two players, so that nothing is opened at
+## the join: this one holds the loop — opened, started and paused at its beginning; a child (`Intro`) plays the intro
+## over it; when the intro ends the loop is let go, and the intro's last picture stays on top for the two frames the
+## loop needs to draw (the same reason as `Hold` below). Test FV-8.
+
 var files: Array = []
 var bg: Dictionary = {}
+var intro_file := ""
+## tests (FV-8 self-check): false — the loop starts at once, as if the room named no intro
+static var intro_enabled := true
+var _intro: VideoStreamPlayer = null
+var _intro_ended := false
+var _intro_frames := 0           # frames since the intro ended
+var _loop_drawn := 0             # of them, with the loop already playing
+const INTRO_OFF_AFTER := 2
 var _last := -1
 ## tests (FV-7 self-check): false — the stream changes as before, with the empty frame
 var hold_enabled := true
@@ -75,11 +91,16 @@ func setup(p_files: Array, pos: Vector2, sz: Vector2, p_bg: Dictionary = {}) -> 
 	loop = files.size() == 1
 	autoplay = false
 	finished.connect(_on_finished)
+	intro_file = String(bg.get("video_intro", ""))
+	if not intro_enabled or files.size() != 1 or intro_file == "" or not ResourceLoader.exists(intro_file):
+		intro_file = ""
 
 
 func _ready() -> void:
 	set_process(false)
 	_next()   # play() needs the tree
+	if intro_file != "":
+		_start_intro()
 	if not bg.is_empty() and not GameState.flag_changed.is_connected(_on_flag):
 		GameState.flag_changed.connect(_on_flag)
 
@@ -121,6 +142,30 @@ func _next() -> void:
 		_cover(shown)
 
 
+## The loop waits at its beginning; the intro plays over it, once (see the header).
+func _start_intro() -> void:
+	paused = true
+	_intro = VideoStreamPlayer.new()
+	_intro.name = "Intro"
+	_intro.expand = true
+	_intro.volume_db = -80.0
+	_intro.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_intro.use_parent_material = true   # the room's lights shade it like the player
+	_intro.size = size
+	_intro.stream = load(intro_file)
+	_intro.finished.connect(_on_intro_finished)
+	add_child(_intro)
+	_intro.play()
+
+
+func _on_intro_finished() -> void:
+	_intro_ended = true
+	_intro_frames = 0
+	_loop_drawn = 0
+	paused = false
+	set_process(true)
+
+
 ## The last picture of the stream that has just gone stays on top for a few frames (see the header).
 func _cover(tex: Texture2D) -> void:
 	if _hold == null:
@@ -141,8 +186,17 @@ func _cover(tex: Texture2D) -> void:
 
 
 func _process(_delta: float) -> void:
+	if _intro != null and _intro_ended:
+		# the intro's last picture goes when the loop has drawn (half a second at the most)
+		_intro_frames += 1
+		if stream_position > 0.0:
+			_loop_drawn += 1
+		if _loop_drawn >= INTRO_OFF_AFTER or _intro_frames >= HOLD_MAX_FRAMES:
+			_intro.queue_free()
+			_intro = null
 	if _hold_frames <= 0:
-		set_process(false)
+		if _intro == null or not _intro_ended:
+			set_process(false)
 		return
 	_hold_frames -= 1
 	_hold_total += 1
@@ -158,4 +212,5 @@ func _process(_delta: float) -> void:
 
 ## Tests and the web probe.
 func probe() -> Dictionary:
-	return {"files": files, "current": _last, "playing": is_playing(), "loop": loop, "position": stream_position}
+	return {"files": files, "current": _last, "playing": is_playing(), "loop": loop, "position": stream_position,
+		"intro": intro_file, "intro_on": _intro != null, "intro_position": _intro.stream_position if _intro != null else -1.0}

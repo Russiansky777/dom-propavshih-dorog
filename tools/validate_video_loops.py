@@ -15,9 +15,13 @@
      на 3,7 точки вниз — на шве петли она вся двоилась бы и «дышала» раз в 10 с; клип выровнен
      tools/video_stabilize.py): наибольший сдвиг всей картины против первого кадра (фазовая корреляция, кадры
      через 0,5 с, в точках кадра 1080p) ≤ 1,0. Мерка: все ролики игры — 0,03–0,20; сырой клип — 3,73.
+  6. вступление (10.11, объятия: background.video_intro — играет один раз перед петлёй, tools/video_loop.py --intro):
+     у него проверяются ключевой кадр, звук и камера, а шов петли и живость — нет (оно не петля); зато его последний
+     кадр должен переходить в первый кадр петли как соседний кадр клипа: средняя разница ≤ 3/255 (как шов петли).
+     Мерка: объятия — 1,29 и 1,72 (соседние кадры клипа; разница — ключевой кадр Theora), вступление перед чужой петлёй — 58.
 Самопроверка (--self-check): тот же ролик, перекодированный с ключевым кадром каждые 12 кадров, должен быть пойман;
 стоп-кадр первого кадра на 2 с должен быть пойман как неживой; ролик, в котором картина съезжает на 8 точек,
-должен быть пойман как «камера сползает».
+должен быть пойман как «камера сползает»; вступление, приставленное к петле другой комнаты, — как «не переходит».
 
   python3 tools/validate_video_loops.py [--self-check]   → код 0, если всё в порядке
 """
@@ -101,6 +105,55 @@ def drift(path: str) -> float:
     return worst
 
 
+def frame_at(path: str, last: bool):
+    """Первый или последний кадр ролика (480×270, RGB) — numpy; None без numpy."""
+    try:
+        import numpy as np
+    except ImportError:
+        return None
+    p = subprocess.run(["ffmpeg", "-nostdin", "-loglevel", "error", "-i", path, "-vf", "scale=480:270", "-f", "rawvideo",
+                        "-pix_fmt", "rgb24", "-"], capture_output=True, check=True)
+    a = np.frombuffer(p.stdout, np.uint8).reshape(-1, 270, 480, 3).astype(int)
+    return a[-1] if last else a[0]
+
+
+def join(intro: str, loop: str) -> float:
+    """Разница последнего кадра вступления и первого кадра петли, 0..255."""
+    a, b = frame_at(intro, True), frame_at(loop, False)
+    if a is None or b is None:
+        return 0.0
+    return float(abs(a - b).mean())
+
+
+def intros() -> dict:
+    """вступление (путь от корня) → его петля: background.video_intro и background.video комнаты."""
+    out = {}
+    for f in sorted(glob.glob(os.path.join(ROOT, "data/story/rooms/*.json"))):
+        bg = json.load(open(f, encoding="utf-8")).get("background", {})
+        if bg.get("video_intro") and bg.get("video"):
+            out["game/" + str(bg["video_intro"]).replace("res://", "")] = "game/" + str(bg["video"]).replace("res://", "")
+    return out
+
+
+def check_intro(path: str, loop_path: str) -> list:
+    errs = []
+    k = keyframes(path)
+    if k != [0]:
+        errs.append(f"ключевые кадры {k[:6]}{'…' if len(k) > 6 else ''} ({len(k)} шт.) — нужен один, в начале")
+    if has_audio(path):
+        errs.append("есть звуковая дорожка")
+    d = drift(path)
+    if d > DRIFT_MAX:
+        errs.append(f"камера сползает: картина сдвигается на {d:.2f} точки > {DRIFT_MAX} (выровнять: tools/video_stabilize.py)")
+    if not os.path.exists(loop_path):
+        errs.append(f"нет петли {loop_path}")
+    else:
+        j = join(path, loop_path)
+        if j > SEAM_MAX:
+            errs.append(f"вступление не переходит в петлю: последний кадр против первого кадра петли {j:.2f}/255 > {SEAM_MAX}")
+    return errs
+
+
 def motion_mins() -> dict:
     """ролик (путь от корня) → наименьшая живость, которую объявила комната; None — комната её не назвала."""
     out = {}
@@ -142,8 +195,14 @@ def main() -> int:
     files = sorted(glob.glob(os.path.join(ROOT, "game/assets/rooms/**/*.ogv"), recursive=True))
     bad = 0
     mins = motion_mins()
+    intro_of = intros()
     for f in files:
         rel = os.path.relpath(f, ROOT)
+        if rel in intro_of:
+            errs = check_intro(f, os.path.join(ROOT, intro_of[rel]))
+            print(("OK    " if not errs else "FAIL  ") + rel + " (вступление)" + ("" if not errs else ": " + "; ".join(errs)))
+            bad += bool(errs)
+            continue
         errs = check(f, mins.get(rel))
         if rel in mins and mins[rel] is None:
             errs.append("комната не назвала video_motion_min (живость ролика не проверяется)")
@@ -169,6 +228,12 @@ def main() -> int:
             caught3 = any("камера сползает" in e for e in check(slid))
             print(("OK    " if caught3 else "FAIL  ") + "самопроверка: картина, съезжающая на 8 точек, " + ("поймана" if caught3 else "НЕ поймана"))
             bad += not caught3
+        if len(intro_of) >= 2:
+            # вступление одной комнаты перед петлёй другой — картины разные, переход должен быть пойман
+            (i1, _l1), (_i2, l2) = sorted(intro_of.items())[:2]
+            caught4 = any("не переходит" in e for e in check_intro(os.path.join(ROOT, i1), os.path.join(ROOT, l2)))
+            print(("OK    " if caught4 else "FAIL  ") + "самопроверка: вступление перед чужой петлёй " + ("поймано" if caught4 else "НЕ поймано"))
+            bad += not caught4
     print(f"видео-петли: {len(files)} файлов, {bad} с ошибками")
     return 1 if bad else 0
 
