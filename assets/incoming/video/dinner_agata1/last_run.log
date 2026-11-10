@@ -1,0 +1,5 @@
+run 42857945015 2026-11-10T16:50:35Z request: pipeline/requests/video_dinner_agata1.json
+== кадр EP_dinner_agata: assets/incoming/video/dinner/agata_crop_3x4.png
+   картинка 1080x1440, 343 КБ
+   fal-ai/kling-video/v3/pro/image-to-video #1: OK 447.9 с, 23877 КБ
+готово: 1 клипов, 0 ошибок → assets/incoming/video/dinner_agata1
