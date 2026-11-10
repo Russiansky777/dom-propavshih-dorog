@@ -385,6 +385,7 @@ func _test_chair() -> void:
 	_check(Rect2(box.position * k, box.size * k).has_point(Vector2(1030, 700)), "the occluder covers the chair's right post (%s)" % str(box))
 	# Agata at the letters' stand (1080, 830) is behind the chair (its legs on the floor at y 975–1066): drawn under it
 	player.global_position = Vector2(1080, 830)
+	player.call("_update_depth")
 	await _frames(3)
 	_check(int(player.z_index) < int(occ.z_index if occ != null else 0), "Agata at the table (z %d) under the chair (z %d)" % [int(player.z_index), int(occ.z_index if occ != null else 0)])
 	# Director 09.11, 22:18 («опять момент со стулом выглядит странно»): where she comes in from the street and where she
@@ -399,6 +400,7 @@ func _test_chair() -> void:
 	var over_old := 0
 	for pl in places:
 		player.global_position = Vector2(float(pl[0]), float(pl[1]))
+		player.call("_update_depth")   # as a step does (standing, the depth is not recomputed every frame)
 		await _frames(2)
 		_check(int(player.z_index) < int(occ.z_index if occ != null else 0), "at %s by the chair Agata (z %d) is drawn over its back (z %d) — she stands «in» the chair" % [str(pl), int(player.z_index), int(occ.z_index if occ != null else 0)])
 		if int(player.z_index) >= 1020:

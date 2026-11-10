@@ -893,11 +893,23 @@ func _stage_handover(ho: Dictionary) -> void:
 
 ## `npc_go` [{id, to: [x, y], s, fade}]: before the fade, villagers in the room walk off (NpcActor.go_off) — toward a
 ## door, easing with the depth and fading out. Returns the longest of their seconds (0 — nobody to move).
+## The room a staging's villagers and layers are in: the frame over the world when one is up (FrameView — the epilogue's
+## shots, the council), else the room itself.
+func _stage_room() -> Node:
+	if current_frame != "":
+		for fv in get_tree().get_nodes_in_group("frame_view"):
+			if fv.get("room") != null and is_instance_valid(fv.get("room")):
+				return fv.get("room")
+	return RoomManager.current_room
+
+
 func _stage_npc_go(spec: Dictionary) -> float:
 	var longest := 0.0
-	var room := RoomManager.current_room
+	var room := _stage_room()
 	if room == null:
 		return 0.0
+	# in a frame the figures keep the size the frame's composition gave them (figure_h), whatever its floor says
+	var scale_room: Node = null if (current_frame != "" and room != RoomManager.current_room) else room
 	for g in spec.get("npc_go", []):
 		var npc := room.get_node_or_null("npc_" + String(g.get("id", "")))
 		if npc != null and npc.has_method("go_off") and (npc as CanvasItem).visible:
@@ -907,7 +919,7 @@ func _stage_npc_go(spec: Dictionary) -> float:
 			# J (Директор 29.10, стр. 172; 25.10, стр. 140): `in_black` — she walks into the open doorway and is gone
 			# in the black that follows: no fading on screen, the door is shut while black (no dissolve to be seen).
 			var in_black := bool(g.get("in_black", false))
-			longest = maxf(longest, float(npc.call("go_off", Vector2(float(to[0]), float(to[1])), secs, bool(g.get("fade", true)) and not in_black, room)))
+			longest = maxf(longest, float(npc.call("go_off", Vector2(float(to[0]), float(to[1])), secs, bool(g.get("fade", true)) and not in_black, scale_room)))
 			if in_black:
 				_black_hide.append(npc)
 			if g.has("door"):
@@ -1111,7 +1123,7 @@ var layers_written: Array[String] = []   # tests
 
 
 func _stage_layer_write(list: Array) -> void:
-	var room := RoomManager.current_room
+	var room := _stage_room()   # a frame's own board too (the epilogue's lesson: the date's last letters)
 	if room == null:
 		return
 	for g in list:

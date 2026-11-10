@@ -1587,6 +1587,8 @@ func feet_step(delta: float, origin_px: Vector2, px_per_m: Vector2) -> void:
 			var land_b := Basis(Vector3.UP, yaw + _feet_yaw_v * t_land)
 			if to_end:
 				land_b = end_b   # straight to where it stands when the turn is over
+				if _closing < 0 or closing_to.is_empty():
+					dur = maxf(dur, float(fk.get("turn_step_s", dur)))   # an unhurried step, not a shuffle
 			var land_src: Vector3 = closing_to[i * 2] if not closing_to.is_empty() else f[i * 2]
 			var land := _clear_of_other(land_b * land_src, i, yaw_b, f, o, k, float(fk.get("min_sep_m", 0.12)))
 			# kept by the body (it goes with her as she still comes to a stop), not turned with her

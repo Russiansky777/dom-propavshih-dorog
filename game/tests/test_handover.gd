@@ -236,7 +236,22 @@ func _ho3() -> void:
 	for i in 20:
 		await process_frame
 	var fv = root.find_child("FrameView", true, false)
-	for c in [["EP_tamara", "tamara", 3], ["EP_pavel", "pavel", 6], ["EP_boat", "pelageya", 6], ["EP_boat", "mitya", 6]]:
+	# the pier: Pelageya and Mitya face each other, as the accepted frame had them (Director 09.11, 22:18: «развёрнуты не
+	# в ту сторону» — by day both had been given one sheet turn, dir 6, and Mitya looked away from her)
+	sr.set_frame("EP_boat", false)
+	for i in 40:
+		await process_frame
+	var pel3 = fv.room.get_node_or_null("npc_pelageya") if fv.room != null else null
+	var mit3 = fv.room.get_node_or_null("npc_mitya") if fv.room != null else null
+	if pel3 == null or mit3 == null or pel3.get("live") == null or mit3.get("live") == null:
+		_check(false, "HO-3 EP_boat: no live Pelageya / Mitya")
+	else:
+		var py := wrapf(rad_to_deg(float(pel3.get("live").get("yaw"))), -180.0, 180.0)
+		var my := wrapf(rad_to_deg(float(mit3.get("live").get("yaw"))), -180.0, 180.0)
+		var right_of: bool = mit3.global_position.x > pel3.global_position.x
+		_check(right_of and absf(py - 90.0) < 30.0, "HO-3 EP_boat Pelageya turned %.0f° — not to Mitya on her right (90° ± 30)" % py)
+		_check(right_of and absf(my + 90.0) < 30.0, "HO-3 EP_boat Mitya turned %.0f° — not to Pelageya on his left (−90° ± 30)" % my)
+	for c in [["EP_tamara", "tamara", 3], ["EP_pavel", "pavel", 6]]:
 		sr.set_frame(String(c[0]), false)
 		for i in 40:
 			await process_frame

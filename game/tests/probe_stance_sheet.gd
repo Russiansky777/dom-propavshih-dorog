@@ -76,6 +76,8 @@ func _run() -> void:
 					elif state.begins_with("act_"):
 						# a one-shot action (rt3d.clips role): act_write_board
 						print("  %s %s: %.2f s" % [id, state, live.view.action_length(state.trim_prefix("act_"))])
+						if OS.get_environment("ACT_ARM_DROP") != "":   # the acting arm lowered (+) or raised (−) by that many degrees
+							live.set_act_arm({"side": "Right", "drop_deg": float(OS.get_environment("ACT_ARM_DROP"))}, state.trim_prefix("act_"))
 						live.play_once(state.trim_prefix("act_"))
 					else:
 						live.set_state(state)
