@@ -28,6 +28,10 @@ extends SceneTree
 ##       back; let go, it comes to the painted pose and stays. Self-check — a crank that does not turn is caught.
 ##   R-8 (Director 18:59: «Лого Godot убрать вовсе, если можно»): the engine's logo is not shown at start —
 ##       application/boot_splash/show_image is off, the start screen is the dark background alone.
+##   R-9 (обзор 10.11, кадры заданий): in a whole close-up (the picture in the carved frame begins at x 246) a title
+##       longer than one short word ran under the picture — «Двадцать зар…». Every room's view with a title and a
+##       picture: the title's words stand clear of every picture's frame. Self-check — the same title in the old
+##       one-line box 520 wide is read as covered.
 ## Exit code 0 only when every check passed.
 
 var _results: Array = []
@@ -83,6 +87,7 @@ func _run() -> void:
 	await _test("R-6 M18: after the hug's frame Pelageya and Mitya stand a step apart, the lantern between them; self-check — in the embrace they are close", _test_apart_after_hug)
 	await _test("R-7 the windlass turns while the log goes and rests as painted; self-check — a still crank is caught", _test_windlass_turns)
 	await _test("R-8 no engine logo at start: boot_splash/show_image is off, the background is dark", _test_no_boot_logo)
+	await _test("R-9 a close-up's title is not covered by its picture («Двадцать зарубок»); self-check — the old one-line box is caught", _test_view_title_clear)
 	gs.reset()
 	if main_node != null and is_instance_valid(main_node):
 		root.remove_child(main_node)
@@ -509,3 +514,71 @@ func _test_no_boot_logo() -> void:
 	var bare := ConfigFile.new()
 	bare.parse("[application]\nconfig/name=\"x\"\n")
 	_check(bool(bare.get_value("application", "boot_splash/show_image", true)) == true, "self-check: a project without the setting reads as logo off (the test sees nothing)")
+
+
+## R-9: where the title's words are drawn against the pictures' frames (the view's own px).
+func _title_overlap(cv: Node) -> float:
+	var title: Label = cv.get("title_label")
+	if title == null:
+		return 0.0
+	var font := title.get_theme_font("font")
+	var fsize := title.get_theme_font_size("font_size")
+	# the widest line as the label breaks it: each word's width, a line holds what fits in the box
+	var widest := 0.0
+	var line := ""
+	for w in title.text.split(" ", false):
+		var cand: String = (line + " " + w) if line != "" else w
+		if font.get_string_size(cand, HORIZONTAL_ALIGNMENT_LEFT, -1, fsize).x <= title.size.x or line == "":
+			line = cand
+		else:
+			widest = maxf(widest, font.get_string_size(line, HORIZONTAL_ALIGNMENT_LEFT, -1, fsize).x)
+			line = w
+	widest = maxf(widest, font.get_string_size(line, HORIZONTAL_ALIGNMENT_LEFT, -1, fsize).x)
+	var words := Rect2(title.position, Vector2(widest, float(title.get_line_count()) * float(title.get_line_height())))
+	var over := 0.0
+	for sh in cv.get("sheets"):
+		var c := sh as Control
+		if c == null or not String(c.name).begins_with("Picture") or not c.is_visible_in_tree():
+			continue
+		var fr := Rect2(c.position, c.size).grow(16.0)   # the carved frame's band
+		if fr.intersects(words):
+			over = maxf(over, words.end.x - fr.position.x)
+	return over
+
+
+func _test_view_title_clear() -> void:
+	var cv: Node = main_node.get_node("CloseupView")
+	var seen := 0
+	var longest := ""
+	var longest_spec: Dictionary = {}
+	var ids: Array = (sd.get("rooms") as Dictionary).keys() if sd.get("rooms") is Dictionary else ["H1", "O3", "O4"]
+	for rid in ids:
+		var room: Dictionary = sd.call("room", String(rid))
+		for h in room.get("hotspots", []):
+			var v = h.get("view")
+			if not (v is Dictionary) or String(v.get("title", "")) == "" or (v.get("pictures", []) as Array).is_empty():
+				continue
+			sr.open_view(v, String(h.get("id", "")))
+			await _frames(4)
+			var over := _title_overlap(cv)
+			var t: String = (cv.get("title_label") as Label).text
+			_check(over <= 0.0, "%s %s: the title «%s» runs %.0f px under its picture" % [rid, h.get("id"), t, over])
+			seen += 1
+			if t.length() > longest.length():
+				longest = t
+				longest_spec = v
+			sr.close_view()
+			await _frames(2)
+	_check(seen >= 3, "only %d views with a title and a picture were found (H1 sleeve, O3 notches, O4 board expected)" % seen)
+	# self-check: the longest title in the old box — one line, 520 wide — is under the picture
+	if not longest_spec.is_empty():
+		sr.open_view(longest_spec, "")
+		await _frames(4)
+		var title: Label = cv.get("title_label")
+		title.autowrap_mode = TextServer.AUTOWRAP_OFF
+		title.size = Vector2(520, 60)
+		await _frames(2)
+		var over0 := _title_overlap(cv)
+		_check(over0 > 10.0, "self-check: «%s» in the old one-line box is not read as covered (%.0f px) — the test sees nothing" % [longest, over0])
+		sr.close_view()
+		await _frames(2)

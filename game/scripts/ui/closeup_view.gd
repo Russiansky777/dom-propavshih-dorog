@@ -164,7 +164,8 @@ func _build() -> void:
 	title_label.name = "Title"
 	title_label.text = StoryData.text(String(spec.get("title", "")))
 	title_label.position = Vector2(40, 100)
-	title_label.size = Vector2(520, 60)
+	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	title_label.size = TITLE_BOX
 	title_label.theme = t
 	title_label.theme_type_variation = &"CloseupTitle"
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -189,6 +190,7 @@ func _build() -> void:
 	if not pages.is_empty():
 		_build_page_buttons(t)
 		_show_page(0)
+	_fit_title()
 	close_button = Button.new()
 	close_button.name = "Close"
 	close_button.text = StoryData.text(String(spec.get("close_label", "@ui.close")))
@@ -198,6 +200,36 @@ func _build() -> void:
 	close_button.theme = t
 	close_button.pressed.connect(func(): StoryRunner.close_view())
 	root.add_child(close_button)
+
+
+## The title keeps to the margin left of a picture that reaches up beside it (обзор 10.11: «Двадцать зарубок»,
+## «Двадцать писем» — the whole close-up in its carved frame begins at x 246, y 116 and covered the end of a title
+## longer than «Рукав»: «Двадцать зар…»). Its box ends before the picture and the words wrap into a second line.
+const TITLE_BOX := Vector2(520, 60)
+const TITLE_GAP := 14.0
+
+
+func _fit_title() -> void:
+	if title_label == null:
+		return
+	var box := Rect2(title_label.position, TITLE_BOX)
+	var left := box.end.x
+	for sh in sheets:
+		var c := sh as Control
+		if c == null or not String(c.name).begins_with("Picture"):
+			continue
+		var par := c.get_parent() as CanvasItem
+		if par != null and par != root and not par.visible:
+			continue   # a picture of another page
+		var r := Rect2(c.position, c.size).grow(FRAME_BAND)   # the view's own px (root and pages stand at 0, 0)
+		if r.intersects(box) and r.position.x > box.position.x + 100.0:
+			left = minf(left, r.position.x)
+	# the label wraps from its birth (_build): switched on here, its smallest width was still the whole line's when
+	# the new size was set in the same frame, and the box stayed wide (seen 10.11 on «Двадцать зарубок»)
+	if left < box.end.x:
+		title_label.size = Vector2(maxf(left - box.position.x - TITLE_GAP, 120.0), TITLE_BOX.y * 2.0)
+	else:
+		title_label.size = TITLE_BOX
 
 
 func _build_sheets(sp: Dictionary) -> void:
@@ -249,6 +281,7 @@ func _show_page(i: int) -> void:
 		prev_button.disabled = i == 0
 	if next_button != null:
 		next_button.disabled = i == pages.size() - 1
+	_fit_title()
 
 
 # --- Mirror ---------------------------------------------------------------------------------
