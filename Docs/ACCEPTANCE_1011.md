@@ -4,7 +4,8 @@
 
 ## Где проверять
 
-- **Сборка:** появится после вашего слова «собирай» — https://github.com/Russiansky777/dom-propavshih-dorog/releases/tag/latest → `DomPropavshihDorog.exe` (один файл) или `DomPropavshihDorog_win.zip`. Время сборки и номер запуска допишу сюда.
+- **Сборка готова 10.11 в 21:15** (запуск 42890382951, из main `1bcc55f3`, по вашему слову 20:25 «Собери да»): https://github.com/Russiansky777/dom-propavshih-dorog/releases/tag/latest → `DomPropavshihDorog.exe` (один файл) или `DomPropavshihDorog_win.zip` (распаковать целиком).
+- Полный прогон тестов по этой же версии идёт отдельно (запуск 42890387777, итог около 22:10) — результат допишу сюда и скажу в чате.
 - Точки старта — прежний архив `Tochki_starta.zip` (ярлыки кладутся рядом с exe).
 - **Порядок, чтобы пройти всё за один заход (~25 мин):**
   1. Запуск игры → №9.
