@@ -25,9 +25,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
+      # 10.11: fetch-depth 1 (было 0 — вся история, ~14 ГБ: 09.11 шаг шёл 4 мин, 10.11 запуск 42810127916 простоял на
+      # нём 22 мин и был снят до заказа). Для коммита результатов хватает вершины: `git fetch origin main` в неглубокой
+      # копии дотягивает новые коммиты поверх неё, rebase идёт от общей вершины.
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
           ref: main
 
       - uses: actions/setup-python@v5
