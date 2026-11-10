@@ -1,0 +1,8 @@
+run 42813332303 2026-11-10T12:20:08Z request: pipeline/requests/video_hugs_1080.json
+== кадр F_hug_nina: game/assets/rooms/F_hug_nina/bg.png
+== кадр F_hug_pelageya: game/assets/rooms/F_hug_pelageya/bg.png
+   картинка 1672x941, 696 КБ
+   картинка 1672x941, 732 КБ
+   fal-ai/kling-video/v3/pro/image-to-video #1: OK 244.6 с, 29751 КБ
+   fal-ai/kling-video/v3/pro/image-to-video #1: OK 246.9 с, 33862 КБ
+готово: 2 клипов, 0 ошибок → assets/incoming/video/hugs_1080
