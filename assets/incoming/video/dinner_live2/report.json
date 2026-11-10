@@ -1,0 +1,18 @@
+{
+ "trial": "dinner_live2",
+ "runs": [
+  {
+   "frame": "EP_dinner_open_blue",
+   "model": "fal-ai/kling-video/v3/pro/image-to-video",
+   "attempt": 1,
+   "file": "EP_dinner_open_blue__fal-ai-kling-video-v3-pro-image-to-video_1.mp4",
+   "args": {
+    "prompt": "Static camera, warm candlelit room, a family supper in quiet, friendly conversation. Gentle, slow, continuous movement — nothing sudden; everyone stays seated in place and is back in the same pose by the end. The dark-haired young woman in the grey shawl, sitting at the far side of the table just to the right of the samovar, is clearly alive and takes part in the talk: she turns her head toward the bearded man, smiles and nods to him, then turns to the old woman and says a few words, lifting one hand from her lap in a small gesture; she blinks, and her shoulders move with her breathing. The bearded man speaks calmly with one small gesture of his hand and a slight nod. The old woman listens, nods a little and smiles. The woman in the patterned shawl smiles, tilts her head slightly and breathes; her hands rest. The little girl in the doorway stays standing on the same spot the whole time: she only sways very slightly, blinks, smiles and tilts her head a little; she does not walk, does not step aside, does not hide behind anyone, does not wave. The candle flame sways, a glint runs over the samovar, snow drifts past the window. The small grey creature on the stove shelf blinks and twitches an ear; its paws stay empty and folded on its belly. Nobody picks anything up from the table; nothing new appears in anyone's hands; the blue-and-white cup stays on the table untouched. Faces keep their features and age. Painterly look unchanged, no new elements. The dark-haired young woman must not stay frozen: she moves as much as the people beside her.",
+    "duration": "10",
+    "generate_audio": false
+   },
+   "seconds": 377.3,
+   "bytes": 28047330
+  }
+ ]
+}
