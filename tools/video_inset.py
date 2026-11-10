@@ -10,7 +10,9 @@ Kling в двух пробах всего кадра ужина не оживи�
   · вырезка стоит в основном кадре там же, где в картине (--rect x0,y0,x1,y1 холста), с точностью до долей точки;
   · сползание вырезки (камера) меряется по неподвижной кайме вокруг маски против её первого кадра и убирается;
   · цвет: по той же кайме средний цвет вырезки подгоняется к основному ролику в каждом кадре (свеча в основном ролике
-    мерцает — фигура мерцает вместе с ним).
+    мерцает — фигура мерцает вместе с ним);
+  · резкость: вырезка, оживлённая крупно и уменьшенная, резче соседей — --soften размывает её до их резкости
+    (Директор 10.11, 18:26: «Агату смягчить надо, да»).
 Печатает замеры: сдвиг, поправку цвета, разницу по кайме до и после (шов), сколько движется сама фигура.
 
   python3 tools/video_inset.py --main dinner.mp4 --inset agata.mp4 --canvas 1672x941 --rect 1213,300,1429,588 \
@@ -55,6 +57,7 @@ def main() -> int:
     ap.add_argument("--grow", type=float, default=10.0, help="расширение маски, точек холста")
     ap.add_argument("--feather", type=float, default=3.0, help="мягкий край маски, точек холста")
     ap.add_argument("--out", required=True)
+    ap.add_argument("--soften", type=float, default=0.0, help="смягчить вклейку: размытие, точек основного кадра (вырезка, оживлённая крупно, выходит резче соседей)")
     ap.add_argument("--no-color", action="store_true")
     ap.add_argument("--no-steady", action="store_true")
     a = ap.parse_args()
@@ -111,6 +114,8 @@ def main() -> int:
                 dx = dy = 0.0   # нет уверенного пика — кадр не двигаем
         M = np.float32([[kx, 0, x0 * sx - dx * kx - bx0], [0, ky, y0 * sy - dy * ky - by0]])
         warped = cv2.warpAffine(fi, M, (bx1 - bx0, by1 - by0), flags=cv2.INTER_AREA if kx < 0.6 else cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE).astype(np.float32)
+        if a.soften > 0.0:
+            warped = cv2.GaussianBlur(warped, (0, 0), a.soften)
         sub = fm[by0:by1, bx0:bx1].astype(np.float32)
         before = float(np.abs(warped[ring_b] - sub[ring_b]).mean())
         gain = np.ones(3, np.float32)

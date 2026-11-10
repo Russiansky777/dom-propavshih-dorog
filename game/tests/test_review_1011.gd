@@ -22,6 +22,10 @@ extends SceneTree
 ##       among the frame's own figures and was dropped — they stood one in the other, Mitya took the lantern through
 ##       her). At «Мне уж тридцать семь» and at the lantern they are more than a figure apart, the lantern's place is
 ##       between them. Self-check — before the frame (the embrace) they are close, and the measure tells.
+##   R-7 (16:15: «чтобы как-то крутился реально ворот у Ильи… оживить его, установку эту»): the windlass in the close-up
+##       of the first span turns (WindlassSpin) — its parts are there; at rest the cranks stand exactly as painted (the
+##       arm ends at the painted grip, both sides); while the log goes down the crank's angle grows, lifting — goes
+##       back; let go, it comes to the painted pose and stays. Self-check — a crank that does not turn is caught.
 ## Exit code 0 only when every check passed.
 
 var _results: Array = []
@@ -75,6 +79,7 @@ func _run() -> void:
 	await _test("R-4 M17: «Тянут. Вон, тянут!» is said to the river", _test_line_to_river)
 	await _test("R-5 M17: Agata does not walk through Pelageya on her way to the ribbon; self-check — the night's place is caught", _test_ribbon_walk)
 	await _test("R-6 M18: after the hug's frame Pelageya and Mitya stand a step apart, the lantern between them; self-check — in the embrace they are close", _test_apart_after_hug)
+	await _test("R-7 the windlass turns while the log goes and rests as painted; self-check — a still crank is caught", _test_windlass_turns)
 	gs.reset()
 	if main_node != null and is_instance_valid(main_node):
 		root.remove_child(main_node)
@@ -236,6 +241,19 @@ static func _feet(h: Dictionary) -> Vector2:
 	return Vector2(float(r[0]) + float(r[2]) * 0.5, float(r[1]) + float(r[3]))
 
 
+## Which way a frame's figure looks, as the game works it out (NpcActor._face_data): `face_dir` first (the painted
+## sheet's direction: 0 to the viewer, 2 left, 4 away, 6 right), else the point `face`. Returns the x of the unit
+## facing vector: −1 left … +1 right.
+static func _facing_x(h: Dictionary) -> float:
+	if h.has("face_dir"):
+		return sin(deg_to_rad(-45.0 * float(h["face_dir"])))
+	var f: Array = h.get("face", [])
+	if f.size() < 2:
+		return 0.0
+	var v := Vector2(float(f[0]), float(f[1])) - _feet(h)
+	return v.normalized().x if v.length() > 1.0 else 0.0
+
+
 func _test_boat_facing() -> void:
 	var pel := _room_hotspot("EP_boat", "pelageya")
 	var mit := _room_hotspot("EP_boat", "mitya")
@@ -244,15 +262,18 @@ func _test_boat_facing() -> void:
 		return
 	var pf := _feet(pel)
 	var mf := _feet(mit)
-	_check(float(pel["face"][0]) < pf.x - 100.0, "Pelageya looks left of where she stands (face %s, feet %s)" % [str(pel["face"]), str(pf)])
-	_check(float(mit["face"][0]) < mf.x - 100.0 and absf(float(mit["face"][0]) - pf.x) < 60.0, "Mitya looks at her (face %s)" % str(mit["face"]))
+	_check(_facing_x(pel) < -0.5, "Pelageya looks left (facing x %.2f; face %s, feet %s)" % [_facing_x(pel), str(pel.get("face", [])), str(pf)])
+	_check(_facing_x(mit) < -0.5 and absf(float(mit["face"][0]) - pf.x) < 60.0, "Mitya looks at her (face %s)" % str(mit["face"]))
 	# self-check: the night's point (to Mitya, on her right) fails the same test
-	_check(not (1217.0 < pf.x - 100.0), "self-check: the night's facing (to the right) would be caught")
-	# Director 17:56: «а Павел повёрнут вправо, а не влево — не забыл исправить?» — the frame after: Pavel faces left too
+	_check(_facing_x({"feet": [pf.x, pf.y], "face": [1217, 885]}) > 0.5, "self-check: the night's facing (to the right) would be caught")
+	# Director 17:56: «а Павел повёрнут вправо, а не влево — не забыл исправить?» — the frame after: Pavel faces left too.
+	# His turn is given by `face_dir`, which goes before `face` (NpcActor._face_data): the first fix changed only
+	# `face`, nothing changed on screen and a check of `face` alone passed — the facing is worked out as the game does.
 	var pav := _room_hotspot("EP_pavel", "pavel")
-	var vf := _feet(pav)
-	_check(not pav.is_empty() and float(pav["face"][0]) < vf.x - 100.0, "EP_pavel: Pavel looks left of where he stands (face %s, feet %s)" % [str(pav.get("face", [])), str(vf)])
-	_check(not (1420.0 < vf.x - 100.0), "self-check: his old facing (to the right, 1420) would be caught")
+	_check(not pav.is_empty() and _facing_x(pav) < -0.5, "EP_pavel: Pavel looks left (facing x %.2f; face_dir %s, face %s)" % [_facing_x(pav), str(pav.get("face_dir", "-")), str(pav.get("face", []))])
+	var old_pav := pav.duplicate()
+	old_pav["face_dir"] = 6
+	_check(_facing_x(old_pav) > 0.5, "self-check: face_dir 6 with the new `face` point still looks right, and the check tells")
 
 
 func _test_porch_stairs() -> void:
@@ -400,3 +421,56 @@ func _test_apart_after_hug() -> void:
 		var px: float = (at["Мне уж тридцать се"][1] as Vector2).x
 		_check(lx > minf(mx, px) + 20.0 and lx < maxf(mx, px) - 20.0, "the lantern (x %.0f) is between them (Mitya %.0f, Pelageya %.0f)" % [lx, mx, px])
 	_check(hug >= 0.0 and hug < 80.0, "self-check: in the embrace, before the frame, they are close (%.0f px) — the measure tells close from apart" % hug)
+
+
+# --- R-7 ------------------------------------------------------------------------------------
+
+func _test_windlass_turns() -> void:
+	var spec: Dictionary = sd.scene("M25")["mechanics"][0]["spec"]
+	var art := String(spec.get("art", {}).get("waiting", ""))
+	var sp: WindlassSpin = WindlassSpin.make(art, 1.0)
+	_check(sp != null, "the windlass's parts are beside the site's picture (%s)" % art)
+	if sp == null:
+		return
+	_check(sp.get_node_or_null("Clean") != null and sp.get_node_or_null("Drum") != null and sp._grips.size() == 2,
+		"the patch over the painted cranks, the drum's coils and both grips are loaded")
+	for side in ["l", "r"]:
+		var j: Array = sp.meta["grips"][side]["joint"]
+		var d: float = sp.tip(side).distance_to(Vector2(float(j[0]), float(j[1])))
+		_check(d < 0.5, "at rest the %s crank's arm ends at the painted grip (%.2f px off)" % [side, d])
+	var top := sp.tip("l")
+	sp.angle = WindlassSpin.REST + PI
+	_check(sp.tip("l").y > top.y + 40.0 and sp.tip("r").y < sp.tip("l").y, "half a turn on, the left crank is down and the right one up")
+	sp.angle = WindlassSpin.REST + TAU
+	_check(sp.tip("l").distance_to(top) < 0.01, "a whole turn brings it back")
+	_check(is_equal_approx(WindlassSpin.rest_after(WindlassSpin.REST + 0.5, 1.0), WindlassSpin.REST + TAU)
+		and is_equal_approx(WindlassSpin.rest_after(WindlassSpin.REST + 0.5, -1.0), WindlassSpin.REST),
+		"let go, the crank goes on to the painted pose in the way it was turning")
+	sp.free()
+	# in the close-up: the angle follows the log
+	_flags_before("M25")
+	await _enter("Z3", "from_R1")
+	await _read_out("")
+	sr.open_mechanic(spec, "")
+	await _frames(3)
+	var panel = main_node.get_node("MechanicView").get("panel")
+	_check(panel != null and panel.spin != null, "the close-up has the turning windlass")
+	if panel == null or panel.spin == null:
+		return
+	var a0: float = panel.spin.angle
+	panel.signal_pressed("lower")
+	await _frames(20)
+	var a1: float = panel.spin.angle
+	_check(a1 > a0 + 0.2, "«Пускай»: the crank turns (%.2f → %.2f rad)" % [a0, a1])
+	panel.signal_pressed("stop")
+	for i in 240:
+		await process_frame
+	var a2: float = panel.spin.angle
+	var turns := (a2 - WindlassSpin.REST) / TAU
+	_check(absf(turns - roundf(turns)) < 0.002 and a2 >= a1 - 0.001, "«Стой»: it comes round to the painted pose and stays (%.3f turns)" % turns)
+	_check(not (a0 > a0 + 0.2), "self-check: a crank that does not turn fails the same test")
+	panel.signal_pressed("raise")
+	await _frames(20)
+	_check(panel.spin.angle < a2 - 0.2 or panel.logic.state != "up", "«Подымай»: it turns the other way (%.2f → %.2f)" % [a2, panel.spin.angle])
+	sr.close_mechanic()
+	await _frames(3)
