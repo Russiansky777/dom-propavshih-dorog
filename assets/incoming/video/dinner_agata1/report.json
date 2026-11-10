@@ -1,0 +1,18 @@
+{
+ "trial": "dinner_agata1",
+ "runs": [
+  {
+   "frame": "EP_dinner_agata",
+   "model": "fal-ai/kling-video/v3/pro/image-to-video",
+   "attempt": 1,
+   "file": "EP_dinner_agata__fal-ai-kling-video-v3-pro-image-to-video_1.mp4",
+   "args": {
+    "prompt": "Static camera. A warm candlelit room; a young dark-haired woman in a grey knitted shawl sits at a supper table and listens to the people talking around her. She is alive and attentive: she slowly raises her eyes and turns her head a little toward the left side of the frame, smiles softly and gives a small nod, blinks, then glances toward the right side of the frame and smiles again; her shoulders rise and fall with her breathing. Gentle, slow, continuous movement, nothing sudden; she stays seated in the same place and by the end is back in exactly the starting pose, looking down as at the start. Everything else stays still: the samovar, the jug, the cup, the bowls, the window, the wall, and the hand with the spoon at the right edge. Her face keeps its features and age. Painterly look unchanged, no new elements, nothing appears in her hands.",
+    "duration": "10",
+    "generate_audio": false
+   },
+   "seconds": 447.9,
+   "bytes": 24450797
+  }
+ ]
+}
