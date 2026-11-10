@@ -1,0 +1,27 @@
+{
+  "_comment": "Kling 3.0 Pro, проба «ужин: середина, с живой Агатой» (Директор 10.11, 13:33 о пробе live1: «Агата не живая — выбивается… Ульяна лагает и слишком уж играется… движения чуть много, где-то посредине между тем что было и стало было бы лучше»; 15:54: «Видео ужина заказать, но с живой Агатой тогда уже»). Замер live1: место Агаты в кадре меняется на 2,7/255 против 26,8 у Ильи и 20,5 у его жены (она стоит); Ульяна 4 с неподвижна, потом за 0,5 с уходит за Нину и так же рывком возвращается. Здесь: спокойный разговор, движения меньше; Агата названа первой, подробно и ещё раз в конце; Ульяна стоит на месте. ОДИН ролик, 10 с, без звука: 1 × $1.12. Конец = картина (end_image_url) — стык без шва.",
+  "trial": "dinner_live2",
+  "image_max": 0,
+  "jpeg_q": 95,
+  "attempts": 1,
+  "frames": [
+    {
+      "id": "EP_dinner_open_blue",
+      "image": "assets/incoming/video/dinner/base_open_blue.png",
+      "prompt": "Static camera, warm candlelit room, a family supper in quiet, friendly conversation. Gentle, slow, continuous movement — nothing sudden; everyone stays seated in place and is back in the same pose by the end. The dark-haired young woman in the grey shawl, sitting at the far side of the table just to the right of the samovar, is clearly alive and takes part in the talk: she turns her head toward the bearded man, smiles and nods to him, then turns to the old woman and says a few words, lifting one hand from her lap in a small gesture; she blinks, and her shoulders move with her breathing. The bearded man speaks calmly with one small gesture of his hand and a slight nod. The old woman listens, nods a little and smiles. The woman in the patterned shawl smiles, tilts her head slightly and breathes; her hands rest. The little girl in the doorway stays standing on the same spot the whole time: she only sways very slightly, blinks, smiles and tilts her head a little; she does not walk, does not step aside, does not hide behind anyone, does not wave. The candle flame sways, a glint runs over the samovar, snow drifts past the window. The small grey creature on the stove shelf blinks and twitches an ear; its paws stay empty and folded on its belly. Nobody picks anything up from the table; nothing new appears in anyone's hands; the blue-and-white cup stays on the table untouched. Faces keep their features and age. Painterly look unchanged, no new elements. The dark-haired young woman must not stay frozen: she moves as much as the people beside her."
+    }
+  ],
+  "models": [
+    {
+      "id": "fal-ai/kling-video/v3/pro/image-to-video",
+      "image_key": [
+        "start_image_url",
+        "end_image_url"
+      ],
+      "args": {
+        "duration": "10",
+        "generate_audio": false
+      }
+    }
+  ]
+}
