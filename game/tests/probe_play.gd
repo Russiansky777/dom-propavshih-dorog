@@ -19,6 +19,7 @@ extends SceneTree
 ##   room:ID[,spawn] — change the room (a scene with trigger `enter` starts as in the game)
 ##   info            — print the scene, its line, the frame
 ##   mech:METHOD[,ARG] — call the open mechanic panel's method (windlass: mech:signal_pressed,lower)
+##   windlass        — play the open windlass mini-game right («Пускай» … at the ring «Стой»)
 ##   frame:ID        — show a frame (FrameView)
 ##   shot:NAME       — screenshot <out>/<NAME>.jpg (whole screen)
 ##   crop:X,Y,W,H    — later shots are cropped (source px 1920×1080 space); crop:- resets
@@ -192,6 +193,26 @@ func _run() -> void:
 						done = true
 						break
 				print("  mech ", arg, " → ", done)
+			"windlass":
+				# windlass — lays the first log as a player who does it right: «Пускай», wait for the ring, «Стой»; then
+				# the scene goes on (10.11: the tours of M25 stopped at the mini-game)
+				var wp: Object = null
+				for nd in root.find_children("*", "", true, false):
+					if nd.has_method("signal_pressed") and nd is CanvasItem and (nd as CanvasItem).is_visible_in_tree():
+						wp = nd
+						break
+				if wp == null:
+					print("  windlass: no panel")
+				else:
+					await _wait(1.5)
+					wp.call("signal_pressed", "lower")
+					var wg := 0
+					while wg < 1500 and not bool(wp.get("logic").call("at_ring")):
+						wg += 1
+						await process_frame
+					wp.call("signal_pressed", "stop")
+					print("  windlass: at the ring after %d frames, «Стой»" % wg)
+					await _wait(4.0)
 			"perf":
 				# perf — where a frame's time goes: scripts (process/physics) against the whole frame
 				var t0 := Time.get_ticks_usec()
