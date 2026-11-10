@@ -1,0 +1,5 @@
+run 42813252170 2026-11-10T12:11:38Z request: pipeline/requests/video_dinner_live1.json
+== кадр EP_dinner_open_blue: assets/incoming/video/dinner/base_open_blue.png
+   картинка 1672x941, 617 КБ
+   fal-ai/kling-video/v3/pro/image-to-video #1: OK 318.2 с, 27350 КБ
+готово: 1 клипов, 0 ошибок → assets/incoming/video/dinner_live1

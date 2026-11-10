@@ -1,0 +1,18 @@
+{
+ "trial": "dinner_live1",
+ "runs": [
+  {
+   "frame": "EP_dinner_open_blue",
+   "model": "fal-ai/kling-video/v3/pro/image-to-video",
+   "attempt": 1,
+   "file": "EP_dinner_open_blue__fal-ai-kling-video-v3-pro-image-to-video_1.mp4",
+   "args": {
+    "prompt": "Static camera, warm candlelit room, a family supper in lively conversation. Clear, natural body movement; everyone stays in their seats and comes back to the same pose by the end. The bearded man talks with open-hand gestures, leans toward the old woman, laughs and sits back. The old woman nods, pats his sleeve and turns to the others with a smile. The woman in the patterned shawl laughs, straightens the shawl on her shoulder and leans in to listen. The dark-haired young woman at the samovar turns toward the girl at the door, beckons her with her hand, then turns back to the table. The girl in the doorway shifts from foot to foot, peeks into the room, gives a small shy wave and tucks her hair behind her ear, then stands as before. The candle flame sways, a glint runs over the samovar, snow drifts past the window. The small grey creature on the stove shelf blinks and twitches an ear; its paws stay empty and folded on its belly. Nobody picks anything up from the table; nothing new appears in anyone's hands; the blue-and-white cup stays on the table untouched. Faces keep their features and age. Painterly look unchanged, no new elements.",
+    "duration": "10",
+    "generate_audio": false
+   },
+   "seconds": 318.2,
+   "bytes": 28006407
+  }
+ ]
+}
