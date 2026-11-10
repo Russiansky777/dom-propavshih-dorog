@@ -3,7 +3,7 @@
  "lang": "ru",
  "texts": {
   "ui.controls_reveal": {
-   "text": "Space — show everything you can examine and all room exits",
+   "text": "Space — show everything you can examine and all room exits; in a conversation — next line",
    "draft": false
   },
   "ui.hint_space_tip": {

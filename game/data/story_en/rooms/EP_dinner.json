@@ -25,9 +25,12 @@
   "videos": [
    {
     "if": [
-     "ep_ulyana_came",
-     "v01_cup_blue"
+     "ep_ulyana_came"
     ],
+    "unless": [
+     "v01_cup_white"
+    ],
+    "_no_cup_1011": "Директор 10.11, 23:07 («в последнем кадре видео нет движения вообще… ты точно их добавлял?»): чашку в первый день (V01, необязательное) выбирают не всегда, а все ролики были только под выбранную — без выбора ужин стоял картиной. Синие ролики теперь и для «чашку не выбирали» (синяя — подарок Нины, её реплика без выбора не звучит)",
     "files": [
      "res://assets/rooms/EP_dinner/open_blue_a.ogv",
      "res://assets/rooms/EP_dinner/open_blue_b.ogv"
@@ -45,10 +48,8 @@
    },
    {
     "unless": [
-     "ep_ulyana_came"
-    ],
-    "if": [
-     "v01_cup_blue"
+     "ep_ulyana_came",
+     "v01_cup_white"
     ],
     "files": [
      "res://assets/rooms/EP_dinner/closed_blue_a.ogv",

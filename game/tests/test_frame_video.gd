@@ -57,6 +57,10 @@ func _run() -> void:
 		[["v01_cup_white"], ["closed_white_a", "closed_white_b"], ["agata", "family_closed", "cup_white", "tikhon"]],
 		[["ep_ulyana_came", "v01_cup_blue"], ["open_blue_a", "open_blue_b"], ["agata", "family", "cup_blue", "tikhon"]],
 		[["ep_ulyana_came", "v01_cup_white"], ["open_white_a", "open_white_b"], ["agata", "family", "cup_white", "tikhon"]],
+		# Director 10.11, 23:07 («в последнем кадре видео нет движения вообще»): the cup choice (V01) is optional — no
+		# cup chosen, the dinner still plays (the blue clips; before, nothing matched and the frame stood still)
+		[[], ["closed_blue_a", "closed_blue_b"], ["agata", "family_closed", "tikhon"]],
+		[["ep_ulyana_came"], ["open_blue_a", "open_blue_b"], ["agata", "family", "tikhon"]],
 	]
 	for c in cases:
 		gs.reset()

@@ -933,14 +933,25 @@ func _update_modal() -> void:
 
 func _on_modal_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		if dialogue.visible and StoryRunner.current_beat.get("type", "") != "options":
-			if dialogue_page < dialogue_pages.size() - 1:
-				dialogue_page += 1   # the next page of a long line; the beat (and its voice) goes on
-				text_label.set_story_text(dialogue_pages[dialogue_page])
-				_fit_dialogue.call_deferred()
-			else:
-				StoryRunner.advance()
+		if _next_line():
 			get_viewport().set_input_as_handled()
+
+
+## The line on screen goes on — its next page, or the next line: a click on the line, or Space / Enter (Director 10.11:
+## «Пробел — это глобально, чтобы пропустить фразу и т. д., только мышкой» — the keys did nothing to a line; Space was
+## only «show what is here», which a line on screen does not allow anyway). Not a choice (its options are buttons). The
+## key does exactly what the click does (the line catcher lies over the staging's veil: a click reaches it then too).
+## True — the line went on.
+func _next_line() -> bool:
+	if not dialogue.visible or StoryRunner.current_beat.get("type", "") == "options":
+		return false
+	if dialogue_page < dialogue_pages.size() - 1:
+		dialogue_page += 1   # the next page of a long line; the beat (and its voice) goes on
+		text_label.set_story_text(dialogue_pages[dialogue_page])
+		_fit_dialogue.call_deferred()
+	else:
+		StoryRunner.advance()
+	return true
 
 
 func show_hint(text: String) -> void:
@@ -1514,6 +1525,13 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_RIGHT \
 			and StoryRunner.selected_item != "":
 		bag.put_back()
+		get_viewport().set_input_as_handled()
+		return
+	# Space / Enter with a line on screen: the line goes on, as a click on it (Director 10.11)
+	if event is InputEventKey and event.pressed and not event.echo \
+			and (event.physical_keycode in [KEY_SPACE, KEY_ENTER, KEY_KP_ENTER] or event.keycode in [KEY_SPACE, KEY_ENTER, KEY_KP_ENTER]) \
+			and dialogue.visible:
+		_next_line()
 		get_viewport().set_input_as_handled()
 		return
 	if event.is_action_pressed("reveal_hotspots", false):

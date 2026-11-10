@@ -67,7 +67,7 @@
         "error_text": "@H3.puzzle.error", "error_text_pieces": "@H3.puzzle.error_pieces", "error_text_mark": "@H3.puzzle.error_mark",
         "error_hint_after": 2,
         "success_text": "@H3.puzzle.success",
-        "success": {"scene": "M05", "view": "winter"}
+        "success": {"sets": ["door_school_installed"], "_sets_1011": "Директор 10.11 («когда Агата говорит „наша школа“, то рисунок ещё старой, не поставленной двери»): дверь на рисунке галереи встаёт, как только петли и зарубка сошлись, — до реплики M05; раньше флаг ставился в конце сцены", "scene": "M05", "view": "winter"}
       },
       "look": "@H3.school_door.look"
     },

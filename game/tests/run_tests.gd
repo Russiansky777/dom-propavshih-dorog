@@ -937,6 +937,14 @@ func _test_walkthrough() -> void:
 		sr.puzzle_place("hinge_3", "middle")
 		_check(sr.puzzle_check(), "correct placement (three hinges, V notch) must succeed")
 		_check(sr.puzzle["solved"] and sr.puzzle["view"] == "winter", "success shows the winter view")
+		# Director 10.11 («когда Агата говорит „наша школа“, то рисунок ещё старой, не поставленной двери»): the door
+		# is installed in the gallery's picture as the puzzle is solved — before M05's line «Наша школа!..»
+		await process_frame
+		var door_layer = rm.current_room.find_child("door_installed", true, false) if rm.current_room != null else null
+		var empty_layer = rm.current_room.find_child("frame_empty", true, false) if rm.current_room != null else null
+		_check(gs.has_flag("door_school_installed") and not gs.has_flag("done_M05"), "the door is in place at the puzzle's success, before M05 ends (installed %s, M05 done %s)" % [gs.has_flag("door_school_installed"), gs.has_flag("done_M05")])
+		_check(door_layer != null and (door_layer as CanvasItem).is_visible_in_tree() and (empty_layer == null or not (empty_layer as CanvasItem).is_visible_in_tree()),
+			"the gallery's picture shows the installed door while «Наша школа» is said (door layer %s, empty frame %s)" % [door_layer, empty_layer])
 		sr.close_puzzle()
 	seen = await bot.finish()
 	_check(gs.has_flag("done_M05") and gs.has_flag("door_school_installed"), "M05 flags; seen=%s" % str(seen))

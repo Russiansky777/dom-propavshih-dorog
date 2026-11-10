@@ -2051,6 +2051,11 @@ func puzzle_check() -> bool:
 		puzzle["solved"] = true
 		_set_puzzle_message(String(spec.get("success_text", "")))
 		puzzle["view"] = String(spec.get("success", {}).get("view", ""))
+		# Director 10.11 («когда Агата говорит „наша школа“, то рисунок ещё старой, не поставленной двери»): what the
+		# success makes true in the room is true at once (`success.sets`) — the scene's lines come after, its grants
+		# at its end were too late for the picture
+		for f in spec.get("success", {}).get("sets", []):
+			GameState.set_flag(String(f), true)
 		puzzle_state_changed.emit()
 		var scn := String(spec.get("success", {}).get("scene", ""))
 		if scn != "":

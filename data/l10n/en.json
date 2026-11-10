@@ -4552,8 +4552,8 @@
    "en": "My fingers are white already."
   },
   "text:ui.controls_reveal": {
-   "ru": "Пробел — показать всё, что можно осмотреть, и выходы из комнаты",
-   "en": "Space — show everything you can examine and all room exits"
+   "ru": "Пробел — показать всё, что можно осмотреть, и выходы из комнаты; в разговоре — дальше",
+   "en": "Space — show everything you can examine and all room exits; in a conversation — next line"
   },
   "text:ui.hint_space_tip": {
    "ru": "Пробел — показать все места и действия",

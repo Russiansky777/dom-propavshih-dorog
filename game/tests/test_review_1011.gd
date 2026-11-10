@@ -32,6 +32,9 @@ extends SceneTree
 ##       longer than one short word ran under the picture — «Двадцать зар…». Every room's view with a title and a
 ##       picture: the title's words stand clear of every picture's frame. Self-check — the same title in the old
 ##       one-line box 520 wide is read as covered.
+##   R-10 (Director 10.11, 23:26: «Пробел — это глобально, чтобы пропустить фразу и т. д., только мышкой»): with a line
+##       on screen, Space and Enter take it on (its next page or the next line), as a click on it does. Self-check — a
+##       key that is not bound (Q) leaves the line where it is.
 ## Exit code 0 only when every check passed.
 
 var _results: Array = []
@@ -88,6 +91,7 @@ func _run() -> void:
 	await _test("R-7 the windlass turns while the log goes and rests as painted; self-check — a still crank is caught", _test_windlass_turns)
 	await _test("R-8 no engine logo at start: boot_splash/show_image is off, the background is dark", _test_no_boot_logo)
 	await _test("R-9 a close-up's title is not covered by its picture («Двадцать зарубок»); self-check — the old one-line box is caught", _test_view_title_clear)
+	await _test("R-10 Space and Enter take a line on, as a click on it; self-check — another key does not", _test_space_next_line)
 	gs.reset()
 	if main_node != null and is_instance_valid(main_node):
 		root.remove_child(main_node)
@@ -582,3 +586,48 @@ func _test_view_title_clear() -> void:
 		_check(over0 > 10.0, "self-check: «%s» in the old one-line box is not read as covered (%.0f px) — the test sees nothing" % [longest, over0])
 		sr.close_view()
 		await _frames(2)
+
+
+## R-10: a key press as the player gives it (pressed, then released).
+func _press_key(k: Key) -> void:
+	for pressed in [true, false]:
+		var ev := InputEventKey.new()
+		ev.physical_keycode = k
+		ev.keycode = k
+		ev.pressed = pressed
+		root.push_input(ev, true)
+		await _frames(1)
+
+
+func _test_space_next_line() -> void:
+	_flags_before("M23d")
+	await _enter("H1")
+	await _read_out("")
+	_check(await _use("tikhon"), "M23d starts (a scene with several lines)")
+	var ui = root.get_tree().get_first_node_in_group("game_ui")
+	_check(ui != null, "the game's UI is there")
+	if ui == null:
+		return
+	var tl = ui.get("text_label")
+	var keys := {KEY_Q: false, KEY_SPACE: true, KEY_ENTER: true}
+	for k in [KEY_Q, KEY_SPACE, KEY_ENTER]:
+		# a line on screen, its staging done
+		var g := 0
+		while g < 2400 and (sr.call("is_staging") or sr.current_beat.is_empty() or String(sr.current_beat.get("type", "")) == "options" or not (ui.get("dialogue") as CanvasItem).visible):
+			if String(sr.current_beat.get("type", "")) == "options":
+				sr.choose(String(sr.current_beat["options"][0]["id"]))
+			await physics_frame
+			g += 1
+		if sr.current_beat.is_empty():
+			_check(false, "the scene ended before the %s check" % OS.get_keycode_string(k))
+			return
+		await _frames(3)
+		var before := "%s|%s" % [sr.current_beat.get("line_id", sr.current_beat.get("text", "")), tl.get("text")]
+		await _press_key(k)
+		await _frames(2)
+		var after := "%s|%s" % [sr.current_beat.get("line_id", sr.current_beat.get("text", "")), tl.get("text")]
+		if bool(keys[k]):
+			_check(after != before, "%s takes the line on (still «%s»)" % [OS.get_keycode_string(k), before.left(60)])
+		else:
+			_check(after == before, "self-check: %s moved the line («%s» → «%s») — the test cannot tell a key from any key" % [OS.get_keycode_string(k), before.left(40), after.left(40)])
+	await _read_out("")

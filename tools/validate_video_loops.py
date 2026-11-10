@@ -19,6 +19,9 @@
      у него проверяются ключевой кадр, звук и камера, а шов петли и живость — нет (оно не петля); зато его последний
      кадр должен переходить в первый кадр петли как соседний кадр клипа: средняя разница ≤ 3/255 (как шов петли).
      Мерка: объятия — 1,29 и 1,72 (соседние кадры клипа; разница — ключевой кадр Theora), вступление перед чужой петлёй — 58.
+  7. в кадре с роликами по флагам (background.videos) ролик находится при ЛЮБОМ сочетании флагов, которые эти ролики
+     называют (Директор 10.11, 23:07 «в последнем кадре видео нет движения вообще»: чашка в первый день — выбор
+     необязательный, а ролики ужина были только под выбранную; без выбора ужин стоял картиной).
 Самопроверка (--self-check): тот же ролик, перекодированный с ключевым кадром каждые 12 кадров, должен быть пойман;
 стоп-кадр первого кадра на 2 с должен быть пойман как неживой; ролик, в котором картина съезжает на 8 точек,
 должен быть пойман как «камера сползает»; вступление, приставленное к петле другой комнаты, — как «не переходит».
@@ -154,6 +157,38 @@ def check_intro(path: str, loop_path: str) -> list:
     return errs
 
 
+def pick(videos: list, flags: set) -> list:
+    """Как FrameVideo.pick: первая запись, у которой все `if` стоят и ни один `unless` не стоит."""
+    for e in videos:
+        if all(f in flags for f in e.get("if", [])) and not any(f in flags for f in e.get("unless", [])):
+            return list(e.get("files", []))
+    return []
+
+
+def uncovered(videos: list) -> list:
+    """Сочетания флагов, при которых кадр остаётся без ролика (флаги — все, что называют записи; не больше 10)."""
+    import itertools
+    names = sorted({f for e in videos for f in list(e.get("if", [])) + list(e.get("unless", []))})[:10]
+    out = []
+    for bits in itertools.product([False, True], repeat=len(names)):
+        on = {n for n, b in zip(names, bits) if b}
+        if not pick(videos, on):
+            out.append(sorted(on))
+    return out
+
+
+def coverage_errors() -> list:
+    errs = []
+    for f in sorted(glob.glob(os.path.join(ROOT, "data/story/rooms/*.json"))):
+        bg = json.load(open(f, encoding="utf-8")).get("background", {})
+        if not bg.get("videos"):
+            continue
+        miss = uncovered(bg["videos"])
+        if miss:
+            errs.append(f"{os.path.basename(f)}: без ролика при флагах {miss[0]} (и ещё {len(miss) - 1}) — кадр стоит картиной")
+    return errs
+
+
 def motion_mins() -> dict:
     """ролик (путь от корня) → наименьшая живость, которую объявила комната; None — комната её не назвала."""
     out = {}
@@ -234,6 +269,17 @@ def main() -> int:
             caught4 = any("не переходит" in e for e in check_intro(os.path.join(ROOT, i1), os.path.join(ROOT, l2)))
             print(("OK    " if caught4 else "FAIL  ") + "самопроверка: вступление перед чужой петлёй " + ("поймано" if caught4 else "НЕ поймано"))
             bad += not caught4
+    cov = coverage_errors()
+    for e in cov:
+        print("FAIL  " + e)
+    bad += len(cov)
+    if "--self-check" in sys.argv:
+        # ужин до 10.11: синие ролики только при выбранной синей чашке — «чашку не выбирали» без ролика
+        old = [{"if": ["ep_ulyana_came", "v01_cup_blue"], "files": ["a"]}, {"if": ["ep_ulyana_came", "v01_cup_white"], "files": ["b"]},
+               {"unless": ["ep_ulyana_came"], "if": ["v01_cup_blue"], "files": ["c"]}, {"unless": ["ep_ulyana_came"], "if": ["v01_cup_white"], "files": ["d"]}]
+        caught5 = [] in uncovered(old)
+        print(("OK    " if caught5 else "FAIL  ") + "самопроверка: ужин без выбранной чашки (данные до 10.11) " + ("пойман" if caught5 else "НЕ пойман"))
+        bad += not caught5
     print(f"видео-петли: {len(files)} файлов, {bad} с ошибками")
     return 1 if bad else 0
 
