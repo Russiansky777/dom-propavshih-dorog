@@ -513,6 +513,7 @@
     },
     {
      "at": 14,
+     "cut": true,
      "npc_go": [
       {
        "id": "nina",

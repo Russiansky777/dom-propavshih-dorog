@@ -103,6 +103,8 @@ func _run() -> void:
 		await _ho6()
 	if only == "" or only == "7":
 		await _ho7()
+	if only == "" or only == "8":
+		await _ho8()
 	_ho4()
 	print("==== handover: %d tests, %d passed, %d failed ====" % [passes + fails, passes, fails])
 	quit(1 if fails > 0 else 0)
@@ -236,21 +238,6 @@ func _ho3() -> void:
 	for i in 20:
 		await process_frame
 	var fv = root.find_child("FrameView", true, false)
-	# the pier: Pelageya and Mitya face each other, as the accepted frame had them (Director 09.11, 22:18: «развёрнуты не
-	# в ту сторону» — by day both had been given one sheet turn, dir 6, and Mitya looked away from her)
-	sr.set_frame("EP_boat", false)
-	for i in 40:
-		await process_frame
-	var pel3 = fv.room.get_node_or_null("npc_pelageya") if fv.room != null else null
-	var mit3 = fv.room.get_node_or_null("npc_mitya") if fv.room != null else null
-	if pel3 == null or mit3 == null or pel3.get("live") == null or mit3.get("live") == null:
-		_check(false, "HO-3 EP_boat: no live Pelageya / Mitya")
-	else:
-		var py := wrapf(rad_to_deg(float(pel3.get("live").get("yaw"))), -180.0, 180.0)
-		var my := wrapf(rad_to_deg(float(mit3.get("live").get("yaw"))), -180.0, 180.0)
-		var right_of: bool = mit3.global_position.x > pel3.global_position.x
-		_check(right_of and absf(py - 90.0) < 30.0, "HO-3 EP_boat Pelageya turned %.0f° — not to Mitya on her right (90° ± 30)" % py)
-		_check(right_of and absf(my + 90.0) < 30.0, "HO-3 EP_boat Mitya turned %.0f° — not to Pelageya on his left (−90° ± 30)" % my)
 	for c in [["EP_tamara", "tamara", 3], ["EP_pavel", "pavel", 6]]:
 		sr.set_frame(String(c[0]), false)
 		for i in 40:
@@ -272,6 +259,24 @@ func _ho3() -> void:
 			_check(absf(wrapf(old - want, -180.0, 180.0)) > 20.0, "HO-3 self-check: the old face point turns Pavel like dir 6 too (%.0f°)" % old)
 		sr.set_frame("", false)
 		await process_frame
+	# the pier: Pelageya and Mitya face each other, as the accepted frame had them (Director 09.11, 22:18: «развёрнуты не
+	# в ту сторону» — by day both had been given one sheet turn, dir 6, and Mitya looked away from her)
+	sr.set_frame("EP_boat", false)
+	for i in 40:
+		await process_frame
+	var pel3 = fv.room.get_node_or_null("npc_pelageya") if fv.room != null else null
+	var mit3 = fv.room.get_node_or_null("npc_mitya") if fv.room != null else null
+	if pel3 == null or mit3 == null or pel3.get("live") == null or mit3.get("live") == null:
+		_check(false, "HO-3 EP_boat: no live Pelageya / Mitya")
+	else:
+		var py := wrapf(rad_to_deg(float(pel3.get("live").get("yaw"))), -180.0, 180.0)
+		var my := wrapf(rad_to_deg(float(mit3.get("live").get("yaw"))), -180.0, 180.0)
+		var right_of: bool = mit3.global_position.x > pel3.global_position.x
+		_check(right_of and absf(py - 90.0) < 30.0, "HO-3 EP_boat Pelageya turned %.0f° — not to Mitya on her right (90° ± 30)" % py)
+		_check(right_of and absf(my + 90.0) < 30.0, "HO-3 EP_boat Mitya turned %.0f° — not to Pelageya on his left (−90° ± 30)" % my)
+	sr.set_frame("", false)
+	await process_frame
+
 
 
 func _ho4() -> void:
@@ -506,10 +511,10 @@ static func _inside(p: Vector2, poly: Array) -> bool:
 var _ho7_grip := Vector2.INF
 
 
-func _ho7_watch(nina: Node2D, layer_id: String, line_y: float, self_check: bool) -> Dictionary:
+func _ho7_watch(nina: Node2D, layer_id: String, line_y: float, self_check: bool, layers_room: Node = null) -> Dictionary:
 	var live = nina.get("live")
 	var out := {"acted": false, "yaw_off": 999.0, "dy": 999.0, "dx_end": 999.0, "early_w": -1.0, "late_w": -1.0, "raw_dy": 0.0, "end_x": 0.0}
-	var spr: Sprite2D = rm.current_room.get_node_or_null("Layers/%s/Image" % layer_id)
+	var spr: Sprite2D = (layers_room if layers_room != null else rm.current_room).get_node_or_null("Layers/%s/Image" % layer_id)
 	var L: float = live.view.action_length("write_board")
 	var g := 0
 	var x0 := -1.0
@@ -632,6 +637,82 @@ func _ho7() -> void:
 		g += 1
 		await process_frame
 	_check(nina.global_position.x > 1280.0 and not bool(live.get("_once_clip")), "HO-7 after the date Nina is not back in her place (x %.0f, acting %s)" % [nina.global_position.x, live.get("_once_clip")])
+	if live.view.skeleton.skeleton_updated.is_connected(cb):
+		live.view.skeleton.skeleton_updated.disconnect(cb)
+	gs.reset()
+
+
+## HO-8 (Director 09.11, 22:18: «Нина выводит число — пусть бы и выводила с мелом в руке, хотя бы последнюю часть, а
+## потом возвращалась в ту стойку, где была»): the epilogue's lesson (M26, «Нина на доске число выводит») opens with Nina
+## at the board, her back to the class, the date written as far as «16 ноя»; the last letters come out under her chalk
+## while her arm is up; then she walks back to her place and faces the class — no second black on the way.
+func _ho8() -> void:
+	print("  -- HO-8 the epilogue's lesson: the date under the chalk")
+	var m26: Dictionary = sd.scene("M26")
+	var has_write := false
+	var has_act := false
+	var back_cut := false
+	for st in m26.get("stage", []):
+		if String(st.get("frame", "")) == "EP_lesson":
+			for lw in st.get("layer_write", []):
+				has_write = has_write or String(lw.get("id", "")) == "date"
+		for a in st.get("npc_act", []):
+			if String(a.get("id", "")) == "nina" and String(a.get("action", "")) == "write_board" and int(st.get("at", -1)) == 14:
+				has_act = a.has("arm")
+		for g in st.get("npc_go", []):
+			if String(g.get("id", "")) == "nina" and int(st.get("at", -1)) == 14:
+				back_cut = bool(st.get("cut", false)) and not bool(g.get("fade", true))
+	_check(has_write and has_act, "HO-8 M26: the lesson frame does not write the date's end / Nina has no write_board with its arm turn at line 14")
+	_check(back_cut, "HO-8 M26: Nina's walk back to her place fades to black (the staging needs `cut`, the walk `fade` false)")
+	gs.reset()
+	rm.start_at("epilogue")
+	for i in 30:
+		await process_frame
+	var tries := 0
+	while tries < 40 and String(sr.get("current_frame")) != "EP_lesson":
+		tries += 1
+		var g := 0
+		while g < 600 and (sr.is_staging() or sr.current_beat.is_empty()) and String(sr.get("current_frame")) != "EP_lesson":
+			g += 1
+			await process_frame
+		if String(sr.get("current_frame")) == "EP_lesson":
+			break
+		sr.advance()
+		for i in 6:
+			await process_frame
+	_check(String(sr.get("current_frame")) == "EP_lesson", "HO-8 the lesson frame not reached (%s, %s)" % [sr.get("current_frame"), str(sr.current_beat.get("line_id", "-"))])
+	var fv = root.find_child("FrameView", true, false)
+	var froom: Node = fv.room if fv != null else null
+	var nina: Node2D = froom.get_node_or_null("npc_nina") if froom != null else null
+	var live = nina.get("live") if nina != null else null
+	if live == null:
+		_check(false, "HO-8 no live Nina in the lesson frame (x11 needed)")
+		return
+	for i in 25:   # the frame's people are turned to their `face` as it is built — a few frames, still in the black
+		await process_frame
+	_check(nina.global_position.x > 1100.0 and absf(rad_to_deg(angle_difference(float(live.get("yaw")), PI))) < 25.0, "HO-8 the frame opens with Nina not at the board with her back to the class (x %.0f, yaw %.0f°)" % [nina.global_position.x, rad_to_deg(float(live.get("yaw")))])
+	var body: Sprite2D = live.get("body")
+	var cb := func(): _ho7_grip = body.global_transform * (live.view.hand_grip_frame_px("Right") + body.offset)
+	live.view.skeleton.skeleton_updated.connect(cb)
+	# «16 ноября» on screen: x 913–1230, y 224–270
+	var r: Dictionary = await _ho7_watch(nina, "date", 247.0, false, froom)
+	print("    HO-8 the date: turned %.0f° off the board, chalk %.0f px off its height, %.0f px from its end; before the arm is up: %.0f px, by the end: %.0f px" % [r["yaw_off"], r["dy"], r["dx_end"], r["early_w"], r["late_w"]])
+	_check(r["acted"] and r["yaw_off"] <= 25.0, "HO-8 Nina does not write at the board (acted %s, %.0f° off)" % [r["acted"], r["yaw_off"]])
+	_check(r["dy"] <= 60.0, "HO-8 the chalk is %.0f px off the date's height (≤ 60)" % r["dy"])
+	_check(r["dx_end"] <= 110.0, "HO-8 the chalk is %.0f px from the date's end (≤ 110)" % r["dx_end"])
+	_check(r["early_w"] == 0.0 and r["late_w"] > 40.0, "HO-8 the date's end is not written while the arm is up (before: %.0f, by the end: %.0f)" % [r["early_w"], r["late_w"]])
+	var dim_max := 0.0
+	var g2 := 0
+	while g2 < 500 and (sr.is_staging() or sr.current_beat.is_empty()):
+		g2 += 1
+		dim_max = maxf(dim_max, float(sr.get("stage_dim")))
+		await process_frame
+	_check(dim_max < 0.5, "HO-8 the screen goes dark (%.2f) while Nina walks back to her place" % dim_max)
+	var g3 := 0
+	while g3 < 120 and absf(rad_to_deg(angle_difference(float(live.get("yaw")), 0.0))) >= 25.0:   # she turns to the class as she arrives
+		g3 += 1
+		await process_frame
+	_check(nina.global_position.distance_to(Vector2(932, 687)) < 6.0 and absf(rad_to_deg(angle_difference(float(live.get("yaw")), 0.0))) < 25.0, "HO-8 after the date Nina is not back at her place facing the class (%s, yaw %.0f°)" % [nina.global_position.round(), rad_to_deg(float(live.get("yaw")))])
 	if live.view.skeleton.skeleton_updated.is_connected(cb):
 		live.view.skeleton.skeleton_updated.disconnect(cb)
 	gs.reset()
