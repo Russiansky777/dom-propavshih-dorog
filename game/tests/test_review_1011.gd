@@ -37,6 +37,10 @@ extends SceneTree
 ##       key that is not bound (Q) leaves the line where it is.
 ##   R-11 (Director 10.11: «упрощение игры в клиньях в момент игры куда-то делось»): in the office mirror's close-up,
 ##       while the wedges' bar runs, an «Облегчить» switch is visible on screen; switched, the bar's green widens at once.
+##   R-12 (Director 10.11: «когда легло и „на торце резать“ сцена — Агата телепортируется»): where a scene cuts from one
+##       frame to another of the same picture (M25: the windlass → the log laid), every figure in both stands where it
+##       stood (≤ 4 px); a move is a walk in the staging. Self-check — Agata's place in the second frame before 10.11
+##       (1385, 890 against 775, 892) is caught.
 ## Exit code 0 only when every check passed.
 
 var _results: Array = []
@@ -95,6 +99,7 @@ func _run() -> void:
 	await _test("R-9 a close-up's title is not covered by its picture («Двадцать зарубок»); self-check — the old one-line box is caught", _test_view_title_clear)
 	await _test("R-10 Space and Enter take a line on, as a click on it; self-check — another key does not", _test_space_next_line)
 	await _test("R-11 the wedges: «Облегчить» is on screen while the bar runs and eases the bar at once", _test_wedges_ease)
+	await _test("R-12 a cut between two frames of one picture keeps the people where they stood; self-check — Agata's old place at the log is caught", _test_cut_keeps_places)
 	gs.reset()
 	if main_node != null and is_instance_valid(main_node):
 		root.remove_child(main_node)
@@ -676,3 +681,43 @@ func _test_wedges_ease() -> void:
 	sr.close_mechanic()
 	await _frames(3)
 	TB.call("set_slow", was_slow)
+
+
+func _frame_feet(fid: String) -> Dictionary:
+	var out := {}
+	for h in sd.rooms.get(fid, {}).get("hotspots", []):
+		if String(h.get("kind", "")) == "npc" and h.has("feet"):
+			out[String(h["id"])] = Vector2(float(h["feet"][0]), float(h["feet"][1]))
+	return out
+
+
+## Pairs [scene, frame before, frame after] joined by a cut, the two frames of one picture.
+func _cut_pairs() -> Array:
+	var out: Array = []
+	for sid in sd.scene_order:
+		var prev := ""
+		for st in sd.scene(String(sid)).get("stage", []):
+			if not st.has("frame"):
+				continue
+			var cur := String(st["frame"])
+			if cur != "" and prev != "" and bool(st.get("cut", false)) \
+					and String(sd.rooms.get(prev, {}).get("background", {}).get("image", "")) == String(sd.rooms.get(cur, {}).get("background", {}).get("image", "-")):
+				out.append([String(sid), prev, cur])
+			prev = cur
+	return out
+
+
+func _test_cut_keeps_places() -> void:
+	var pairs := _cut_pairs()
+	_check(pairs.any(func(p): return p[1] == "F_span" and p[2] == "F_span_done"), "M25's cut from the windlass to the laid log is found (%s)" % str(pairs))
+	for p in pairs:
+		var a := _frame_feet(String(p[1]))
+		var b := _frame_feet(String(p[2]))
+		for id in a:
+			if b.has(id):
+				var d: float = (a[id] as Vector2).distance_to(b[id])
+				_check(d <= 4.0, "%s: %s jumps %.0f px at the cut %s → %s" % [p[0], id, d, p[1], p[2]])
+	# self-check: the second frame as it was before 10.11
+	var before := _frame_feet("F_span")
+	var old_place := Vector2(1385, 890)
+	_check((before.get("agata", Vector2.ZERO) as Vector2).distance_to(old_place) > 4.0, "self-check: Agata's old place in the laid-log frame would be read as a jump")

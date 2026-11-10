@@ -698,6 +698,14 @@
    "hidden_when": [
     {
      "all": [
+      "night_olkhovka"
+     ],
+     "not": [
+      "morning_day3"
+     ]
+    },
+    {
+     "all": [
       "started_M19"
      ],
      "not": [
@@ -748,7 +756,8 @@
     "started_M20"
    ],
    "hidden_if": [
-    "morning_day3"
+    "morning_day3",
+    "night_olkhovka"
    ],
    "_rect_note": "Илья у окна, ноги (1600, 830) (масштаб 1,93 → Агата 666 px; Илья 1,82 м ≈ 731); виден только в сцене M20 (ночь), утром ушёл",
    "talk": {
@@ -815,7 +824,8 @@
     "wife_came"
    ],
    "hidden_if": [
-    "morning_day3"
+    "morning_day3",
+    "night_olkhovka"
    ],
    "_rect_note": "Жена Ильи с лампой позади, между Ниной и Ильёй (голова видна между ними), ноги (1450, 775) (масштаб 1,81; 1,63 м ≈ 616 px); приходит по ходу M20 (wife_came)",
    "talk": {

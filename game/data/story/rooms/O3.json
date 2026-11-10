@@ -35,7 +35,7 @@
     {
       "id": "nina", "kind": "npc", "label": "@char.nina", "rect": [1250, 160, 160, 630], "stand": [1620, 880], "draw": false, "pick_priority": 2,
       "hidden_if": ["done_M21b"],
-      "hidden_when": [{"all": ["started_M19"], "not": ["m19_nina_home", "done_M19"]}],
+      "hidden_when": [{"all": ["night_olkhovka"], "not": ["morning_day3"]}, {"all": ["started_M19"], "not": ["m19_nina_home", "done_M19"]}],
       "_hidden_when_note": "G29/G41: пока в M19 Нина на крыльце (улица O4), в горнице её нет; затемнение M19 (stage at 6) ставит m19_nina_home — она уже дома",
       "_rect_note": "Нина между ходиками и окном, ноги (1330, 790) (масштаб 1,86 → Агата 641 px; Нина 1,62 м ≈ 627); стоянки у стола и часов — слева от неё (validate_rooms 9b: фигуры не друг в друге)",
       "talk": {"scenes": ["M21"], "before_text": "@O3.nina.before", "after_text": "@O3.nina.after"},
@@ -43,7 +43,7 @@
     },
     {
       "id": "ilya", "kind": "npc", "_g40": "G40 (Директор 23.10: «комната с роднёй слишком маленькая, все толпятся друг на друге»): пол для Агаты — только правая половина (x 1050–1915), арт не меняем; родня расставлена по ней в глубину: Нина у ходиков (1330), Ульяна впереди между Ниной и отцом (1460, ближе к зрителю), Илья у окна (1610), Варвара с лампой у двери справа (1845); Агата входит у левого края пола (from_O4 1070, 1050) и никого не закрывает (validate_rooms 9b). Стоянки Ильи, Ульяны и Варвары — там же: они в кадре только в сцене M20", "label": "@char.ilya", "rect": [1520, 92, 180, 708], "stand": [1065, 1055], "scene_only": "M20", "draw": false, "pick_priority": 2,
-      "visible_if": ["started_M20"], "hidden_if": ["morning_day3"],
+      "visible_if": ["started_M20"], "hidden_if": ["morning_day3", "night_olkhovka"],
       "_rect_note": "Илья у окна, ноги (1600, 830) (масштаб 1,93 → Агата 666 px; Илья 1,82 м ≈ 731); виден только в сцене M20 (ночь), утром ушёл",
       "talk": {"after_text": "@O3.ilya.after"},
       "item_use": {"drawing_ilya": {"text": "@O3.ilya.boat_drawing", "once_flag": "ilya_saw_drawing", "sets": ["ilya_saw_drawing"]}}
@@ -56,7 +56,7 @@
     },
     {
       "id": "ilya_wife", "kind": "npc", "label": "@char.ilya_wife", "_held_0911": "Директор 09.11, 12:40: лампа в руке снята (мелкое действие, «красиво не сделаем»)", "rect": [1712, 170, 140, 623], "_rect_k0211": "Директор 02.11, стр. 22: «жену Ильи чуть ближе к Илье поставить и ноги ровнее на пол» — было [1775, 162, 140, 623]: левее на 63 px, к плечу Ильи, ноги на 8 px ниже — на одной глубине с ним", "stand": [1065, 1055], "scene_only": "M20", "draw": false, "pick_priority": 3,
-      "visible_if": ["wife_came"], "hidden_if": ["morning_day3"],
+      "visible_if": ["wife_came"], "hidden_if": ["morning_day3", "night_olkhovka"],
       "_rect_note": "Жена Ильи с лампой позади, между Ниной и Ильёй (голова видна между ними), ноги (1450, 775) (масштаб 1,81; 1,63 м ≈ 616 px); приходит по ходу M20 (wife_came)",
       "talk": {"after_text": "@O3.ilya_wife.after"}
     },

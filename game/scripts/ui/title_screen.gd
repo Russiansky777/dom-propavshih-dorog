@@ -29,6 +29,8 @@ var order: Array = []                 # visible item ids, top to bottom
 var labels: Dictionary = {}           # item id -> text
 var highlighted: String = ""
 var continue_slot: String = ""        # the save «Продолжить» loads ("" — none, the item is hidden)
+var continue_info: String = ""        # under «Продолжить»: the save's place and when it was made («Улица Ольховки · вечер · 10.11, 21:40»)
+const CONTINUE_INFO_DY := 19.0        # art px below the row's baseline (the divider is at +24.5)
 var actions: Array = []               # tests / probe: activated items in order
 
 var _lay: Dictionary = {}
@@ -178,6 +180,7 @@ func is_open() -> bool:
 ## Which items show (Continue only with a save, Quit only off the web) and where they stand.
 func refresh() -> void:
 	continue_slot = GameState.latest_save(slots_override if not slots_override.is_empty() else default_slots())
+	continue_info = save_caption(GameState.save_info(continue_slot)) if continue_slot != "" else ""
 	order.clear()
 	for it in MenuConfig.items("title"):
 		var id := String(it.get("id", ""))
@@ -200,6 +203,23 @@ func refresh() -> void:
 	if not order.has(highlighted):
 		highlighted = ""
 	set_highlight(highlighted if highlighted != "" else (order[0] if not order.is_empty() else ""), true)
+
+
+## «Улица Ольховки · вечер · 10.11, 21:40»: the save's place (and time of day in the story) and when it was written,
+## the computer's local time.
+static func save_caption(info: Dictionary) -> String:
+	if info.is_empty():
+		return ""
+	var parts: Array = []
+	var pt := String(info.get("place_time", ""))
+	if pt != "":
+		parts.append(pt)
+	var unix := float(info.get("saved_unix", 0.0))
+	if unix > 0.0:
+		var bias := int(Time.get_time_zone_from_system().get("bias", 0)) * 60
+		var dt := Time.get_datetime_dict_from_unix_time(int(unix) + bias)
+		parts.append("%02d.%02d, %02d:%02d" % [int(dt["day"]), int(dt["month"]), int(dt["hour"]), int(dt["minute"])])
+	return " · ".join(PackedStringArray(parts))
 
 
 ## Every slot the game writes: the autosave, the quick save, the player's slots and the scene checkpoints.
@@ -278,6 +298,13 @@ func _draw_decor() -> void:
 		var c := hover_c if id == highlighted else text_c
 		decor.draw_string(_font, base + Vector2(0, 2), labels[id], HORIZONTAL_ALIGNMENT_LEFT, -1, fs, Color(0, 0, 0, 0.55))
 		decor.draw_string(_font, base, labels[id], HORIZONTAL_ALIGNMENT_LEFT, -1, fs, c)
+		if id == "continue" and continue_info != "":
+			# Director 10.11 («„Продолжить“ на старте почему-то можно — файл скинул на другой ПК…» → «окей» на подпись):
+			# the save it continues — where and when, small, between the row's words and its divider
+			var cfs := int(round(fs * 0.42))
+			var cp := base + Vector2(2, CONTINUE_INFO_DY * sy)
+			decor.draw_string(_font, cp + Vector2(0, 1), continue_info, HORIZONTAL_ALIGNMENT_LEFT, (rr - cp.x - 6.0), cfs, Color(0, 0, 0, 0.5))
+			decor.draw_string(_font, cp, continue_info, HORIZONTAL_ALIGNMENT_LEFT, (rr - cp.x - 6.0), cfs, Color(c, 0.78))
 
 
 ## A golden rule of the highlight: bright in the middle, fading out at both ends, with a soft glow under it.
@@ -350,5 +377,5 @@ func probe() -> Dictionary:
 	for id in order:
 		var r := (buttons[id] as Button).get_global_rect()
 		items[id] = {"x": r.get_center().x, "y": r.get_center().y, "text": labels[id]}
-	return {"open": visible, "items": items, "order": order, "highlighted": highlighted, "continue_slot": continue_slot,
+	return {"open": visible, "items": items, "order": order, "highlighted": highlighted, "continue_slot": continue_slot, "continue_info": continue_info,
 		"signature": signature.visible, "animated": bg.material != null, "actions": actions}

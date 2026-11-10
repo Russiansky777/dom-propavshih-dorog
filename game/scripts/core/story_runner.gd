@@ -663,6 +663,15 @@ func _run_stage(spec: Dictionary) -> void:
 	if spec.has("npc_face"):
 		var room := RoomManager.current_room
 		for g in spec["npc_face"]:
+			var fc = g.get("face", "")
+			if fc is Array and (fc as Array).size() >= 2:
+				# 10.11 (Director: «Пелагея не поворачивается к лодке, даже когда „запускает её“»): a point to look at — the
+				# boat going off along the rope — not a person
+				var np := room.get_node_or_null("npc_" + String(g.get("id", ""))) if room != null else null
+				if np != null and np.has_method("face_towards"):
+					np.set("partner", null)
+					np.call("face_towards", Vector2(float(fc[0]), float(fc[1])))
+				continue
 			var other := _actor_node(room, String(g.get("face", "")))
 			if String(g.get("face", "")) == "agata":
 				other = RoomManager.player   # 31.10 (стр. 86): a villager turns to Agata herself
@@ -927,6 +936,18 @@ func _stage_npc_go(spec: Dictionary) -> float:
 			var to: Array = g.get("to", [0, 0])
 			npc_went.emit(String(g.get("id", "")))
 			var secs := float(g.get("s", 1.2))
+			# Director 10.11 («Нине звук шагов добавить, когда она выходит за письмами»): `steps` "<sfx id>" — her steps are
+			# heard while she walks, one every `step_s` (default 0.55 s; the walk's own pace), not after it
+			if g.has("steps"):
+				var sid := String(g["steps"])
+				var every := maxf(float(g.get("step_s", 0.55)), 0.2)
+				var serial_s := _stage_serial
+				var t_step := 0.15
+				while t_step < secs - 0.1:
+					get_tree().create_timer(t_step, false).timeout.connect(func():
+						if serial_s == _stage_serial:
+							stage_sound_requested.emit(sid))
+					t_step += every
 			# J (Директор 29.10, стр. 172; 25.10, стр. 140): `in_black` — she walks into the open doorway and is gone
 			# in the black that follows: no fading on screen, the door is shut while black (no dissolve to be seen).
 			var in_black := bool(g.get("in_black", false))

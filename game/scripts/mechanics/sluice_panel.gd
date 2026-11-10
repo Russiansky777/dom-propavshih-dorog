@@ -129,7 +129,11 @@ func _build_gauge() -> void:
 	work_mark.size = Vector2(gauge.size.x, 6)
 	work_mark.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	gauge.add_child(work_mark)
-	label(text("label_gauge"), _gauge_rect.position + Vector2(-40, _gauge_rect.size.y + 8), 220, &"CloseupLabel")
+	# Director 10.11 («„Рейка уровня“ надпись чуть правее сместить, центрировать»): under the gauge, centred on it (it
+	# began 40 px left of the gauge and ran on to the right)
+	var gl := label(text("label_gauge"), Vector2(_gauge_rect.get_center().x - 110.0, _gauge_rect.end.y + 8), 220, &"CloseupLabel")
+	gl.name = "GaugeLabel"
+	gl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 
 
 ## The level of the red mark: data `work_mark`, else the last notch's level (G24: «на последней зарубке»).

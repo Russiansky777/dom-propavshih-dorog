@@ -217,6 +217,12 @@ func _test_title_items() -> void:
 	order = title.get("order")
 	_check(order.size() > 0 and order[0] == "continue", "with a save «Продолжить» comes first (%s)" % str(order))
 	_check(String(title.get("continue_slot")) == SLOT, "«Продолжить» takes the newest save (%s)" % title.get("continue_slot"))
+	# Director 10.11 (a save from an earlier build on another computer — «Продолжить» was there): under it, where and when
+	var info := String(title.get("continue_info"))
+	var place := String(gs.save_info(SLOT).get("place_time", ""))
+	var now := Time.get_datetime_dict_from_system()
+	_check(place != "" and info.begins_with(place) and info.contains("%02d.%02d" % [int(now["day"]), int(now["month"])]),
+		"«Продолжить» names the save's place and its date: «%s» (place «%s»)" % [info, place])
 	title.call("activate", "continue")
 	await _frames(3)
 	_check(not title.call("is_open") and not paused, "«Продолжить» closes the title")
@@ -241,6 +247,7 @@ func _test_title_items() -> void:
 	ui.call("close_menu_panel")
 	await _frames(2)
 	_check(title.call("is_open") and not (title.get("order") as Array).has("continue"), "no saves left — no «Продолжить» on the title (%s)" % str(title.get("order")))
+	_check(String(title.get("continue_info")) == "", "self-check: no save — no caption under «Продолжить» («%s»)" % title.get("continue_info"))
 	var room_before := _room_id()
 	title.call("activate", "continue")
 	await _frames(3)
