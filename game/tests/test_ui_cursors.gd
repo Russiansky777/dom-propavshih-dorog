@@ -340,8 +340,12 @@ func _test_hint_panel() -> void:
 	var line: Label = ui.get("hint_line")
 	var min_px := int(ui.get("HINT_TEXT_MIN_PX"))
 	_check(min_px * 720.0 / 1080.0 >= 24.0, "the minimum itself reads at 1280×720 (%d → %.1f px)" % [min_px, min_px * 720.0 / 1080.0])
+	# 05.11 (вариант А) took the «Подсказка» button away with its handler; the panel is still what a hint tier shows
+	# (StoryRunner.next_hint → hint_revealed). This test went on calling the removed handler: the call stopped the
+	# function on a script error and the test counted as passed, checking nothing (found 10.11 in the full run's log;
+	# tools/check_test_log.py now fails a run with any script error).
 	for tier in [1, 2, 3]:
-		ui.call("_on_hint_pressed")
+		sr.call("next_hint")
 		await _frames(3)
 		_check(panel.visible, "tier %d: panel shown" % tier)
 		var px: int = text.get_theme_font_size("font_size")
@@ -360,7 +364,7 @@ func _test_hint_panel() -> void:
 	await _click(Vector2(960, 760))
 	_check(not panel.visible, "click: panel away")
 	# A dialogue puts it away.
-	ui.call("_on_hint_pressed")
+	sr.call("next_hint")
 	await _frames(2)
 	_check(panel.visible, "shown again")
 	sr.set("current_beat", {"type": "line", "text": "…", "speaker_name": ""})

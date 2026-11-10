@@ -77,9 +77,15 @@ func _run() -> void:
 	for r in _results:
 		if not r[1]:
 			failed += 1
+	_fails = []
+	_self_check_clip()
+	print("%s  self-check: the on-screen measure of clipped layers" % ("PASS" if _fails.is_empty() else "FAIL"))
+	for f in _fails:
+		print("        - " + f)
+	var self_failed := 0 if _fails.is_empty() else 1
 	print("")
-	print("==== geometry: %d rooms, %d passed, %d failed ====" % [_results.size(), _results.size() - failed, failed])
-	quit(0 if failed == 0 else 1)
+	print("==== geometry: %d rooms, %d passed, %d failed%s ====" % [_results.size(), _results.size() - failed, failed, "" if self_failed == 0 else "; the self-check failed"])
+	quit(0 if failed + self_failed == 0 else 1)
 
 
 static func _pt(a) -> Vector2:
@@ -300,20 +306,63 @@ func _check_on_screen(room: Node, spec: Dictionary) -> void:
 		var img: Sprite2D = node.get_node_or_null("Image")
 		if img == null or img.texture == null:
 			continue
-		var im := img.texture.get_image()
-		if im == null:
+		var box := _drawn_box(img)
+		if box.size.x <= 0 or box.size.y <= 0:
+			# a `clip` that cuts out an empty part of the picture shows nothing — the clip is wrong
+			_check(not img.region_enabled, "layer %s: its clip %s cuts out an empty part of the picture — nothing is drawn" % [lid, str(img.region_rect)])
 			continue
-		if im.is_compressed():
-			im.decompress()
-		var used := Rect2(im.get_used_rect())
-		if used.size.x <= 0 or used.size.y <= 0:
-			continue
-		var xf := img.get_global_transform()
-		var box := Rect2(xf * (used.position + img.offset), Vector2.ZERO)
-		for c in [Vector2(used.end.x, used.position.y), used.end, Vector2(used.position.x, used.end.y)]:
-			box = box.expand(xf * (c + img.offset))
 		var inside := box.intersection(screen).get_area() / maxf(box.get_area(), 1.0)
 		_check(inside >= ON_SCREEN_MIN, "layer %s: its drawing %s is only %d %% on the screen — scale/offset left from an older picture?" % [lid, str(box), int(inside * 100.0)])
+
+
+## The box of a layer sprite's drawn pixels on the canvas (zero size — nothing drawn). A `clip` layer (a region,
+## night 09→10.11: Z3's beam stack, windlass and log pile cut from one drawing) shows only that part of the
+## picture, the part's corner at the sprite's origin — measured so, not as the whole picture moved by the clip
+## (the first full run after the clips: «span_site_day4 … only 0 % on the screen», a false alarm).
+static func _drawn_box(img: Sprite2D) -> Rect2:
+	var im := img.texture.get_image()
+	if im == null:
+		return Rect2()
+	if im.is_compressed():
+		im.decompress()
+	var used := Rect2(im.get_used_rect())
+	if img.region_enabled:
+		used = used.intersection(img.region_rect)
+		used.position -= img.region_rect.position
+	if used.size.x <= 0 or used.size.y <= 0:
+		return Rect2()
+	var xf := img.get_global_transform()
+	var box := Rect2(xf * (used.position + img.offset), Vector2.ZERO)
+	for c in [Vector2(used.end.x, used.position.y), used.end, Vector2(used.position.x, used.end.y)]:
+		box = box.expand(xf * (c + img.offset))
+	return box
+
+
+## Self-check of the on-screen measure for `clip` layers: a part drawn at its own place is measured there; the
+## same part left below the screen is seen as off screen; a clip of an empty part is seen as nothing drawn.
+func _self_check_clip() -> void:
+	var im := Image.create(1920, 1080, false, Image.FORMAT_RGBA8)
+	im.fill(Color(0, 0, 0, 0))
+	im.fill_rect(Rect2i(860, 545, 262, 190), Color.WHITE)
+	var spr := Sprite2D.new()
+	spr.centered = false
+	spr.texture = ImageTexture.create_from_image(im)
+	spr.region_enabled = true
+	spr.region_rect = Rect2(860, 545, 262, 190)
+	spr.position = Vector2(860, 545)
+	root.add_child(spr)
+	var screen := Rect2(0, 0, 1920, 1080)
+	var box := _drawn_box(spr)
+	_check(box.position.distance_to(Vector2(860, 545)) < 0.5 and box.size.distance_to(Vector2(262, 190)) < 0.5,
+		"self-check: a clipped layer in its place is measured at %s, not at (860, 545) 262×190" % str(box))
+	spr.position = Vector2(860, 1200)
+	box = _drawn_box(spr)
+	_check(box.intersection(screen).get_area() / maxf(box.get_area(), 1.0) < ON_SCREEN_MIN,
+		"self-check: a clipped layer left below the screen (%s) is not seen as off screen" % str(box))
+	spr.region_rect = Rect2(0, 0, 200, 200)
+	_check(_drawn_box(spr).size == Vector2.ZERO, "self-check: a clip of an empty part of the picture is not seen as nothing drawn")
+	root.remove_child(spr)
+	spr.free()
 
 
 ## No vertex and no 8-px step of a path lies inside an obstacle or outside the floor outline.

@@ -883,8 +883,15 @@ func _test_crossing_black() -> void:
 		return
 	var rm_mat: ShaderMaterial = panel.get("rope_mat")
 	var ring: Control = panel.get("ring")
-	_check(rm_mat != null and bool(rm_mat.get_shader_parameter("use_eye")), "the rope runs through the eye (no frozen piece by the ring)")
-	_check(ring != null and ring.material is ShaderMaterial, "the ring on top keeps the iron only")
+	# партия 17 (02.11): the ring comes as two layers (the arc behind the rope, the iron in front) and the rope slides
+	# whole (slide_all); the older single picture — through the eye (use_eye), the iron kept by the ring's own shader.
+	# This check still read use_eye alone: bool(null) stopped the function on a script error and everything below
+	# (the boat's view never seen after the close-up, the far pier out of the black) went unchecked while the test
+	# counted as passed (found 10.11 in the full run's log; tools/check_test_log.py now fails such a run).
+	var split: bool = panel.get("ring_back") != null
+	var through: bool = rm_mat != null and (rm_mat.get_shader_parameter("slide_all" if split else "use_eye") == true)
+	_check(through, "the rope runs through the eye (no frozen piece by the ring)")
+	_check(ring != null and (split or ring.material is ShaderMaterial), "the ring on top keeps the iron only")
 	sr.mechanic_event("crossed")
 	var bad := 0
 	var t0 := Time.get_ticks_msec()

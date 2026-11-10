@@ -144,6 +144,12 @@ fi
 # без звука; самопроверка: ролик с ключевым кадром каждые 12 кадров ловится
 python3 -I "$ROOT/tools/validate_video_loops.py" --self-check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log"; [[ "${PIPESTATUS[0]}" -ne 0 ]] && code=1
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_trailer.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # TR1: режим съёмки трейлера (data/trailer) — планы читаются, планы собираются, комната в нужном состоянии, сохранения не пишутся
+# 10.11: a script error inside a test stops that test function where it stands — nothing after it is checked and the
+# test still counts as passed (test_ui_cursors, test_batch_j: «green» and blind for days). A run with one is a failure.
+python3 -I "$ROOT/tools/check_test_log.py" --self-check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log"; [[ "${PIPESTATUS[0]}" -ne 0 ]] && code=1
+cp "$BUILD_DIR/logs/tests.log" "$BUILD_DIR/logs/tests_scan.log"
+python3 -I "$ROOT/tools/check_test_log.py" "$BUILD_DIR/logs/tests_scan.log" 2>&1 | tee -a "$BUILD_DIR/logs/tests.log"; [[ "${PIPESTATUS[0]}" -ne 0 ]] && code=1
+rm -f "$BUILD_DIR/logs/tests_scan.log"
 # CI: every failure becomes an annotation (title, test, its messages) — the checks API shows annotations without the
 # job log, whose download host agents cannot reach (22.10: two red runs with no way to read why).
 if [[ -n "${GITHUB_ACTIONS:-}" && "$code" -ne 0 ]]; then
