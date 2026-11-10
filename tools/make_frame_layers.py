@@ -22,7 +22,8 @@ compose — персонаж:
    "hide": [[[x, y], …], …],  — многоугольники холста, где фигура скрыта: то, что на картине перед ней (столешница,
                                   кувшин, чашка) — слой под фигурой проступает (G53: Агата сидит за столом);
    "hide_feather": 1.0}       — мягкость края скрытия, px.
-compose — вещь (кусок другой картинки):
+compose — вещь (кусок другой картинки; `"flatten_on": {"image": фон, "src_alpha": k}` — источник полупрозрачный
+  (ночная накидка): сперва положить его с прозрачностью × k на фон, резать из того, что видно на экране):
   {"src": "game/assets/rooms/H1/state_cup_table_blue.png", "crop": [x, y, w, h], "at": [x, y], "width": w,
    "tint": [...], "rotate": градусы, "alpha": 0..1, "shadow": 0, "mirror": false,
    "mask": {"poly": [[[x, y], …]], "lines": [{"pts": [[x, y], …], "width": px}], "feather": px}}
@@ -452,6 +453,19 @@ def render(c: dict, size: tuple[int, int]) -> Image.Image:
         out.alpha_composite(layer)
         return out
     src = Image.open(ROOT / c["src"]).convert("RGBA")
+    if "flatten_on" in c:
+        # Директор 10.11 («Стул и Агата прозрачные, а должен быть только один предмет на передней перспективе»): ночной
+        # слой горницы (O3/night.png) — полупрозрачная накидка поверх дневного фона (слой night, modulate …c4); вещь,
+        # вырезанная из него самого, вышла такой же полупрозрачной — Агата просвечивала сквозь спинку стула. Вещь
+        # режется из того, что на экране: подложка (`flatten_on.image`) и поверх неё источник с его прозрачностью ×
+        # `flatten_on.src_alpha` (modulate слоя) — непрозрачная картинка.
+        fo = c["flatten_on"]
+        under = Image.open(ROOT / fo["image"]).convert("RGBA").resize(src.size, Image.LANCZOS)
+        k = float(fo.get("src_alpha", 1.0))
+        top = src.copy()
+        top.putalpha(top.getchannel("A").point(lambda v: int(round(v * k))))
+        src = Image.alpha_composite(under, top)
+        src.putalpha(255)
     if "mask" in c:
         # a thing cut out of a picture without alpha (01.11, стр. 49: Mitya's lantern from the lantern close-up):
         # mask {poly: [[[x, y], …], …], lines: [{pts: [[x, y], …], width: px}], feather: px} in the source's pixels

@@ -383,7 +383,9 @@ func _refresh_wedges() -> void:
 	if wedge_timing != null:
 		wedge_timing.visible = work >= 0 and not clamped()
 	if easy_check != null:
-		easy_check.visible = wedge_timing == null or not wedge_timing.visible
+		# Director 10.11 («упрощение игры в клиньях в момент игры куда-то делось»): one «Облегчить» on every stage of the
+		# close-up — it was hidden while the wedges' bar was up, for the bar's own switch, which never showed there
+		easy_check.visible = true
 		easy_check.set_pressed_no_signal(TimingBar.slow)
 	# While the wedges go in, their bar stands where the bell's schedule and legend are (those are for after).
 	for n in ["Schedule", "BellLegend"]:
@@ -629,6 +631,9 @@ static func _wedge_tint(ws: Dictionary) -> Color:
 func eased() -> void:
 	if hook != null:
 		hook.ease(TimingBar.slow_k(), TimingBar.green_k() / TimingBar.NORMAL_GREEN_K)
+	if wedge_timing != null and wedge_timing.logic != null:
+		TimingBar.apply_ease(wedge_timing.logic)   # the wedges' sweep slower, its green wider — mid-series
+		wedge_timing.queue_redraw()
 
 
 ## An item from the bag used on the bell inside the close-up: the room's bell hotspot (`bell.hotspot`, default «bell»)

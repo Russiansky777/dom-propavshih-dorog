@@ -35,6 +35,8 @@ extends SceneTree
 ##   R-10 (Director 10.11, 23:26: «Пробел — это глобально, чтобы пропустить фразу и т. д., только мышкой»): with a line
 ##       on screen, Space and Enter take it on (its next page or the next line), as a click on it does. Self-check — a
 ##       key that is not bound (Q) leaves the line where it is.
+##   R-11 (Director 10.11: «упрощение игры в клиньях в момент игры куда-то делось»): in the office mirror's close-up,
+##       while the wedges' bar runs, an «Облегчить» switch is visible on screen; switched, the bar's green widens at once.
 ## Exit code 0 only when every check passed.
 
 var _results: Array = []
@@ -92,6 +94,7 @@ func _run() -> void:
 	await _test("R-8 no engine logo at start: boot_splash/show_image is off, the background is dark", _test_no_boot_logo)
 	await _test("R-9 a close-up's title is not covered by its picture («Двадцать зарубок»); self-check — the old one-line box is caught", _test_view_title_clear)
 	await _test("R-10 Space and Enter take a line on, as a click on it; self-check — another key does not", _test_space_next_line)
+	await _test("R-11 the wedges: «Облегчить» is on screen while the bar runs and eases the bar at once", _test_wedges_ease)
 	gs.reset()
 	if main_node != null and is_instance_valid(main_node):
 		root.remove_child(main_node)
@@ -631,3 +634,45 @@ func _test_space_next_line() -> void:
 		else:
 			_check(after == before, "self-check: %s moved the line («%s» → «%s») — the test cannot tell a key from any key" % [OS.get_keycode_string(k), before.left(40), after.left(40)])
 	await _read_out("")
+
+
+func _test_wedges_ease() -> void:
+	_flags_before("M10")
+	gs.set_flag("office_mirror_mounted", true)
+	gs.set_flag("office_mirror_clamped", false)
+	await _enter("H2")
+	await _read_out("")
+	var h = rm.current_room.get_node_or_null("Hotspots/stand_zm")
+	_check(h != null, "the stand «ЗМ» is in the workshop")
+	if h == null:
+		return
+	var TB: GDScript = load("res://scripts/mechanics/timing_bar.gd")
+	var was_slow: bool = bool(TB.get("slow"))
+	TB.call("set_slow", false)
+	sr.open_mechanic(sr.mechanic_spec(h), "stand_zm")
+	await _frames(20)
+	var mv = main_node.get_node("MechanicView")
+	var panel = mv.get("panel") if mv != null else null
+	_check(panel != null and panel.get("wedge_timing") != null and (panel.get("wedge_timing") as CanvasItem).is_visible_in_tree(), "the wedges' bar is up (frame not clamped yet)")
+	if panel == null or panel.get("wedge_timing") == null:
+		TB.call("set_slow", was_slow)
+		return
+	# whatever «Облегчить» switch is on screen now
+	var shown: Array = []
+	for n in panel.find_children("*", "CheckButton", true, false):
+		var cb := n as CheckButton
+		var r := cb.get_global_rect()
+		if cb.is_visible_in_tree() and r.size.x > 10.0 and Rect2(0, 0, 1920, 1080).encloses(r):
+			shown.append(cb)
+	_check(shown.size() == 1, "one «Облегчить» on screen while the bar runs (%d)" % shown.size())
+	if shown.size() >= 1:
+		var bar = panel.get("wedge_timing")
+		var g0: float = float(bar.logic.green_k)
+		(shown[0] as CheckButton).button_pressed = true
+		await _frames(3)
+		_check(float(bar.logic.green_k) > g0 + 0.01, "switched on, the bar's green widens at once (%.2f → %.2f)" % [g0, float(bar.logic.green_k)])
+		(shown[0] as CheckButton).button_pressed = false
+		await _frames(2)
+	sr.close_mechanic()
+	await _frames(3)
+	TB.call("set_slow", was_slow)
