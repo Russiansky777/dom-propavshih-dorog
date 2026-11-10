@@ -98,13 +98,21 @@ func _tex(dir: String, file: String) -> Texture2D:
 	return load(dir + "/" + file) as Texture2D
 
 
-## Where a crank's arm ends (the grip's joint) on screen: side "l" or "r".
+## Where a crank's arm ends (the grip's joint) on screen: side "l" or "r". The round is fitted to the painting: at
+## REST the arm ends exactly where the painted grip sits (grips[side].joint), so nothing moves when the close-up opens
+## over the painted windlass or closes — the left crank up, the right one down, half a turn apart. The grip's round is
+## an oval `arm.rx` wide (we look at the cranks nearly edge-on), as high as the painted arm makes it, its centre set
+## off the hub along the axle as painted.
 func tip(side: String) -> Vector2:
 	var a: Array = meta.get("axles", {}).get(side, [0, 0])
-	var arm: Dictionary = meta.get("arm", {})
+	var j: Array = meta.get("grips", {}).get(side, {}).get("joint", a)
+	var d := Vector2(float(j[0]) - float(a[0]), float(j[1]) - float(a[1]))   # the painted arm
+	var rx := float(meta.get("arm", {}).get("rx", 9.0))
+	var p0 := REST + (PI if side == "r" else 0.0)
 	var ph := angle + (PI if side == "r" else 0.0)
-	return (Vector2(float(a[0]), float(a[1])) + Vector2(float(arm.get("rx", 9.0)) * sin(ph),
-		-float(arm.get("ry", 34.0)) * cos(ph) + float(arm.get("skew", 3.0)) * sin(ph))) * k
+	var ry := absf(d.y) / maxf(absf(cos(p0)), 0.2)
+	var cx := d.x - rx * sin(p0)
+	return (Vector2(float(a[0]), float(a[1])) + Vector2(cx + rx * sin(ph), -ry * cos(ph))) * k
 
 
 ## The angle the crank comes to when let go: the painted pose, the nearest one ahead in the turning direction `dir`.

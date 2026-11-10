@@ -1,0 +1,27 @@
+{
+  "_comment": "Kling 3.0 Pro, проба «Агата отдельно» (Директор 10.11, 17:43: «Ок, можем сделать пробу»). В двух пробах всего кадра (live1, live2) модель Агату не оживила: её место меняется на 2,7–3,0/255 при 9–27 у Ильи — она в кадре маленькая (голова 75 точек холста) и наполовину за самоваром. Здесь — её крупная вырезка из той же картины (холст x 1213–1429, y 300–588, 216×288 → 1080×1440, Lanczos + лёгкая резкость; во всех четырёх вариантах картины этот участок одинаков — один ролик годится для всех восьми роликов ужина). Из готового ролика в ужин берётся только сама Агата по маске её слоя (game/assets/rooms/EP_dinner/agata.png минус слой family), окружение остаётся от основного ролика. Конец = картина (end_image_url). ОДИН ролик, 10 с, без звука: 1 × $1.12.",
+  "trial": "dinner_agata1",
+  "image_max": 0,
+  "jpeg_q": 95,
+  "attempts": 1,
+  "frames": [
+    {
+      "id": "EP_dinner_agata",
+      "image": "assets/incoming/video/dinner/agata_crop_3x4.png",
+      "prompt": "Static camera. A warm candlelit room; a young dark-haired woman in a grey knitted shawl sits at a supper table and listens to the people talking around her. She is alive and attentive: she slowly raises her eyes and turns her head a little toward the left side of the frame, smiles softly and gives a small nod, blinks, then glances toward the right side of the frame and smiles again; her shoulders rise and fall with her breathing. Gentle, slow, continuous movement, nothing sudden; she stays seated in the same place and by the end is back in exactly the starting pose, looking down as at the start. Everything else stays still: the samovar, the jug, the cup, the bowls, the window, the wall, and the hand with the spoon at the right edge. Her face keeps its features and age. Painterly look unchanged, no new elements, nothing appears in her hands."
+    }
+  ],
+  "models": [
+    {
+      "id": "fal-ai/kling-video/v3/pro/image-to-video",
+      "image_key": [
+        "start_image_url",
+        "end_image_url"
+      ],
+      "args": {
+        "duration": "10",
+        "generate_audio": false
+      }
+    }
+  ]
+}

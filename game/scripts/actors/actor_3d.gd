@@ -860,7 +860,7 @@ func _setup_arm_tone() -> void:
 
 
 ## The standing arms and shoulders (StanceToneModifier, right after the walking tone; data rt3d.stance_tone
-## {upper_fwd_deg, elbow_keep, shoulder_drop_deg}): nothing when absent. Director 10.11, 16:15 — Pelageya «скукоженная»,
+## {upper_fwd_deg, elbow_keep, shoulder_drop_deg, spread_add_deg, spread_min_deg, spread_max_deg}): nothing when absent. Director 10.11, 16:15 — Pelageya «скукоженная»,
 ## Mitya's and her arms held out forward.
 const StanceTone := preload("res://scripts/actors/stance_tone_modifier.gd")
 var stance_tone: SkeletonModifier3D = null    # StanceTone
@@ -876,6 +876,9 @@ func _setup_stance_tone() -> void:
 	stance_tone.upper_fwd_deg = float(st.get("upper_fwd_deg", 6.0))
 	stance_tone.elbow_keep = float(st.get("elbow_keep", 1.0))
 	stance_tone.shoulder_drop_deg = float(st.get("shoulder_drop_deg", 0.0))
+	stance_tone.spread_add_deg = float(st.get("spread_add_deg", 0.0))
+	stance_tone.spread_min_deg = float(st.get("spread_min_deg", -90.0))
+	stance_tone.spread_max_deg = float(st.get("spread_max_deg", 90.0))
 	stance_tone.to_model = _skel_to_model().basis.orthonormalized()
 	for side in ["Left", "Right"]:
 		stance_tone.shoulder_bones.append(skeleton.find_bone(side + "Shoulder"))

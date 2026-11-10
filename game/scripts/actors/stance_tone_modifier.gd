@@ -18,6 +18,14 @@ var weight: float = 0.0
 var upper_fwd_deg: float = 6.0
 var elbow_keep: float = 1.0
 var shoulder_drop_deg: float = 0.0
+## The hanging arm's sideways angle from straight down (frontal plane, + away from the body): shifted by
+## `spread_add_deg`, then kept within [spread_min_deg, spread_max_deg]. Director 10.11, 17:28 («у Пелагеи руки
+## проваливаются»): brought back to the side, the hand hangs by the hip, which is wider than the belly it hung in
+## front of — the arm needs its room there (the first version also turned the arm in with the clavicle: her right
+## arm went to −5°, into the skirt).
+var spread_add_deg: float = 0.0
+var spread_min_deg: float = -90.0
+var spread_max_deg: float = 90.0
 
 
 ## How much an upper arm hangs (0..1) from its direction in model space: fully within ~35° of straight down, not at
@@ -44,12 +52,14 @@ func _process_modification() -> void:
 		var hang := hang_of(to_model * (sk.get_bone_global_pose(f).origin - sk.get_bone_global_pose(a).origin))
 		if hang <= 0.001:
 			continue
-		# the clavicle down: about the body's forward axis, the arm's joint lower
+		# the clavicle down: about the body's forward axis, the arm's joint lower — the arm itself keeps its direction
 		var s: int = shoulder_bones[i]
 		if s >= 0 and absf(shoulder_drop_deg) > 0.01:
 			var gs: Transform3D = sk.get_bone_global_pose(s)
 			var qs := Quaternion(ax_fwd, -sgn * deg_to_rad(shoulder_drop_deg) * w * hang)
 			sk.set_bone_global_pose(s, Transform3D(Basis(qs) * gs.basis, gs.origin))
+			var g0: Transform3D = sk.get_bone_global_pose(a)
+			sk.set_bone_global_pose(a, Transform3D(Basis(qs.inverse()) * g0.basis, g0.origin))
 		# the upper arm back to the side: about the body's side axis
 		var ga: Transform3D = sk.get_bone_global_pose(a)
 		var dm: Vector3 = to_model * (sk.get_bone_global_pose(f).origin - ga.origin)
@@ -58,6 +68,14 @@ func _process_modification() -> void:
 		if phi > target:
 			var qa := Quaternion(ax_side, (phi - target) * w * hang)
 			sk.set_bone_global_pose(a, Transform3D(Basis(qa) * ga.basis, ga.origin))
+		# its sideways angle: shifted and kept in its room, about the body's forward axis
+		ga = sk.get_bone_global_pose(a)
+		dm = to_model * (sk.get_bone_global_pose(f).origin - ga.origin)
+		var sp := atan2(sgn * dm.x, -dm.y)
+		var sp_to := clampf(sp + deg_to_rad(spread_add_deg), deg_to_rad(spread_min_deg), deg_to_rad(spread_max_deg))
+		if absf(sp_to - sp) > 0.0005:
+			var qv := Quaternion(ax_fwd, sgn * (sp_to - sp) * w * hang)
+			sk.set_bone_global_pose(a, Transform3D(Basis(qv) * ga.basis, ga.origin))
 		# the elbow: part of its bend
 		if h >= 0 and elbow_keep < 0.999:
 			var p0: Vector3 = sk.get_bone_global_pose(a).origin
