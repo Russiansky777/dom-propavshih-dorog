@@ -227,7 +227,10 @@ func _ho2() -> void:
 	_check(seen_line and line_end.distance_to(Vector2(1262, 548)) < 2.0, "HO-2 no line from her hands to the plate while she pulls (end %s)" % line_end)
 	for i in 10:
 		await process_frame
-	_check(pel.global_position.distance_to(Vector2(885, 800)) < 4.0, "HO-2 after the black she is not back on the path (%s)" % pel.global_position)
+	# Director 10.11, 16:15 («Агата проходит сквозь Пелагею в этом же кадре»): after the black she stands aside, right of
+	# the boat (stage of M17: npc_to 1350, 795; room state m17_boat_hauled) — not back on the path, where Agata walks
+	# to the ribbon (till 10.11 the test wanted her at 885, 800)
+	_check(pel.global_position.distance_to(Vector2(1350, 795)) < 4.0, "HO-2 after the black she does not stand aside of Agata's way (%s)" % pel.global_position)
 	sr.call("_on_state_reset")
 
 
@@ -238,7 +241,8 @@ func _ho3() -> void:
 	for i in 20:
 		await process_frame
 	var fv = root.find_child("FrameView", true, false)
-	for c in [["EP_tamara", "tamara", 3], ["EP_pavel", "pavel", 6]]:
+	# Director 10.11, 16:15 / 18:31 («Павел повёрнут вправо, а не влево»): Pavel's frame — to the left (dir 2; was 6)
+	for c in [["EP_tamara", "tamara", 3], ["EP_pavel", "pavel", 2]]:
 		sr.set_frame(String(c[0]), false)
 		for i in 40:
 			await process_frame
@@ -256,7 +260,7 @@ func _ho3() -> void:
 			for i in 30:
 				await process_frame
 			var old := wrapf(rad_to_deg(float(live.get("yaw"))), -180.0, 180.0)
-			_check(absf(wrapf(old - want, -180.0, 180.0)) > 20.0, "HO-3 self-check: the old face point turns Pavel like dir 6 too (%.0f°)" % old)
+			_check(absf(wrapf(old - want, -180.0, 180.0)) > 20.0, "HO-3 self-check: the old face point turns Pavel like dir %d too (%.0f°)" % [c[2], old])
 		sr.set_frame("", false)
 		await process_frame
 	# the pier: Pelageya and Mitya face each other, as the accepted frame had them (Director 09.11, 22:18: «развёрнуты не
@@ -272,7 +276,9 @@ func _ho3() -> void:
 		var py := wrapf(rad_to_deg(float(pel3.get("live").get("yaw"))), -180.0, 180.0)
 		var my := wrapf(rad_to_deg(float(mit3.get("live").get("yaw"))), -180.0, 180.0)
 		var right_of: bool = mit3.global_position.x > pel3.global_position.x
-		_check(right_of and absf(py - 90.0) < 30.0, "HO-3 EP_boat Pelageya turned %.0f° — not to Mitya on her right (90° ± 30)" % py)
+		# Director 10.11, 16:15 («Пелагея в кадре, где лодку смолят, снова повёрнута вправо, а не влево»): she is turned
+		# left, to the boat she tars; Mitya — to her (till 10.11 the test wanted her to Mitya, 90°)
+		_check(right_of and absf(py + 90.0) < 30.0, "HO-3 EP_boat Pelageya turned %.0f° — not left, to the boat (−90° ± 30)" % py)
 		_check(right_of and absf(my + 90.0) < 30.0, "HO-3 EP_boat Mitya turned %.0f° — not to Pelageya on his left (−90° ± 30)" % my)
 	sr.set_frame("", false)
 	await process_frame

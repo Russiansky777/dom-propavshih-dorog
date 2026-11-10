@@ -1315,7 +1315,8 @@ func _test_staging_d3() -> void:
 	for h in o4.get("hotspots", []):
 		if String(h.get("id")) == "nina":
 			nina_r = h.get("rect", [])
-	_check(nina_r.size() == 4 and float(nina_r[1]) + float(nina_r[3]) >= 690.0 and float(nina_r[0]) + float(nina_r[2]) * 0.5 >= 1370.0,
+	# Director 10.11, 16:15: she waits at the foot of her porch stairs (feet y 655; till 10.11 — by the gate, y ≥ 690)
+	_check(nina_r.size() == 4 and float(nina_r[1]) + float(nina_r[3]) >= 640.0 and float(nina_r[0]) + float(nina_r[2]) * 0.5 >= 1370.0,
 			"O4: Nina's feet by her porch (%s)" % str(nina_r))
 	# 167: in class Agata turns to the speaker
 	gs.reset()

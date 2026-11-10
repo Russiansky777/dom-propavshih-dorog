@@ -489,3 +489,23 @@ func _test_windlass_turns() -> void:
 		_check(panel.spin.angle < a2 - 0.2, "«Подымай»: it turns the other way (%.2f → %.2f)" % [a2, panel.spin.angle])
 	sr.close_mechanic()
 	await _frames(3)
+
+
+## R-8 (Director 10.11, 18:59: «Лого Godot убрать вовсе, если можно»): the project's own settings, as the exported game
+## reads them — the boot splash shows no image and its background is dark (the first frame before the menu is not a
+## light flash). Self-check: the engine's default (the logo shown) is what the same reading calls wrong.
+func _test_no_boot_logo() -> void:
+	var cf := ConfigFile.new()
+	var err := cf.load("res://project.godot")
+	_check(err == OK, "project.godot does not load (%d)" % err)
+	if err != OK:
+		return
+	var show = cf.get_value("application", "boot_splash/show_image", true)   # the engine's default is true
+	var bg = cf.get_value("application", "boot_splash/bg_color", Color(0.14, 0.14, 0.14))
+	_check(show is bool and show == false, "boot_splash/show_image is %s — the engine's logo shows at start" % str(show))
+	_check(bg is Color and (bg as Color).get_luminance() < 0.08, "the boot screen's background is not dark (%s)" % str(bg))
+	_check(bool(ProjectSettings.get_setting("application/boot_splash/show_image", true)) == false, "the running project still has the boot image on")
+	# self-check: a project without the line reads as «logo shown»
+	var bare := ConfigFile.new()
+	bare.parse("[application]\nconfig/name=\"x\"\n")
+	_check(bool(bare.get_value("application", "boot_splash/show_image", true)) == true, "self-check: a project without the setting reads as logo off (the test sees nothing)")

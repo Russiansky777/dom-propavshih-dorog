@@ -454,14 +454,26 @@ func _hand_depth(spec: Dictionary) -> Array:
 
 
 func _t7() -> void:
+	# a try on some villagers, with other stance measures: V3_IDS=mitya V3_TONE="spread_add_deg=0,spread_min_deg=10"
+	var ids_env := OS.get_environment("V3_IDS")
 	for id in ALL:
-		var w: Array = await _hand_depth(_spec(id))
+		if ids_env != "" and not (id in ids_env.split(",")):
+			continue
+		var sp7 := _spec(id)
+		if OS.get_environment("V3_TONE") != "" and (sp7["rt3d"] as Dictionary).has("stance_tone"):
+			for kv in OS.get_environment("V3_TONE").split(","):
+				sp7["rt3d"]["stance_tone"][kv.get_slice("=", 0)] = float(kv.get_slice("=", 1))
+		var w: Array = await _hand_depth(sp7)
+		if ids_env != "":
+			print("    %s: silhouette %.1f cm (%s), behind the clothes %.1f cm" % [id, float(w[0]), w[2], float(w[1])])
 		# 09.11 (arms along the body, arm_rest): the hands now hang as near the clothes as the real surface lets them —
 		# beside an apron's flared edge they are up to ~3 cm inside the posed silhouette (the farthest fold per sector)
 		# while in full view (Pavel 2.9, shots 09.11); the silhouette's limit is 3.5, and the real surface — how far a
 		# hand vertex is behind the clothes — is held to 1 cm (was 2; measured 0.0–0.8 for all nine)
 		_check(float(w[0]) <= 3.5, "%s: a hand %.1f cm inside the body's silhouette (≤ 3.5), %s" % [id, float(w[0]), w[2]])
 		_check(float(w[1]) <= 1.0, "%s: a hand %.1f cm behind the clothes (≤ 1)" % [id, float(w[1])])
+	if ids_env != "":
+		return
 	var sp := _spec("pavel")
 	(sp["rt3d"]["arm_body"] as Dictionary).erase("shell")
 	(sp["rt3d"]["arm_body"] as Dictionary).erase("bake")
@@ -648,6 +660,9 @@ func _t10() -> void:
 	for id in ["pelageya", "pavel"]:
 		var sp := _before_2100(_spec(id))
 		(sp["rt3d"]["arm_body"] as Dictionary).erase("bake")   # as before 20:21: the clearing done live only
+		# 10.11: and as before the standing arms were brought to the sides (StanceToneModifier) — Pelageya's arms now
+		# hang clear of the skirt, the clearing has nothing to jerk at and the self-check saw nothing (CI 42870405229)
+		(sp["rt3d"] as Dictionary).erase("stance_tone")
 		var raw: Array = await _jitter(sp, "listen", true, true)
 		var off: Array = await _jitter(sp, "listen", false, false)
 		print("    follower skipped, %s listening: jerks %d, back-and-forth %d (clip alone %d, %d)" % [id, int(raw[0]),

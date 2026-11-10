@@ -375,5 +375,7 @@ func _test_staging() -> void:
 	await _enter("O4", "from_R3")
 	sr.start_scene("M19")
 	var at_mama := await _advance_to("Мама.")
-	_check(at_mama and player.global_position.distance_to(Vector2(1292, 716)) < 30.0, "H39: at «Мама.» Agata is at the porch by Nina (%s)" % str(player.global_position.round()))
+	# Director 10.11, 16:15 («чтобы она доходила до начала лестницы и мама ждала там»): Agata runs to the foot of the
+	# porch stairs (E4 M19 agata_go 1418, 700; till 10.11 — to the gate, 1292, 716)
+	_check(at_mama and player.global_position.distance_to(Vector2(1418, 700)) < 30.0, "H39: at «Мама.» Agata is at the foot of the porch stairs by Nina (%s)" % str(player.global_position.round()))
 	await _drain()
