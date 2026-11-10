@@ -1,0 +1,23 @@
+run 42871048670 2026-11-10T18:05:53Z request: pipeline/requests/video_dinner_mid.json
+== кадр EP_dinner_open_blue_b: assets/incoming/video/dinner/base_open_blue.png
+== кадр EP_dinner_open_white_a: assets/incoming/video/dinner/base_open_white.png
+== кадр EP_dinner_open_white_b: assets/incoming/video/dinner/base_open_white.png
+== кадр EP_dinner_closed_blue_a: assets/incoming/video/dinner/base_closed_blue.png
+== кадр EP_dinner_closed_blue_b: assets/incoming/video/dinner/base_closed_blue.png
+== кадр EP_dinner_closed_white_a: assets/incoming/video/dinner/base_closed_white.png
+== кадр EP_dinner_closed_white_b: assets/incoming/video/dinner/base_closed_white.png
+   картинка 1672x941, 620 КБ
+   картинка 1672x941, 617 КБ
+   картинка 1672x941, 620 КБ
+   картинка 1672x941, 620 КБ
+   картинка 1672x941, 617 КБ
+   картинка 1672x941, 620 КБ
+   картинка 1672x941, 617 КБ
+   fal-ai/kling-video/v3/pro/image-to-video #1: OK 355.3 с, 27104 КБ
+   fal-ai/kling-video/v3/pro/image-to-video #1: OK 420.3 с, 27209 КБ
+   fal-ai/kling-video/v3/pro/image-to-video #1: OK 432.4 с, 26686 КБ
+   fal-ai/kling-video/v3/pro/image-to-video #1: OK 438.5 с, 26960 КБ
+   fal-ai/kling-video/v3/pro/image-to-video #1: OK 477.4 с, 26826 КБ
+   fal-ai/kling-video/v3/pro/image-to-video #1: OK 497.4 с, 27027 КБ
+   fal-ai/kling-video/v3/pro/image-to-video #1: OK 532.0 с, 27003 КБ
+готово: 7 клипов, 0 ошибок → assets/incoming/video/dinner_mid
