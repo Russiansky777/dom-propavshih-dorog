@@ -7,6 +7,8 @@
 (`--patches "x,y,w,h;…"`, медиана по ним) или по всему кадру (по умолчанию); ряд сглажен (медиана 9, среднее 9).
 Проход 2: каждый кадр сдвинут обратно (кубическая интерполяция, край — повтор крайних точек), H.264 crf 10.
 Кадры идут через каналы — на диск пишется только результат. Затем петля: tools/video_loop.py.
+Кадры идут в YUV 4:4:4, без перевода в RGB (10.11: путь через rgb24 затемнял картинку на 1,1–1,3 из 255 в каждом
+канале — округление swscale при RGB→YUV; через yuv444p расхождение с исходником ±0,1).
 
   python3 tools/video_stabilize.py --in clip.mp4 --out steady.mp4 [--patches "0,0,400,400;100,640,500,400"]
   python3 tools/video_stabilize.py --in clip.mp4 --measure      → только замер (JSON), файл не пишется
@@ -29,13 +31,14 @@ def probe(src: str):
 
 
 def frames(src: str, w: int, h: int, pix: str):
+    """gray — кадр (h, w); yuv444p — три плоскости (3, h, w)."""
     n = w * h * (1 if pix == "gray" else 3)
     p = subprocess.Popen(["ffmpeg", "-nostdin", "-v", "error", "-i", src, "-f", "rawvideo", "-pix_fmt", pix, "-"], stdout=subprocess.PIPE)
     while True:
         b = p.stdout.read(n)
         if len(b) < n:
             break
-        yield np.frombuffer(b, np.uint8).reshape((h, w) if pix == "gray" else (h, w, 3))
+        yield np.frombuffer(b, np.uint8).reshape((h, w) if pix == "gray" else (3, h, w))
     p.wait()
 
 
@@ -80,12 +83,12 @@ def main() -> int:
     if a.measure or not a.out:
         return 0
     w, h, fps = probe(a.src)
-    enc = subprocess.Popen(["ffmpeg", "-nostdin", "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{w}x{h}", "-r", fps,
+    enc = subprocess.Popen(["ffmpeg", "-nostdin", "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "yuv444p", "-s", f"{w}x{h}", "-r", fps,
                             "-i", "-", "-an", "-c:v", "libx264", "-preset", "slow", "-crf", "10", "-pix_fmt", "yuv420p", a.out], stdin=subprocess.PIPE)
-    for i, f in enumerate(frames(a.src, w, h, "rgb24")):
+    for i, f in enumerate(frames(a.src, w, h, "yuv444p")):
         if abs(sx[i]) > 0.02 or abs(sy[i]) > 0.02:
             m = np.float32([[1, 0, -sx[i]], [0, 1, -sy[i]]])
-            f = cv2.warpAffine(f, m, (w, h), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE)
+            f = np.stack([cv2.warpAffine(pl, m, (w, h), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE) for pl in f])
         enc.stdin.write(f.tobytes())
     enc.stdin.close()
     enc.wait()

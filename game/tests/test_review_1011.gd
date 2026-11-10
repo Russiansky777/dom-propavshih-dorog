@@ -6,8 +6,9 @@ extends SceneTree
 ##       tikhon_knows_dunya came only with the scene's grants. Now a short fade after the narrator's words sets it:
 ##       «Значит, вечер кончился» he says from the bench by the stove. The test plays the scene and looks where his
 ##       figure is at each line; self-check — the same scene without that staging is caught (he is still in the chair).
-##   R-2 (Director 16:15: «Пелагея в кадре где лодку смолят снова стоит повёрнута вправо, а не влево»): EP_boat —
-##       Pelageya faces left, Mitya faces her.
+##   R-2 (Director 16:15: «Пелагея в кадре где лодку смолят снова стоит повёрнута вправо, а не влево»; 17:56: «а Павел
+##       повёрнут вправо, а не влево — не забыл исправить?»): EP_boat — Pelageya faces left, Mitya faces her; EP_pavel —
+##       Pavel faces left.
 ##   R-3 (16:15: «чтобы она доходила до начала лестницы и мама ждала там»): M19 — Nina waits at the foot of her porch
 ##       stairs, Agata runs up to there.
 ##   R-4 (16:15: «когда она говорит „тянут, вон тянут“ — развернуть её в сторону реки»): the line is said to the river.
@@ -63,7 +64,7 @@ func _run() -> void:
 	player.set("walk_speed", 1600.0)
 	player.set("speed_factor", 6.0)
 	await _test("R-1 M23d: Tikhon moves to Agata's bench after the narrator's words, before «Значит, вечер кончился»; self-check — without the staging he is still in the chair", _test_tikhon_moves)
-	await _test("R-2 the epilogue's boat: Pelageya faces left, Mitya faces her", _test_boat_facing)
+	await _test("R-2 the epilogue: at the boat Pelageya faces left, Mitya faces her; Pavel at the gauge faces left", _test_boat_facing)
 	await _test("R-3 M19: Nina waits at the foot of her porch stairs, Agata runs up to there", _test_porch_stairs)
 	await _test("R-4 M17: «Тянут. Вон, тянут!» is said to the river", _test_line_to_river)
 	await _test("R-5 M17: Agata does not walk through Pelageya on her way to the ribbon; self-check — the night's place is caught", _test_ribbon_walk)
@@ -240,6 +241,11 @@ func _test_boat_facing() -> void:
 	_check(float(mit["face"][0]) < mf.x - 100.0 and absf(float(mit["face"][0]) - pf.x) < 60.0, "Mitya looks at her (face %s)" % str(mit["face"]))
 	# self-check: the night's point (to Mitya, on her right) fails the same test
 	_check(not (1217.0 < pf.x - 100.0), "self-check: the night's facing (to the right) would be caught")
+	# Director 17:56: «а Павел повёрнут вправо, а не влево — не забыл исправить?» — the frame after: Pavel faces left too
+	var pav := _room_hotspot("EP_pavel", "pavel")
+	var vf := _feet(pav)
+	_check(not pav.is_empty() and float(pav["face"][0]) < vf.x - 100.0, "EP_pavel: Pavel looks left of where he stands (face %s, feet %s)" % [str(pav.get("face", [])), str(vf)])
+	_check(not (1420.0 < vf.x - 100.0), "self-check: his old facing (to the right, 1420) would be caught")
 
 
 func _test_porch_stairs() -> void:
