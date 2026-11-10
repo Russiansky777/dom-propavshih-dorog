@@ -110,6 +110,7 @@ if python3 -c "import PIL, numpy" 2>/dev/null; then
 fi
 # I-T6: заплатка «канат снят со стопора» R1 собрана с нынешнего кадра (I-T3 сменил дневной кадр R1, заплатка осталась старой); нужен opencv — без него пропуск
 if python3 -c "import cv2" 2>/dev/null; then python3 "$ROOT/tools/make_rope_layers.py" --check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log"; [[ "${PIPESTATUS[0]}" -ne 0 ]] && code=1; fi
+if python3 -c "import cv2" 2>/dev/null; then python3 "$ROOT/tools/make_windlass_layers.py" --check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log"; [[ "${PIPESTATUS[0]}" -ne 0 ]] && code=1; fi  # 10.11: части ворота (заплата, ручки, витки) — из картины стройки
 # K (31.10): the live 3D figures' tests measure millimetres of a simulation whose idle variants and springs depend on
 # the tests run before them in the same file — one check now and then lands a millimetre over its limit (the braid, the
 # arm by the bag, the stop's self-check), and a red run left the Director without an exe. A 3D test file that fails is

@@ -120,7 +120,8 @@ def main() -> int:
             continue
         if check:
             cur = cv2.imread(str(p), cv2.IMREAD_UNCHANGED)
-            if cur is None or cur.shape != data.shape or int(np.abs(cur.astype(int) - data.astype(int)).max()) > 0:
+            # не «точка в точку»: бесшовная вклейка (seamlessClone) у разных версий OpenCV расходится на единицы
+            if cur is None or cur.shape != data.shape or float(np.abs(cur.astype(int) - data.astype(int)).mean()) > 1.0:
                 print(f"РАСХОЖДЕНИЕ {name}")
                 bad += 1
         else:
