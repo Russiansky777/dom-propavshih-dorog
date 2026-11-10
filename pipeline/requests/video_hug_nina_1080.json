@@ -1,0 +1,24 @@
+{
+  "_comment": "Объятие Агаты с мамой — живое и в 1080p (Директор 10.11, 12:45: «нужно в 1080 и нормальный… это про Агату и маму»). Разбор: живой утверждённый 08.11 ролик — Kling 3.0 standard (720p), ключ последнего кадра tail_image_url модель v3 не знает, то есть шёл БЕЗ последнего кадра — движение свободное; вечерний 09.11 — Kling 3.0 Pro (1080p) с настоящим последним кадром (end_image_url = картина) и тем же промптом — почти стоп-кадр (замер движения 0,26–0,53 против 1,47). Здесь: Pro (1080p), тот же промпт, что у утверждённого, БЕЗ последнего кадра; петля — наплывом хвоста в первый кадр (tools/video_loop.py), как у утверждённого. 10 с, без звука: 1 × $1.12.",
+  "trial": "hug_nina_1080",
+  "image_max": 0,
+  "jpeg_q": 95,
+  "attempts": 1,
+  "frames": [
+    {
+      "id": "F_hug_nina",
+      "image": "game/assets/rooms/F_hug_nina/bg.png",
+      "prompt": "Static camera. The old woman and the young woman keep their embrace; the mother's hand gently strokes the daughter's hair, both breathe softly. Lamp light flickers in the window, light snow drifts down. Painterly look unchanged, no new elements. Ends exactly in the starting pose."
+    }
+  ],
+  "models": [
+    {
+      "id": "fal-ai/kling-video/v3/pro/image-to-video",
+      "image_key": "start_image_url",
+      "args": {
+        "duration": "10",
+        "generate_audio": false
+      }
+    }
+  ]
+}
