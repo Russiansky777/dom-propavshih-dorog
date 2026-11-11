@@ -938,7 +938,9 @@ func _tie_and_watch(keep: bool) -> Array:
 		await process_frame
 		g += 1
 		t += sr.get_process_delta_time()   # the panel itself is freed when the close-up goes away
-		var dim := float(sr.get("stage_dim"))
+		# the black as drawn: GameUi's staging overlay (StoryRunner.stage_dim only holds a black handed between scenes)
+		var ui_ov = root.get_tree().get_first_node_in_group("game_ui").get("stage_overlay")
+		var dim := float((ui_ov as ColorRect).color.a) if ui_ov != null else float(sr.get("stage_dim"))
 		darkest = maxf(darkest, dim)
 		if black_at < 0.0 and dim > 0.1:
 			black_at = t
