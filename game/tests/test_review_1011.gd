@@ -1220,7 +1220,7 @@ func _boat_look(clear: bool) -> Vector2:
 	_flags_before("M17")
 	await _enter("Z3")
 	await _read_out("")
-	var pel := rm.current_room.get_node_or_null("npc_pelageya")
+	var pel: Node = rm.current_room.get_node_or_null("npc_pelageya")
 	if pel == null:
 		_check(false, "Pelageya at the turn")
 		return Vector2.INF
