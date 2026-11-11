@@ -336,9 +336,15 @@ func _test_one_black() -> void:
 		t += d
 		since += d
 		var a := float(ui.call("stage_probe").get("alpha", 0.0))
+		if OS.get_environment("K108_TRACE") != "" and gs.has_flag("span_first_laid") and t < 9.0:
+			print("      t %.2f a %.2f active %s staging %s frame %s beat «%s» mech %s probe %s" % [t, a, sr.active_scene, sr.is_staging(), sr.current_frame, String(sr.current_beat.get("text", sr.current_beat.get("type", ""))).left(30), sr.mechanic_open, str(ui.call("stage_probe")).left(160)])
 		if gs.has_flag("span_first_laid") and a >= 0.999:
+			if not black_since:
+				print("    K-108: black from %.2f s — frame «%s», beat «%s», staging %s" % [t, sr.current_frame, String(sr.current_beat.get("text", sr.current_beat.get("type", ""))).left(40), sr.is_staging()])
 			black_since = true
 		if black_since and sr.current_frame != "EP_tamara":
+			if a < lowest_after_black - 0.05:
+				print("    K-108: black %.2f at %.2f s — scene %s, beat «%s», frame «%s», room %s" % [a, t, sr.current_scene_id if "current_scene_id" in sr else "?", String(sr.current_beat.get("text", sr.current_beat.get("type", ""))).left(40), sr.current_frame, rm.current_room.name if rm.current_room != null else "-"])
 			lowest_after_black = minf(lowest_after_black, a)
 		if sr.current_frame == "EP_tamara":
 			reached = true

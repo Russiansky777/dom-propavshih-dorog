@@ -35,6 +35,9 @@ var bg: Dictionary = {}
 var intro_file := ""
 ## tests (FV-8 self-check): false — the loop starts at once, as if the room named no intro
 static var intro_enabled := true
+## tests: false — frames build as without their files (the drawn layers marked `unless_video`). Since 10.11 every flag
+## combination of the dinner has clips (no cup chosen — the blue ones), so the layer checks need the clip-less build.
+static var videos_enabled := true
 var _intro: VideoStreamPlayer = null
 var _intro_ended := false
 var _intro_frames := 0           # frames since the intro ended

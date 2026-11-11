@@ -408,7 +408,9 @@ func _test_crossings() -> void:
 
 func _test_dinner_tikhon() -> void:
 	_fresh()
+	load("res://scripts/rooms/frame_video.gd").set("videos_enabled", false)   # the drawn Tikhon is the clip-less variant (since 10.11 every cup has clips)
 	await _enter("EP_dinner")
+	load("res://scripts/rooms/frame_video.gd").set("videos_enabled", true)
 	var lay: Node = rm.current_room.get_node_or_null("Layers/tikhon")
 	_check(lay != null and lay.get("life_mat") != null and String(lay.get("life_char")) == "tikhon", "the dinner's Tikhon has the frame's life (%s)" % (str(lay.get("life_char")) if lay != null else "no layer"))
 	if lay == null:

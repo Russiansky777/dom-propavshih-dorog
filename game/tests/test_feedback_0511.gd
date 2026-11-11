@@ -66,7 +66,7 @@ func _run() -> void:
 	await _frames(3)
 	rm.autosave_enabled = false
 	player = main_node.get_node("World/Player")
-	await _test("0511-1 «Облегчить» on the bell and hook stage; eases Pavel at once; hidden while the wedges go in", _test_easy)
+	await _test("0511-1 «Облегчить» on the bell and hook stage; eases Pavel at once; also while the wedges go in (R-11, 10.11)", _test_easy)
 	await _test("0511-2 the bell's clapper from the bag goes on inside the close-up; self-check — a bare click leaves it mute", _test_clapper_closeup)
 	await _test("0511-2b the language changed inside the close-up — the same close-up opens again", _test_lang_closeup)
 	await _test("0511-3 «Пойдём к затвору»: Pavel walks to the office door, it opens and shuts", _test_pavel_door)
@@ -240,8 +240,9 @@ func _test_easy() -> void:
 		sr.close_mechanic()
 		return
 	var p: Dictionary = panel.call("probe")
-	_check(not bool(p.get("easy", {}).get("visible", true)) and not (p.get("wedge_timing", {}) as Dictionary).is_empty(),
-		"self-check: while the wedges go in the bar is up and the bell's check hidden: %s" % str(p.get("easy")))
+	# 10.11 (Director, playtest: «Облегчить» не видно на клиньях) — the check is on every step of the window now (R-11)
+	_check(bool(p.get("easy", {}).get("visible", false)) and not (p.get("wedge_timing", {}) as Dictionary).is_empty(),
+		"while the wedges go in the bar is up and «Облегчить» is there too (R-11): %s" % str(p.get("easy")))
 	sr.close_mechanic()
 	await _frames(3)
 	await _open_stand(true)

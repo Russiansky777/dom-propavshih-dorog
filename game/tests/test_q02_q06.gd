@@ -410,7 +410,10 @@ func _test_q06_data() -> void:
 	var sc: Dictionary = sd.scene("Q06a")
 	_check(not sc.is_empty() and String(sc.get("type", "")) == "minor" and (sc.get("locations", []) as Array).has("O4"), "Q06a — a minor scene on the street")
 	var st: Array = sc.get("stage", [])
-	_check(st.size() == 1 and float(st[0].get("fade_out_s", 0.0)) > 0.0 and (st[0].get("sounds", []) as Array).size() >= 3, "one staging: black with knocks (%s)" % str(st))
+	# 10.11 (Director «Митя пропадает после того, как верстак сделали»): a second staging at the end — Mitya walks off
+	var blacks := st.filter(func(e): return float(e.get("fade_out_s", 0.0)) > 0.0)
+	_check(blacks.size() == 1 and (blacks[0].get("sounds", []) as Array).size() >= 3, "one black with knocks (%s)" % str(blacks))
+	_check(st.any(func(e): return String(e.get("at", "")) == "end" and (e.get("npc_go", []) as Array).any(func(g): return String(g.get("id", "")) == "mitya")), "Mitya walks off after the building, not gone in the black")
 	var lines: Array = sc.get("mandatory_lines", [])
 	_check(lines.size() == 2 and String(lines[0].get("speaker", "")) == "narrator" and String(lines[0].get("text", "")).contains("Уля подавала гвозди"), "the narrator tells the building")
 	var opts: Array = lines[1].get("options", []) if lines.size() > 1 else []

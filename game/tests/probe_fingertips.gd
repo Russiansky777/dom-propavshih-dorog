@@ -53,7 +53,8 @@ static func run_one(tree: SceneTree, id: String, on: bool, old_clips: bool = fal
 		spec["rt3d"]["clips"]["talk"] = "talk"
 		if spec["rt3d"].has("idle"):
 			spec["rt3d"]["idle"]["pool"] = [{"clip": "idle", "weight": 1}]
-		for k in ["concat", "calm_shoulders", "shoulder_weights"]:
+		# the 11.11 stance tone (Pavel's arms turned out from his sides, Director 10.11 «чуть сутулый») did not exist then either
+		for k in ["concat", "calm_shoulders", "shoulder_weights", "stance_tone", "talk_pool", "borrow_clips"]:
 			(spec["rt3d"] as Dictionary).erase(k)
 		ab.erase("stance_free")
 	if not on:

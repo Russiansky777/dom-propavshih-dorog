@@ -100,7 +100,7 @@ static func _build_background(room: Room, room_id: String, bg: Dictionary, horiz
 		# frame comes alive — data `background.video` (one looped clip) or `background.videos` (clips by the player's
 		# flags, taking turns) over the picture, silent, at the picture's place and scale (FrameVideo); the picture stays
 		# under it (the first frame while the stream opens, and the frame without the files).
-		var files: Array = FrameVideo.pick(bg)
+		var files: Array = FrameVideo.pick(bg) if FrameVideo.videos_enabled else []
 		if not files.is_empty():
 			var v := FrameVideo.new()
 			v.setup(files, s.position, Vector2(1920.0, roundf(tex_size.y * room.art_scale)), bg)

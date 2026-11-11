@@ -1,4 +1,5 @@
 {
+  "_rescaled_1111": "11.11: M1 (двор ×0,82, Директор 01:11 «увеличить всех немного… чтобы Агата подходила» — люди совета ростом двора) и M3 (контора ×0,92: Павел ниже двери, ростом по полотну двери) пересчитаны с новых масштабов комнат — остальное с листов 384 px",
   "_comment": "G56: рост Агаты на экране до перерендера (листы 384 px, texture_scale 1.0): unit_height_px — от подошв до макушки в кадре стойки 0 (среднее по 8 строкам) при масштабе 1; высоты в комнатах — × scale_bottom / scale_top. Писать только со старых листов: godot -s res://tests/test_agata_scale_carry.gd -- --write-baseline",
   "frame_h": 384,
   "idle_md5": "e259b576490f6185b7a02658bd09dbdb",
@@ -28,10 +29,10 @@
       "scale_top": 1.2
     },
     "M1": {
-      "height_bottom_px": 812.29,
-      "height_top_px": 82.24,
-      "scale_bottom": 2.4,
-      "scale_top": 0.243
+      "scale_bottom": 1.963,
+      "scale_top": 0.199,
+      "height_bottom_px": 664.39,
+      "height_top_px": 67.35
     },
     "M2": {
       "height_bottom_px": 915.18,
@@ -40,10 +41,10 @@
       "scale_top": 1.417
     },
     "M3": {
-      "height_bottom_px": 956.47,
-      "height_top_px": 509.04,
-      "scale_bottom": 2.826,
-      "scale_top": 1.504
+      "scale_bottom": 2.598,
+      "scale_top": 1.382,
+      "height_bottom_px": 879.31,
+      "height_top_px": 467.74
     },
     "M4": {
       "height_bottom_px": 541.53,

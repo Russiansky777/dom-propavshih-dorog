@@ -200,10 +200,28 @@ func _ho2() -> void:
 	_check(String(sr.active_scene) == "M17", "HO-2 a click on Pelageya did not start M17 (active %s, busy %s, player at %s)" % [sr.active_scene, sr.is_busy(), rm.player.global_position])
 	if String(sr.active_scene) != "M17":
 		return
-	await _to_line("M17", 3)
+	# the self-check's «before»: her first line, to Agata. From the launch on (line 1) she watches the boat — on «Тянут.
+	# Вон, тянут!» (line 3) she is turned to the river (Director 10.11, 16:15 and 21:46; R-21), so «away» is measured
+	# against line 0, not line 3
+	await _to_line("M17", 0)
+	for i in 45:
+		await process_frame
 	var pel: Node2D = rm.current_room.get_node("npc_pelageya")
 	var live = pel.get("live")
 	var yaw_before := absf(rad_to_deg(wrapf(float(live.get("yaw")), -PI, PI)))
+	var done_lines := 0
+	while done_lines < 3 and String(sr.active_scene) == "M17":
+		await process_frame
+		if sr.is_staging() or sr.current_beat.is_empty():
+			continue
+		sr.advance()
+		done_lines += 1
+		for i in 3:
+			await process_frame
+	var g := 0
+	while g < 600 and (sr.is_staging() or sr.current_beat.is_empty()):
+		g += 1
+		await process_frame
 	sr.advance()
 	var seen_line := false
 	var line_end := Vector2.INF

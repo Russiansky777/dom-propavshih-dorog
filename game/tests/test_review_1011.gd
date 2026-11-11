@@ -1149,6 +1149,12 @@ func _test_pavel_door() -> void:
 
 
 func _test_lever_reach() -> void:
+	var was: String = await _live_agata()
+	await _test_lever_reach_body()
+	await _agata_back(was)
+
+
+func _test_lever_reach_body() -> void:
 	_flags_before("M13")
 	await _enter("M3")
 	await _read_out("")
@@ -1356,6 +1362,12 @@ static func _variety(roles: Array) -> Dictionary:
 
 
 func _test_talk_variety() -> void:
+	var was: String = await _live_agata()
+	await _test_talk_variety_body()
+	await _agata_back(was)
+
+
+func _test_talk_variety_body() -> void:
 	await _enter("H1")
 	await _wait_idle()
 	var ga: Array = await _agata_gestures(null)
@@ -1396,6 +1408,12 @@ static func _on_agata_lips(o: Vector3) -> bool:
 
 
 func _test_agata_mouth() -> void:
+	var was: String = await _live_agata()
+	await _test_agata_mouth_body()
+	await _agata_back(was)
+
+
+func _test_agata_mouth_body() -> void:
 	await _enter("H1")
 	await _wait_idle()
 	var jm = player.get("jaw")
@@ -1418,7 +1436,7 @@ func _test_agata_mouth() -> void:
 	await _frames(30)
 	var o1 := float(mat.get_shader_parameter("mouth_open")) if mat != null else 0.0
 	jm.set("speaking_override", 0)
-	await _frames(40)
+	await _frames(90)
 	var o0 := float(mat.get_shader_parameter("mouth_open")) if mat != null else 1.0
 	jm.set("speaking_override", -1)
 	jm.set("level_override", NAN)
@@ -1441,3 +1459,22 @@ func _borrowed_arm(role: String) -> Quaternion:
 	n.queue_free()
 	await _frames(2)
 	return q
+
+
+# --- the live model in a headless run ----------------------------------------------------------
+
+## R-19, R-22, R-23 look at the live model (her reach, gestures, mouth): the game has it whenever there is a screen
+## (data render "3d"); a run without a screen (CI, --headless) keeps the sheets — switch her to the model for the test.
+## Returns the mode she had.
+func _live_agata() -> String:
+	var was := String(player.get("render_mode"))
+	if not bool(player.call("is_3d")):
+		player.call("set_render_mode", "3d")
+		await _frames(3)
+	return was
+
+
+func _agata_back(was: String) -> void:
+	if was != "" and was != String(player.get("render_mode")):
+		player.call("set_render_mode", was)
+		await _frames(2)
