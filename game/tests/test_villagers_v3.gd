@@ -102,7 +102,20 @@ func _run() -> void:
 
 
 func _spec(id: String) -> Dictionary:
-	return JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/%s.json" % id))
+	var sp: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/%s.json" % id))
+	# a try without touching the data: V3_RT_<ID>='{"talk_pool": [...], "borrow_clips": [...], "clips+": {...}}' — rt3d keys
+	# replaced, "clips+" added to the clips
+	var patch := OS.get_environment("V3_RT_" + id.to_upper())
+	if patch != "":
+		var pd = JSON.parse_string(patch)
+		if pd is Dictionary:
+			for k in pd.keys():
+				if String(k) == "clips+":
+					for r in (pd[k] as Dictionary).keys():
+						sp["rt3d"]["clips"][r] = pd[k][r]
+				else:
+					sp["rt3d"][k] = pd[k]
+	return sp
 
 
 func _t1() -> void:
