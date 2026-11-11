@@ -929,7 +929,7 @@ func _tie_and_watch(keep: bool) -> Array:
 	var black_at := -1.0
 	var open_at_line := true
 	var g := 0
-	while g < 3000:
+	while g < 900:
 		await process_frame
 		g += 1
 		t += sr.get_process_delta_time()   # the panel itself is freed when the close-up goes away
@@ -938,7 +938,8 @@ func _tie_and_watch(keep: bool) -> Array:
 		if black_at < 0.0 and dim > 0.1:
 			black_at = t
 		var b: Dictionary = sr.current_beat
-		if String(b.get("scene", "")) == "M15" and String(b.get("type", "")) == "line" and not bool(sr.call("is_staging")):
+		# M15 opens with the narrator («Канат натянулся ровно…»): a narration beat, not a line
+		if String(b.get("scene", "")) == "M15" and String(b.get("type", "")) in ["line", "narration"] and not bool(sr.call("is_staging")):
 			open_at_line = bool(sr.mechanic_open)
 			break
 	await _read_out("")
