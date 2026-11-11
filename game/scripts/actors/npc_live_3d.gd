@@ -201,7 +201,7 @@ func _setup_arm_body() -> void:
 			# other clips keeps BodyClear as before)
 			var baked: Dictionary = (_rest_cache[rest_path] as Dictionary).get("clips", {})
 			_rested = not baked.is_empty()
-			for role in ["idle", "talk", "listen"]:
+			for role in ["idle", "talk", "listen"] + rt.get("talk_pool", []):
 				if view.clips.has(role):
 					var cn := String(view.clips[role])
 					if not baked.has(cn.get_slice("/", cn.get_slice_count("/") - 1)):
@@ -211,7 +211,7 @@ func _setup_arm_body() -> void:
 		# the clearing baked into the stance clips (data arm_body.bake; BodyClear.bake)
 		if d.has("bake"):
 			var names := {}
-			var roles: Array = d["bake"].get("roles", ["idle", "talk", "listen"])
+			var roles: Array = d["bake"].get("roles", ["idle", "talk", "listen"]) + rt.get("talk_pool", [])
 			for role in roles:
 				if view.clips.has(role):
 					names[view.clips[role]] = true
@@ -256,7 +256,38 @@ func _state_action(st: String) -> String:
 		return ""
 	if st == "listen" and view.clips.get("listen") == view.clips.get("idle"):
 		return ""
+	if st == "talk":
+		return _talk_role()
 	return st
+
+
+## Director 10.11, 22:30 («Нину… оживить как-то и добавить ещё один жест ей, тоже примелькивается, как Агата»): data
+## rt3d.talk_pool [roles] — a villager's lines are said with one of these clips, a new one for each line, never the same
+## twice in a row (the line's id tells a new line). No pool — the one talk clip.
+var talk_role: String = "talk"
+var _talk_key: String = ""
+var _talk_rng := RandomNumberGenerator.new()
+
+
+func _talk_role() -> String:
+	var pool: Array = rt.get("talk_pool", [])
+	if pool.is_empty():
+		return "talk"
+	# StoryRunner by path: tests (godot -s, no autoloads) name this class
+	var srn := npc.get_node_or_null("/root/StoryRunner") if npc != null and npc.is_inside_tree() else null
+	var b: Dictionary = srn.get("current_beat") if srn != null else {}
+	var key := String(b.get("line_id", "")) + "|" + String(b.get("text", ""))
+	if key != _talk_key:
+		_talk_key = key
+		var opts: Array = []
+		for r in pool:
+			if view.clips.has(String(r)) and String(r) != talk_role:
+				opts.append(String(r))
+		if not opts.is_empty():
+			if _talk_rng.seed == 0 or _talk_key == "":
+				_talk_rng.seed = hash(String(npc.get("actor_id")) if npc != null and npc.get("actor_id") != null else "npc")
+			talk_role = String(opts[_talk_rng.randi_range(0, opts.size() - 1)])
+	return talk_role
 
 
 ## Plays `clip` once (rt3d.clips role or clip name): from the stance into the action and back. False — no such clip.
@@ -410,7 +441,9 @@ func process(delta: float) -> void:
 			lt = [minf(act_t, L - 0.001), 0.0, 0.0]
 	elif act_name != "" and (act_w > 0.0 or view.shown_act_w() > 0.0):
 		# listen / talk: forward, each pass's end fading into the next one's start (on while it is still shown)
-		var sp := float(rt.get("talk_speed" if act_name == "talk" else "listen_speed", 1.0))
+		var sp := float(rt.get("talk_speed" if (act_name == "talk" or act_name in rt.get("talk_pool", [])) else "listen_speed", 1.0))
+		# rt3d.talk_speeds {role: k}: a pool clip at its own tempo (the v2 clips are livelier than the 08.11 ones)
+		sp = float((rt.get("talk_speeds", {}) as Dictionary).get(act_name, sp))
 		act_t += _dialogue_phase_step(delta, talk_on) * sp
 		lt = Actor3D.loop_times(act_t, maxf(view.action_length(act_name), 0.1), float(rt.get("loop_crossfade_s", 0.8)))
 	if _once_clip and not once and act_w <= 0.0 and view.shown_act_w() <= 0.001:

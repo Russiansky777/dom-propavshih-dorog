@@ -77,6 +77,15 @@ extends SceneTree
 ##   R-21 (Director 10.11, 22:27: «Пелагея не поворачивается к лодке, даже когда „запускает её“»): at «Течение повело
 ##       лодку» (the narrator's line after her turn to the boat) Pelageya still looks out to the boat, not back at Agata;
 ##       at the scene's end the hold is gone. Self-check — with the hold cleared she turns back as before.
+##   R-22 (Director 10.11, 21:48: «Агате добавить нужно ещё какое-то движение, когда говорит, разнообразить, примелькивается»;
+##       22:30: «Нину… добавить ещё один жест ей, тоже примелькивается, как Агата»): six lines in a row — Agata's gesture
+##       (rt3d.gesture.pool) and Nina's talk clip (rt3d.talk_pool) are never the same twice running and at least three
+##       (Nina — two) different ones are used. Self-check — with a pool of one every line repeats, the check sees it.
+##   R-23 (Director 10.11, 22:31: «губы не двигаются — хотя бы у Агаты и Нины сделать как положено»): Agata has the painted
+##       mouth (her model has no jaw bone): its line sits on her lips as the face's picture has them (data
+##       actors_rest/mouth_agata.json, tools/mouth_from_texture.py: 4,5–5,8 cm over the head bone, 10–12 cm forward, near
+##       the middle), the material takes it, it opens while she speaks and closes after. Self-check — Nina's line (the
+##       first guess, copied) lies off Agata's lips.
 ## Exit code 0 only when every check passed.
 
 var _results: Array = []
@@ -153,6 +162,8 @@ func _run() -> void:
 	await _test("R-19 the office lever: Agata goes as near as the floor lets her and reaches to it, the lever leaves the wall with her reach; self-check — on the wall before", _test_lever_reach)
 	await _test("R-20 three lights answered: the lantern's close-up goes by itself, Pelageya speaks on the pier; self-check — without close she speaks over it", _test_lights_close)
 	await _test("R-21 M17: Pelageya keeps looking at the boat through «Течение повело лодку»; self-check — the hold cleared, she turns back", _test_boat_look)
+	await _test("R-22 talking: Agata's gestures and Nina's talk clips change from line to line, never twice running; self-check — a pool of one repeats", _test_talk_variety)
+	await _test("R-23 Agata's painted mouth sits on her lips and opens with her voice; self-check — Nina's line is off her lips", _test_agata_mouth)
 	await _test("R-14 the lane after the post office: the arrow down flickers after 10 s with no click; a click resets it; not once the street was seen; self-check — no data, no flicker", _test_idle_nudge)
 	gs.reset()
 	if main_node != null and is_instance_valid(main_node):
@@ -977,7 +988,7 @@ func _mouse(pos: Vector2, button: MouseButton, pressed: bool) -> void:
 	ev.global_position = pos
 	if pressed:
 		ev.button_mask = MOUSE_BUTTON_MASK_LEFT
-	root.push_input(ev)
+	root.push_input(ev, true)   # canvas pixels (the test window is 960×540, the canvas 1920×1080)
 	await _frames(1)
 
 
@@ -986,7 +997,7 @@ func _motion(pos: Vector2, held: bool) -> void:
 	ev.position = pos
 	ev.global_position = pos
 	ev.button_mask = MOUSE_BUTTON_MASK_LEFT if held else 0
-	root.push_input(ev)
+	root.push_input(ev, true)
 	await _frames(1)
 
 
@@ -1260,3 +1271,151 @@ func _test_boat_look() -> void:
 	var loose: Vector2 = await _boat_look(true)
 	_check(loose.distance_to(boat) >= 2.0, "self-check: the hold cleared — she turns elsewhere (%s), the test tells the two apart" % str(loose))
 
+
+# --- R-22: talk variety ------------------------------------------------------------------------
+
+func _wait_s(t: float) -> void:
+	await create_timer(t).timeout
+
+
+## Agata's gesture clip on six lines of hers in a row (each faded out before the next); `pool` replaces the data's for
+## the self-check (null — the data's).
+func _agata_gestures(pool) -> Array:
+	var roles: Array = []
+	if not bool(player.call("is_3d")):
+		return roles
+	var g: Dictionary = player.get("_rt").get("gesture", {})
+	var had := g.has("pool")
+	var saved = g.get("pool", [])
+	if pool != null:
+		g["pool"] = pool
+	for i in 6:
+		sr.current_beat = {"type": "line", "speaker": "agata", "line_id": "T_variety_%d" % i, "to": "tikhon", "text": "Тихон, ты бы видел! У мамы там стрелки так и бегут."}
+		await _wait_s(0.8)
+		roles.append(String(player.get("gest_role")))
+		sr.current_beat = {}
+		await _wait_s(1.2)
+	if had:
+		g["pool"] = saved
+	else:
+		g.erase("pool")
+	return roles
+
+
+func _fake_villager() -> Node2D:
+	var s := GDScript.new()
+	s.source_code = "extends Node2D\nvar sprite: Sprite2D = null\nvar sheet = null\nvar actor_id := \"nina\"\n"
+	s.reload()
+	var n := Node2D.new()
+	n.set_script(s)
+	var sp := Sprite2D.new()
+	n.add_child(sp)
+	n.set("sprite", sp)
+	var sh := GDScript.new()
+	sh.source_code = "extends RefCounted\nvar texture_scale: float = 2.25\n"
+	sh.reload()
+	n.set("sheet", sh.new())
+	root.add_child(n)
+	return n
+
+
+## Nina's talk clip on six lines of hers, each after someone else's (listen → talk, as in play).
+func _nina_talks(pool) -> Array:
+	var roles: Array = []
+	var spec = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/nina.json"))
+	if pool != null:
+		spec["rt3d"]["talk_pool"] = pool
+	var n := _fake_villager()
+	var live = load("res://scripts/actors/npc_live_3d.gd").new()
+	n.add_child(live)
+	if not live.setup(n, spec, 0.55):
+		n.queue_free()
+		return roles
+	for i in 6:
+		sr.current_beat = {"type": "line", "speaker": "agata", "line_id": "T_nina_l_%d" % i, "text": "Нина, а это чьё?"}
+		live.set_state("listen")
+		live.process(1.0 / 60.0)
+		sr.current_beat = {"type": "line", "speaker": "nina", "line_id": "T_nina_t_%d" % i, "text": "Это Дунино ещё. Она его с ярмарки привезла."}
+		live.set_state("talk")
+		live.process(1.0 / 60.0)
+		roles.append(String(live.get("act_name")))
+	sr.current_beat = {}
+	n.queue_free()
+	await _frames(2)
+	return roles
+
+
+static func _variety(roles: Array) -> Dictionary:
+	var repeats := 0
+	var kinds := {}
+	for i in roles.size():
+		kinds[roles[i]] = true
+		if i > 0 and roles[i] == roles[i - 1]:
+			repeats += 1
+	return {"repeats": repeats, "kinds": kinds.size()}
+
+
+func _test_talk_variety() -> void:
+	await _enter("H1")
+	await _wait_idle()
+	var ga: Array = await _agata_gestures(null)
+	var va := _variety(ga)
+	var pool_a: Array = player.get("_rt").get("gesture", {}).get("pool", [])
+	_check(pool_a.size() >= 3, "Agata has a gesture pool of 3 or more (%d)" % pool_a.size())
+	_check(ga.size() == 6 and va["repeats"] == 0, "Agata: no gesture twice running over six lines %s" % str(ga))
+	_check(va["kinds"] >= 3, "Agata: three or more different gestures over six lines (%d) %s" % [va["kinds"], str(ga)])
+	var one_a: Array = await _agata_gestures(["talk"])
+	_check(_variety(one_a)["repeats"] >= 4, "self-check: a pool of one repeats on every line — the check sees it %s" % str(one_a))
+	var nn: Array = await _nina_talks(null)
+	var vn := _variety(nn)
+	_check(nn.size() == 6 and vn["repeats"] == 0, "Nina: no talk clip twice running over six lines %s" % str(nn))
+	_check(vn["kinds"] >= 2, "Nina: two or more talk clips over six lines (%d) %s" % [vn["kinds"], str(nn)])
+	var one_n: Array = await _nina_talks(["talk"])
+	_check(_variety(one_n)["repeats"] >= 4, "self-check: Nina with a pool of one repeats — the check sees it %s" % str(one_n))
+
+
+# --- R-23: Agata's mouth -----------------------------------------------------------------------
+
+## The lip line's middle in the model's own axes, cm from the head bone: [to the right, up, forward].
+static func _mouth_offsets(d) -> Vector3:
+	if not (d is Dictionary) or not d.has("at"):
+		return Vector3.INF
+	var at := Vector3(float(d["at"][0]), float(d["at"][1]), float(d["at"][2]))
+	var ax := func(k: String) -> Vector3: return Vector3(float(d[k][0]), float(d[k][1]), float(d[k][2]))
+	var u := float(d.get("unit_per_m", 100.0)) / 100.0
+	return Vector3(at.dot(ax.call("right")), at.dot(ax.call("up")), at.dot(ax.call("fwd"))) / u
+
+
+static func _on_agata_lips(o: Vector3) -> bool:
+	return absf(o.x) < 0.6 and o.y > 4.5 and o.y < 5.8 and o.z > 10.0 and o.z < 12.0
+
+
+func _test_agata_mouth() -> void:
+	await _enter("H1")
+	await _wait_idle()
+	var jm = player.get("jaw")
+	_check(jm != null and bool(jm.call("painted")), "Agata has a painted mouth (rt3d.jaw + actors_rest/mouth_agata.json)")
+	if jm == null:
+		return
+	var mine := _mouth_offsets(JSON.parse_string(FileAccess.get_file_as_string("res://data/actors_rest/mouth_agata.json")))
+	_check(_on_agata_lips(mine), "her lip line on her lips: %s cm (right, up, forward of the head bone)" % str(mine))
+	var guess := _mouth_offsets(JSON.parse_string(FileAccess.get_file_as_string("res://data/actors_rest/mouth_nina.json")))
+	_check(not _on_agata_lips(guess), "self-check: Nina's line %s is not taken for Agata's lips" % str(guess))
+	var mat: ShaderMaterial = player.get("view3d").get("material")
+	var has_param := false
+	if mat != null and mat.shader != null:
+		for u in mat.shader.get_shader_uniform_list():
+			if String(u.get("name", "")) == "mouth_open":
+				has_param = true
+	_check(has_param, "her material draws a mouth (mouth_open uniform)")
+	jm.set("speaking_override", 1)
+	jm.set("level_override", -14.0)
+	await _frames(30)
+	var o1 := float(mat.get_shader_parameter("mouth_open")) if mat != null else 0.0
+	jm.set("speaking_override", 0)
+	await _frames(40)
+	var o0 := float(mat.get_shader_parameter("mouth_open")) if mat != null else 1.0
+	jm.set("speaking_override", -1)
+	jm.set("level_override", NAN)
+	_check(o1 > 0.5, "speaking, the mouth opens (%.2f)" % o1)
+	_check(o0 < 0.02, "silent, it closes (%.2f)" % o0)

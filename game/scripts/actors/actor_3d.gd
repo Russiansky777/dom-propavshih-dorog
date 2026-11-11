@@ -145,6 +145,7 @@ func setup(actor_spec: Dictionary) -> bool:
 		load_error = "model without Skeleton3D/AnimationPlayer"
 		return false
 	_copy_animation_libraries()
+	_borrow_clips()
 	for n in _all(model):
 		if n is MeshInstance3D:
 			meshes.append(n)
@@ -221,6 +222,108 @@ func _copy_animation_libraries() -> void:
 		var library := anim.get_animation_library(library_name).duplicate(true) as AnimationLibrary
 		anim.remove_animation_library(library_name)
 		anim.add_animation_library(library_name, library)
+
+
+## Director 10.11, 21:48 («Агате добавить нужно ещё какое-то движение, когда говорит, разнообразить»): her model has one
+## talk clip. Data rt3d.borrow_clips [{from: res://….glb, clip, as}] — clips of another model on the same Meshy skeleton
+## (the villagers': bone names alike) taken into this figure's player as `as` (library "borrow"); only rotation tracks of
+## bones this skeleton has (the hips' travel and other proportions stay the figure's own — a gesture is laid over the
+## stance from the waist up anyway). Tracks are re-pointed to this skeleton's node.
+func _borrow_clips() -> void:
+	var list: Array = spec.get("borrow_clips", [])
+	if list.is_empty():
+		return
+	var root := anim.get_node(anim.root_node) if anim.has_node(anim.root_node) else anim.get_parent()
+	var skel_path := String(root.get_path_to(skeleton))
+	var lib := AnimationLibrary.new()
+	var cache := {}
+	for e in list:
+		var path := String(e.get("from", ""))
+		if not ResourceLoader.exists(path):
+			continue
+		if not cache.has(path):
+			var inst := (load(path) as PackedScene).instantiate()
+			cache[path] = inst
+		var other: Node = cache[path]
+		var ap := _find(other, "AnimationPlayer") as AnimationPlayer
+		var ssk := _find(other, "Skeleton3D") as Skeleton3D
+		if ap == null:
+			continue
+		var src: Animation = null
+		for n in ap.get_animation_list():
+			if String(n).get_slice("/", String(n).get_slice_count("/") - 1) == String(e.get("clip", "")):
+				src = ap.get_animation(n)
+		if src == null:
+			continue
+		var a := Animation.new()
+		a.length = src.length
+		a.loop_mode = src.loop_mode
+		var taken := {}
+		for t in src.get_track_count():
+			if src.track_get_type(t) != Animation.TYPE_ROTATION_3D:
+				continue
+			var bone := String(src.track_get_path(t).get_concatenated_subnames())
+			if skeleton.find_bone(bone) < 0:
+				continue
+			# the waist up only: the legs and the hips stand in this figure's own stance, a rigged skirt (Pelageya's,
+			# Agata's) keeps its own springs — another figure's skirt or step is not borrowed
+			if bone == "Hips" or bone.contains("Leg") or bone.contains("Foot") or bone.contains("Toe") or bone.begins_with("Skirt"):
+				continue
+			# rest-relative: the other figure's turn of the bone away from its own rest, laid onto this figure's rest
+			# (rigs from one template still differ a little in rest per model)
+			var fix := Quaternion.IDENTITY
+			var sb := ssk.find_bone(bone) if ssk != null else -1
+			if sb >= 0 and bool(e.get("rest_relative", true)):
+				var rs := ssk.get_bone_rest(sb).basis.get_rotation_quaternion()
+				var rd := skeleton.get_bone_rest(skeleton.find_bone(bone)).basis.get_rotation_quaternion()
+				fix = rd * rs.inverse()
+			var nt := a.add_track(Animation.TYPE_ROTATION_3D)
+			a.track_set_path(nt, NodePath(skel_path + ":" + bone))
+			a.track_set_interpolation_type(nt, src.track_get_interpolation_type(t))
+			for k in src.track_get_key_count(t):
+				var q: Quaternion = src.track_get_key_value(t, k)
+				a.rotation_track_insert_key(nt, src.track_get_key_time(t, k), (fix * q).normalized())
+			taken[bone] = true
+		# everything else (hips' travel, legs, skirt) from this figure's own stance clip, looped over the gesture's
+		# length: the mixer blends a track a clip lacks towards the rest pose (deterministic), the legs would sag
+		_fill_from_own(a, taken, String(spec.get("clips", {}).get("idle", "")))
+		lib.add_animation(String(e.get("as", e.get("clip", ""))), a)
+	for n in cache.values():
+		(n as Node).free()
+	if lib.get_animation_list().size() > 0:
+		anim.add_animation_library("borrow", lib)
+
+
+## Tracks of this figure's clip `own` (bare name) for the bones `taken` has not, copied into `a` and looped to its
+## length (Actor3D._borrow_clips).
+func _fill_from_own(a: Animation, taken: Dictionary, own: String) -> void:
+	var src: Animation = null
+	for n in anim.get_animation_list():
+		if String(n).get_slice("/", String(n).get_slice_count("/") - 1) == own:
+			src = anim.get_animation(n)
+	if src == null or src.length <= 0.0:
+		return
+	for t in src.get_track_count():
+		var ty := src.track_get_type(t)
+		if ty != Animation.TYPE_ROTATION_3D and ty != Animation.TYPE_POSITION_3D:
+			continue
+		var bone := String(src.track_get_path(t).get_concatenated_subnames())
+		if ty == Animation.TYPE_ROTATION_3D and taken.has(bone):
+			continue
+		var nt := a.add_track(ty)
+		a.track_set_path(nt, src.track_get_path(t))
+		a.track_set_interpolation_type(nt, src.track_get_interpolation_type(t))
+		var base := 0.0
+		while base < a.length + 0.001:
+			for k in src.track_get_key_count(t):
+				var kt := base + src.track_get_key_time(t, k)
+				if kt > a.length + 0.001:
+					break
+				if ty == Animation.TYPE_ROTATION_3D:
+					a.rotation_track_insert_key(nt, kt, src.track_get_key_value(t, k))
+				else:
+					a.position_track_insert_key(nt, kt, src.track_get_key_value(t, k))
+			base += src.length
 
 
 ## The model's own albedo, lit like the sprite renders (shaders/actor_3d.gdshader, values from data).
@@ -474,7 +577,7 @@ func _calm_shoulders() -> void:
 		return
 	var keep := clampf(float(cs.get("keep", 0.25)), 0.0, 1.0)
 	var names := {}
-	for role in cs.get("roles", ["idle", "talk", "listen"]):
+	for role in cs.get("roles", ["idle", "talk", "listen"]) + spec.get("talk_pool", []):
 		if clips.has(role):
 			names[clips[role]] = true
 	for e in idle_pool:
@@ -547,7 +650,7 @@ func _hang_arms() -> void:
 	# `frontal` measures it as the camera sees it, in the body's frontal plane, and turns the arm in that plane only.
 	var frontal := bool(ah.get("frontal", false))
 	var names := {}
-	for role in ah.get("roles", ["idle", "talk", "listen"]):
+	for role in ah.get("roles", ["idle", "talk", "listen"]) + spec.get("talk_pool", []):
 		if clips.has(role):
 			names[clips[role]] = true
 	for e in idle_pool:
@@ -2201,7 +2304,7 @@ func pose(delta: float, walk_phase: float, w: float, act_w: float, act_name: Str
 		_w_v = 0.0
 		_a_v = 0.0
 	if life != null:
-		var talk_life := clampf(float(spec.get("life", {}).get("talk_weight", 0.0)), 0.0, 1.0) if act_name == "talk" else 0.0
+		var talk_life := clampf(float(spec.get("life", {}).get("talk_weight", 0.0)), 0.0, 1.0) if (act_name == "talk" or act_name in spec.get("talk_pool", [])) else 0.0
 		life.idle_weight = (1.0 - _w_s) * lerpf(1.0, talk_life, _a_s)
 		life.advance(delta)
 	_advance_look(delta)

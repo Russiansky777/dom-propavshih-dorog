@@ -420,7 +420,7 @@ func _live(spec: Dictionary) -> Array:
 func _hand_depth(spec: Dictionary) -> Array:
 	var nl := _live(spec)
 	if nl[1] == null:
-		return [999.0, 999.0]
+		return [999.0, 999.0, "not loaded", ""]
 	var live = nl[1]
 	var sk: Skeleton3D = live.view.skeleton
 	var g = Pen.Grab.new()
@@ -429,6 +429,7 @@ func _hand_depth(spec: Dictionary) -> Array:
 	var prepped := Pen.prep(sk, live.view.meshes)
 	var worst := [-99.0, -99.0]
 	var worst_at := ""
+	var behind_at := ""
 	var f := 0
 	for st in [["idle", 3.0], ["talk", 6.0], ["listen", 6.0]]:
 		live.set_state(st[0])
@@ -447,10 +448,12 @@ func _hand_depth(spec: Dictionary) -> Array:
 					if float(m[2][i]) * 100.0 > float(worst[0]):
 						worst[0] = float(m[2][i]) * 100.0
 						worst_at = "%s %.2f s, %s hand" % [st[0], t, ["left", "right"][i]]
-					worst[1] = maxf(worst[1], float(m[0][i]) * 100.0)
+					if float(m[0][i]) * 100.0 > float(worst[1]):
+						worst[1] = float(m[0][i]) * 100.0
+						behind_at = "%s %s %.2f s, %s hand" % [st[0], String(live.get("act_name")), t, ["left", "right"][i]]
 	nl[0].queue_free()
 	await process_frame
-	return [worst[0], worst[1], worst_at]
+	return [worst[0], worst[1], worst_at, behind_at]
 
 
 func _t7() -> void:
@@ -465,13 +468,13 @@ func _t7() -> void:
 				sp7["rt3d"]["stance_tone"][kv.get_slice("=", 0)] = float(kv.get_slice("=", 1))
 		var w: Array = await _hand_depth(sp7)
 		if ids_env != "":
-			print("    %s: silhouette %.1f cm (%s), behind the clothes %.1f cm" % [id, float(w[0]), w[2], float(w[1])])
+			print("    %s: silhouette %.1f cm (%s), behind the clothes %.1f cm (%s)" % [id, float(w[0]), w[2], float(w[1]), w[3]])
 		# 09.11 (arms along the body, arm_rest): the hands now hang as near the clothes as the real surface lets them —
 		# beside an apron's flared edge they are up to ~3 cm inside the posed silhouette (the farthest fold per sector)
 		# while in full view (Pavel 2.9, shots 09.11); the silhouette's limit is 3.5, and the real surface — how far a
 		# hand vertex is behind the clothes — is held to 1 cm (was 2; measured 0.0–0.8 for all nine)
 		_check(float(w[0]) <= 3.5, "%s: a hand %.1f cm inside the body's silhouette (≤ 3.5), %s" % [id, float(w[0]), w[2]])
-		_check(float(w[1]) <= 1.0, "%s: a hand %.1f cm behind the clothes (≤ 1)" % [id, float(w[1])])
+		_check(float(w[1]) <= 1.0, "%s: a hand %.1f cm behind the clothes (≤ 1), %s" % [id, float(w[1]), w[3] if w.size() > 3 else ""])
 	if ids_env != "":
 		return
 	var sp := _spec("pavel")

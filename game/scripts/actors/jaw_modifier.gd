@@ -45,7 +45,9 @@ var _mat: ShaderMaterial = null
 
 func setup(d: Dictionary, skel: Skeleton3D, id: String) -> bool:
 	bone = skel.find_bone(String(d.get("bone", "Jaw")))
-	if bone < 0:
+	# 11.11 (Director 10.11, 22:31: «губы… хотя бы Агаты и Нины нужно сделать как положено»): Agata's model has no jaw bone
+	# — the painted mouth needs none (max_deg 0: the bone is never turned)
+	if bone < 0 and float(d.get("max_deg", 0.0)) > 0.0:
 		return false
 	var a: Array = d.get("axis", [1.0, 0.0, 0.0])
 	axis = Vector3(float(a[0]), float(a[1]), float(a[2])).normalized()
@@ -113,7 +115,11 @@ func speaking() -> bool:
 	if speaker_id == "":
 		return false
 	var vd: Node = get_node_or_null("/root/VoiceDirector")
-	return vd != null and bool(vd.call("is_playing")) and String(vd.get("current_speaker")) == speaker_id
+	if vd == null or not bool(vd.call("is_playing")) or String(vd.get("current_speaker")) != speaker_id:
+		return false
+	# Agata's own voice also reads her thoughts (keys of data/story/text, kind «narration»/«item»): the lips move only for
+	# what she says aloud — a scene's line
+	return speaker_id != "agata" or String(vd.get("current_kind")) == "line"
 
 
 func level_db() -> float:
@@ -150,14 +156,14 @@ func step(delta: float) -> void:
 
 func _process_modification_with_delta(delta: float) -> void:
 	var skel := get_skeleton()
-	if skel == null or bone < 0:
+	if skel == null:
 		return
 	step(delta)
 	if _mat != null:
 		_mat.set_shader_parameter("mouth_open", open)
 		if open > 0.0:
 			_mat.set_shader_parameter("mouth_inv", mouth_frame().affine_inverse())
-	if open <= 0.0 or max_deg <= 0.0:
+	if open <= 0.0 or max_deg <= 0.0 or bone < 0:
 		return
 	var q := skel.get_bone_pose_rotation(bone)
 	skel.set_bone_pose_rotation(bone, q * Quaternion(axis, deg_to_rad(max_deg * open)))

@@ -47,6 +47,7 @@ uniform float flow = 0.0;
 uniform float t = 0.0;
 uniform float period = 90.0;
 uniform float ripple = 1.6;
+uniform float glint = 0.18;
 float boat_y(float x) {
 	return x < tip.x ? tip.y + (tip.x - x) * slopes.x : tip.y + (x - tip.x) * slopes.y;
 }
@@ -73,6 +74,17 @@ void fragment() {
 		vec2 a = px - dir * (f1 * per) + vec2(rip, 0.0);
 		vec2 b = px - dir * (f2 * per) + vec2(rip, 0.0);
 		vec4 c = mix(texture(TEXTURE, water_uv(a)), texture(TEXTURE, water_uv(b)), abs(1.0 - 2.0 * f1));
+		// 11.11: the painting's water is smooth and dark near the boat — shifted, it hardly shows going by. Light
+		// ripples on it: dashes along the lines from the vanishing point, carried outwards (towards us) by the same
+		// flow (in log-distance from the vanishing point, so they spread as they come), more of them along the hull
+		float lr = log(max(length(px - vp), 1.0));
+		float ang = atan(px.y - vp.y, px.x - vp.x);
+		float streak = 0.5 + 0.5 * sin(ang * 61.0 + sin(ang * 17.0 + lr * 3.0) * 2.4);
+		float band = sin((lr - flow / 740.0) * 46.0 + sin(ang * 23.0) * 1.7);
+		float hull = 1.0 - smoothstep(0.0, 90.0, boat_y(px.x) - px.y);
+		float k = smoothstep(0.62, 1.0, band) * smoothstep(0.35, 1.0, streak) * (0.45 + 0.55 * hull) * depth;
+		c.rgb += k * glint * vec3(0.62, 0.70, 0.80);
+		c.rgb *= 1.0 - smoothstep(0.62, 1.0, -band) * smoothstep(0.35, 1.0, streak) * 0.35 * glint * depth;
 		COLOR = mix(base, c, w);
 	} else {
 		COLOR = base;
@@ -141,6 +153,7 @@ func build() -> void:
 		water_mat.set_shader_parameter("slopes", Vector2((bl.y - tp.y) / maxf(tp.x - bl.x, 1.0), (br.y - tp.y) / maxf(br.x - tp.x, 1.0)))
 		water_mat.set_shader_parameter("period", float(wd.get("period_px", 90.0)))
 		water_mat.set_shader_parameter("ripple", float(wd.get("ripple_px", 1.6)))
+		water_mat.set_shader_parameter("glint", float(wd.get("glint", 0.18)))
 		bg_rect.material = water_mat
 	# The far shores: a band of the same painting zoomed on the vanishing point, soft at its edges.
 	var b: Array = spec.get("shore_band", [0, 150, 1672, 250])
@@ -318,7 +331,7 @@ func tick(delta: float) -> void:
 	if water_mat != null:
 		# the water runs past as the boat comes on (px at the bottom edge per whole crossing), a slow drift always
 		var wd: Dictionary = spec.get("water", {})
-		water_flow += maxf(progress - _prog_last, 0.0) * float(wd.get("flow_px", 2600.0)) + delta * float(wd.get("drift_px_s", 4.0))
+		water_flow += maxf(progress - _prog_last, 0.0) * float(wd.get("flow_px", 800.0)) + delta * float(wd.get("drift_px_s", 4.0))
 		_prog_last = progress
 		water_mat.set_shader_parameter("flow", water_flow)
 		water_mat.set_shader_parameter("t", clock)

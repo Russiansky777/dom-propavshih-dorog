@@ -63,8 +63,17 @@ static func numbers(sk: Skeleton3D, poses: Array) -> Dictionary:
 	var head: Transform3D = poses[sk.find_bone("Head")]
 	var hf := inv * head.basis.z   # the head's forward axis in the hips' frame
 	o["head_pitch"] = rad_to_deg(atan2(-hf.y, hf.z))   # + looks down
-	var neck: Vector3 = loc.call("Neck")
+	var neck_name := "Neck" if sk.find_bone("Neck") >= 0 else "neck"
+	var neck: Vector3 = loc.call(neck_name)
 	var hd: Vector3 = loc.call("Head")
+	# the upper back's lean (Spine → neck) forward of straight up, deg (Director 10.11, 22:15: «Павел… чуть сутулый»)
+	var sp: Vector3 = loc.call("Spine")
+	o["chest_fwd"] = rad_to_deg(atan2((neck - sp).z, (neck - sp).y))
+	# the same lean of the whole trunk (hips → neck) against the bind pose's upright frame (not the hips', which tilt
+	# themselves): + forward
+	var rh: Transform3D = sk.get_bone_global_rest(sk.find_bone("Hips"))
+	var tr: Vector3 = rh.basis.inverse() * ((poses[sk.find_bone(neck_name)] as Transform3D).origin - hips.origin)
+	o["trunk_fwd"] = rad_to_deg(atan2(tr.z, tr.y))
 	o["head_fwd"] = hd.z * 100.0
 	o["neck_fwd"] = neck.z * 100.0
 	o["neck_up"] = neck.y * 100.0
@@ -78,7 +87,7 @@ func _run() -> void:
 	var state := String(a[1]) if a.size() > 1 else "idle"
 	var secs := float(a[2]) if a.size() > 2 else 2.0
 	var NL = load("res://scripts/actors/npc_live_3d.gd")
-	print("%-10s %7s %7s %7s %7s | %6s %6s | %6s %6s | %6s %6s | %6s %6s | %6s %6s | %6s %6s" % ["id", "shUpL", "shUpR", "shFwL", "shFwR", "elbL", "elbR", "foreL", "foreR", "uppL", "uppR", "hFwL", "hFwR", "hOutL", "hOutR", "headP", "headFw"])
+	print("%-10s %7s %7s %7s %7s | %6s %6s | %6s %6s | %6s %6s | %6s %6s | %6s %6s | %6s %6s %6s %6s" % ["id", "shUpL", "shUpR", "shFwL", "shFwR", "elbL", "elbR", "foreL", "foreR", "uppL", "uppR", "hFwL", "hFwR", "hOutL", "hOutR", "headP", "headFw", "chestF", "trunk"])
 	for id in ids:
 		var spec = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/%s.json" % id))
 		var n := _fake_npc()
@@ -115,10 +124,10 @@ func _run() -> void:
 			continue
 		for k in acc:
 			acc[k] = float(acc[k]) / float(cnt)
-		print("%-10s %+7.1f %+7.1f %+7.1f %+7.1f | %6.1f %6.1f | %+6.1f %+6.1f | %+6.1f %+6.1f | %+6.1f %+6.1f | %6.1f %6.1f | %+6.1f %+6.1f" % [id,
+		print("%-10s %+7.1f %+7.1f %+7.1f %+7.1f | %6.1f %6.1f | %+6.1f %+6.1f | %+6.1f %+6.1f | %+6.1f %+6.1f | %6.1f %6.1f | %+6.1f %+6.1f %+6.1f %+6.1f" % [id,
 			acc["sh_up_L"] - r["sh_up_L"], acc["sh_up_R"] - r["sh_up_R"], acc["sh_fwd_L"] - r["sh_fwd_L"], acc["sh_fwd_R"] - r["sh_fwd_R"],
 			acc["elbow_L"], acc["elbow_R"], acc["fore_fwd_L"], acc["fore_fwd_R"], acc["upper_fwd_L"], acc["upper_fwd_R"],
-			acc["hand_fwd_L"], acc["hand_fwd_R"], acc["hand_out_L"], acc["hand_out_R"], acc["head_pitch"] - r["head_pitch"], acc["head_fwd"] - r["head_fwd"]])
+			acc["hand_fwd_L"], acc["hand_fwd_R"], acc["hand_out_L"], acc["hand_out_R"], acc["head_pitch"] - r["head_pitch"], acc["head_fwd"] - r["head_fwd"], acc["chest_fwd"], acc["trunk_fwd"] - r["trunk_fwd"]])
 		n.queue_free()
 		await process_frame
 	quit(0)

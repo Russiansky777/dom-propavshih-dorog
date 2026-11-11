@@ -142,6 +142,9 @@ var _gest_key: String = ""
 var _gest_t: float = 0.0
 var _gest_w: float = 0.0
 var _gest_on: bool = false
+## Director 10.11, 21:48 («Агате добавить ещё какое-то движение, когда говорит, разнообразить, примелькивается»): the
+## clip of this line's gesture — one of gesture.pool (clip roles), a new one for each line, never the same twice in a row
+var gest_role: String = "talk"
 var _gest_rng := RandomNumberGenerator.new()
 var _look_rng := RandomNumberGenerator.new()   # ревью 01.11 (В-8): the glances draw from their own generator — seed_motion makes a run repeatable
 
@@ -1072,6 +1075,7 @@ func set_render_mode(mode: String) -> bool:
 			if view3d.follows_room():
 				view3d.set_elevation(rad_to_deg(asin(clampf(floor_foreshortening(), 0.1, 0.95))))
 			view3d.set_floor_k(floor_foreshortening())
+			_setup_mouth()
 			body3d = Sprite2D.new()
 			body3d.name = "Body3D"
 			body3d.centered = false
@@ -1206,9 +1210,9 @@ func _process_3d(delta: float) -> void:
 	var act_w := _act_w
 	var ct := _act_clip_times(_act_t)
 	if act_name == "" and _gesture_3d(delta):
-		act_name = "talk"
+		act_name = gest_role
 		act_w = _gest_w
-		ct = Actor3D.loop_times(_gest_t, view3d.action_length("talk"), float(_rt.get("gesture", {}).get("crossfade_s", 0.6)))
+		ct = Actor3D.loop_times(_gest_t, view3d.action_length(gest_role), float(_rt.get("gesture", {}).get("crossfade_s", 0.6)))
 	view3d.set_yaw(yaw3d)
 	_look_3d()
 	var blend := maxf(walk_w, _turn_step_w)
@@ -1349,6 +1353,37 @@ static func gesture_addressed(b: Dictionary) -> bool:
 	return false
 
 
+## Director 10.11, 22:31 («губы персонажей будто всё равно не двигаются, хотя бы Агаты и Нины нужно сделать как
+## положено»): Agata's mouth, painted along her lip line (data rt3d.jaw; data/actors_rest/mouth_agata.json), opens with
+## the voice of her own lines — as the villagers' (JawModifier; her model has no jaw bone, none is needed).
+const JawModifier := preload("res://scripts/actors/jaw_modifier.gd")
+var jaw: SkeletonModifier3D = null
+
+
+func _setup_mouth() -> void:
+	var d: Dictionary = _rt.get("jaw", {})
+	if d.is_empty() or view3d == null or view3d.skeleton == null:
+		return
+	var jm = JawModifier.new()
+	jm.name = "Jaw"
+	view3d.skeleton.add_child(jm)
+	if jm.setup(d, view3d.skeleton, "agata") and jm.setup_mouth(view3d.material, view3d.skeleton, "agata"):
+		jaw = jm
+	else:
+		jm.queue_free()
+
+
+## The next line's gesture clip: a role of `pool` the figure has, not `last` (when there is another); "talk" without a pool.
+static func pick_gesture(pool: Array, last: String, rng: RandomNumberGenerator, have: Dictionary) -> String:
+	var opts: Array = []
+	for r in pool:
+		if have.has(String(r)) and String(r) != last:
+			opts.append(String(r))
+	if opts.is_empty():
+		return last if have.has(last) else "talk"
+	return String(opts[rng.randi_range(0, opts.size() - 1)])
+
+
 func _gesture_3d(delta: float) -> bool:
 	var g: Dictionary = _rt.get("gesture", {})
 	if g.is_empty() or view3d == null or not view3d.clips.has("talk"):
@@ -1359,11 +1394,11 @@ func _gesture_3d(delta: float) -> bool:
 	var talking := String(b.get("type", "")) == "line" and String(b.get("speaker", "")) == "agata" and not _walking \
 		and String(b.get("text", "")).length() >= int(g.get("min_chars", 24)) and gesture_addressed(b) and VoiceDirector.line_being_said(b)
 	var key := String(b.get("line_id", "")) + "|" + String(b.get("text", ""))
-	var len_s := view3d.action_length("talk")
 	if talking and key != _gest_key:
 		_gest_key = key
 		if _gest_w < 0.05:
-			_gest_t = _gest_rng.randf_range(0.0, float(g.get("start_jitter", 0.2))) * len_s
+			gest_role = pick_gesture(g.get("pool", []), gest_role, _gest_rng, view3d.clips)
+			_gest_t = _gest_rng.randf_range(0.0, float(g.get("start_jitter", 0.2))) * view3d.action_length(gest_role)
 		_gest_on = true
 	elif not talking:
 		_gest_on = false
@@ -1373,7 +1408,8 @@ func _gesture_3d(delta: float) -> bool:
 	if _gest_w <= 0.0 and view3d.shown_act_w() < 0.001:
 		return false
 	# runs on through the clip's passes; Actor3D.loop_times crossfades the end of one pass into the next
-	_gest_t += delta * float(g.get("rate", 1.0))
+	# gesture.rates {role: k}: a borrowed clip at its own tempo (the villagers' talk is played at their talk_speed)
+	_gest_t += delta * float(g.get("rate", 1.0)) * float((g.get("rates", {}) as Dictionary).get(gest_role, 1.0))
 	return true
 
 

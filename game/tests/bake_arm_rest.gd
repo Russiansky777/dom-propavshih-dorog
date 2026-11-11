@@ -188,7 +188,8 @@ static func bake_one(live, cfg: Dictionary) -> Dictionary:
 				if cnt[sd] % HAND_EVERY == 0:
 					(hand_v[sd] as Array).append([ei, k])
 	var names := {}
-	for role in cfg.get("roles", ["idle", "talk", "listen"]):
+	# a villager's talk pool (rt3d.talk_pool, Director 10.11 22:30) is said like talk: its clips are rested too
+	for role in cfg.get("roles", ["idle", "talk", "listen"]) + (live.rt.get("talk_pool", []) as Array):
 		if view.clips.has(role):
 			names[view.clips[role]] = true
 	for e in view.idle_pool:

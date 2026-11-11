@@ -4,6 +4,7 @@
 A GDScript error inside a test function stops that function where it stands: nothing after it is checked, and the
 test still counts as passed. Found in the first full run after the night 09→10.11: test_ui_cursors called a handler
 removed on 05.11, test_batch_j read a shader parameter gone since 02.11 — both «green» and blind for days.
+A SHADER ERROR too (11.11: the crossing's water shader never compiled — the layer drew the plain painting, no test failed).
 
   python3 tools/check_test_log.py build/logs/tests.log      exit 1 and the lines when the log holds a script error
   python3 tools/check_test_log.py --self-check              the check itself: a log with one is caught, a clean one passes
@@ -11,7 +12,7 @@ removed on 05.11, test_batch_j read a shader parameter gone since 02.11 — both
 import re
 import sys
 
-BAD = re.compile(r"SCRIPT ERROR|Parse Error|Compile Error|Failed to load script")
+BAD = re.compile(r"SCRIPT ERROR|SHADER ERROR|Parse Error|Compile Error|Failed to load script")
 
 
 def problems(text: str) -> list[str]:
@@ -36,6 +37,14 @@ def self_check() -> int:
         "ERROR: Parse JSON failed. Error at line 25: Expected key\n"
         "==== saves: 9 tests, 9 passed, 0 failed ====\n"
     )
+    shader = (
+        "SHADER ERROR: Unknown identifier in expression: 'TEXTURE'.\n"
+        "          at: (null) (:18)\n"
+        "PASS  crossing  (900 ms)\n"
+    )
+    if len(problems(shader)) != 1:
+        print(f"self-check FAILED: a log with a shader error gives {problems(shader)}")
+        return 1
     got = problems(blind)
     if len(got) != 1 or "test_ui_cursors.gd:344" not in got[0]:
         print(f"self-check FAILED: a log with a script error gives {got}")

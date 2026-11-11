@@ -275,15 +275,25 @@
       "pick_low": "Female_Bend_Over_Pick_Up_Inspect",
       "reach": "open_door_take_reach",
       "talk": "Talk_with_Right_Hand_Open",
-      "sit": "Chair_Sit_F_sit"
+      "sit": "Chair_Sit_F_sit",
+      "talk_chest": "talk_chest",
+      "talk_open": "talk_open",
+      "talk_bag": "talk_bag",
+      "talk_calm": "talk_calm"
     },
+    "borrow_clips": [{"from": "res://assets/characters/tamara_v3/rt3d/tamara_rt.glb", "clip": "talk_tamara_hybrid", "as": "talk_chest"}, {"from": "res://assets/characters/nina_v3/rt3d/nina_rt.glb", "clip": "talk_natural", "as": "talk_open"}, {"from": "res://assets/characters/tamara_v3/rt3d/tamara_rt.glb", "clip": "talk_a", "as": "talk_bag"}, {"from": "res://assets/characters/pelageya_v3/rt3d/pelageya_rt.glb", "clip": "talk_pelageya_hybrid", "as": "talk_calm"}],
+    "_borrow_1111": "Директор 10.11, 21:48 («Агате добавить ещё какое-то движение, когда говорит, разнообразить, примелькивается»): у её модели один клип разговора; ещё четыре жеста взяты из клипов жителей (тот же скелет Meshy, повороты костей относительно покоя — Actor3D._borrow_clips). Отобраны по видео 11.11 (scratchpad night/agata_gest.mp4) из восьми: рука к груди (Тамара), открытая ладонь вперёд (Нина, v2), рука к сумке и к груди (Тамара, v2), спокойный (Пелагея); отброшены — руки в стороны (жена Ильи, Нина-гибрид), сцепленные руки, детский жест Ульяны.",
+    "jaw": {"bone": "Jaw", "axis": [1.0, 0.0, 0.0], "max_deg": 0.0, "open_m": 0.011, "w_share": 0.85, "up_share": 0.3, "shift_mm": [0, 0], "db_closed": -42.0, "db_open": -12.0, "attack_s": 0.03, "release_s": 0.08, "_1111": "Директор 10.11, 22:31 («губы… хотя бы Агаты и Нины нужно сделать как положено»): рот Агаты нарисован по линии губ (data/actors_rest/mouth_agata.json; у её модели нет кости челюсти — линия поставлена по крупным планам, tests/probe_mouth_sheet.gd) и раскрывается по голосу её реплик (не мыслей); open_m 11 мм — заметнее, чем у жителей (6,5)"},
     "gesture": {
       "_comment": "30.10 «как живая»: пока на экране реплика Агаты (не короче min_chars), стоя, она говорит руками — клип talk поверх стойки (ноги из стойки), наплыв fade_in_s / уход fade_out_s, вес weight, начало — случайное в первых start_jitter клипа",
       "min_chars": 24,
       "weight": 0.85,
       "fade_in_s": 0.5,
       "fade_out_s": 0.7,
-      "start_jitter": 0.2
+      "start_jitter": 0.2,
+      "pool": ["talk", "talk_chest", "talk_open", "talk_bag", "talk_calm"],
+      "rates": {"talk_chest": 1.3, "talk_calm": 1.3},
+      "_pool": "11.11: новая реплика — новый жест из пяти, тот же два раза подряд не берётся (Player.pick_gesture); гибридные клипы жителей идут в их темпе разговора 1,3 (rates), клипы v2 и свой — 1,0. Тест R-22."
     },
     "idle": {
       "_comment": "Спокойные женские idle (превью каталога Meshy: Docs/evidence/M1/agata_v2/catalog/). Два слота: за crossfade_s до конца клипа следующий вариант наплывает — шва цикла не видно, повторов подряд нет.",

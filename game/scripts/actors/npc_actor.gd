@@ -356,7 +356,13 @@ func set_state(st: String) -> void:
 	talking = st == "talk"
 	var spec: Dictionary = states.get(st, {})
 	var bface = StoryRunner.current_beat.get("face", null)
-	if st == "talk" and bface is Array and (bface as Array).size() >= 2 and String(StoryRunner.current_beat.get("speaker", "")) == actor_id:
+	var own_point: bool = st == "talk" and bface is Array and (bface as Array).size() >= 2 and String(StoryRunner.current_beat.get("speaker", "")) == actor_id
+	if st == "talk" and not own_point:
+		face_hold = Vector2.INF   # she speaks to someone: the held point (the boat) is over
+	if face_hold != Vector2.INF and st != "talk":
+		# 11.11 (R-21): listening — the narrator's line, Agata's — she keeps to the point a staging turned her to
+		face_towards(face_hold)
+	elif own_point:
 		# 01.11 (Director, стр. 51: «Илью зовёт Митя, но повёрнут к маминому дому»): a line with `face` [x, y] is called
 		# to that point (Ilya's shutter), not said to Agata
 		face_towards(Vector2(float(bface[0]), float(bface[1])))
