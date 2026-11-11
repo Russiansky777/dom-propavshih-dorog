@@ -70,6 +70,10 @@ extends SceneTree
 ##       сторону тогда»): at M13's end Agata takes the clamp from the desk with her reach, then walks along the back wall as
 ##       near the lever as the floor goes (≤ x 860) and reaches towards it, turned left; the lever leaves the wall as she
 ##       reaches — before the scene gives the things to the bag. Self-check — before that the lever is on the wall.
+##   R-20 (Director 10.11, 22:26: «после того как 3 раза в фонарь позвонили, то 2 раза „Закрыть“ надо жать, и фейдаут
+##       между этим будто бы лишний»): three flashes answered — the lantern's close-up goes away by itself (no
+##       «Закрыть»), Pelageya's «Ответили!» comes on the pier. Self-check — without `close` on the event she speaks over
+##       the close-up.
 ## Exit code 0 only when every check passed.
 
 var _results: Array = []
@@ -144,6 +148,7 @@ func _run() -> void:
 	await _test("R-17 after the council the people stay in the mill yard where the frame had them, Agata too; not clicked; gone once she leaves; self-check — none before the council", _test_council_stays)
 	await _test("R-18 the office: Pavel in the doorway is lower than the door's leaf, Agata at the threshold 0.85–0.95 of it; self-check — the old depth makes him taller", _test_pavel_door)
 	await _test("R-19 the office lever: Agata goes as near as the floor lets her and reaches to it, the lever leaves the wall with her reach; self-check — on the wall before", _test_lever_reach)
+	await _test("R-20 three lights answered: the lantern's close-up goes by itself, Pelageya speaks on the pier; self-check — without close she speaks over it", _test_lights_close)
 	await _test("R-14 the lane after the post office: the arrow down flickers after 10 s with no click; a click resets it; not once the street was seen; self-check — no data, no flicker", _test_idle_nudge)
 	gs.reset()
 	if main_node != null and is_instance_valid(main_node):
@@ -1154,4 +1159,51 @@ func _test_lever_reach() -> void:
 	_check(at_reach.x <= 860.0 and at_reach.y <= 715.0, "she reaches from as near as the floor lets her: %s (≤ x 860 along the back wall)" % str(at_reach.round()))
 	_check(not bag_then, "the lever leaves the wall with her reach, before the bag gets it")
 	_check(lever != null and is_instance_valid(lever) and not lever.visible and gs.has_item("key_sluice"), "after the scene: the wall empty, the lever in the bag")
+
+
+## The three flashes on the lantern's close-up (`keep` false — the event without its `close`): whether the close-up is
+## still open at M16's first words.
+func _flash_and_watch(keep: bool) -> bool:
+	_flags_before("M16")
+	await _enter("R1")
+	await _read_out("")
+	var h = rm.current_room.get_node_or_null("Hotspots/lantern")
+	if h == null:
+		_check(false, "the lantern on the pier")
+		return true
+	sr.open_mechanic(sr.mechanic_spec(h), "lantern")
+	await _frames(3)
+	if not keep:
+		(sr.mechanic["events"]["answered"] as Dictionary).erase("close")
+	var mv = main_node.get_node_or_null("MechanicView")
+	var panel = mv.get("panel") if mv != null else null
+	if panel == null:
+		_check(false, "the lantern's close-up is open")
+		return true
+	for i in 3:
+		panel.call("flash")
+		var t := 0.0
+		while t < 0.8:
+			await process_frame
+			t += sr.get_process_delta_time()
+	var open_at := true
+	var g := 0
+	while g < 900:
+		await process_frame
+		g += 1
+		var b: Dictionary = sr.current_beat
+		if String(b.get("scene", "")) == "M16" and String(b.get("type", "")) in ["line", "narration"] and not bool(sr.call("is_staging")):
+			open_at = bool(sr.mechanic_open)
+			break
+	_check(g < 900, "M16 begins after the answer (%d frames)" % g)
+	await _read_out("")
+	if sr.mechanic_open:
+		sr.close_mechanic()
+	await _frames(3)
+	return open_at
+
+
+func _test_lights_close() -> void:
+	_check(not await _flash_and_watch(true), "Pelageya's «Ответили!» comes with the lantern's close-up put away (no «Закрыть»)")
+	_check(await _flash_and_watch(false), "self-check: without close on the event she speaks over the close-up — the test tells the two apart")
 
