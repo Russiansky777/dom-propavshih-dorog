@@ -7,7 +7,8 @@ extends SkeletonModifier3D
 ## try, 6°). Now a dark lens on the face along the lip line opens with the voice (shaders/actor_3d.gdshader mouth_*; the
 ## line is measured from each model — tests/bake_mouth.gd); the bone is left alone (max_deg 0: at the figures' size on
 ## screen a chin's 3 mm is a third of a pixel).
-## Data rt3d.jaw: {bone, axis, max_deg, db_closed, db_open, attack_s, release_s, open_m, w_share, up_share, shift_mm}.
+## Data rt3d.jaw: {bone, axis, max_deg, db_closed, db_open, attack_s, release_s, open_m, w_share, up_share, shift_mm,
+## lip_color, lip_h_mm}.
 ## Tests: tests/test_jaw.gd.
 
 const NO_METER_DB := -150.0
@@ -37,6 +38,7 @@ var open_m: float = 0.0065       # the opening's height when fully open (m)
 var w_share: float = 0.85        # the opening's width, a share of the lips' width
 var up_share: float = 0.3        # how much of it opens above the lip line (the upper lip lifts a little)
 var lip_color: Array = []        # the lips' colour in the face's picture (sRGB 0..1); empty — no lower-lip band
+var lip_h_mm: float = 3.0        # the lower lip's band under the opening (thin lips — less)
 var shift_mm := Vector3.ZERO     # the lip line as painted against the model's cut: [to the villager's right, up, out of the face], mm
 var _head: int = -1
 var _frame_local := Transform3D.IDENTITY
@@ -63,6 +65,7 @@ func setup(d: Dictionary, skel: Skeleton3D, id: String) -> bool:
 	w_share = float(d.get("w_share", w_share))
 	up_share = float(d.get("up_share", up_share))
 	lip_color = d.get("lip_color", []) as Array
+	lip_h_mm = float(d.get("lip_h_mm", lip_h_mm))
 	var sh: Array = d.get("shift_mm", [0.0, 0.0])
 	shift_mm = Vector3(float(sh[0]), float(sh[1]), float(sh[2]) if sh.size() > 2 else 0.0)
 	return true
@@ -95,7 +98,7 @@ func setup_mouth(mat: ShaderMaterial, skel: Skeleton3D, id: String) -> bool:
 	_mat.set_shader_parameter("mouth_depth", 0.016 * u)
 	_mat.set_shader_parameter("mouth_soft", 0.0008 * u)
 	_mat.set_shader_parameter("mouth_teeth_h", 0.0026 * u)
-	_mat.set_shader_parameter("mouth_lip_h", 0.003 * u)
+	_mat.set_shader_parameter("mouth_lip_h", 0.001 * lip_h_mm * u)
 	# the lower lip goes down with the opening in the lips' own colour (data: jaw.lip_color, from the face's picture)
 	if lip_color.size() >= 3:
 		_mat.set_shader_parameter("mouth_lip", Color(float(lip_color[0]), float(lip_color[1]), float(lip_color[2])))

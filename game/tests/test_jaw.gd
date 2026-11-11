@@ -8,14 +8,16 @@ extends SceneTree
 ##        4 mm of the lip line's middle; it is of a mouth's size; darker than the face, red, not black — 11.11) — and
 ##        shut, nothing is painted;
 ##   JW-4 the Jaw bone is where the clip has it, mouth open or shut;
+##   JW-5 the opening spans the lips as painted on the face (11.11: Nina's covered half of her wide thin lips);
 ##   self-check: with the shape taken away the same measure sees no mouth; a black mouth is called black.
 ## Needs a display (the figures are rendered): xvfb-run godot --path game --display-driver x11 --rendering-driver
 ## opengl3 -s res://tests/test_jaw.gd; headless — the data and the opening only.
 
 const DT := 1.0 / 60.0
-const ALL := ["nina", "pelageya", "ilya", "ilya_wife", "ulyana", "mitya", "pavel", "tamara", "manager"]
+const ALL := ["nina", "pelageya", "ilya", "ilya_wife", "ulyana", "mitya", "pavel", "tamara", "manager", "agata"]   # Agata: her painted mouth on the same figure (11.11)
 const PX := 300
 const VIEW_M := 0.10          # the tile is 10 cm: 3 px per mm
+const LIP_SHARE_MIN := 0.65   # JW-5: the opening is at least this share of the lips painted on the face
 
 var _failed := 0
 var _checks := 0
@@ -80,6 +82,73 @@ func _diff(a: Image, b: Image) -> Array:
 	return [n, mid * k, lum * k, lum_a * k, col * k]
 
 
+## JW-5: the lips as painted on the face (shut) and the opening (what changes, open against shut), mm wide:
+## (painted, painted at the widest reading, opening). Painted — from the tile's middle column outwards while either the lips' red shows (the reddest
+## r − g within 4 mm of the lip line beats the paler of the skin 6–10 mm above and below by 0,08) or the crease between the lips
+## does (the darkest pixel within 4 mm is 0,047 darker than the face 3 mm above and below it); the wider of the two
+## (red alone misses pale lips, the crease alone is lost in a beard). Measured as tests/probe_mouth_sheet.gd
+## pictures (11.11): Agata 42 mm, Nina 60, Tamara 52, Ulyana 60.
+func _lip_widths(shut: Image, open: Image, mm: float) -> Vector3:
+	var w := shut.get_width()
+	var hgt := shut.get_height()
+	var cy := hgt / 2
+	var b := int(4.0 * mm)
+	var s0 := int(6.0 * mm)
+	var s1 := int(10.0 * mm)
+	var g := int(3.0 * mm)
+	var red_ok: Array[bool] = []
+	var red_wide_ok: Array[bool] = []
+	var crease_ok: Array[bool] = []
+	for x in w:
+		var top := -1.0
+		var dark := 9.0
+		var dy := cy
+		for y in range(cy - b, cy + b):
+			var c := shut.get_pixel(x, y)
+			top = maxf(top, c.r - c.g)
+			var l := (c.r + c.g + c.b) / 3.0
+			if l < dark:
+				dark = l
+				dy = y
+		var above: Array[float] = []
+		var below: Array[float] = []
+		for y in range(cy - s1, cy - s0):
+			var c := shut.get_pixel(x, y)
+			above.append(c.r - c.g)
+		for y in range(cy + s0, mini(cy + s1, hgt)):
+			var c := shut.get_pixel(x, y)
+			below.append(c.r - c.g)
+		above.sort()
+		below.sort()
+		var both: Array[float] = above + below
+		both.sort()
+		red_ok.append(top - both[both.size() / 2] > 0.078)
+		# the paler of the two: under a thick lower lip (Pavel) "below" is still lip — but in a beard this one takes
+		# the bare skin round the lips for lips, so it only widens the upper bound
+		var paler := minf(above[above.size() / 2], below[below.size() / 2]) if below.size() > 0 else above[above.size() / 2]
+		red_wide_ok.append(top - paler > 0.078)
+		var up := shut.get_pixel(x, dy - g)
+		var dn := shut.get_pixel(x, mini(dy + g, hgt - 1))
+		crease_ok.append(((up.r + up.g + up.b) + (dn.r + dn.g + dn.b)) / 6.0 - dark > 0.047)
+	var runs: Array[int] = []
+	for ok in [red_ok, crease_ok, red_wide_ok]:
+		var l := w / 2
+		while l > 0 and ok[l]:
+			l -= 1
+		var r := w / 2
+		while r < w - 1 and ok[r]:
+			r += 1
+		runs.append(r - l)
+	var o0 := w
+	var o1 := -1
+	for y in range(cy - int(5.0 * mm), mini(hgt, cy + int(15.0 * mm))):
+		for x in w:
+			if absf(shut.get_pixel(x, y).get_luminance() - open.get_pixel(x, y).get_luminance()) > 0.12:
+				o0 = mini(o0, x)
+				o1 = maxi(o1, x)
+	return Vector3(float(maxi(runs[0], runs[1])) / mm, float(runs.max()) / mm, float(maxi(o1 - o0, 0)) / mm)
+
+
 ## JW-3's colour: a mouth is darker than the face it opens in, red, and not black (Director 11.11, 12:02: «фон
 ## чёрный почему-то, поищи, как должен быть в реальности»). Empty — so; else what is wrong.
 static func _mouth_colour_wrong(d: Array) -> String:
@@ -141,6 +210,7 @@ func _run() -> void:
 		var img_shut: Image = null
 		var img_none: Image = null
 		var img_black: Image = null
+		var img_narrow: Image = null
 		if drawn:
 			# the mouth in the middle of a 10 cm tile
 			live.view.size = Vector2i(PX, PX)
@@ -167,6 +237,11 @@ func _run() -> void:
 			img_black = await _shot(live.view)
 			for u in was:
 				mat.set_shader_parameter(u, was[u])
+			# self-check JW-5: the opening narrowed to 0,55 of its width — the measure calls it narrow
+			var ks: Vector4 = keep
+			mat.set_shader_parameter("mouth_shape", Vector4(ks.x * 0.55, ks.y, ks.z * 0.3, ks.w * 0.3))
+			img_narrow = await _shot(live.view)
+			mat.set_shader_parameter("mouth_shape", keep)
 		jaw.level_override = -100.0
 		for i in 40:
 			await process_frame
@@ -193,6 +268,18 @@ func _run() -> void:
 			var db: Array = _diff(img_shut, img_black)
 			var black := _mouth_colour_wrong(db)
 			_check(black.begins_with("black"), "self-check JW-3 %s: a black mouth is not taken for a right one (%s; luminance %.2f, colour %s)" % [id, black if black != "" else "passed", db[2], str(db[4])])
+			# JW-5 (Director 11.11, 13:08: «у Нины рот же явно шире на фото… подстроить под широкие тонкие губы»): the
+			# opening spans the lips painted on the face — her opening was 0,47 of them
+			if OS.get_environment("JAW_DUMP") != "":
+				img_shut.save_png(OS.get_environment("JAW_DUMP") + "/%s_shut.png" % id)
+				img_open.save_png(OS.get_environment("JAW_DUMP") + "/%s_open.png" % id)
+			var wd := _lip_widths(img_shut, img_open, mm)
+			var share := wd.z / maxf(wd.x, 0.001)
+			print("    %s: lips painted %.0f mm wide (at the widest reading %.0f), the opening %.0f mm — %.2f of them" % [id, wd.x, wd.y, wd.z, share])
+			_check(wd.x > 25.0 and wd.x < 80.0 and share > LIP_SHARE_MIN, "JW-5 %s: the opening %.0f mm is narrow against the lips' %.0f mm on the face — %.2f (at least %.2f)" % [id, wd.z, wd.x, share, LIP_SHARE_MIN])
+			_check(wd.z < wd.y, "JW-5 %s: the opening %.0f mm runs past the lips (%.0f mm at the widest reading)" % [id, wd.z, wd.y])
+			var wn := _lip_widths(img_shut, img_narrow, mm)
+			_check(wn.z / maxf(wn.x, 0.001) < LIP_SHARE_MIN, "self-check JW-5 %s: an opening narrowed to 0,55 is called narrow (%.2f of the lips)" % [id, wn.z / maxf(wn.x, 0.001)])
 			var none: Array = _diff(img_shut, img_none)
 			_check(int(none[0]) < int(4.0 * mm * mm), "self-check JW-3 %s: with the shape taken away %d px still change — the measure sees a mouth that is not painted" % [id, none[0]])
 		n.queue_free()
