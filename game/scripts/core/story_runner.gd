@@ -1199,7 +1199,9 @@ func _stage_apply(spec: Dictionary) -> void:
 			var sc: float = rm_now.depth_scale_at(npc.global_position) * float(npc.get("sheet").scale_factor)
 			npc.scale = Vector2(sc, sc)
 		var fc = g.get("face", "")
-		if String(fc) == "agata" and RoomManager.player != null and npc.has_method("set_partner"):
+		# (11.11: `String(fc)` on a point [x, y] is an error that stopped the rest of the staging — the yard after the
+		# council lost Agata's place)
+		if fc is String and fc == "agata" and RoomManager.player != null and npc.has_method("set_partner"):
 			npc.call("set_partner", RoomManager.player)
 		elif fc is Array and npc.has_method("face_towards"):
 			npc.set("partner", null)
