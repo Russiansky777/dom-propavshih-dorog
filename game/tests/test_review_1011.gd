@@ -1435,6 +1435,17 @@ func _test_agata_mouth_body() -> void:
 			if String(u.get("name", "")) == "mouth_open":
 				has_param = true
 	_check(has_param, "her material draws a mouth (mouth_open uniform)")
+	# 11.11, 12:30 («будто бы не то вышло»): the opening hid her lower lip; it now goes down with the opening in the
+	# lips' own colour from her data (jaw.lip_color), and the upper teeth show under the upper lip
+	var spec = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/agata.json"))
+	var lc: Array = spec.get("rt3d", spec).get("jaw", {}).get("lip_color", []) if spec is Dictionary else []
+	var lip = mat.get_shader_parameter("mouth_lip") if mat != null else null
+	_check(lc.size() == 3 and lip is Color and absf((lip as Color).r - float(lc[0])) < 0.01 and absf((lip as Color).g - float(lc[1])) < 0.01,
+		"her lower lip is drawn in her lips' colour %s (shader has %s)" % [str(lc), str(lip)])
+	_check(mat != null and float(mat.get_shader_parameter("mouth_lip_h")) > 0.0 and float(mat.get_shader_parameter("mouth_teeth_h")) > 0.0,
+		"the lower lip's band and the teeth have a height")
+	var dflt = RenderingServer.shader_get_parameter_default(mat.shader.get_rid(), "mouth_lip") if mat != null and mat.shader != null else null
+	_check(dflt is Color and (dflt as Color).r == 0.0, "self-check: without lip_color no band is drawn (shader default %s)" % str(dflt))
 	jm.set("speaking_override", 1)
 	jm.set("level_override", -14.0)
 	await _frames(30)

@@ -4,10 +4,11 @@ extends SceneTree
 ##   JW-1 data: the jaw bone is not turned (max_deg 0 — turning it tore the lips into a jagged slit), the lip line of
 ##        the model is measured (data/actors_rest/mouth_<id>.json), the mouth is painted;
 ##   JW-2 the opening follows the voice: loud — open, a pause — shut, not her line — shut;
-##   JW-3 as drawn: open, a dark shape appears at the mouth and nowhere else (the middle of what changed is within
-##        4 mm of the lip line's middle; it is dark; it is of a mouth's size) — and shut, nothing is painted;
+##   JW-3 as drawn: open, a mouth appears at the mouth and nowhere else (the middle of what changed is within
+##        4 mm of the lip line's middle; it is of a mouth's size; darker than the face, red, not black — 11.11) — and
+##        shut, nothing is painted;
 ##   JW-4 the Jaw bone is where the clip has it, mouth open or shut;
-##   self-check: with the shape taken away the same measure sees no mouth.
+##   self-check: with the shape taken away the same measure sees no mouth; a black mouth is called black.
 ## Needs a display (the figures are rendered): xvfb-run godot --path game --display-driver x11 --rendering-driver
 ## opengl3 -s res://tests/test_jaw.gd; headless — the data and the opening only.
 
@@ -57,10 +58,14 @@ func _shot(view) -> Image:
 
 
 ## What changed between two tiles: [pixels, their middle (px), mean luminance in `b` over them].
+## What changed from a to b: [pixels, their middle, b's mean luminance there, a's mean luminance there (the skin it
+## covers), b's mean colour there].
 func _diff(a: Image, b: Image) -> Array:
 	var n := 0
 	var mid := Vector2.ZERO
 	var lum := 0.0
+	var lum_a := 0.0
+	var col := Color(0, 0, 0, 0)
 	for y in a.get_height():
 		for x in a.get_width():
 			var ca := a.get_pixel(x, y)
@@ -69,7 +74,25 @@ func _diff(a: Image, b: Image) -> Array:
 				n += 1
 				mid += Vector2(x, y)
 				lum += cb.get_luminance()
-	return [n, mid / float(maxi(n, 1)), lum / float(maxi(n, 1))]
+				lum_a += ca.get_luminance()
+				col += cb
+	var k := 1.0 / float(maxi(n, 1))
+	return [n, mid * k, lum * k, lum_a * k, col * k]
+
+
+## JW-3's colour: a mouth is darker than the face it opens in, red, and not black (Director 11.11, 12:02: «фон
+## чёрный почему-то, поищи, как должен быть в реальности»). Empty — so; else what is wrong.
+static func _mouth_colour_wrong(d: Array) -> String:
+	var lum := float(d[2])
+	var skin := float(d[3])
+	var c: Color = d[4]
+	if lum < 0.2:
+		return "black (luminance %.2f < 0,2; the black mouth of 10.11 measured 0,10–0,15 here, the red one 0,33–0,42)" % lum
+	if lum > skin * 0.8:
+		return "not darker than the face (%.2f against the skin's %.2f)" % [lum, skin]
+	if c.r < c.g * 1.3 or c.r < c.b * 1.3:
+		return "not red (%.2f, %.2f, %.2f)" % [c.r, c.g, c.b]
+	return ""
 
 
 func _run() -> void:
@@ -117,6 +140,7 @@ func _run() -> void:
 		var img_open: Image = null
 		var img_shut: Image = null
 		var img_none: Image = null
+		var img_black: Image = null
 		if drawn:
 			# the mouth in the middle of a 10 cm tile
 			live.view.size = Vector2i(PX, PX)
@@ -134,6 +158,15 @@ func _run() -> void:
 			live.view.material.set_shader_parameter("mouth_shape", Vector4.ZERO)
 			img_none = await _shot(live.view)
 			live.view.material.set_shader_parameter("mouth_shape", keep)
+			# self-check: the mouth as it was before 11.11 (black inside) — the colour measure calls it black
+			var mat: ShaderMaterial = live.view.material
+			var was := {}
+			for u in ["mouth_color", "mouth_rim", "mouth_teeth", "mouth_tongue"]:
+				was[u] = mat.get_shader_parameter(u)
+				mat.set_shader_parameter(u, Color(0.03, 0.01, 0.01))
+			img_black = await _shot(live.view)
+			for u in was:
+				mat.set_shader_parameter(u, was[u])
 		jaw.level_override = -100.0
 		for i in 40:
 			await process_frame
@@ -152,10 +185,14 @@ func _run() -> void:
 			var d: Array = _diff(img_shut, img_open)
 			var mm := float(PX) / (VIEW_M * 1000.0)
 			var off: Vector2 = ((d[1] as Vector2) - Vector2(PX, PX) * 0.5) / mm
-			print("    %s: open — %d px changed (%.0f mm²), their middle %.1f mm right, %.1f mm below the lip line's middle, luminance %.2f" % [id, d[0], float(d[0]) / (mm * mm), off.x, off.y, d[2]])
+			print("    %s: open — %d px changed (%.0f mm²), their middle %.1f mm right, %.1f mm below the lip line's middle, luminance %.2f (skin %.2f), colour %s" % [id, d[0], float(d[0]) / (mm * mm), off.x, off.y, d[2], d[3], str(d[4])])
 			_check(int(d[0]) > int(40.0 * mm * mm) and int(d[0]) < int(400.0 * mm * mm), "JW-3 %s: open, %d px change (a mouth is 40–400 mm² = %d–%d px)" % [id, d[0], int(40.0 * mm * mm), int(400.0 * mm * mm)])
 			_check(absf(off.x) < 4.0 and off.y > -2.0 and off.y < 5.0, "JW-3 %s: the dark shape is %.1f mm right, %.1f mm below the lip line's middle (within 4 across, 2 above … 5 below)" % [id, off.x, off.y])
-			_check(float(d[2]) < 0.33, "JW-3 %s: what appears is not dark (luminance %.2f < 0,33)" % [id, d[2]])
+			var wrong := _mouth_colour_wrong(d)
+			_check(wrong == "", "JW-3 %s: inside the mouth — %s" % [id, wrong])
+			var db: Array = _diff(img_shut, img_black)
+			var black := _mouth_colour_wrong(db)
+			_check(black.begins_with("black"), "self-check JW-3 %s: a black mouth is not taken for a right one (%s; luminance %.2f, colour %s)" % [id, black if black != "" else "passed", db[2], str(db[4])])
 			var none: Array = _diff(img_shut, img_none)
 			_check(int(none[0]) < int(4.0 * mm * mm), "self-check JW-3 %s: with the shape taken away %d px still change — the measure sees a mouth that is not painted" % [id, none[0]])
 		n.queue_free()

@@ -36,6 +36,7 @@ var _chatter_i: int = 0
 var open_m: float = 0.0065       # the opening's height when fully open (m)
 var w_share: float = 0.85        # the opening's width, a share of the lips' width
 var up_share: float = 0.3        # how much of it opens above the lip line (the upper lip lifts a little)
+var lip_color: Array = []        # the lips' colour in the face's picture (sRGB 0..1); empty — no lower-lip band
 var shift_mm := Vector3.ZERO     # the lip line as painted against the model's cut: [to the villager's right, up, out of the face], mm
 var _head: int = -1
 var _frame_local := Transform3D.IDENTITY
@@ -61,6 +62,7 @@ func setup(d: Dictionary, skel: Skeleton3D, id: String) -> bool:
 	open_m = float(d.get("open_m", open_m))
 	w_share = float(d.get("w_share", w_share))
 	up_share = float(d.get("up_share", up_share))
+	lip_color = d.get("lip_color", []) as Array
 	var sh: Array = d.get("shift_mm", [0.0, 0.0])
 	shift_mm = Vector3(float(sh[0]), float(sh[1]), float(sh[2]) if sh.size() > 2 else 0.0)
 	return true
@@ -91,8 +93,12 @@ func setup_mouth(mat: ShaderMaterial, skel: Skeleton3D, id: String) -> bool:
 	_mat.set_shader_parameter("mouth_shape", _shape)
 	_mat.set_shader_parameter("mouth_up_share", up_share)
 	_mat.set_shader_parameter("mouth_depth", 0.016 * u)
-	_mat.set_shader_parameter("mouth_soft", 0.0005 * u)
-	_mat.set_shader_parameter("mouth_teeth_h", 0.0022 * u)
+	_mat.set_shader_parameter("mouth_soft", 0.0008 * u)
+	_mat.set_shader_parameter("mouth_teeth_h", 0.0026 * u)
+	_mat.set_shader_parameter("mouth_lip_h", 0.003 * u)
+	# the lower lip goes down with the opening in the lips' own colour (data: jaw.lip_color, from the face's picture)
+	if lip_color.size() >= 3:
+		_mat.set_shader_parameter("mouth_lip", Color(float(lip_color[0]), float(lip_color[1]), float(lip_color[2])))
 	_mat.set_shader_parameter("mouth_open", 0.0)
 	return true
 

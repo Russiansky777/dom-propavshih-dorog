@@ -42,11 +42,16 @@ uniform float mouth_depth = 1.6;      // the paint lies on the face within this 
 // pink at the edges; painters-online «How to paint mouths»: teeth «rarely white», soft, darks in the corners; AnimSchool
 // «posing the mouth»: open — the teeth come into play, the tongue is nearly always seen, better than «a black gap»).
 // Values are the screen's codes (this viewport is written in sRGB codes — see to_srgb).
-uniform vec3 mouth_color : source_color = vec3(0.36, 0.11, 0.10);    // the depth of the mouth: deep red, not black
-uniform vec3 mouth_rim : source_color = vec3(0.62, 0.30, 0.29);      // just inside the lips: pink
-uniform vec3 mouth_teeth : source_color = vec3(0.80, 0.76, 0.68);    // the upper teeth: off-white
-uniform vec3 mouth_tongue : source_color = vec3(0.66, 0.31, 0.30);   // the tongue
-uniform float mouth_teeth_h = 0.22;    // the teeth's band under the upper lip (model units: 2.2 mm)
+uniform vec3 mouth_color : source_color = vec3(0.44, 0.14, 0.13);    // the depth of the mouth: deep red, not black
+uniform vec3 mouth_rim : source_color = vec3(0.72, 0.38, 0.36);      // just inside the lips: pink
+uniform vec3 mouth_teeth : source_color = vec3(0.87, 0.84, 0.77);    // the upper teeth: off-white
+uniform vec3 mouth_tongue : source_color = vec3(0.76, 0.41, 0.39);   // the tongue
+uniform float mouth_teeth_h = 0.26;    // the teeth's band under the upper lip (model units: 2.6 mm)
+// 11.11, 12:30 (Director: «будто бы не то вышло»): the opening was a dark lens laid over the lower lip — the lip was
+// gone. The lower lip now goes down with the opening: under its lower edge a band of the lips' own colour (the face's
+// picture, data jaw.lip_color), lit as the face is lit.
+uniform vec3 mouth_lip : source_color = vec3(0.0);
+uniform float mouth_lip_h = 0.3;       // the lower lip's band (model units: 3 mm)
 uniform float mouth_soft = 0.05;      // the edge's softness (model units: half a millimetre)
 uniform bool debug_mouth = false;   // probe: the whole lens at full opening in green
 
@@ -103,29 +108,44 @@ void fragment() {
 		float x = mp.x / mouth_shape.x;
 		float z = mp.z + mouth_shape.w * x * x;
 		if (abs(x) < 1.0 && z > -mouth_depth && z < mouth_depth * 0.6) {
-			float prof = pow(1.0 - x * x, 0.6);
+			float prof = pow(1.0 - x * x, 0.75);   // the corners pinched where the lips meet
 			float yl = mp.y - mouth_shape.z * x * x;
 			float h = mouth_shape.y * (debug_mouth ? 1.0 : mouth_open) * prof;
 			// inside the lens: + towards its middle, 0 on its edge (model units)
 			float d = min(h * mouth_up_share - yl, yl + h * (1.0 - mouth_up_share));
 			float soft = max(fwidth(mp.y) * 1.2, mouth_soft);
 			float k = smoothstep(-soft * 0.4, soft, d);
-			// the lips' inner edge is lit, the depth of the mouth is not
-			vec3 inner = mix(mouth_rim, mouth_color, smoothstep(0.0, max(h * 0.45, soft), d));
-			inner *= 1.0 - 0.45 * smoothstep(0.55, 1.0, abs(x));   // darkest in the corners
 			// across the opening: 0 at the lower lip … 1 at the upper one
 			float top = h * mouth_up_share;
 			float bot = -h * (1.0 - mouth_up_share);
 			float v = clamp((yl - bot) / max(top - bot, 1e-4), 0.0, 1.0);
 			float wide = smoothstep(0.25, 0.5, h / max(mouth_shape.y, 1e-4));   // a narrow opening shows only the dark
-			float mid = 1.0 - smoothstep(0.45, 0.8, abs(x));
-			// the tongue at the bottom, in the middle
-			float tongue = (1.0 - smoothstep(0.22, 0.4, v)) * mid * wide;
-			inner = mix(inner, mouth_tongue, tongue * 0.8);
-			// the upper teeth: a band under the upper lip's rim, in the middle
-			float tb = clamp(mouth_teeth_h / max(top - bot, 1e-4), 0.0, 0.4);
-			float teeth = smoothstep(1.0 - tb - 0.08, 1.0 - tb, v) * (1.0 - smoothstep(0.93, 0.99, v)) * (1.0 - smoothstep(0.35, 0.65, abs(x))) * wide;
-			inner = mix(inner, mouth_teeth, teeth * 0.85);
+			// 11.11, 12:30: not a lit bowl (pink rim all round, dark in the middle) — a mouth: the depth is darkest
+			// behind the upper teeth and in the corners, the tongue lies low, the wet inner side of the lower lip
+			// catches the light
+			vec3 inner = mouth_color * mix(1.0, 0.72, smoothstep(0.35, 0.85, v));
+			inner *= 1.0 - 0.5 * smoothstep(0.5, 1.0, abs(x));
+			// the tongue: a mound low in the opening, highest in the middle, darker to the sides
+			float tt = 0.42 - 0.22 * x * x;
+			float tongue = (1.0 - smoothstep(tt - 0.12, tt + 0.03, v)) * wide;
+			inner = mix(inner, mouth_tongue * (1.0 - 0.4 * smoothstep(0.35, 0.9, abs(x))), tongue * 0.85);
+			// the inner side of the lower lip: a thin wet pink band along the bottom
+			float wet = (1.0 - smoothstep(0.0, max(soft * 2.5 / max(top - bot, 1e-4), 0.1), v)) * smoothstep(0.0, 0.3, 1.0 - abs(x));
+			inner = mix(inner, mouth_rim, wet * 0.7);
+			// the upper teeth: a band under the upper lip, its top in the lip's shadow, fading into the corners
+			float tb = clamp(mouth_teeth_h / max(top - bot, 1e-4), 0.0, 0.45);
+			float teeth = smoothstep(1.0 - tb - 0.06, 1.0 - tb + 0.02, v) * (1.0 - smoothstep(0.95, 1.0, v))
+				* (1.0 - smoothstep(0.4, 0.75, abs(x))) * wide;
+			vec3 tcol = mouth_teeth * mix(1.0, 0.62, smoothstep(1.0 - tb * 0.45, 0.98, v)) * (1.0 - 0.3 * smoothstep(0.2, 0.7, abs(x)));
+			inner = mix(inner, tcol, teeth * 0.9);
+			if (!debug_mouth && mouth_lip.r > 0.0) {
+				// the lower lip, moved down with the opening, under it
+				float dl = bot - yl;
+				float lipk = smoothstep(-soft, soft, dl) * (1.0 - smoothstep(mouth_lip_h * 0.6, mouth_lip_h, dl))
+					* smoothstep(0.0, mouth_lip_h * 0.6, -bot) * prof;
+				vec3 lip_lit = to_srgb((to_linear(mouth_lip) * light * (1.0 - fr_env) + spec * spec_gain) * inside * gain);
+				ALBEDO = mix(ALBEDO, lip_lit, lipk * 0.9);
+			}
 			ALBEDO = mix(ALBEDO, debug_mouth ? vec3(0.0, 1.0, 0.0) : inner, debug_mouth ? k * 0.55 : k);
 			if (debug_mouth && abs(yl) < mouth_soft * 0.6) {
 				ALBEDO = vec3(1.0, 0.0, 0.0);   // the lip line itself
