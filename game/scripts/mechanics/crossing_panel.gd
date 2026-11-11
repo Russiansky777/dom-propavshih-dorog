@@ -32,8 +32,9 @@ const IRON_SHADER := "shader_type canvas_item;\nuniform vec2 origin;\nuniform ve
 ## alive — its ripples sway, and while the boat is hauled the water runs past towards us (and under the bow), faster near
 ## the boat than out by the far bank. A shader on the painting itself: inside the water (below the far shore's line,
 ## outside the boat's gunwales — data `water`) every pixel is sampled from a little further towards the vanishing point,
-## by the distance the boat has come (`water_flow`, px of the painting at the bottom edge); two copies a ripple's length
-## apart are blended so the shift never runs away (as the windlass's drum). The boat itself, the shores and the sky
+## by the distance the boat has come (`water_flow`, px of the painting at the bottom edge); two layers half a period
+## apart run on and are cross-faded so the shift never runs away (11.11: the first try blended two copies a period apart,
+## as the windlass's drum — fine for its repeating coils, but the water only pulsed in place: a time slice showed no flow). The boat itself, the shores and the sky
 ## stay as painted.
 const WATER_SHADER := "
 shader_type canvas_item;
@@ -62,11 +63,15 @@ void fragment() {
 		float depth = clamp((px.y - horizon) / (tex_size.y - horizon), 0.0, 1.0);
 		vec2 dir = normalize(px - vp);
 		float per = mix(5.0, period, depth);
-		float sh = mod(flow * mix(0.06, 1.0, depth), per);
+		// two layers half a period apart, each running on and coming back while the other covers it (a flow map's
+		// two phases): the water moves on all the time, nothing jumps
+		float ph = flow * mix(0.06, 1.0, depth) / per;
+		float f1 = fract(ph);
+		float f2 = fract(ph + 0.5);
 		float rip = (sin(px.y * 0.11 + t * 1.7) * 0.7 + sin(px.y * 0.037 - t * 1.1 + px.x * 0.013) * 0.5) * ripple * depth;
-		vec2 a = px - dir * sh + vec2(rip, 0.0);
-		vec2 b = px - dir * (sh - per) + vec2(rip, 0.0);
-		vec4 c = mix(water_at(a), water_at(b), sh / per);
+		vec2 a = px - dir * (f1 * per) + vec2(rip, 0.0);
+		vec2 b = px - dir * (f2 * per) + vec2(rip, 0.0);
+		vec4 c = mix(water_at(a), water_at(b), abs(1.0 - 2.0 * f1));
 		COLOR = mix(base, c, w);
 	} else {
 		COLOR = base;
