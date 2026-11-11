@@ -28,6 +28,55 @@ const ROPE_SHADER := "shader_type canvas_item;\nuniform vec2 vp;\nuniform vec2 d
 ## only (the plate and the eye round its hole) — not a frozen piece of rope.
 const IRON_SHADER := "shader_type canvas_item;\nuniform vec2 origin;\nuniform vec2 eye;\nuniform vec2 eye_r = vec2(40.0);\nuniform vec2 hole;\nuniform vec2 hole_r = vec2(20.0);\nuniform vec4 bracket;\nuniform sampler2D iron_mask;\nuniform bool use_mask = false;\nuniform vec2 tex_size = vec2(1920.0, 1080.0);\nvarying vec2 pos;\nvoid vertex() { pos = VERTEX; }\nvoid fragment() {\n\tvec2 p = origin + pos;\n\tvec2 e = (p - eye) / eye_r;\n\tvec2 h = (p - hole) / hole_r;\n\tbool ring_part = dot(e, e) < 1.0 && dot(h, h) >= 1.0;\n\tbool plate = p.x > bracket.x && p.x < bracket.x + bracket.z && p.y > bracket.y && p.y < bracket.y + bracket.w;\n\tbool iron = use_mask ? texture(iron_mask, p / tex_size).r > 0.5 : (ring_part || plate);\n\tvec4 c = texture(TEXTURE, UV);\n\tCOLOR = vec4(c.rgb, iron ? c.a : 0.0) * COLOR;\n}\n"
 
+## Director 10.11, 22:28 («допилить движение на лодке… может воду сделать живой, когда жмём»): the river round the boat is
+## alive — its ripples sway, and while the boat is hauled the water runs past towards us (and under the bow), faster near
+## the boat than out by the far bank. A shader on the painting itself: inside the water (below the far shore's line,
+## outside the boat's gunwales — data `water`) every pixel is sampled from a little further towards the vanishing point,
+## by the distance the boat has come (`water_flow`, px of the painting at the bottom edge); two copies a ripple's length
+## apart are blended so the shift never runs away (as the windlass's drum). The boat itself, the shores and the sky
+## stay as painted.
+const WATER_SHADER := "
+shader_type canvas_item;
+uniform vec2 tex_size = vec2(1672.0, 941.0);
+uniform vec2 vp = vec2(780.0, 382.0);
+uniform float horizon = 388.0;
+uniform vec2 tip = vec2(836.0, 545.0);
+uniform vec2 slopes = vec2(0.379, 0.415);
+uniform float flow = 0.0;
+uniform float t = 0.0;
+uniform float period = 90.0;
+uniform float ripple = 1.6;
+float boat_y(float x) {
+	return x < tip.x ? tip.y + (tip.x - x) * slopes.x : tip.y + (x - tip.x) * slopes.y;
+}
+vec4 water_at(vec2 q) {
+	q.y = min(q.y, boat_y(q.x) - 4.0);
+	q.y = max(q.y, horizon + 1.0);
+	return texture(TEXTURE, q / tex_size);
+}
+void fragment() {
+	vec2 px = UV * tex_size;
+	vec4 base = texture(TEXTURE, UV);
+	float w = smoothstep(horizon, horizon + 14.0, px.y) * (1.0 - smoothstep(boat_y(px.x) - 7.0, boat_y(px.x) + 1.0, px.y));
+	if (w > 0.001) {
+		float depth = clamp((px.y - horizon) / (tex_size.y - horizon), 0.0, 1.0);
+		vec2 dir = normalize(px - vp);
+		float per = mix(5.0, period, depth);
+		float sh = mod(flow * mix(0.06, 1.0, depth), per);
+		float rip = (sin(px.y * 0.11 + t * 1.7) * 0.7 + sin(px.y * 0.037 - t * 1.1 + px.x * 0.013) * 0.5) * ripple * depth;
+		vec2 a = px - dir * sh + vec2(rip, 0.0);
+		vec2 b = px - dir * (sh - per) + vec2(rip, 0.0);
+		vec4 c = mix(water_at(a), water_at(b), sh / per);
+		COLOR = mix(base, c, w);
+	} else {
+		COLOR = base;
+	}
+}
+"
+var water_mat: ShaderMaterial = null
+var water_flow: float = 0.0      # px of the painting the water has run past at the bottom edge
+var _prog_last: float = 0.0
+
 var k: float = 1.0
 var stage: Control = null        # everything that bobs with the boat
 var band: TextureRect = null
@@ -71,7 +120,22 @@ func build() -> void:
 	stage.gui_input.connect(_on_input)
 	add_child(stage)
 	var full := [0, 0, 1672, 941]
-	crop(String(art.get("bg", "")), full, Vector2.ZERO, k, stage).name = "Bg"
+	var bg_rect := crop(String(art.get("bg", "")), full, Vector2.ZERO, k, stage)
+	bg_rect.name = "Bg"
+	var wd: Dictionary = spec.get("water", {})
+	if not wd.is_empty():
+		water_mat = ShaderMaterial.new()
+		water_mat.shader = _shader(WATER_SHADER)
+		water_mat.set_shader_parameter("vp", v2(spec.get("vp", [780, 382])))
+		water_mat.set_shader_parameter("horizon", float(wd.get("horizon", 388.0)))
+		water_mat.set_shader_parameter("tip", v2(wd.get("bow_tip", [836, 545])))
+		var bl := v2(wd.get("bow_left", [0, 862]))
+		var br := v2(wd.get("bow_right", [1672, 892]))
+		var tp := v2(wd.get("bow_tip", [836, 545]))
+		water_mat.set_shader_parameter("slopes", Vector2((bl.y - tp.y) / maxf(tp.x - bl.x, 1.0), (br.y - tp.y) / maxf(br.x - tp.x, 1.0)))
+		water_mat.set_shader_parameter("period", float(wd.get("period_px", 90.0)))
+		water_mat.set_shader_parameter("ripple", float(wd.get("ripple_px", 1.6)))
+		bg_rect.material = water_mat
 	# The far shores: a band of the same painting zoomed on the vanishing point, soft at its edges.
 	var b: Array = spec.get("shore_band", [0, 150, 1672, 250])
 	band = crop(String(art.get("bg", "")), b, Vector2(float(b[0]), float(b[1])) * k, k, stage)
@@ -245,6 +309,13 @@ func tick(delta: float) -> void:
 	progress = lerpf(progress, _target_progress(), clampf(delta * 10.0, 0.0, 1.0))
 	if absf(progress - _target_progress()) < 0.0005:
 		progress = _target_progress()
+	if water_mat != null:
+		# the water runs past as the boat comes on (px at the bottom edge per whole crossing), a slow drift always
+		var wd: Dictionary = spec.get("water", {})
+		water_flow += maxf(progress - _prog_last, 0.0) * float(wd.get("flow_px", 2600.0)) + delta * float(wd.get("drift_px_s", 4.0))
+		_prog_last = progress
+		water_mat.set_shader_parameter("flow", water_flow)
+		water_mat.set_shader_parameter("t", clock)
 	rope_mat.set_shader_parameter("phase", rope_phase)
 	# The boat: a slow bob on the water, a surge and a dip of the bow with each pull.
 	_jolt = maxf(_jolt - delta * 2.2, 0.0)
@@ -324,7 +395,8 @@ func _input(ev: InputEvent) -> void:
 
 func probe() -> Dictionary:
 	return {"auto": bool(spec.get("auto", false)), "pulls": pulls, "pulls_total": pulls_total, "pulling": pulling, "progress": progress, "rope_phase": rope_phase,
-		"band_scale": band.scale.x, "fog": float(fog_mat.get_shader_parameter("density")), "snow": snow.ratio,
+		"band_scale": band.scale.x, "fog": float(fog_mat.get_shader_parameter("density")), "snow": snow.ratio, "water_flow": water_flow,
+		"water": water_mat != null,
 		"pier_w": pier.size.x if pier != null else 0.0, "arrival": arrival.modulate.a, "crossed": crossed_sent,
 		"rope": {"x": _ring.x + 140.0, "y": _ring.y + 120.0}, "center": {"x": 960.0, "y": 640.0}}
 

@@ -66,6 +66,10 @@ extends SceneTree
 ##       measured by the door's leaf (y 163–668, 505 px), not with the lintel board above it (550): Pavel in the doorway
 ##       where M13 takes him is lower than the leaf, Agata at the threshold 0.85–0.95 of it. Self-check — the old depth
 ##       (1.504 … 2.826) makes Pavel taller than the door.
+##   R-19 (Director 10.11, 22:15: «рычаг не снимает в конторе — добавить анимацию»; 23:40: «хотя бы тянуться может в ту
+##       сторону тогда»): at M13's end Agata takes the clamp from the desk with her reach, then walks along the back wall as
+##       near the lever as the floor goes (≤ x 860) and reaches towards it, turned left; the lever leaves the wall as she
+##       reaches — before the scene gives the things to the bag. Self-check — before that the lever is on the wall.
 ## Exit code 0 only when every check passed.
 
 var _results: Array = []
@@ -139,6 +143,7 @@ func _run() -> void:
 	await _test("R-16 an item dragged from the bag onto the school door is used there, onto empty floor goes back; a press is still a click; self-check — 5 px is a click", _test_drag_item)
 	await _test("R-17 after the council the people stay in the mill yard where the frame had them, Agata too; not clicked; gone once she leaves; self-check — none before the council", _test_council_stays)
 	await _test("R-18 the office: Pavel in the doorway is lower than the door's leaf, Agata at the threshold 0.85–0.95 of it; self-check — the old depth makes him taller", _test_pavel_door)
+	await _test("R-19 the office lever: Agata goes as near as the floor lets her and reaches to it, the lever leaves the wall with her reach; self-check — on the wall before", _test_lever_reach)
 	await _test("R-14 the lane after the post office: the arrow down flickers after 10 s with no click; a click resets it; not once the street was seen; self-check — no data, no flicker", _test_idle_nudge)
 	gs.reset()
 	if main_node != null and is_instance_valid(main_node):
@@ -927,7 +932,7 @@ func _tie_and_watch(keep: bool) -> Array:
 	while g < 3000:
 		await process_frame
 		g += 1
-		t += panel.get_process_delta_time()
+		t += sr.get_process_delta_time()   # the panel itself is freed when the close-up goes away
 		var dim := float(sr.get("stage_dim"))
 		darkest = maxf(darkest, dim)
 		if black_at < 0.0 and dim > 0.1:
@@ -1118,4 +1123,34 @@ func _test_pavel_door() -> void:
 	# self-check: the depth as it was (1.504 at y 690 … 2.826 at y 1070) — Pavel taller than the door
 	var old_s := 1.504 + (to.y - 690.0) / 380.0 * (2.826 - 1.504)
 	_check(maxf(old_s, 1.504) * per > leaf, "self-check: the old depth gives Pavel %.0f px — taller than the leaf, the test tells" % (maxf(old_s, 1.504) * per))
+
+
+func _test_lever_reach() -> void:
+	_flags_before("M13")
+	await _enter("M3")
+	await _read_out("")
+	var lever: CanvasItem = rm.current_room.get_node_or_null("Layers/sluice_lever")
+	_check(lever != null and lever.visible, "self-check: the lever on the wall before M13's end")
+	sr.start_scene("M13")
+	var at_reach := Vector2.INF
+	var bag_then := true
+	var g := 0
+	while g < 6000:
+		g += 1
+		await physics_frame
+		if at_reach == Vector2.INF and gs.has_flag("m13_lever_reached"):
+			at_reach = player.global_position
+			bag_then = gs.has_item("key_sluice")
+		var b: Dictionary = sr.current_beat
+		if not b.is_empty() and not bool(sr.call("is_staging")):
+			if String(b.get("type", "")) == "options":
+				sr.choose(String(b["options"][0]["id"]))
+			else:
+				sr.advance()
+		elif b.is_empty() and not bool(sr.call("is_staging")) and gs.has_flag("done_M13") and not bool(player.call("is_acting")) and not bool(player.call("is_walking")):
+			break
+	_check(at_reach != Vector2.INF, "the lever is reached at M13's end (m13_lever_reached)")
+	_check(at_reach.x <= 860.0 and at_reach.y <= 715.0, "she reaches from as near as the floor lets her: %s (≤ x 860 along the back wall)" % str(at_reach.round()))
+	_check(not bag_then, "the lever leaves the wall with her reach, before the bag gets it")
+	_check(lever != null and is_instance_valid(lever) and not lever.visible and gs.has_item("key_sluice"), "after the scene: the wall empty, the lever in the bag")
 

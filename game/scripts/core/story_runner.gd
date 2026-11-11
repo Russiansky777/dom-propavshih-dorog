@@ -839,11 +839,23 @@ func _stage_agata_go(ag: Dictionary) -> void:
 	var keep: float = float(pl.get("speed_factor"))
 	pl.set("speed_factor", keep * float(ag.get("run", 1.0)))
 	pl.call("perform_at", Vector2(float(to[0]), float(to[1])), Vector2(float(fc[0]), float(fc[1])), String(ag.get("action", "")))
+	# 11.11 (Director 10.11, 22:15 «рычаг не снимает в конторе — добавить анимацию»; 23:40 «хотя бы тянуться может в ту
+	# сторону»): `sets` [flags] — set when her action is `sets_at` (share, default 0.5) through: the thing goes from its
+	# place as her hand reaches it (a layer `unless` that flag), not at the scene's end
+	var sets: Array = ag.get("sets", [])
+	var share := float(ag.get("sets_at", 0.5))
 	var t := 0.0
 	while t < 8.0 and (bool(pl.call("is_walking")) or bool(pl.call("is_acting"))):
 		await get_tree().process_frame
 		if not get_tree().paused:   # ревью 01.11 (В-14): a pause does not use up her eight seconds
 			t += get_process_delta_time()
+		if not sets.is_empty() and bool(pl.call("is_acting")) and not bool(pl.call("is_walking")) \
+				and float(pl.get("_act_t")) >= share * maxf(float(pl.get("_act_len")), 0.01):
+			for f in sets:
+				GameState.set_flag(String(f), true)
+			sets = []
+	for f in sets:   # no action, or it ended before the share (sheets, web)
+		GameState.set_flag(String(f), true)
 	pl.set("speed_factor", keep)
 
 

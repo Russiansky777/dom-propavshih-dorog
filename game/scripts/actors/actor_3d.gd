@@ -879,6 +879,9 @@ func _setup_stance_tone() -> void:
 	stance_tone.spread_add_deg = float(st.get("spread_add_deg", 0.0))
 	stance_tone.spread_min_deg = float(st.get("spread_min_deg", -90.0))
 	stance_tone.spread_max_deg = float(st.get("spread_max_deg", 90.0))
+	stance_tone.chest_up_deg = float(st.get("chest_up_deg", 0.0))
+	stance_tone.chest_bone = skeleton.find_bone(String(st.get("chest_bone", "Spine02")))
+	stance_tone.neck_bone = skeleton.find_bone("neck")
 	stance_tone.to_model = _skel_to_model().basis.orthonormalized()
 	for side in ["Left", "Right"]:
 		stance_tone.shoulder_bones.append(skeleton.find_bone(side + "Shoulder"))

@@ -26,6 +26,12 @@ var shoulder_drop_deg: float = 0.0
 var spread_add_deg: float = 0.0
 var spread_min_deg: float = -90.0
 var spread_max_deg: float = 90.0
+## Director 10.11, 22:15 («Павел… чуть сутулый»): standing, the upper chest straightens back by `chest_up_deg` (about
+## the body's side axis, at the chest bone), the neck turns the same amount forward so the head keeps where it looked;
+## the arms are set after it. 0 — as the clip has it.
+var chest_bone: int = -1
+var neck_bone: int = -1
+var chest_up_deg: float = 0.0
 
 
 ## How much an upper arm hangs (0..1) from its direction in model space: fully within ~35° of straight down, not at
@@ -42,6 +48,15 @@ func _process_modification() -> void:
 	var inv := to_model.inverse()
 	var ax_fwd := (inv * Vector3(0, 0, 1)).normalized()
 	var ax_side := (inv * Vector3(1, 0, 0)).normalized()
+	if chest_bone >= 0 and absf(chest_up_deg) > 0.01:
+		# + chest_up_deg: the chest goes back (its top away from the front), the head is turned back as it was
+		var gc: Transform3D = sk.get_bone_global_pose(chest_bone)
+		var head_before: Basis = sk.get_bone_global_pose(neck_bone).basis if neck_bone >= 0 else Basis.IDENTITY
+		var qc := Quaternion(ax_side, -deg_to_rad(chest_up_deg) * w)
+		sk.set_bone_global_pose(chest_bone, Transform3D(Basis(qc) * gc.basis, gc.origin))
+		if neck_bone >= 0:
+			var gn: Transform3D = sk.get_bone_global_pose(neck_bone)
+			sk.set_bone_global_pose(neck_bone, Transform3D(head_before, gn.origin))
 	for i in 2:
 		var sgn := 1.0 if i == 0 else -1.0
 		var a: int = arm_bones[i]

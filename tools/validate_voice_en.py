@@ -76,7 +76,10 @@ def main() -> int:
     errors: list[str] = []
     warns: list[str] = []
     for lid, e in sorted(man.items()):
-        if "stale" in e:
+        # 11.11 (run 42924844288): a line shortened for the game the pipeline marks stale against its full recording —
+        # the game's copy plays it trimmed (voice_trim.py lifts the mark); checked below as a trimmed line
+        trimmed_stale = "stale" in e and str(e["stale"]).startswith("текст изменён") and ("en/" + str(e.get("file", ""))) in TRIMS
+        if "stale" in e and not trimmed_stale:
             warns.append(f"{lid}: stale ({e['stale']}) — игра не играет, нужна перезапись")
             continue
         cur = lines.get(lid)

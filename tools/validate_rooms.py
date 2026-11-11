@@ -885,6 +885,51 @@ def check_res_path(ctx: str, res: str) -> None:
         err(f"{ctx}: файла {res} нет в game/")
 
 
+FIGURE_PX = 337.0   # ActorSheet.figure_height_px (NpcActor: figure_h / это = масштаб фигуры)
+
+
+def frame_scale_problems(frame: dict, all_rooms: dict) -> list:
+    """11.11 (Директор 10.11, 22:47 / 01:11): кадр поверх той же картины, что комната (`scale_of_room`), — его люди
+    ростом той комнаты на своих местах (± 3 %): после кадра они остаются в комнате и не «вырастают»."""
+    rid = frame.get("scale_of_room")
+    if not rid:
+        return []
+    room = all_rooms.get(rid)
+    if room is None:
+        return [f"scale_of_room {rid}: нет такой комнаты"]
+    if room.get("background", {}).get("image") != frame.get("background", {}).get("image"):
+        return [f"scale_of_room {rid}: у кадра другая картина — масштаб комнаты к нему не относится"]
+    d = room.get("depth", {})
+    span = float(d.get("bottom_y", 1)) - float(d.get("top_y", 0))
+    out = []
+    for h in frame.get("hotspots", []):
+        if h.get("kind") != "npc" or not isinstance(h.get("feet"), list) or not h.get("figure_h"):
+            continue
+        y = float(h["feet"][1])
+        sc = float(d["scale_top"]) + (float(d["scale_bottom"]) - float(d["scale_top"])) * (y - float(d["top_y"])) / span
+        ap = ROOT / "game" / "data" / "actors" / f"{h.get('id')}.json"
+        fac = float((load(ap) or {}).get("npc", {}).get("scale_factor", 1.0)) if ap.is_file() and h.get("id") != "agata" else 1.0
+        want = sc * fac * FIGURE_PX
+        if abs(float(h["figure_h"]) - want) > 0.03 * want:
+            out.append(f"{h.get('id')}: рост в кадре {h['figure_h']} px, а в комнате {rid} на этом месте (ноги y {y:.0f}) — {want:.0f}: "
+                       f"после кадра он «вырастет» или «сожмётся»; figure_h ≈ {want:.0f}")
+    return out
+
+
+def _frame_scale_selfcheck() -> None:
+    """Прежний рост людей совета (Павел 235 px у y 660 при глубине двора M1) — ошибка; рост двора — нет."""
+    room = {"background": {"image": "x"}, "depth": {"top_y": 450, "bottom_y": 1070, "scale_top": 0.199, "scale_bottom": 1.963}}
+    fr = {"scale_of_room": "R", "background": {"image": "x"}, "hotspots": [{"id": "agata", "kind": "npc", "feet": [1298, 735], "figure_h": 241}]}
+    if not frame_scale_problems(fr, {"R": room}):
+        err("validate_rooms 12б: самопроверка не сработала — прежний рост Агаты в кадре совета (241 px) прошёл бы")
+    fr["hotspots"][0]["figure_h"] = 340
+    if frame_scale_problems(fr, {"R": room}):
+        err("validate_rooms 12б: самопроверка — рост двора (340 px) не прошёл")
+
+
+_frame_scale_selfcheck()
+
+
 for rid, room in rooms.items():
     ctx = rid
     # 12. кадр (блоки 3–4, "frame": true): картина поверх мира для FrameView — не локация, без ходьбы, хотспотов и
@@ -898,6 +943,8 @@ for rid, room in rooms.items():
                 err(f"{ctx}.{h.get('id')}: в кадре — только живые фигуры: kind npc, draw false, feet [x, y], figure_h")
             elif not (ROOT / "game" / "data" / "actors" / f"{h.get('id')}.json").is_file():
                 err(f"{ctx}.{h.get('id')}: фигуре кадра нужен game/data/actors/{h.get('id')}.json")
+        for prob in frame_scale_problems(room, rooms):
+            err(f"{ctx}: {prob}")
         if room.get("exits"):
             err(f"{ctx}: у кадра нет выходов")
         if not room.get("player_hidden"):
