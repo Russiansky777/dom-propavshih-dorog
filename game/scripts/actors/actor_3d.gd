@@ -229,6 +229,11 @@ func _copy_animation_libraries() -> void:
 ## (the villagers': bone names alike) taken into this figure's player as `as` (library "borrow"); only rotation tracks of
 ## bones this skeleton has (the hips' travel and other proportions stay the figure's own — a gesture is laid over the
 ## stance from the waist up anyway). Tracks are re-pointed to this skeleton's node.
+## Built borrowed clips by «this figure's model | from | clip | as»: a villager is built anew in every room — the other
+## models are loaded and taken apart once per game, not on each room change.
+static var _borrowed := {}
+
+
 func _borrow_clips() -> void:
 	var list: Array = spec.get("borrow_clips", [])
 	if list.is_empty():
@@ -239,6 +244,11 @@ func _borrow_clips() -> void:
 	var cache := {}
 	for e in list:
 		var path := String(e.get("from", ""))
+		var bkey := "%s|%s|%s|%s|%s" % [String(spec.get("scene", "")), path, String(e.get("clip", "")), String(e.get("as", "")), skel_path]
+		if _borrowed.has(bkey):
+			# a copy: the arms' rest curves and the calming are written into each figure's own clips (ArmRest.apply)
+			lib.add_animation(String(e.get("as", e.get("clip", ""))), (_borrowed[bkey] as Animation).duplicate(true))
+			continue
 		if not ResourceLoader.exists(path):
 			continue
 		if not cache.has(path):
@@ -287,6 +297,7 @@ func _borrow_clips() -> void:
 		# everything else (hips' travel, legs, skirt) from this figure's own stance clip, looped over the gesture's
 		# length: the mixer blends a track a clip lacks towards the rest pose (deterministic), the legs would sag
 		_fill_from_own(a, taken, String(spec.get("clips", {}).get("idle", "")))
+		_borrowed[bkey] = a.duplicate(true)
 		lib.add_animation(String(e.get("as", e.get("clip", ""))), a)
 	for n in cache.values():
 		(n as Node).free()

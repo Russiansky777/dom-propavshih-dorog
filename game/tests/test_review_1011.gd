@@ -1372,6 +1372,11 @@ func _test_talk_variety() -> void:
 	_check(vn["kinds"] >= 2, "Nina: two or more talk clips over six lines (%d) %s" % [vn["kinds"], str(nn)])
 	var one_n: Array = await _nina_talks(["talk"])
 	_check(_variety(one_n)["repeats"] >= 4, "self-check: Nina with a pool of one repeats — the check sees it %s" % str(one_n))
+	# borrowed clips are built once per game and copied to each figure (Actor3D._borrowed): a second Nina's arm in the
+	# borrowed clip is the same as the first one's — the rest curves written into a figure's clips are not laid twice
+	var q1: Quaternion = await _borrowed_arm("talk_chest")
+	var q2: Quaternion = await _borrowed_arm("talk_chest")
+	_check(q1 != Quaternion.IDENTITY and q1.angle_to(q2) < 0.001, "a second Nina's borrowed clip is the first one's (%.4f rad apart)" % q1.angle_to(q2))
 
 
 # --- R-23: Agata's mouth -----------------------------------------------------------------------
@@ -1419,3 +1424,20 @@ func _test_agata_mouth() -> void:
 	jm.set("level_override", NAN)
 	_check(o1 > 0.5, "speaking, the mouth opens (%.2f)" % o1)
 	_check(o0 < 0.02, "silent, it closes (%.2f)" % o0)
+
+
+## Nina built anew: her LeftArm in the borrowed clip `role` at 1 s, as her player has it after setup (rest curves in).
+func _borrowed_arm(role: String) -> Quaternion:
+	var spec = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/nina.json"))
+	var n := _fake_villager()
+	var live = load("res://scripts/actors/npc_live_3d.gd").new()
+	n.add_child(live)
+	var q := Quaternion.IDENTITY
+	if live.setup(n, spec, 0.55) and live.view.clips.has(role):
+		var a: Animation = live.view.anim.get_animation(live.view.clips[role])
+		for t in a.get_track_count():
+			if a.track_get_type(t) == Animation.TYPE_ROTATION_3D and String(a.track_get_path(t).get_concatenated_subnames()) == "LeftArm":
+				q = a.rotation_track_interpolate(t, 1.0)
+	n.queue_free()
+	await _frames(2)
+	return q

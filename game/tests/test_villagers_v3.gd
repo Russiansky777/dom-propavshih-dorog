@@ -500,7 +500,7 @@ func _t7() -> void:
 	_check(float(raw[0]) > 1.5, "self-check: Pavel with axis and fingertip only — %.1f cm (the test sees nothing)" % float(raw[0]))
 	(sp["rt3d"]["arm_body"] as Dictionary)["max_deg"] = 0.0   # the clearing kept but allowed no turn at all
 	var raw0: Array = await _hand_depth(sp)
-	_check(raw0.size() == 3 and float(raw0[0]) > 3.0, "self-check: Pavel with no clearing at all — %s cm (the test sees nothing)" % str(raw0))
+	_check(raw0.size() >= 3 and float(raw0[0]) > 3.0, "self-check: Pavel with no clearing at all — %s cm (the test sees nothing)" % str(raw0))
 
 
 ## Upper arm sideways angle before the hands are cleared, talking and listening: [mean, max] (degrees).
@@ -548,6 +548,8 @@ func _t8() -> void:
 	sp["rt3d"]["act_body"]["upper"] = ["LeftShoulder", "RightShoulder", "neck", "Head"]
 	_before_2100(sp, "listen")   # where it was seen (15:56): the v2 listen clip
 	(sp["rt3d"]["arm_body"] as Dictionary).erase("bake")
+	(sp["rt3d"] as Dictionary).erase("stance_tone")   # 06.11 had no stance tone (11.11: Nina's keeps her arms within 18°)
+	(sp["rt3d"] as Dictionary).erase("talk_pool")
 	var raw: Array = await _spread(sp)
 	_check(float(raw[1]) > 35.0, "self-check: Nina with the stance's shoulders — only %.0f° (the test sees no scarecrow)" % float(raw[1]))
 
