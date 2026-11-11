@@ -50,10 +50,11 @@ uniform float ripple = 1.6;
 float boat_y(float x) {
 	return x < tip.x ? tip.y + (tip.x - x) * slopes.x : tip.y + (x - tip.x) * slopes.y;
 }
-vec4 water_at(vec2 q) {
+// where a sample may be taken: inside the water (TEXTURE itself is read in fragment() only — a helper does not see it)
+vec2 water_uv(vec2 q) {
 	q.y = min(q.y, boat_y(q.x) - 4.0);
 	q.y = max(q.y, horizon + 1.0);
-	return texture(TEXTURE, q / tex_size);
+	return q / tex_size;
 }
 void fragment() {
 	vec2 px = UV * tex_size;
@@ -71,7 +72,7 @@ void fragment() {
 		float rip = (sin(px.y * 0.11 + t * 1.7) * 0.7 + sin(px.y * 0.037 - t * 1.1 + px.x * 0.013) * 0.5) * ripple * depth;
 		vec2 a = px - dir * (f1 * per) + vec2(rip, 0.0);
 		vec2 b = px - dir * (f2 * per) + vec2(rip, 0.0);
-		vec4 c = mix(water_at(a), water_at(b), abs(1.0 - 2.0 * f1));
+		vec4 c = mix(texture(TEXTURE, water_uv(a)), texture(TEXTURE, water_uv(b)), abs(1.0 - 2.0 * f1));
 		COLOR = mix(base, c, w);
 	} else {
 		COLOR = base;

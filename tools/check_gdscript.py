@@ -13,6 +13,10 @@ shade / draw_rail объявлены дважды, класс CarvedFrame не �
   - метод скрипта с именем метода движка его класса (11.11: is_pickable() в story_hotspot.gd — Area2D уже его имеет;
     Godot: «overrides a method from native class», предупреждение = ошибка, файл не компилируется, а с ним и вся игра).
     Имена методов движка — tools/godot_native_methods.json (из godot --dump-extension-api); самопроверка — тот случай.
+  - шейдер (строка «shader_type …» в .gd или файл .gdshader), где вспомогательная функция берёт встроенное имя стадии
+    (TEXTURE, UV, COLOR, SCREEN_UV, FRAGCOORD, VERTEX…): Godot видит их только в fragment()/vertex()/light() — «Unknown
+    identifier», шейдер не собирается, слой рисуется как есть без ошибки в тестах без экрана (11.11: вода переправы,
+    water_at() в crossing_panel.gd). Самопроверка — тот случай.
 Код 0 — чисто; 1 — ошибки (печатает файл:строка). Запуск: python3 tools/check_gdscript.py [--quiet]"""
 import re
 import sys
@@ -92,6 +96,59 @@ def native_overrides(files) -> list:
                 errs.append(f"{f.relative_to(ROOT)}:{n}: метод «{fm.group(1)}» — так уже называется метод движка у {m.group(1)}: "
                             f"Godot не скомпилирует файл (overrides a method from native class); назовите иначе")
     return errs
+
+
+STAGE_BUILTINS = ("TEXTURE", "UV", "COLOR", "SCREEN_UV", "FRAGCOORD", "VERTEX", "TEXTURE_PIXEL_SIZE", "SCREEN_PIXEL_SIZE",
+                  "NORMAL", "NORMAL_MAP", "ALBEDO", "ALPHA", "EMISSION", "ROUGHNESS", "VIEW", "POINT_COORD")
+STAGES = {"fragment", "vertex", "light", "start", "process", "sky"}
+SHADER_FN = re.compile(r"^\s*(?:\w+\s+)+?(\w+)\s*\(([^)]*)\)\s*\{", re.M)
+
+
+def shader_stage_problems(code: str, where: str) -> list:
+    """Helper functions of one shader that name a stage's built-in."""
+    out = []
+    for m in SHADER_FN.finditer(code):
+        name = m.group(1)
+        if name in STAGES or name in ("if", "for", "while", "switch"):
+            continue
+        depth, i = 1, m.end()
+        while i < len(code) and depth > 0:
+            depth += {"{": 1, "}": -1}.get(code[i], 0)
+            i += 1
+        body = re.sub(r"//[^\n]*", "", code[m.end():i])
+        for b in STAGE_BUILTINS:
+            if re.search(r"(?<![\w.])%s(?!\w)" % b, body):
+                out.append(f"{where}: шейдер, функция {name}() берёт {b} — оно есть только в fragment()/vertex()/light(); "
+                           f"шейдер не соберётся. Передайте значение аргументом или читайте в fragment()")
+    return out
+
+
+def shader_problems(files) -> list:
+    errors = []
+    for f in files:
+        text = f.read_text(encoding="utf-8", errors="replace")
+        if f.suffix == ".gdshader":
+            errors += shader_stage_problems(text, str(f.relative_to(ROOT)))
+            continue
+        for m in re.finditer(r'"((?:\\.|[^"\\])*)"', text):
+            body = m.group(1)
+            if "shader_type" not in body:
+                continue
+            code = body.replace("\\n", "\n").replace("\\t", "\t").replace('\\"', '"')
+            line = text.count("\n", 0, m.start()) + 1
+            errors += shader_stage_problems(code, f"{f.relative_to(ROOT)}:{line}")
+    return errors
+
+
+def _shader_selfcheck() -> list:
+    """The defect of 11.11 must be caught: TEXTURE read in a helper; the same read in fragment() is fine."""
+    bad = "shader_type canvas_item;\nvec4 water_at(vec2 q) {\n\treturn texture(TEXTURE, q);\n}\nvoid fragment() { COLOR = water_at(UV); }\n"
+    good = "shader_type canvas_item;\nvec2 water_uv(vec2 q) {\n\treturn q * 0.5;\n}\nvoid fragment() { COLOR = texture(TEXTURE, water_uv(UV)); }\n"
+    a = shader_stage_problems(bad, "probe")
+    b = shader_stage_problems(good, "probe")
+    if len(a) != 1 or "water_at" not in a[0] or b:
+        return [f"самопроверка шейдеров: TEXTURE во вспомогательной функции не пойман или пойман лишний: {a} {b}"]
+    return []
 
 
 def _native_selfcheck() -> list:
@@ -177,6 +234,8 @@ def main() -> int:
                     break
     errors += native_overrides(files)
     errors += _native_selfcheck()
+    errors += shader_problems(files + sorted(p for p in ROOT.rglob("*.gdshader") if "/.godot/" not in str(p) and "/addons/" not in str(p)))
+    errors += _shader_selfcheck()
     for name, where in classes.items():
         if len(where) > 1:
             errors.append(f"class_name {name} в нескольких файлах: {', '.join(where)}")
