@@ -1449,8 +1449,9 @@ func _test_agata_mouth_body() -> void:
 		"her lower lip is drawn in her lips' colour %s (shader has %s)" % [str(lc), str(lip)])
 	_check(mat != null and float(mat.get_shader_parameter("mouth_lip_h")) > 0.0 and float(mat.get_shader_parameter("mouth_teeth_h")) > 0.0,
 		"the lower lip's band and the teeth have a height")
-	var dflt = RenderingServer.shader_get_parameter_default(mat.shader.get_rid(), "mouth_lip") if mat != null and mat.shader != null else null
-	_check(dflt is Color and (dflt as Color).r == 0.0, "self-check: without lip_color no band is drawn (shader default %s)" % str(dflt))
+	_check(_mouth_lip_default_off(mat), "without lip_color no band is drawn (the shader's mouth_lip default is black)")
+	_check(_lip_default_in_code("uniform vec3 mouth_lip : source_color = vec3(0.9, 0.5, 0.4);") == 0 and _lip_default_in_code("uniform vec3 mouth_lip : source_color = vec3(0.0);") == 1,
+		"self-check: the shader text reading tells a coloured default from a black one")
 	jm.set("speaking_override", 1)
 	jm.set("level_override", -14.0)
 	await _frames(30)
@@ -1462,6 +1463,29 @@ func _test_agata_mouth_body() -> void:
 	jm.set("level_override", NAN)
 	_check(o1 > 0.5, "speaking, the mouth opens (%.2f)" % o1)
 	_check(o0 < 0.02, "silent, it closes (%.2f)" % o0)
+
+
+## The shader's own default of `mouth_lip` is black (no lower-lip band without data). Headless the rendering server gives
+## no defaults (CI 43037351029: <null>) — then it is read from the shader's text.
+static func _mouth_lip_default_off(mat: ShaderMaterial) -> bool:
+	if mat == null or mat.shader == null:
+		return false
+	var dflt = RenderingServer.shader_get_parameter_default(mat.shader.get_rid(), "mouth_lip")
+	if dflt is Color:
+		return (dflt as Color).r == 0.0 and (dflt as Color).g == 0.0 and (dflt as Color).b == 0.0
+	return _lip_default_in_code(mat.shader.code) == 1
+
+
+## `uniform vec3 mouth_lip … = vec3(…)` in a shader's text: 1 — black, 0 — some colour, −1 — not there.
+static func _lip_default_in_code(code: String) -> int:
+	var re := RegEx.create_from_string("uniform\\s+vec3\\s+mouth_lip\\s*:[^=;]*=\\s*vec3\\(([^)]*)\\)")
+	var m := re.search(code)
+	if m == null:
+		return -1
+	for c in m.get_string(1).split(","):
+		if absf(float(c.strip_edges())) > 0.0:
+			return 0
+	return 1
 
 
 ## Nina built anew: her LeftArm in the borrowed clip `role` at 1 s, as her player has it after setup (rest curves in).
