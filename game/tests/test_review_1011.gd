@@ -89,6 +89,10 @@ extends SceneTree
 ##   R-24 (Director 11.11, 12:02: «убрать дергание рук у Нины в спокойном»): every clip of a villager's talk pool moves the
 ##       hand without stops of a frame or two mid-gesture (a frame under a quarter of its neighbours' speed while they
 ##       move > 0,6 mm a frame). Self-check — the key-index smoothing (σ 5) on the borrowed calm clip stalls it.
+##   R-25 (Director 11.11, 14:31: «Митя разворачивается от Агаты в момент диалога» — the far pier): the free day, Agata
+##       clicks Mitya on the jetty; he says his word, she asks «Митя, а ты рыбу удишь?» — while her line is up he still
+##       faces her, not the water (a click-talk with a villager is his conversation: StoryRunner.talk_with). Self-check —
+##       the talk partner dropped, he turns to the water.
 ## Exit code 0 only when every check passed.
 
 var _results: Array = []
@@ -168,6 +172,7 @@ func _run() -> void:
 	await _test("R-22 talking: Agata's gestures and Nina's talk clips change from line to line, never twice running; self-check — a pool of one repeats", _test_talk_variety)
 	await _test("R-23 Agata's painted mouth sits on her lips and opens with her voice; self-check — Nina's line is off her lips", _test_agata_mouth)
 	await _test("R-24 talk clips without stalls: the hand never stops for a frame or two mid-gesture; self-check — smoothing the borrowed clip does", _test_talk_stalls)
+	await _test("R-25 the far pier, the free day: Mitya keeps facing Agata while she asks him about fishing; self-check — without the talk partner he turns to the water", _test_talk_listens)
 	await _test("R-14 the lane after the post office: the arrow down flickers after 10 s with no click; a click resets it; not once the street was seen; self-check — no data, no flicker", _test_idle_nudge)
 	gs.reset()
 	if main_node != null and is_instance_valid(main_node):
@@ -1540,3 +1545,65 @@ func _test_talk_stalls() -> void:
 		_check(st == 0, "Nina, «%s»: the hand stops mid-gesture %d times in 10 s (0)" % [role, st])
 	var raw: int = await _talk_stalls("talk_calm", 5.0)
 	_check(raw > 0, "self-check: the calm clip smoothed by key index (σ 5) stalls — %d" % raw)
+
+
+# --- R-25: a click-talk keeps the villager listening ---------------------------------------------
+
+func _test_talk_listens() -> void:
+	var water := Vector2.INF
+	var h_data: Dictionary = {}
+	for hd in JSON.parse_string(FileAccess.get_file_as_string("res://data/story/rooms/R3.json")).get("hotspots", []):
+		if String(hd.get("id", "")) == "mitya":
+			h_data = hd
+	for st in h_data.get("states", []):
+		if (st.get("if", []) as Array).has("done_M22") and st.get("face") is Array:
+			water = Vector2(float(st["face"][0]), float(st["face"][1]))
+	_check(water != Vector2.INF, "R3 data: Mitya on the jetty looks at the water %s when not talking" % str(water))
+	var r: Array = await _mitya_on_agata_line(false)
+	if r.is_empty():
+		return
+	_check(r[0].distance_to(water) >= 2.0 and r[0].distance_to(r[1]) < 6.0,
+		"at «Митя, а ты рыбу удишь?» Mitya faces Agata %s (last turned to %s; the water %s)" % [str(r[1]), str(r[0]), str(water)])
+	var old: Array = await _mitya_on_agata_line(true)
+	_check(not old.is_empty() and old[0].distance_to(water) < 2.0, "self-check: without the talk partner he turns to the water (%s) — the test tells the two apart" % (str(old[0]) if not old.is_empty() else "—"))
+
+
+## The free day on the far pier: Agata clicks Mitya, picks «Порыбачим?»; at her line — [where he last turned to, where
+## Agata stands]. `old` — StoryRunner.talk_with dropped at her line (as before 11.11). [] — he is not there.
+func _mitya_on_agata_line(old: bool) -> Array:
+	_flags_before("M24")
+	gs.set_flag("o4_mitya_fish", false)
+	await _enter("R3")
+	await _read_out("")
+	var mi: Node = rm.current_room.get_node_or_null("npc_mitya")
+	var h: Node = rm.current_room.get_node_or_null("Hotspots/mitya")
+	if mi == null or h == null or not (mi as CanvasItem).visible or not bool(h.call("is_active")):
+		_check(false, "Mitya on the jetty on the free day (figure %s, hotspot %s)" % [str(mi != null), str(h != null)])
+		return []
+	sr.interact(h)
+	var out: Array = []
+	var g := 0
+	while g < 2000 and out.is_empty():
+		g += 1
+		await physics_frame
+		var b: Dictionary = sr.current_beat
+		if b.is_empty() or bool(sr.call("is_staging")):
+			continue
+		if b.get("type") == "options":
+			sr.choose("fish")
+			continue
+		if String(b.get("speaker", "")) == "agata" and String(b.get("text", "")).contains("рыбу удишь"):
+			if old:
+				sr.talk_with = ""
+			await _frames(30)
+			out = [mi.get("last_face_target"), player.global_position]
+			break
+		await _frames(10)
+		sr.advance()
+	if out.is_empty():
+		_check(false, "Agata's «Митя, а ты рыбу удишь?» came (beats seen %d)" % g)
+	gs.reset()
+	sr.call("_on_state_reset")
+	await _frames(5)
+	return out
+

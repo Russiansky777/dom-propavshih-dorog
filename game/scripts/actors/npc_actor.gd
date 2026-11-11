@@ -459,9 +459,15 @@ func wanted_state() -> String:
 	var said := _being_said(b)
 	if is_line and String(b.get("speaker", "")) == actor_id:
 		return "talk" if said else "quiet"
-	if not b.is_empty() and in_active_scene():
+	if not b.is_empty() and (in_active_scene() or in_talk()):
 		return "listen" if said else "quiet"
 	return "idle"
+
+
+## 11.11: Agata clicked this villager and they are talking (StoryRunner.talk_with) — no scene, the same listening.
+func in_talk() -> bool:
+	var w := String(StoryRunner.talk_with)
+	return w != "" and (w == actor_id or (hotspot != null and is_instance_valid(hotspot) and hotspot.hotspot_id == w))
 
 
 func _being_said(b: Dictionary) -> bool:

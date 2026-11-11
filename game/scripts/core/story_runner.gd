@@ -68,6 +68,12 @@ const LOOP_FADE_SECONDS: float = 0.35
 var selected_item: String = ""
 var current_beat: Dictionary = {}
 var active_scene: String = ""
+## 11.11 (Director, 14:31: «Митя разворачивается от Агаты в момент диалога» — the far pier, «Рыбалка»): the villager
+## Agata clicked and talks with outside a scene (rooms data talk / choice: his intro, her question, his answer). While
+## those lines run he listens to her as in a scene (NpcActor.wanted_state) — before, on her lines he was "idle" and
+## turned back to his own data facing (Mitya to the water). The hotspot id; "" — none. Cleared when the lines run out
+## and when a scene starts.
+var talk_with: String = ""
 var puzzle_open: bool = false
 var puzzle_hotspot: Node2D = null
 var puzzle: Dictionary = {}   # {spec, placed:{slot->piece}, mark:int, errors:int, solved:bool, message, message_key, message_serial, hint}
@@ -275,6 +281,7 @@ func _next() -> void:
 		beat_changed.emit()
 		return
 	current_beat = {}
+	talk_with = ""
 	beat_changed.emit()
 	_queue_check()
 
@@ -466,6 +473,7 @@ func start_scene(scene_id: String) -> bool:
 	beats.append({"type": "call", "scene": scene_id, "fn": _complete_scene.bind(scene_id)})
 	if active_scene == "":
 		active_scene = scene_id
+	talk_with = ""
 	for b in beats:
 		_beats.append(b)
 	if current_beat.is_empty():
@@ -1392,6 +1400,7 @@ func _on_state_reset() -> void:
 	_beats.clear()
 	current_beat = {}
 	active_scene = ""
+	talk_with = ""
 	selected_item = ""
 	var had_puzzle := puzzle_open
 	var had_view := view_open
@@ -1418,6 +1427,7 @@ func _on_state_loaded(_slot: String) -> void:
 		_beats.clear()
 		current_beat = {}
 		active_scene = ""
+		talk_with = ""
 		beat_changed.emit()
 	_mechanic_wait = {}
 	_held_back.clear()
@@ -1582,6 +1592,7 @@ func interact(h: StoryHotspot) -> void:
 	# ревью 01.11 (В-15): a hotspot hidden while she walked up to it (a villager who left by flags) no longer acts
 	if not h.is_active():
 		return
+	talk_with = h.hotspot_id if String(h.data.get("kind", "")) == "npc" else ""
 	var d := h.data
 	# A state may say its own look (rooms data `states[].look` — G14: the stove after the shelf is hung no longer talks
 	# of the mount sockets; G9: the leaning shelf while the wet towel is on the bench) and its own refusal of a choice
@@ -2289,6 +2300,7 @@ func close_mechanic() -> void:
 			_held_back[sid] = true
 			if active_scene == sid:
 				active_scene = ""
+				talk_with = ""
 			if stage_dim > 0.0 or current_frame != "":
 				stage_dim = 0.0
 				stage_fade.emit(0.0, 0.4)
