@@ -200,7 +200,27 @@ func _exit_tree() -> void:
 
 ## H28 (Director 24.10: Pavel at the office door looked right, away from it): rooms data `face` [x, y] on the hotspot
 ## or its current state — where the villager looks when not talking (the door he waits at).
+## A point a staging turned the villager to (StoryRunner npc_face [x, y], 11.11): kept through the lines after it — a
+## narrator's line between no longer turns her back to her data facing (M17: Pelageya watched the boat at «Течение
+## повело лодку» for a moment, then turned back to Agata while the boat went off). Cleared at the scene's end and by a
+## turn to a person. INF — none.
+var face_hold := Vector2.INF
+
+
+func hold_face(at: Vector2) -> void:
+	face_hold = at
+	if not StoryRunner.scene_completed.is_connected(_on_scene_done):
+		StoryRunner.scene_completed.connect(_on_scene_done)
+
+
+func _on_scene_done(_id: String) -> void:
+	face_hold = Vector2.INF
+
+
 func _face_data() -> void:
+	if face_hold != Vector2.INF:
+		face_towards(face_hold)
+		return
 	if hotspot == null or not is_instance_valid(hotspot):
 		return
 	# Director 09.11, 12:35 («Тамара развернута к нам… Павел на финале тоже развернут непонятно как, Пелагея тоже»):
@@ -217,7 +237,11 @@ func _face_data() -> void:
 		face_towards(Vector2(float(f[0]), float(f[1])))
 
 
+var last_face_target := Vector2.INF   # where the villager last turned to (tests)
+
+
 func face_towards(target: Vector2) -> void:
+	last_face_target = target
 	var v := target - global_position
 	if v.length_squared() > 1.0:
 		direction = sheet.direction_index(v)

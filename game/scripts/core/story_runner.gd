@@ -713,6 +713,8 @@ func _run_stage(spec: Dictionary) -> void:
 				if np != null and np.has_method("face_towards"):
 					np.set("partner", null)
 					np.call("face_towards", Vector2(float(fc[0]), float(fc[1])))
+					if np.has_method("hold_face"):
+						np.call("hold_face", Vector2(float(fc[0]), float(fc[1])))   # kept through the next lines
 				continue
 			var other := _actor_node(room, String(g.get("face", "")))
 			if String(g.get("face", "")) == "agata" and other == null:
@@ -732,6 +734,8 @@ func _run_stage(spec: Dictionary) -> void:
 					if other == null and String(g.get("face", "")) == "agata":
 						other = RoomManager.player
 			if npc != null and other != null and npc.has_method("set_partner"):
+				if npc.get("face_hold") != null:
+					npc.set("face_hold", Vector2.INF)
 				npc.call("set_partner", other)
 		if not spec.has("fade_out_s") and not spec.has("room") and not spec.has("npc_go") and not spec.has("cut") \
 				and not spec.has("frame") and not spec.has("layer_go"):

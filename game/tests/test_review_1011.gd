@@ -74,6 +74,9 @@ extends SceneTree
 ##       между этим будто бы лишний»): three flashes answered — the lantern's close-up goes away by itself (no
 ##       «Закрыть»), Pelageya's «Ответили!» comes on the pier. Self-check — without `close` on the event she speaks over
 ##       the close-up.
+##   R-21 (Director 10.11, 22:27: «Пелагея не поворачивается к лодке, даже когда „запускает её“»): at «Течение повело
+##       лодку» (the narrator's line after her turn to the boat) Pelageya still looks out to the boat, not back at Agata;
+##       at the scene's end the hold is gone. Self-check — with the hold cleared she turns back as before.
 ## Exit code 0 only when every check passed.
 
 var _results: Array = []
@@ -149,6 +152,7 @@ func _run() -> void:
 	await _test("R-18 the office: Pavel in the doorway is lower than the door's leaf, Agata at the threshold 0.85–0.95 of it; self-check — the old depth makes him taller", _test_pavel_door)
 	await _test("R-19 the office lever: Agata goes as near as the floor lets her and reaches to it, the lever leaves the wall with her reach; self-check — on the wall before", _test_lever_reach)
 	await _test("R-20 three lights answered: the lantern's close-up goes by itself, Pelageya speaks on the pier; self-check — without close she speaks over it", _test_lights_close)
+	await _test("R-21 M17: Pelageya keeps looking at the boat through «Течение повело лодку»; self-check — the hold cleared, she turns back", _test_boat_look)
 	await _test("R-14 the lane after the post office: the arrow down flickers after 10 s with no click; a click resets it; not once the street was seen; self-check — no data, no flicker", _test_idle_nudge)
 	gs.reset()
 	if main_node != null and is_instance_valid(main_node):
@@ -1208,4 +1212,51 @@ func _flash_and_watch(keep: bool) -> bool:
 func _test_lights_close() -> void:
 	_check(not await _flash_and_watch(true), "Pelageya's «Ответили!» comes with the lantern's close-up put away (no «Закрыть»)")
 	_check(await _flash_and_watch(false), "self-check: without close on the event she speaks over the close-up — the test tells the two apart")
+
+
+## M17 up to the narrator's «Течение повело лодку»; `clear` — the face hold dropped right after the turn (self-check).
+## Returns where Pelageya last turned to at that line.
+func _boat_look(clear: bool) -> Vector2:
+	_flags_before("M17")
+	await _enter("Z3")
+	await _read_out("")
+	var pel := rm.current_room.get_node_or_null("npc_pelageya")
+	if pel == null:
+		_check(false, "Pelageya at the turn")
+		return Vector2.INF
+	sr.start_scene("M17")
+	var g := 0
+	var seen := Vector2.INF
+	while g < 1500:
+		g += 1
+		await physics_frame
+		var b: Dictionary = sr.current_beat
+		if b.is_empty() or bool(sr.call("is_staging")):
+			continue
+		if String(b.get("text", "")).begins_with("Течение повело лодку"):
+			if clear:
+				# as before the hold: back to Agata as her partner when the line changes
+				pel.set("face_hold", Vector2.INF)
+				pel.call("set_partner", player)
+				pel.call("set_state", "listen")
+			await _frames(20)
+			seen = pel.get("last_face_target")
+			break
+		sr.advance()
+	await _read_out("")
+	return seen
+
+
+func _test_boat_look() -> void:
+	var boat := Vector2.INF
+	for st in sd.scene("M17").get("stage", []):
+		if int(st.get("at", -1)) == 1:
+			for g in st.get("npc_face", []):
+				if String(g.get("id", "")) == "pelageya" and g.get("face") is Array:
+					boat = Vector2(float(g["face"][0]), float(g["face"][1]))
+	_check(boat != Vector2.INF, "M17 turns Pelageya to a point at its second line (the boat)")
+	var held: Vector2 = await _boat_look(false)
+	_check(held.distance_to(boat) < 2.0, "at «Течение повело лодку» she still looks at the boat %s (last turned to %s)" % [str(boat), str(held)])
+	var loose: Vector2 = await _boat_look(true)
+	_check(loose.distance_to(boat) >= 2.0, "self-check: the hold cleared — she turns elsewhere (%s), the test tells the two apart" % str(loose))
 
