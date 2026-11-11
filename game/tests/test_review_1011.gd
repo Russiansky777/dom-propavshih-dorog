@@ -68,7 +68,7 @@ extends SceneTree
 ##       (1.504 … 2.826) makes Pavel taller than the door.
 ##   R-19 (Director 10.11, 22:15: «рычаг не снимает в конторе — добавить анимацию»; 23:40: «хотя бы тянуться может в ту
 ##       сторону тогда»): at M13's end Agata takes the clamp from the desk with her reach, then walks along the back wall as
-##       near the lever as the floor goes (≤ x 860) and reaches towards it, turned left; the lever leaves the wall as she
+##       near the lever as the floor goes (≤ x 660) and reaches towards it, turned left; the lever leaves the wall as she
 ##       reaches — before the scene gives the things to the bag. Self-check — before that the lever is on the wall.
 ##   R-20 (Director 10.11, 22:26: «после того как 3 раза в фонарь позвонили, то 2 раза „Закрыть“ надо жать, и фейдаут
 ##       между этим будто бы лишний»): three flashes answered — the lantern's close-up goes away by itself (no
@@ -1156,7 +1156,7 @@ func _test_lever_reach() -> void:
 		elif b.is_empty() and not bool(sr.call("is_staging")) and gs.has_flag("done_M13") and not bool(player.call("is_acting")) and not bool(player.call("is_walking")):
 			break
 	_check(at_reach != Vector2.INF, "the lever is reached at M13's end (m13_lever_reached)")
-	_check(at_reach.x <= 860.0 and at_reach.y <= 715.0, "she reaches from as near as the floor lets her: %s (≤ x 860 along the back wall)" % str(at_reach.round()))
+	_check(at_reach.x <= 660.0 and at_reach.y <= 690.0, "she reaches from as near as the floor lets her: %s (≤ x 660, by the door to the passage)" % str(at_reach.round()))
 	_check(not bag_then, "the lever leaves the wall with her reach, before the bag gets it")
 	_check(lever != null and is_instance_valid(lever) and not lever.visible and gs.has_item("key_sluice"), "after the scene: the wall empty, the lever in the bag")
 
