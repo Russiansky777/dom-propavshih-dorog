@@ -92,6 +92,7 @@ func setup_mouth(mat: ShaderMaterial, skel: Skeleton3D, id: String) -> bool:
 	_mat.set_shader_parameter("mouth_up_share", up_share)
 	_mat.set_shader_parameter("mouth_depth", 0.016 * u)
 	_mat.set_shader_parameter("mouth_soft", 0.0005 * u)
+	_mat.set_shader_parameter("mouth_teeth_h", 0.0022 * u)
 	_mat.set_shader_parameter("mouth_open", 0.0)
 	return true
 

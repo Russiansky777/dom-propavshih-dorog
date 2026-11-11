@@ -86,6 +86,9 @@ extends SceneTree
 ##       actors_rest/mouth_agata.json, tools/mouth_from_texture.py: 4,5–5,8 cm over the head bone, 10–12 cm forward, near
 ##       the middle), the material takes it, it opens while she speaks and closes after. Self-check — Nina's line (the
 ##       first guess, copied) lies off Agata's lips.
+##   R-24 (Director 11.11, 12:02: «убрать дергание рук у Нины в спокойном»): every clip of a villager's talk pool moves the
+##       hand without stops of a frame or two mid-gesture (a frame under a quarter of its neighbours' speed while they
+##       move > 0,6 mm a frame). Self-check — the key-index smoothing (σ 5) on the borrowed calm clip stalls it.
 ## Exit code 0 only when every check passed.
 
 var _results: Array = []
@@ -164,6 +167,7 @@ func _run() -> void:
 	await _test("R-21 M17: Pelageya keeps looking at the boat through «Течение повело лодку»; self-check — the hold cleared, she turns back", _test_boat_look)
 	await _test("R-22 talking: Agata's gestures and Nina's talk clips change from line to line, never twice running; self-check — a pool of one repeats", _test_talk_variety)
 	await _test("R-23 Agata's painted mouth sits on her lips and opens with her voice; self-check — Nina's line is off her lips", _test_agata_mouth)
+	await _test("R-24 talk clips without stalls: the hand never stops for a frame or two mid-gesture; self-check — smoothing the borrowed clip does", _test_talk_stalls)
 	await _test("R-14 the lane after the post office: the arrow down flickers after 10 s with no click; a click resets it; not once the street was seen; self-check — no data, no flicker", _test_idle_nudge)
 	gs.reset()
 	if main_node != null and is_instance_valid(main_node):
@@ -1478,3 +1482,50 @@ func _agata_back(was: String) -> void:
 	if was != "" and was != String(player.get("render_mode")):
 		player.call("set_render_mode", was)
 		await _frames(2)
+
+
+# --- R-24: talk clips without stalls -----------------------------------------------------------
+
+## Stalls of the right hand over 10 s of Nina's talk clip `role`: frames under a quarter of the mean speed two frames
+## either side, while those move more than 0.6 mm a frame. `sigma` ≥ 0 — that smoothing on the clip (the self-check).
+func _talk_stalls(role: String, sigma := -1.0) -> int:
+	var spec = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/nina.json"))
+	spec["rt3d"]["talk_pool"] = ["talk", role] if role != "talk" else ["talk"]
+	if sigma >= 0.0:
+		spec["rt3d"]["smooth"]["clips"][role] = sigma
+	var n := _fake_villager()
+	var live = load("res://scripts/actors/npc_live_3d.gd").new()
+	n.add_child(live)
+	if not live.setup(n, spec, 0.55):
+		n.queue_free()
+		return 999
+	live.view.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	live.set_state("idle")
+	for i in 60:
+		live.process(1.0 / 60.0)
+	live.set_state("talk")
+	var prev := Vector3.ZERO
+	var sp: Array = []
+	for i in 600:
+		live.process(1.0 / 60.0)
+		var p: Vector3 = live.view.bone_model("RightHand")
+		if i > 0:
+			sp.append((p - prev).length() * 1000.0)
+		prev = p
+	var stalls := 0
+	for i in range(2, sp.size() - 2):
+		var nb: float = (float(sp[i - 2]) + float(sp[i + 2])) * 0.5
+		if nb > 0.6 and float(sp[i]) < nb * 0.25:
+			stalls += 1
+	n.queue_free()
+	await _frames(2)
+	return stalls
+
+
+func _test_talk_stalls() -> void:
+	var spec = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/nina.json"))
+	for role in spec["rt3d"].get("talk_pool", ["talk"]):
+		var st: int = await _talk_stalls(String(role))
+		_check(st == 0, "Nina, «%s»: the hand stops mid-gesture %d times in 10 s (0)" % [role, st])
+	var raw: int = await _talk_stalls("talk_calm", 5.0)
+	_check(raw > 0, "self-check: the calm clip smoothed by key index (σ 5) stalls — %d" % raw)

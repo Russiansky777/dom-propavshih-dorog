@@ -22,6 +22,9 @@ func _run() -> void:
 	var spec = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/%s.json" % id))
 	for k in off:
 		(spec["rt3d"] as Dictionary).erase(k)
+	# PROBE_POOL=talk,talk_calm — the talk pool (11.11: with two the first «talk» after «talk» is the second one)
+	if OS.get_environment("PROBE_POOL") != "":
+		spec["rt3d"]["talk_pool"] = Array(OS.get_environment("PROBE_POOL").split(","))
 	var n := _fake()
 	var live = load("res://scripts/actors/npc_live_3d.gd").new()
 	n.add_child(live)

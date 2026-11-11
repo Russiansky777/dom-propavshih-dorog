@@ -6,7 +6,7 @@ extends SceneTree
 ##       -s res://tests/probe_action_reel.gd -- <segments.json>
 ## segments.json: [{"id": "nina", "clip": "write_board" | "state": "talk", "s": 6, "yaw": 20, "title": "…"}, …]
 ##   "talk_as": role — with "state": "talk", that clip of the talk pool (NpcLive3D.talk_role)
-##   "tone_off": true — the figure without rt3d.stance_tone (a «before» shot)
+##   "tone_off": true — the figure without rt3d.stance_tone (a «before» shot); "tone": {k: v} — those stance_tone keys tried
 
 const DT := 1.0 / 30.0
 
@@ -79,12 +79,18 @@ func _run() -> void:
 	var lives := {}
 	for seg in segs:
 		var id := String(seg["id"])
-		var key := id + ("#before" if bool(seg.get("tone_off", false)) else "")
+		var key := id + ("#before" if bool(seg.get("tone_off", false)) else "") + (str(seg["tone"]) if seg.has("tone") else "")
 		if not lives.has(key):
 			var spec = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/%s.json" % id))
 			if bool(seg.get("tone_off", false)):
 				# «before»: the stance without rt3d.stance_tone (arms as the clips have them)
 				(spec["rt3d"] as Dictionary).erase("stance_tone")
+			if seg.has("tone"):
+				# a try: these stance_tone keys over the data's
+				var st: Dictionary = spec["rt3d"].get("stance_tone", {})
+				for k in (seg["tone"] as Dictionary).keys():
+					st[k] = seg["tone"][k]
+				spec["rt3d"]["stance_tone"] = st
 			var n := _fake_npc()
 			var live = NL.new()
 			n.add_child(live)

@@ -11,6 +11,7 @@ extends Node
 
 const HIDE_SHADER_CODE := "shader_type canvas_item;\nvoid fragment() { COLOR = vec4(0.0); }\n"
 
+const GesturePickScript := preload("res://scripts/actors/gesture_pick.gd")
 var npc: Node2D = null              # the NpcActor
 var view: Actor3D = null
 var body: Sprite2D = null
@@ -267,6 +268,7 @@ func _state_action(st: String) -> String:
 var talk_role: String = "talk"
 var _talk_key: String = ""
 var _talk_rng := RandomNumberGenerator.new()
+var _talk_bag: Array = []
 
 
 func _talk_role() -> String:
@@ -279,14 +281,10 @@ func _talk_role() -> String:
 	var key := String(b.get("line_id", "")) + "|" + String(b.get("text", ""))
 	if key != _talk_key:
 		_talk_key = key
-		var opts: Array = []
-		for r in pool:
-			if view.clips.has(String(r)) and String(r) != talk_role:
-				opts.append(String(r))
-		if not opts.is_empty():
-			if _talk_rng.seed == 0 or _talk_key == "":
-				_talk_rng.seed = hash(String(npc.get("actor_id")) if npc != null and npc.get("actor_id") != null else "npc")
-			talk_role = String(opts[_talk_rng.randi_range(0, opts.size() - 1)])
+		if _talk_rng.seed == 0 or _talk_key == "":
+			_talk_rng.seed = hash(String(npc.get("actor_id")) if npc != null and npc.get("actor_id") != null else "npc")
+		# every clip of the pool once before any repeats, never the same twice running (gesture_pick.gd)
+		talk_role = GesturePickScript.pick(pool, talk_role, _talk_rng, view.clips, _talk_bag)
 	return talk_role
 
 

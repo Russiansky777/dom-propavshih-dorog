@@ -39,6 +39,7 @@ signal action_finished(action: String, node: Node2D)
 @onready var step_a: CanvasItem = $Body/Legs/StepA
 @onready var step_b: CanvasItem = $Body/Legs/StepB
 
+const GesturePickScript := preload("res://scripts/actors/gesture_pick.gd")
 var room: Room = null
 var facing: int = 1
 var sheet: ActorSheet = null
@@ -146,6 +147,7 @@ var _gest_on: bool = false
 ## clip of this line's gesture — one of gesture.pool (clip roles), a new one for each line, never the same twice in a row
 var gest_role: String = "talk"
 var _gest_rng := RandomNumberGenerator.new()
+var _gest_bag: Array = []   # Player.pick_gesture: the gestures still to come before any repeats
 var _look_rng := RandomNumberGenerator.new()   # ревью 01.11 (В-8): the glances draw from their own generator — seed_motion makes a run repeatable
 
 
@@ -1374,14 +1376,9 @@ func _setup_mouth() -> void:
 
 
 ## The next line's gesture clip: a role of `pool` the figure has, not `last` (when there is another); "talk" without a pool.
-static func pick_gesture(pool: Array, last: String, rng: RandomNumberGenerator, have: Dictionary) -> String:
-	var opts: Array = []
-	for r in pool:
-		if have.has(String(r)) and String(r) != last:
-			opts.append(String(r))
-	if opts.is_empty():
-		return last if have.has(last) else "talk"
-	return String(opts[rng.randi_range(0, opts.size() - 1)])
+## Director 10.11, 21:48 («примелькивается»): which gesture a new line takes (GesturePick.pick).
+static func pick_gesture(pool: Array, last: String, rng: RandomNumberGenerator, have: Dictionary, bag = null) -> String:
+	return GesturePickScript.pick(pool, last, rng, have, bag)
 
 
 func _gesture_3d(delta: float) -> bool:
@@ -1397,7 +1394,7 @@ func _gesture_3d(delta: float) -> bool:
 	if talking and key != _gest_key:
 		_gest_key = key
 		if _gest_w < 0.05:
-			gest_role = pick_gesture(g.get("pool", []), gest_role, _gest_rng, view3d.clips)
+			gest_role = pick_gesture(g.get("pool", []), gest_role, _gest_rng, view3d.clips, _gest_bag)
 			_gest_t = _gest_rng.randf_range(0.0, float(g.get("start_jitter", 0.2))) * view3d.action_length(gest_role)
 		_gest_on = true
 	elif not talking:
