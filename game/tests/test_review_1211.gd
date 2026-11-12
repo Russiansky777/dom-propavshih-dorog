@@ -22,6 +22,10 @@ extends SceneTree
 ##   R12-5 (review: «метка собеседника может пережить смену комнаты»): StoryRunner.talk_with set by a click on a villager
 ##       that said nothing is gone a second later; while a line is on screen it stays (self-check: the mark does hold
 ##       through a talk — Mitya's fix of 11.11).
+##   R12-6 (Director 12.11, 21:40: «нужны губы как минимум»): lips by sounds in the game itself — Agata's own line played
+##       by VoiceDirector: the voice's clock goes on (line_time), the line has its table of letters, and her mouth's
+##       driver gets a shape for the moment being said (the shapes themselves — tests/test_jaw.gd JW-6; the tables
+##       against the recordings — tools/bake_lips.py --check). Self-check — a line that is not in the table gives none.
 
 const DT := 1.0 / 60.0
 
@@ -62,7 +66,7 @@ func _run() -> void:
 	_report("R12-4 Hints: none says «Клик» — «Щёлкнуть», as everywhere", t0)
 	t0 = Time.get_ticks_msec()
 	await _test_title_and_talk()
-	_report("R12-3 / R12-5 The window is titled «Дом пропавших дорог»; the talk partner's mark is gone a second after a click that said nothing, and holds while a line is on screen", t0)
+	_report("R12-3 / R12-5 / R12-6 The window is titled «Дом пропавших дорог»; the talk partner's mark is gone a second after a click that said nothing and holds while a line is on screen; Agata's line played by the game has its lips by sounds", t0)
 	var failed := 0
 	for r in _results:
 		if not r[1]:
@@ -260,6 +264,8 @@ func _test_title_and_talk() -> void:
 	var sr = root.get_node("StoryRunner")
 	var want := "Дом пропавших дорог"
 	var before := String(root.title)
+	var PS = load("res://scripts/actors/player.gd")
+	PS.forced_render = "3d"
 	var main_node = load("res://scenes/Main.tscn").instantiate()
 	root.add_child(main_node)
 	for i in 4:
@@ -291,8 +297,36 @@ func _test_title_and_talk() -> void:
 	sr.current_beat = {}
 	await _wait_s(1.5)
 	_check(String(sr.talk_with) == "", "the line over, 1.5 s later the mark is still «%s»" % String(sr.talk_with))
+	# R12-6: lips by sounds on a line the game itself plays
+	var LT = load("res://scripts/audio/lips_table.gd")
+	var vd = root.get_node("VoiceDirector")
+	var player = main_node.get_node("World/Player")
+	var lid := "M01_1"
+	var man = JSON.parse_string(FileAccess.get_file_as_string("res://assets/voice/ru/manifest.json"))
+	var text := String(man["lines"][lid]["text"]) if man is Dictionary and (man.get("lines", {}) as Dictionary).has(lid) else ""
+	_check(text != "", "R12-6: the line %s is not in the game's voice manifest" % lid)
+	if text != "" and String(vd.get("voice_lang")) == "ru":
+		var st := String(vd.call("play_line", lid, "agata", text, "line"))
+		_check(st == "playing", "R12-6: VoiceDirector did not start %s (%s)" % [lid, st])
+		await _wait_s(0.8)
+		var lt := float(vd.call("line_time"))
+		_check(lt > 0.3 and lt < 2.5, "R12-6: 0.8 s into the line the voice's clock says %.2f s" % lt)
+		_check(bool(LT.has_line("ru", lid)) and String(LT.class_at("ru", lid, lt)) != "", "R12-6: no table of letters for %s (data/lips/ru.json)" % lid)
+		var jaw = player.get("jaw")
+		_check(jaw != null, "R12-6: Agata has no mouth driver (render 3D off?)")
+		if jaw != null:
+			var sh: Vector2 = jaw.call("lip_shape")
+			_check(sh.x > 0.0, "R12-6: Agata's mouth gets no shape for the letter being said (%.2f, %.2f)" % [sh.x, sh.y])
+			jaw.set("line_override", "no_such_line")
+			jaw.set("time_override", 0.5)
+			var none: Vector2 = jaw.call("lip_shape")
+			jaw.set("line_override", "")
+			jaw.set("time_override", NAN)
+			_check(none.x < 0.0, "self-check R12-6: a line that is not in the table gives a shape (%.2f, %.2f)" % [none.x, none.y])
+		vd.call("stop", "test")
 	gs.reset()
 	if main_node != null and is_instance_valid(main_node):
 		root.remove_child(main_node)
 		main_node.free()
+	PS.forced_render = ""
 

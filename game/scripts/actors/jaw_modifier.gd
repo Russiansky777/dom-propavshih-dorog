@@ -9,8 +9,13 @@ extends SkeletonModifier3D
 ## screen a chin's 3 mm is a third of a pixel).
 ## Data rt3d.jaw: {bone, axis, max_deg, db_closed, db_open, attack_s, release_s, open_m, w_share, up_share, shift_mm,
 ## lip_color, lip_h_mm}.
+## 12.11 (Director 21:40: «нужны губы как минимум»): lips by sounds. Loudness alone gave one shape on every sound; now
+## the letter being said gives the opening's width and height (LipsTable: shut on «м, б, п», round on «о, у», wide on
+## «а, э»), loudness scales the height (a stressed vowel is louder — opens more) and shuts the mouth in silence. A line
+## without a table (no alignment) goes by loudness as before.
 ## Tests: tests/test_jaw.gd.
 
+const LipsTable := preload("res://scripts/audio/lips_table.gd")
 const NO_METER_DB := -150.0
 ## the chatter where there is no meter: open share per step
 const CHATTER := [0.55, 0.15, 0.8, 0.3, 0.65, 0.1]
@@ -29,6 +34,13 @@ var open: float = 0.0
 ## tests: the level in dB instead of the Voice bus (NAN — the bus); speaking 1 / 0 instead of VoiceDirector (-1)
 var level_override: float = NAN
 var speaking_override: int = -1
+## shown width of the opening, a share of the figure's usual one (lips by sounds; 1 — by loudness alone)
+var wide: float = 1.0
+## tests and probes: the line and the moment in it instead of VoiceDirector's («» / NAN — VoiceDirector)
+var line_override: String = ""
+var time_override: float = NAN
+var lang_override: String = "ru"
+var _want_wide: float = 1.0
 
 var _chatter_t: float = 0.0
 var _chatter_i: int = 0
@@ -141,12 +153,40 @@ func level_db() -> float:
 	return maxf(AudioServer.get_bus_peak_volume_left_db(bus, 0), AudioServer.get_bus_peak_volume_right_db(bus, 0))
 
 
+## The shape of the mouth for the letter being said now: (width share, height share); LipsTable.NONE — no table.
+func lip_shape() -> Vector2:
+	var lid := line_override
+	var t := time_override
+	var lang := lang_override
+	if lid == "":
+		var vd: Node = get_node_or_null("/root/VoiceDirector")
+		if vd == null:
+			return LipsTable.NONE
+		lid = String(vd.get("current_line"))
+		t = float(vd.call("line_time"))
+		lang = String(vd.get("voice_lang"))
+	if lid == "" or is_nan(t) or t < 0.0:
+		return LipsTable.NONE
+	return LipsTable.shape_at(lang, lid, t + float(LipsTable.cfg().get("lead_s", 0.04)))
+
+
 ## The opening wanted now (0..1), before smoothing.
 func target(delta: float) -> float:
 	if not speaking():
 		_chatter_t = 0.0
 		return 0.0
 	var db := level_db()
+	var sh := lip_shape()
+	if sh.x >= 0.0:
+		# lips by sounds: the letter gives the shape, loudness scales the height; silence shuts the mouth
+		_want_wide = sh.x
+		if db <= NO_METER_DB:
+			return sh.y   # no meter (the web): the letters alone
+		var loud := clampf((db - db_closed) / maxf(0.1, db_open - db_closed), 0.0, 1.0)
+		if loud <= 0.0:
+			return 0.0
+		return sh.y * lerpf(float(LipsTable.cfg().get("loud_floor", 0.55)), 1.0, loud)
+	_want_wide = 1.0
 	if db <= NO_METER_DB:
 		_chatter_t -= delta
 		if _chatter_t <= 0.0:
@@ -162,6 +202,11 @@ func step(delta: float) -> void:
 	open += (want - open) * (1.0 - exp(-delta / tau))
 	if open < 0.001 and want <= 0.0:
 		open = 0.0
+	# the width follows the letter while the mouth is open; shut, it waits at the next shape's width (nothing is seen)
+	if open <= 0.02:
+		wide = _want_wide
+	else:
+		wide += (_want_wide - wide) * (1.0 - exp(-delta / maxf(0.005, float(LipsTable.cfg().get("wide_tau_s", 0.045)))))
 
 
 func _process_modification_with_delta(delta: float) -> void:
@@ -171,6 +216,7 @@ func _process_modification_with_delta(delta: float) -> void:
 	step(delta)
 	if _mat != null:
 		_mat.set_shader_parameter("mouth_open", open)
+		_mat.set_shader_parameter("mouth_wide", wide)
 		if open > 0.0:
 			_mat.set_shader_parameter("mouth_inv", mouth_frame().affine_inverse())
 	if open <= 0.0 or max_deg <= 0.0 or bone < 0:

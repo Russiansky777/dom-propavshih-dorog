@@ -470,6 +470,15 @@ func is_playing() -> bool:
 	return _plain.playing or _panned.playing
 
 
+## Seconds into the line being said, as heard now (−1 — nothing plays): the player's position, plus what was mixed since
+## its last report, less the output's latency. Lips by sounds (12.11) read the letter of this moment (LipsTable).
+func line_time() -> float:
+	if not is_playing():
+		return -1.0
+	var p: Node = _panned if current_mode == "panned" else _plain
+	return maxf(float(p.call("get_playback_position")) + AudioServer.get_time_since_last_mix() - AudioServer.get_output_latency(), 0.0)
+
+
 ## A voice-over (narration / close-up message / bag item) is sounding: MusicDirector ducks for it as for a
 ## scene line (scene lines duck by the beat on screen, with or without a voice).
 func voice_over_active() -> bool:

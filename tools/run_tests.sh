@@ -107,6 +107,7 @@ echo "[godot] geometry exit code: $geo_code"
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_villagers_v3.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # блок 3: жители v3 (модель, кончики пальцев не в теле, разовые действия)
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/bake_mouth.gd -- all check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # линия губ жителей (data/actors_rest/mouth_<id>.json) совпадает с моделью
 bash "$ROOT/tools/bake_arm_rest.sh" all check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # руки вдоль тела: кривые data/actors_rest/<id>.json совпадают с моделью и клипами
+python3 "$ROOT/tools/bake_lips.py" --check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # 12.11: губы по звукам — таблицы форм рта (game/data/lips) соответствуют записям голоса и их разметке по буквам; сдвиг начала сверяется у каждой 40-й записи
 "$GODOT" --headless --audio-driver Dummy --fixed-fps 60 --path "$GAME_DIR" -s res://tests/test_animation_state.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # 06.11: свои копии клипов у каждой фигуры, «слушает»=стойка без второй копии idle (предложение второго ИИ)
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_body_clear_state.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # 06.11: BodyClear — проходы без шага времени, догон, выключение
 # K (31.10): правки дефектов генератора — третий сапог Пелагеи (F_hug_pelageya), одинаковые зарубки бруса и обведённая

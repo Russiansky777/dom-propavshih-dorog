@@ -164,6 +164,107 @@ static func _mouth_colour_wrong(d: Array) -> String:
 	return ""
 
 
+# --- JW-6: lips by sounds (Director 12.11, 21:40: «нужны губы как минимум») -----------------------------------------
+# Until 12.11 the mouth opened by loudness alone: one shape on every sound. Now the letter being said gives the shape
+# (LipsTable ← tools/bake_lips.py ← the recordings' alignment): shut on «м, б, п» though the voice is loud, round and
+# narrow on «у» and the stressed «о», wide open on «а»; silence shuts it whatever the letters say; a line without a
+# table goes by loudness as before. The moments are taken from the table itself (a segment of each class long enough to
+# settle on), not from one recording's timing. Drawn: the opening on «у» is narrower than on «а».
+# Self-check — with the table off the mouth stays open on «м» (the behaviour before 12.11).
+
+const LT := preload("res://scripts/audio/lips_table.gd")
+var _lip_moments: Dictionary = {}
+
+
+## class → [line id, seconds into it] — the middle of the longest segment of that class in the Russian table.
+func _moments() -> Dictionary:
+	if not _lip_moments.is_empty():
+		return _lip_moments
+	var d = JSON.parse_string(FileAccess.get_file_as_string("res://data/lips/ru.json")) if FileAccess.file_exists("res://data/lips/ru.json") else null
+	if not (d is Dictionary):
+		return {}
+	var names: Array = d.get("classes", [])
+	var best := {}
+	for lid in (d.get("lines", {}) as Dictionary).keys():
+		var seq: Array = d["lines"][lid].get("seq", [])
+		var i := 0
+		while i + 3 < seq.size():
+			var c := String(names[int(seq[i + 1])])
+			var len_cs := int(seq[i + 2]) - int(seq[i])
+			# a pause is taken inside a line (after its first letters), and not too long a one — a plain gap between words
+			if (c != "sil" or (i > 0 and len_cs < 60)) and (not best.has(c) or len_cs > int(best[c][2])):
+				best[c] = [String(lid), (int(seq[i]) + int(seq[i + 2])) * 0.005, len_cs]
+			i += 2
+	_lip_moments = best
+	return best
+
+
+## Waits by the clock, not by frames: without a display the frames are as short as the machine makes them, and the
+## mouth's closing (release_s) had not finished in 30–40 of them (12.11: JW-2 «a pause 0.03» with no display).
+func _wait_s(secs: float) -> void:
+	var waited := 0.0
+	var guard := 0
+	while waited < secs and guard < 6000:
+		await process_frame
+		waited += maxf(root.get_process_delta_time(), 0.0005)
+		guard += 1
+
+
+func _settle(jaw, lid: String, t: float, db: float) -> void:
+	jaw.speaking_override = 1
+	jaw.line_override = lid
+	jaw.time_override = t - float(LT.cfg().get("lead_s", 0.04))
+	jaw.level_override = db
+	await _wait_s(0.5)
+
+
+func _lips_by_sounds(id: String, jaw, view, img_shut: Image) -> void:
+	var m := _moments()
+	for c in ["a", "mbp", "u", "O", "sil"]:
+		if not m.has(c):
+			_check(false, "JW-6 %s: no moment of class «%s» in data/lips/ru.json — the table is empty or not baked (python3 tools/bake_lips.py)" % [id, c])
+			return
+	var seen := {}
+	var img := {}
+	for c in ["a", "mbp", "u", "O", "sil"]:
+		await _settle(jaw, String(m[c][0]), float(m[c][1]), jaw.db_open)
+		seen[c] = Vector2(float(jaw.wide), float(jaw.open))
+		if img_shut != null and (c == "a" or c == "u"):
+			img[c] = await _shot(view)
+	_check(seen["a"].y > 0.9 and absf(seen["a"].x - 1.0) < 0.06, "JW-6 %s: on «а» the mouth is open %.2f (> 0,9), %.2f of its width (1)" % [id, seen["a"].y, seen["a"].x])
+	_check(seen["mbp"].y < 0.03, "JW-6 %s: on «м, б, п» the mouth is open %.2f though the lips meet there (< 0,03)" % [id, seen["mbp"].y])
+	_check(seen["u"].x < 0.65 * seen["a"].x and seen["u"].y > 0.3 and seen["u"].y < 0.8, "JW-6 %s: on «у» the opening is %.2f of its width (rounded: under 0,65 of «а»'s %.2f), open %.2f (0,3–0,8)" % [id, seen["u"].x, seen["a"].x, seen["u"].y])
+	_check(seen["O"].x < 0.75 * seen["a"].x and seen["O"].y > 0.7, "JW-6 %s: on the stressed «о» the opening is %.2f of its width (under 0,75 of «а»'s), open %.2f (> 0,7)" % [id, seen["O"].x, seen["O"].y])
+	_check(seen["sil"].y < 0.01, "JW-6 %s: in a pause between words the mouth is open %.2f" % [id, seen["sil"].y])
+	# silence shuts the mouth whatever the letters say (the recording's own pause, a breath)
+	await _settle(jaw, String(m["a"][0]), float(m["a"][1]), -100.0)
+	_check(float(jaw.open) < 0.01, "JW-6 %s: no sound, and on the letter «а» the mouth is open %.2f" % [id, float(jaw.open)])
+	# a line without a table: by loudness, as before
+	await _settle(jaw, "no_such_line", 0.5, jaw.db_open)
+	_check(float(jaw.open) > 0.9 and absf(float(jaw.wide) - 1.0) < 0.01, "JW-6 %s: a line without a table — open %.2f (> 0,9 by loudness), width %.2f (1)" % [id, float(jaw.open), float(jaw.wide)])
+	# self-check: the table off — on «м» the mouth is open, as before 12.11
+	LT.enabled = false
+	await _settle(jaw, String(m["mbp"][0]), float(m["mbp"][1]), jaw.db_open)
+	var old_open := float(jaw.open)
+	LT.enabled = true
+	_check(old_open > 0.9, "self-check JW-6 %s: with the table off the mouth on «м» is open only %.2f — the test does not tell lips by sounds from loudness" % [id, old_open])
+	if img_shut != null and img.has("a") and img.has("u"):
+		var mm := float(PX) / (VIEW_M * 1000.0)
+		var wa := _lip_widths(img_shut, img["a"], mm).z
+		var wu := _lip_widths(img_shut, img["u"], mm).z
+		if OS.get_environment("JAW_DUMP") != "":
+			(img["a"] as Image).save_png(OS.get_environment("JAW_DUMP") + "/%s_lips_a.png" % id)
+			(img["u"] as Image).save_png(OS.get_environment("JAW_DUMP") + "/%s_lips_u.png" % id)
+		print("    %s: lips by sounds — the opening on «а» %.0f mm wide, on «у» %.0f mm" % [id, wa, wu])
+		_check(wu < wa * 0.75 and wu > 3.0, "JW-6 %s: drawn, the opening on «у» is %.0f mm against %.0f mm on «а» (narrower than 0,75 of it, and there)" % [id, wu, wa])
+	jaw.line_override = ""
+	jaw.time_override = NAN
+	jaw.level_override = -100.0
+	jaw.speaking_override = 0
+	for i in 10:
+		await process_frame
+
+
 func _run() -> void:
 	await process_frame
 	var drawn := DisplayServer.get_name() != "headless"
@@ -202,8 +303,7 @@ func _run() -> void:
 		# JW-2: the opening by the voice
 		jaw.speaking_override = 1
 		jaw.level_override = jaw.db_open
-		for i in 30:
-			await process_frame
+		await _wait_s(0.5)
 		var loud: float = jaw.open
 		# review 12.11: a model without a jaw bone (Agata: bone −1) — the engine logged «Index p_bone = -1 is out of bounds»
 		var q_open: Quaternion = live.view.skeleton.get_bone_pose_rotation(jaw.bone) if jaw.bone >= 0 else Quaternion.IDENTITY
@@ -244,19 +344,18 @@ func _run() -> void:
 			img_narrow = await _shot(live.view)
 			mat.set_shader_parameter("mouth_shape", keep)
 		jaw.level_override = -100.0
-		for i in 40:
-			await process_frame
+		await _wait_s(0.7)
 		var quiet: float = jaw.open
 		var q_shut: Quaternion = live.view.skeleton.get_bone_pose_rotation(jaw.bone) if jaw.bone >= 0 else Quaternion.IDENTITY
 		if drawn:
 			img_shut = await _shot(live.view)
 		jaw.level_override = jaw.db_open
 		jaw.speaking_override = 0
-		for i in 40:
-			await process_frame
+		await _wait_s(0.7)
 		var other: float = jaw.open
 		_check(loud > 0.9 and quiet == 0.0 and other == 0.0, "JW-2 %s: the mouth by the voice — loud %.2f (> 0,9), a pause %.2f (0), not her line %.2f (0)" % [id, loud, quiet, other])
 		_check(rad_to_deg(q_open.angle_to(q_shut)) < 0.2, "JW-4 %s: the jaw bone moved %.1f° with the mouth (the clip keeps it shut; turning it tears the lips)" % [id, rad_to_deg(q_open.angle_to(q_shut))])
+		await _lips_by_sounds(id, jaw, live.view, img_shut if drawn else null)
 		if drawn:
 			var d: Array = _diff(img_shut, img_open)
 			var mm := float(PX) / (VIEW_M * 1000.0)

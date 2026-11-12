@@ -34,6 +34,9 @@ uniform bool as_painted = false;   // a held thing's picture (Actor3D hand props
 uniform mat4 mouth_inv = mat4(1.0);
 uniform float mouth_open = 0.0;
 uniform vec4 mouth_shape = vec4(0.0);
+// 12.11 (Director: «нужны губы как минимум»): the opening's width for the sound being said, a share of the usual one —
+// narrow and round on «о, у», full on «а, э» (JawModifier.wide, LipsTable); 1 — by loudness alone.
+uniform float mouth_wide = 1.0;
 uniform float mouth_up_share = 0.3;
 uniform float mouth_depth = 1.6;      // the paint lies on the face within this of the lip line, front and back (model units)
 // 11.11 (Director: «губы — фон чёрный почему-то, поищи, как в реальности»). An open mouth is not a black hole:
@@ -105,11 +108,12 @@ void fragment() {
 	ALBEDO = to_srgb(lin * gain);
 	if ((mouth_open > 0.004 || debug_mouth) && mouth_shape.x > 0.0) {
 		vec3 mp = (mouth_inv * INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
-		float x = mp.x / mouth_shape.x;
-		float z = mp.z + mouth_shape.w * x * x;
+		float xb = mp.x / mouth_shape.x;              // across the lips: the lip line's own curve is told in this
+		float x = xb / clamp(mouth_wide, 0.2, 1.5);   // across the opening as wide as this sound makes it
+		float z = mp.z + mouth_shape.w * xb * xb;
 		if (abs(x) < 1.0 && z > -mouth_depth && z < mouth_depth * 0.6) {
 			float prof = pow(1.0 - x * x, 0.75);   // the corners pinched where the lips meet
-			float yl = mp.y - mouth_shape.z * x * x;
+			float yl = mp.y - mouth_shape.z * xb * xb;
 			float h = mouth_shape.y * (debug_mouth ? 1.0 : mouth_open) * prof;
 			// inside the lens: + towards its middle, 0 on its edge (model units)
 			float d = min(h * mouth_up_share - yl, yl + h * (1.0 - mouth_up_share));
@@ -134,8 +138,9 @@ void fragment() {
 			inner = mix(inner, mouth_rim, wet * 0.7);
 			// the upper teeth: a band under the upper lip, its top in the lip's shadow, fading into the corners
 			float tb = clamp(mouth_teeth_h / max(top - bot, 1e-4), 0.0, 0.45);
+			// 12.11: rounded lips («о, у» — a narrow opening) hide the teeth
 			float teeth = smoothstep(1.0 - tb - 0.06, 1.0 - tb + 0.02, v) * (1.0 - smoothstep(0.95, 1.0, v))
-				* (1.0 - smoothstep(0.4, 0.75, abs(x))) * wide;
+				* (1.0 - smoothstep(0.4, 0.75, abs(x))) * wide * smoothstep(0.6, 0.85, mouth_wide);
 			vec3 tcol = mouth_teeth * mix(1.0, 0.62, smoothstep(1.0 - tb * 0.45, 0.98, v)) * (1.0 - 0.3 * smoothstep(0.2, 0.7, abs(x)));
 			inner = mix(inner, tcol, teeth * 0.9);
 			if (!debug_mouth && mouth_lip.r > 0.0) {
