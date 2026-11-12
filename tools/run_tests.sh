@@ -100,6 +100,7 @@ echo "[godot] geometry exit code: $geo_code"
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_feedback_0211b.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # прохождение 02.11 (вечер), блок А: мел у парты, плита без каната, свет окон, рыбалка, полки
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_feedback_0211c.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # прохождение 02.11 (вечер), блок Б: хвост и жесты Тихона, окунь, удочка, переправа, Тихон в кадре ужина
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_review_1011.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # обзор игры 10.11: Тихон перебирается на словах рассказчика (M23d), с самопроверкой
+"$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_review_1211.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # ревью 12.11: в заимствованных жестах («рука к груди», «спокойный») стойка без шва — корпус Агаты не прыгает
 "$GODOT" --headless --fixed-fps 60 --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_hand_hold.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # 10.11: руки Ильи на рукояти ворота — весь оборот в досягаемости с его места в кадре (HandHoldModifier), с самопроверкой
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_l10n.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # английский (03.11): копия story_en, английские субтитры поверх русского голоса, «без субтитров», меню языка с предупреждением
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_feedback_0511.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # замечания 05.11, блок 1: «Облегчить» у колокола, язык в мини-игре, Павел к двери конторы, Агата не идёт на месте
@@ -110,13 +111,26 @@ bash "$ROOT/tools/bake_arm_rest.sh" all check 2>&1 | tee -a "$BUILD_DIR/logs/tes
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_body_clear_state.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # 06.11: BodyClear — проходы без шага времени, догон, выключение
 # K (31.10): правки дефектов генератора — третий сапог Пелагеи (F_hug_pelageya), одинаковые зарубки бруса и обведённая
 # нужная на рисунке Дуни (M05): копии в игре = оригинал + правка (нужен Pillow; numpy — для кадра объятия)
+# 12.11 (ревью, первый полный прогон CI 43267144034): проверка, которой на машине не хватает инструмента, пропускалась
+# молча — в CI не шла ни одна из этих: нет numpy (ретушь, кадр объятия; validate_occluders падал), нет opencv (слои
+# каната и ворота), нет ffmpeg (ролики-петли). Теперь пропуск назван вслух, а в CI (GITHUB_ACTIONS) пропущенная
+# проверка — красная: «не шла» не должно читаться как «зелёная».
+skipped() {
+  echo "SKIP  $1: нет $2 — проверка не шла" | tee -a "$BUILD_DIR/logs/tests.log"
+  if [[ -n "${GITHUB_ACTIONS:-}" ]]; then
+    echo "FAIL  $1: в CI проверка обязана идти, а на машине нет $2 (шаг установки в .github/workflows/godot_check.yml)" | tee -a "$BUILD_DIR/logs/tests.log"
+    code=1
+  fi
+}
 if python3 -c "import PIL, numpy" 2>/dev/null; then
   python3 "$ROOT/tools/retouch_art.py" --check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
   python3 "$ROOT/tools/import_room_art.py" F_hug_pelageya --check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
+else
+  skipped "retouch_art --check, import_room_art F_hug_pelageya --check" "Pillow/numpy"
 fi
 # I-T6: заплатка «канат снят со стопора» R1 собрана с нынешнего кадра (I-T3 сменил дневной кадр R1, заплатка осталась старой); нужен opencv — без него пропуск
-if python3 -c "import cv2" 2>/dev/null; then python3 "$ROOT/tools/make_rope_layers.py" --check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1; fi
-if python3 -c "import cv2" 2>/dev/null; then python3 "$ROOT/tools/make_windlass_layers.py" --check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1; fi  # 10.11: части ворота (заплата, ручки, витки) — из картины стройки
+if python3 -c "import cv2" 2>/dev/null; then python3 "$ROOT/tools/make_rope_layers.py" --check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1; else skipped "make_rope_layers --check" "opencv (cv2)"; fi
+if python3 -c "import cv2" 2>/dev/null; then python3 "$ROOT/tools/make_windlass_layers.py" --check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1; else skipped "make_windlass_layers --check" "opencv (cv2)"; fi  # 10.11: части ворота (заплата, ручки, витки) — из картины стройки
 # K (31.10): the live 3D figures' tests measure millimetres of a simulation whose idle variants and springs depend on
 # the tests run before them in the same file — one check now and then lands a millimetre over its limit (the braid, the
 # arm by the bag, the stop's self-check), and a red run left the Director without an exe. A 3D test file that fails is
@@ -145,13 +159,21 @@ if command -v xvfb-run >/dev/null; then
   # left alone; self-check — no shape, no mouth (the figures alone, rendered)
   xvfb-run -a -s "-screen 0 1280x720x24" "$GODOT" --path "$GAME_DIR" --display-driver x11 --rendering-driver opengl3 --resolution 320x180 --fixed-fps 60 --audio-driver Dummy -s res://tests/test_jaw.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
 else
-  echo "[tests] test_frame_video skipped: no xvfb-run" | tee -a "$BUILD_DIR/logs/tests.log"
+  skipped "test_frame_video, test_gamepad, test_handover, рты на картинке (test_jaw)" "xvfb-run"
   "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_jaw.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # без экрана — данные и раскрытие по голосу
 fi
 # 09.11 вечер: петли-картины без рывков — один ключевой кадр на ролик (Theora выдавала скачок раз в 0,5 с), шов ≤ 3/255,
 # без звука; самопроверка: ролик с ключевым кадром каждые 12 кадров ловится
-python3 -I "$ROOT/tools/validate_video_loops.py" --self-check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
+if command -v ffmpeg >/dev/null && command -v ffprobe >/dev/null; then
+  python3 -I "$ROOT/tools/validate_video_loops.py" --self-check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
+else
+  skipped "validate_video_loops --self-check" "ffmpeg/ffprobe"
+fi
+if ! python3 -I -c "import PIL, numpy" 2>/dev/null; then
+  skipped "validate_occluders --self-check" "Pillow/numpy"
+else
 python3 -I "$ROOT/tools/validate_occluders.py" --self-check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # 10.11: слои переднего плана непрозрачны внутри («Стул и Агата прозрачные»)
+fi
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_trailer.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # TR1: режим съёмки трейлера (data/trailer) — планы читаются, планы собираются, комната в нужном состоянии, сохранения не пишутся
 # 10.11: a script error inside a test stops that test function where it stands — nothing after it is checked and the
 # test still counts as passed (test_ui_cursors, test_batch_j: «green» and blind for days). A run with one is a failure.

@@ -305,8 +305,16 @@ func _borrow_clips() -> void:
 		anim.add_animation_library("borrow", lib)
 
 
-## Tracks of this figure's clip `own` (bare name) for the bones `taken` has not, copied into `a` and looped to its
-## length (Actor3D._borrow_clips).
+## Tracks of this figure's clip `own` (bare name) for the bones `taken` has not, copied into `a` over its whole length
+## (Actor3D._borrow_clips) — there and back («ping-pong»), not from the start again.
+## Review 12.11 (the first full CI run since 11.11: «agata gesture: LeftFoot jolted 14.2 mm per 1/60 s», the right hand
+## 9.0 mm/frame²): the stance clip is not a loop of its own — in the stance its variants cross-fade in two slots, the
+## end never meets the start. Copied from the start again, its end jumped to its start inside the gesture: with «рука
+## к груди» and «спокойный» the hips and both feet went 5 cm in three frames (1/20 s) once per stance length, the bag
+## and the arm kept out of it after them. There and back there is no seam: the end is followed by itself.
+static var fill_pingpong := true   # off — the tests' self-check (the copy from the start again, as before)
+
+
 func _fill_from_own(a: Animation, taken: Dictionary, own: String) -> void:
 	var src: Animation = null
 	for n in anim.get_animation_list():
@@ -325,9 +333,12 @@ func _fill_from_own(a: Animation, taken: Dictionary, own: String) -> void:
 		a.track_set_path(nt, src.track_get_path(t))
 		a.track_set_interpolation_type(nt, src.track_get_interpolation_type(t))
 		var base := 0.0
+		var back := false
+		var n := src.track_get_key_count(t)
 		while base < a.length + 0.001:
-			for k in src.track_get_key_count(t):
-				var kt := base + src.track_get_key_time(t, k)
+			for j in n:
+				var k := (n - 1 - j) if back else j
+				var kt := base + ((src.length - src.track_get_key_time(t, k)) if back else src.track_get_key_time(t, k))
 				if kt > a.length + 0.001:
 					break
 				if ty == Animation.TYPE_ROTATION_3D:
@@ -335,6 +346,7 @@ func _fill_from_own(a: Animation, taken: Dictionary, own: String) -> void:
 				else:
 					a.position_track_insert_key(nt, kt, src.track_get_key_value(t, k))
 			base += src.length
+			back = fill_pingpong and not back
 
 
 ## The model's own albedo, lit like the sprite renders (shaders/actor_3d.gdshader, values from data).

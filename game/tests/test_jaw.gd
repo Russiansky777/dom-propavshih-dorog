@@ -205,7 +205,8 @@ func _run() -> void:
 		for i in 30:
 			await process_frame
 		var loud: float = jaw.open
-		var q_open: Quaternion = live.view.skeleton.get_bone_pose_rotation(jaw.bone)
+		# review 12.11: a model without a jaw bone (Agata: bone −1) — the engine logged «Index p_bone = -1 is out of bounds»
+		var q_open: Quaternion = live.view.skeleton.get_bone_pose_rotation(jaw.bone) if jaw.bone >= 0 else Quaternion.IDENTITY
 		var img_open: Image = null
 		var img_shut: Image = null
 		var img_none: Image = null
@@ -246,7 +247,7 @@ func _run() -> void:
 		for i in 40:
 			await process_frame
 		var quiet: float = jaw.open
-		var q_shut: Quaternion = live.view.skeleton.get_bone_pose_rotation(jaw.bone)
+		var q_shut: Quaternion = live.view.skeleton.get_bone_pose_rotation(jaw.bone) if jaw.bone >= 0 else Quaternion.IDENTITY
 		if drawn:
 			img_shut = await _shot(live.view)
 		jaw.level_override = jaw.db_open

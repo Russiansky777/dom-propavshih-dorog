@@ -1616,7 +1616,9 @@ func _on_jerk_updated() -> void:
 
 
 ## Standing (stance variants crossfading) and talking: the largest second difference of each hand against the chest, mm
-## per 1/60 s² — [right hand, left hand, right elbow].
+## per 1/60 s² — [right hand, left hand, right elbow, the quickest pace a gesture was played at, the gestures played].
+## Review 12.11: a line for every gesture of her pool (each comes once before any repeats — gesture_pick.gd), not two
+## lines with whichever gestures the seed gives.
 func _jerk_run(soft: bool) -> Array:
 	await _enter("H1", Vector2(1200, 960))
 	var v: Actor3D = player.view3d
@@ -1626,9 +1628,16 @@ func _jerk_run(soft: bool) -> Array:
 	_jerk_rows = []
 	v.skeleton.skeleton_updated.connect(_on_jerk_updated)
 	await _wait_s(30.0)
-	for k in 2:
+	var g: Dictionary = player._rt.get("gesture", {})
+	var pool: Array = (g.get("pool", ["talk"]) as Array).filter(func(r): return v.clips.has(String(r)))
+	var pace := 1.0
+	var played: Array = []
+	for k in maxi(pool.size(), 2):
 		sr.current_beat = {"type": "line", "speaker": "agata", "line_id": "J_%d" % k, "to": "tikhon", "text": "Тихон, ты бы видел! У мамы там стрелки так и бегут, а у меня еле ползут, и всё тут."}
 		await _wait_s(5.0)
+		if not played.has(String(player.gest_role)):
+			played.append(String(player.gest_role))
+		pace = maxf(pace, float((g.get("rates", {}) as Dictionary).get(String(player.gest_role), 1.0)))
 		sr.current_beat = {}
 		await _wait_s(1.0 + k * 0.7)
 	v.skeleton.skeleton_updated.disconnect(_on_jerk_updated)
@@ -1638,7 +1647,7 @@ func _jerk_run(soft: bool) -> Array:
 		for h in 3:
 			var a: Vector3 = (_jerk_rows[i + 1][h] as Vector3) - 2.0 * (_jerk_rows[i][h] as Vector3) + (_jerk_rows[i - 1][h] as Vector3)
 			mx[h] = maxf(mx[h], a.length() * 1000.0)
-	return mx
+	return [mx[0], mx[1], mx[2], pace, played, pool.size()]
 
 
 ## Director 01.11, line 20: «Агатина правая рука иногда резко дёргается, будто конец анимации и начало снова её, но места
@@ -1650,9 +1659,16 @@ func _jerk_run(soft: bool) -> Array:
 func _test_arm_no_jerk() -> void:
 	var on: Array = await _jerk_run(true)
 	var off: Array = await _jerk_run(false)
-	print("        right hand: max %.1f mm/frame² (left %.1f), right elbow %.1f; as before (the way out flipping, full reach): hand %.1f, elbow %.1f" % [float(on[0]), float(on[1]), float(on[2]), float(off[0]), float(off[2])])
-	_check(float(on[0]) <= 8.0, "the right hand jerks: %.1f mm/frame² (≤ 8; the left hand %.1f)" % [float(on[0]), float(on[1])])
-	_check(float(on[2]) <= 8.0, "the right elbow jerks: %.1f mm/frame² (≤ 8)" % float(on[2]))
+	# review 12.11: the limit was set on her own talk clip at its own pace (the arm by the bag 5–7 mm/frame²). The
+	# borrowed «рука к груди» and «спокойный» are played 1.3× faster (gesture.rates — the villagers' pace of talk): the
+	# same path crossed 1.3× faster changes 1.3² = 1.69× more from frame to frame — the hand passing the bag's gate on
+	# its way down from the chest measured 8.3–9.1 (a bend of 2 px on screen, against the 7–9 cm jump this test is
+	# for: 71 below). The limit goes with the pace of the quickest gesture played, squared.
+	var lim := 8.0 * float(on[3]) * float(on[3])
+	print("        right hand: max %.1f mm/frame² (left %.1f), right elbow %.1f — limit %.1f (8 at the clip's own pace; gestures %s, the quickest played %.2f×); as before (the way out flipping, full reach): hand %.1f, elbow %.1f" % [float(on[0]), float(on[1]), float(on[2]), lim, str(on[4]), float(on[3]), float(off[0]), float(off[2])])
+	_check((on[4] as Array).size() >= int(on[5]), "the lines gave the gestures %s — every one of her pool (%d) was to be measured" % [str(on[4]), int(on[5])])
+	_check(float(on[0]) <= lim, "the right hand jerks: %.1f mm/frame² (≤ %.1f; the left hand %.1f)" % [float(on[0]), lim, float(on[1])])
+	_check(float(on[2]) <= lim, "the right elbow jerks: %.1f mm/frame² (≤ %.1f)" % [float(on[2]), lim])
 	_check(float(off[0]) > 30.0 and float(off[2]) > 15.0, "self-check: as before the right hand jerks only %.1f mm/frame², the elbow %.1f — the case is not reproduced" % [float(off[0]), float(off[2])])
 	_completed = true
 

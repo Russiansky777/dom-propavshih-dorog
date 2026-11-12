@@ -305,9 +305,9 @@ func _test_villagers() -> void:
 
 # --- Agata ---------------------------------------------------------------------------------------
 
-func _gesture_beat(t: float) -> void:
+func _gesture_beat(t: float, k: int = 1) -> void:
 	if t == 0.0:
-		_sr.current_beat = {"type": "line", "speaker": "agata", "line_id": "P_1", "to": "tikhon", "text": "Тихон, ты бы видел! У мамы там стрелки так и бегут, а у меня еле ползут."}
+		_sr.current_beat = {"type": "line", "speaker": "agata", "line_id": "P_%d" % k, "to": "tikhon", "text": "Тихон, ты бы видел! У мамы там стрелки так и бегут, а у меня еле ползут."}
 	elif t > 4.0 and not _sr.current_beat.is_empty():
 		_sr.current_beat = {}
 
@@ -355,7 +355,16 @@ func _test_agata() -> void:
 	var k: float = player.floor_foreshortening()
 	var runs := [
 		["idle", 8.0, Callable(), STAND_MM],
-		["gesture", 6.0, _gesture_beat, STAND_MM],
+	]
+	# review 12.11: a line for every gesture of her pool (each comes once before any repeats — gesture_pick.gd), not
+	# the one the seed happens to give: the borrowed «рука к груди» and «спокойный» carried a seam of the stance (her
+	# hips 5 cm in three frames), and the one line of this run met it only after the pool changed on 11.11
+	var pool: Array = (player._rt.get("gesture", {}) as Dictionary).get("pool", ["talk"])
+	var have: Array = pool.filter(func(r): return player.view3d.clips.has(String(r)))
+	for g in maxi(have.size(), 1):
+		runs.append(["gesture", 6.0, _gesture_beat.bind(g + 1), STAND_MM])
+	var shown_gestures := {}
+	runs += [
 		["turn 150°", 2.0, func(t): if t == 0.0: player.face_towards(player.global_position + Vector2(-0.5, -0.9 * k) * 200.0), STAND_MM],
 		["walk+stop", 4.0, func(t): if t == 0.0: player.click_at(player.global_position + Vector2(-380, -40)), WALK_MM],
 	]
@@ -367,7 +376,12 @@ func _test_agata() -> void:
 		var dts: Array = []
 		await _rec(player, float(r[1]), frames, dts, r[2])
 		var w := _worst(frames, dts)
-		line += " %s %.0f" % [String(r[0]).get_slice(" ", 0) + (String(r[0]).get_slice(" ", 1) if String(r[0]).begins_with("act") else ""), w[0]]
+		if String(r[0]) == "gesture":
+			r[0] = "gesture «%s»" % String(player.gest_role)
+			shown_gestures[String(player.gest_role)] = true
+			line += " %s %.0f" % [String(player.gest_role), w[0]]
+		else:
+			line += " %s %.0f" % [String(r[0]).get_slice(" ", 0) + (String(r[0]).get_slice(" ", 1) if String(r[0]).begins_with("act") else ""), w[0]]
 		_check(w[0] <= float(r[3]), "agata %s: %s jolted %.1f mm per 1/60 s at %.2f s (≤ %.0f)" % [r[0], w[1], w[0], float(w[2]) * DT, float(r[3])])
 		if w[0] > float(r[3]) and w[2] >= 2:
 			var at: int = w[2]
@@ -377,6 +391,7 @@ func _test_agata() -> void:
 			# the clip at (about) its own pace: motion capture hands do not move 2.4× faster than recorded
 			_check(player._act_speed >= 0.8 and player._act_speed <= 1.25, "agata %s: played at %.2f× the clip's pace (0.8–1.25)" % [r[0], player._act_speed])
 	print(line)
+	_check(shown_gestures.size() == maxi(have.size(), 1), "agata: %d lines gave the gestures %s — every gesture of the pool %s was to be measured" % [maxi(have.size(), 1), str(shown_gestures.keys()), str(have)])
 	# circling (Director 19:16): 60 walks to random points in four rooms — the longest one-way turn is no more than the
 	# path itself asks for (turning to its first leg, then its bends) plus what braking takes (≤ 120°); circling
 	# round the point was 331° for a path needing 44°, round a corner of the path 228–386° for 44° (M1 walk 2, when
