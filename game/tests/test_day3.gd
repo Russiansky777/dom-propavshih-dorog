@@ -53,6 +53,9 @@ func _check(cond: bool, message: String) -> void:
 
 
 func _test(test_name: String, fn: Callable) -> void:
+	# review 12.11 (the chain «new game → credits»): ONLY=<part of a test's name> runs that test alone
+	if OS.get_environment("ONLY") != "" and not test_name.to_lower().contains(OS.get_environment("ONLY").to_lower()):
+		return
 	_fails = []
 	_reached_end = false
 	var started := Time.get_ticks_msec()
@@ -101,8 +104,17 @@ func _run() -> void:
 	await _test("Block 5: Q02/Q06 traces — both choices in epilogue lines, frames and rooms; skipped — nothing, the end as before", _test_q02_q06_traces)
 	await _test("Batch 8 art: drawn states by flags (board answers, coat, bag, board, night, day frames, epilogues) — one at a time, never stacked", _test_batch8)
 	gs.reset()
+	# CHAIN_KEEP=1 (taking reference saves for tests/data/saves_ref — test_saves.gd): the checkpoints of days three and
+	# four and the save after the end stay in user://saves, their names are printed
+	var keep := OS.get_environment("CHAIN_KEEP") != ""
+	if keep:
+		print("        chain: kept saves — %s (day three), %s (day four), %s (after the end)" % [CP + "day3", CP + "day4", SLOT + "_end"])
 	for s in [AUTOSAVE, SLOT, SLOT + "_d4", SLOT + "_end", CP + "day3", CP + "day4", SLOT + "_q02", SLOT + "_q02_done", SLOT + "_q06"]:
+		if keep and s in [CP + "day3", CP + "day4", SLOT + "_end"]:
+			continue
 		gs.delete_save(s)
+	if OS.get_environment("CHAIN_IN") != "" and not keep:
+		gs.delete_save(OS.get_environment("CHAIN_IN"))   # the chain's link is used up
 	Engine.time_scale = 1.0
 	if main_node != null and is_instance_valid(main_node):
 		root.remove_child(main_node)
@@ -669,8 +681,19 @@ func _test_walkthrough() -> void:
 	rm.autosave_enabled = true
 	Engine.time_scale = 4.0
 	frames_seen.clear()
-	_check(rm.start_at("olkhovka"), "start at the far pier (end of day two)")
-	await _frames(3)
+	var chain_in := OS.get_environment("CHAIN_IN")
+	if chain_in != "":
+		# review 12.11 — the chain «new game → credits»: from the far pier as test_day2.gd really played to it
+		var loaded: bool = rm.load_game(chain_in)
+		_check(loaded, "the chain: the save of day two loads («%s»)" % chain_in)
+		if not loaded:
+			return   # nothing to go on from: the test fails here (it did not reach its end)
+		await _frames(3)
+		print("        chain: day three from the played save — room %s, %d flags, bag %s" % [_room(), gs.flags.size(), str(gs.inventory)])
+		_check(_room() == "R3" and gs.has_flag("done_M18") and not gs.has_flag("started_M19"), "the chain: the far pier, M18 played, mother not met yet (%s)" % _room())
+	else:
+		_check(rm.start_at("olkhovka"), "start at the far pier (end of day two)")
+		await _frames(3)
 	gs.set_flag("waved_at_stove", true)   # C17: block 2's optional wave at the stove
 	var seen := await _finish()
 	# M19: up the path to the street.
@@ -736,17 +759,28 @@ func _test_walkthrough() -> void:
 	_check(not gs.has_flag("lower_street_returned"), "J (Р10): no lower street any more")
 	# M22: by the returned path to the class.
 	_check(await _route(["O4", "O2"]), "O3→O4→O2 by the returned school path")
-	_check(_hotspot("mitten_path") != null and _hotspot("mitten_path").visible and not _hotspot("mitten").visible, "the mitten lies on the path home")
-	await _use("mitten_path")
-	await _finish()
-	_check(gs.has_item("mitten") and gs.has_flag("mitten_found_on_path"), "picked up silently — the same mitten, back in the bag")
+	# the mitten by day one's choice: left on the school step — it lies on the path home; taken back that day (the
+	# chain «new game → credits»: the day-one bot picks it up again) — it is in the bag, nothing lies on the path
+	if gs.has_flag("mitten_placed") and not gs.has_flag("mitten_taken_back"):
+		_check(_hotspot("mitten_path") != null and _hotspot("mitten_path").visible and not _hotspot("mitten").visible, "the mitten lies on the path home")
+		await _use("mitten_path")
+		await _finish()
+		_check(gs.has_item("mitten") and gs.has_flag("mitten_found_on_path"), "picked up silently — the same mitten, back in the bag")
+	else:
+		_check(_hotspot("mitten_path") == null or not _hotspot("mitten_path").visible, "the mitten was taken back on day one — none lies on the path home")
+		_check(gs.inventory.count("mitten") == 1 and not gs.has_flag("mitten_found_on_path"), "the mitten taken back on day one is in the bag, once: %s" % str(gs.inventory))
 	_check(await _go("O1"), "O2→O1")
 	seen = await _finish()
 	_check(gs.has_flag("done_M22") and gs.has_flag("nina_answered_board"), "M22 in the class with mother: %s" % str(seen))
 	_check(seen.any(func(x): return x.begins_with("narration:На доске Нина читает: «Мама, я иду»")), "Nina answers «Мама, я иду»")
 	_check(seen.any(func(x): return x == "agata:У нас нынче двадцать пятое октября."), "A3: Agata's date")
 	_check(rm.current_room.get_node("Layers/nina_answer_mama").visible and rm.current_room.get_node("Layers/nina_answer_date").visible and not rm.current_room.get_node("Layers/nina_answer_here").visible, "the answer and the common date on the board")
-	_check(rm.current_room.get_node("Layers/bird_reply_boat").visible and not rm.current_room.get_node("Layers/bird_reply_scarf").visible, "Ulyana answered next to Agata's boat (G37)")
+	# Ulyana's answer by day one's choice at the bird drawing: a boat added — her answer next to it; the drawing left as
+	# it was (the chain: the day-one bot leaves it) — no answer at all
+	if gs.has_flag("v03_add_boat"):
+		_check(rm.current_room.get_node("Layers/bird_reply_boat").visible and not rm.current_room.get_node("Layers/bird_reply_scarf").visible, "Ulyana answered next to Agata's boat (G37)")
+	elif gs.has_flag("v03_left"):
+		_check(not rm.current_room.get_node("Layers/bird_reply_boat").visible and not rm.current_room.get_node("Layers/bird_reply_scarf").visible, "the bird drawing left as it was on day one — Ulyana answered nothing there")
 	_check(not _hotspot("nina").visible, "mother has gone to her sister's house")
 	_check(gs.has_flag("boat_shuttle_open"), "F13: from the free day the boat goes both ways (boat_shuttle_open for the R3 ↔ R1 passage of block 2)")
 	# The free day: through the school door — Nina in her sister's house (frames), Tikhon.

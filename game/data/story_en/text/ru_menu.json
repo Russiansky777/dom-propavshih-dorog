@@ -101,6 +101,25 @@
   "ui.lang_en_no": {
    "text": "Keep as it was",
    "_k": "Директор 03.11: язык голоса и субтитров в настройках"
+  },
+  "ui.licenses": {
+   "text": "Licenses",
+   "_k": "Ревью 12.11 (до Steam): экран лицензий движка, его сторонних компонентов и шрифтов — кнопка в настройках"
+  },
+  "ui.licenses_intro": {
+   "text": "This game is made with Godot Engine. Below are the engine's license, the notices of the third-party components built into it, the licenses of the game's fonts, and the full license texts."
+  },
+  "ui.licenses_engine": {
+   "text": "Godot Engine"
+  },
+  "ui.licenses_third": {
+   "text": "Third-party components of the engine"
+  },
+  "ui.licenses_fonts": {
+   "text": "Fonts"
+  },
+  "ui.licenses_texts": {
+   "text": "License texts"
   }
  }
 }

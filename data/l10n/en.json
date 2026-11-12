@@ -5227,6 +5227,30 @@
    "ru": "Назад",
    "en": "Back"
   },
+  "text:ui.licenses": {
+   "ru": "Лицензии",
+   "en": "Licenses"
+  },
+  "text:ui.licenses_intro": {
+   "ru": "Игра сделана на движке Godot Engine. Ниже — лицензия движка, сведения о встроенных в него сторонних компонентах, лицензии шрифтов игры и полные тексты лицензий. Тексты приведены на английском, как у их авторов.",
+   "en": "This game is made with Godot Engine. Below are the engine's license, the notices of the third-party components built into it, the licenses of the game's fonts, and the full license texts."
+  },
+  "text:ui.licenses_engine": {
+   "ru": "Godot Engine",
+   "en": "Godot Engine"
+  },
+  "text:ui.licenses_third": {
+   "ru": "Сторонние компоненты движка",
+   "en": "Third-party components of the engine"
+  },
+  "text:ui.licenses_fonts": {
+   "ru": "Шрифты",
+   "en": "Fonts"
+  },
+  "text:ui.licenses_texts": {
+   "ru": "Тексты лицензий",
+   "en": "License texts"
+  },
   "text:ui.day_card_1": {
    "ru": "День первый",
    "en": "Day one"

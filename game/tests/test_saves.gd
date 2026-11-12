@@ -69,6 +69,7 @@ func _run() -> void:
 	await _test("G5: entering a new day saves («День второй» in the autosave)", _test_new_day)
 	await _test("G5: loading the autosave repeats no one-off event and blocks nothing; the menu's «Автосохранение» row loads it", _test_load_no_repeat)
 	await _test("Ревью 01.11 (В-1): a save is written through a temporary file with a .bak of the old one; a cut-off file, wrong kinds or an unknown room leave the running game as it was and read the backup", _test_damaged_saves)
+	await _test("Review 12.11: the reference saves of every data version load as they were saved — the room, the bag, the goal; nothing plays by itself; the current version has its own", _test_reference_saves)
 	gs.reset()
 	for s in [SLOT, MANUAL, CP + "day2", CP + "day3", CP + "day4", SLOT + "_dmg"]:
 		gs.delete_save(s)
@@ -82,6 +83,81 @@ func _run() -> void:
 	print("")
 	print("==== saves (G4, G5): %d tests, %d passed, %d failed ====" % [_results.size(), _results.size() - failed, failed])
 	quit(0 if failed == 0 else 1)
+
+
+# --- Reference saves ------------------------------------------------------------------------
+
+## Review 12.11 («формат сохранений не закреплён: нет эталонных сохранений, номер версии не меняется»): saves really
+## played by the bots' chain (tools/run_tests.sh: a new game → the credits) are kept per data version in
+## res://tests/data/saves_ref/<story_version>/ — the morning of day two, the far pier, «День третий», «День четвёртый»,
+## after the end. Every one of them, of every version, must go on loading: a player's save made with a released build
+## has to open in every later one. A new data version (meta.json story_version — tools/validate_story.py asks for it
+## when the names of flags, scenes, items or rooms change) needs its own set:
+##   the chain with CHAIN_KEEP=1 (ONLY="walkthrough" CHAIN_OUT=… run_tests.gd → test_day2.gd → test_day3.gd), then
+##   the five files from user://saves into a new folder here.
+## Self-check — the same save pointing to a room that is gone does not load.
+const REF_DIR := "res://tests/data/saves_ref"
+
+
+func _test_reference_saves() -> void:
+	var versions := DirAccess.get_directories_at(REF_DIR)
+	_check(versions.has(String(sd.story_version)), "no reference saves for the current data version «%s» (%s has %s) — play the chain with CHAIN_KEEP=1 and put its five saves there" % [String(sd.story_version), REF_DIR, str(versions)])
+	var n := 0
+	var first_raw := ""
+	for v in versions:
+		var files := DirAccess.get_files_at("%s/%s" % [REF_DIR, v])
+		_check(files.size() >= 5 or String(v) != String(sd.story_version), "data version «%s» has %d reference saves (five: the morning of day two, the far pier, days three and four, after the end)" % [v, files.size()])
+		for f in files:
+			if not String(f).ends_with(".json"):
+				continue
+			var raw := FileAccess.get_file_as_string("%s/%s/%s" % [REF_DIR, v, f])
+			var d = JSON.parse_string(raw)
+			_check(d is Dictionary, "%s/%s is not a save file" % [v, f])
+			if not (d is Dictionary):
+				continue
+			if first_raw == "":
+				first_raw = raw
+			var slot := "test_ref_%d_%d" % [OS.get_process_id(), n]
+			DirAccess.make_dir_recursive_absolute("user://saves")
+			var w := FileAccess.open(gs.save_path(slot), FileAccess.WRITE)
+			w.store_string(raw)
+			w.close()
+			gs.reset()
+			var ok: bool = rm.load_game(slot)
+			_check(ok, "%s/%s (saved in %s) does not load" % [v, f, String(d.get("current_room", ""))])
+			if ok:
+				await _frames(8)
+				_check(String(gs.current_room) == String(d.get("current_room", "")) and rm.current_room != null, "%s/%s: loaded into «%s», saved in «%s»" % [v, f, String(gs.current_room), String(d.get("current_room", ""))])
+				var lost: Array = []
+				for fl in (d.get("flags", {}) as Dictionary).keys():
+					if bool(d["flags"][fl]) and not gs.has_flag(String(fl)) and not (sd.get("flag_renames") is Dictionary and (sd.get("flag_renames") as Dictionary).has(String(fl))):
+						lost.append(String(fl))
+				_check(lost.is_empty(), "%s/%s: flags of the save lost on loading: %s" % [v, f, str(lost.slice(0, 8))])
+				var bag: Array = []
+				for it in d.get("inventory", []):
+					bag.append(String(it))
+				_check(gs.inventory == bag or Array(gs.inventory) == bag, "%s/%s: the bag %s, saved %s" % [v, f, str(gs.inventory), str(bag)])
+				_check(String(gs.journal_goal) == String(d.get("journal_goal", "")), "%s/%s: the journal's goal «%s», saved «%s»" % [v, f, String(gs.journal_goal), String(d.get("journal_goal", ""))])
+				if not gs.has_flag("game_finished"):
+					await _frames(30)
+					_check(sr.current_beat.is_empty() and not sr.is_staging(), "%s/%s: after loading something plays by itself (%s)" % [v, f, str(sr.current_beat).substr(0, 120)])
+			gs.delete_save(slot)
+			n += 1
+	_check(n >= 5, "only %d reference saves read" % n)
+	print("        reference saves: %d of %d data version(s) %s load as saved" % [n, versions.size(), str(versions)])
+	# self-check: a save of a room that is gone is refused — a version that renamed a room would be caught here
+	if first_raw != "":
+		var bad: Dictionary = JSON.parse_string(first_raw)
+		bad["current_room"] = "NO_SUCH_ROOM"
+		var bslot := "test_ref_%d_bad" % OS.get_process_id()
+		var bw := FileAccess.open(gs.save_path(bslot), FileAccess.WRITE)
+		bw.store_string(JSON.stringify(bad))
+		bw.close()
+		gs.reset()
+		_check(not rm.load_game(bslot), "self-check: a reference save pointing to a room that is gone loads — the test would not catch a renamed room")
+		gs.delete_save(bslot)
+	gs.reset()
+	_reached_end = true
 
 
 # --- Helpers -----------------------------------------------------------------------------

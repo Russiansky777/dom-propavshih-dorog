@@ -26,6 +26,11 @@ extends SceneTree
 ##       by VoiceDirector: the voice's clock goes on (line_time), the line has its table of letters, and her mouth's
 ##       driver gets a shape for the moment being said (the shapes themselves — tests/test_jaw.gd JW-6; the tables
 ##       against the recordings — tools/bake_lips.py --check). Self-check — a line that is not in the table gives none.
+##   R12-7 (review: «в игре нет текста лицензий движка» — needed before Steam): the settings have a «Лицензии» button
+##       (not over the lists of saves); it opens a screen whose text holds the engine's license, the name of every
+##       third-party component the engine reports and every license text it names, and each of the game's fonts with
+##       its own license text (data/licenses.json ← assets/fonts/<font>/OFL.txt; every font folder has an entry).
+##       Self-check — built without the fonts the text has no font license.
 
 const DT := 1.0 / 60.0
 
@@ -66,7 +71,7 @@ func _run() -> void:
 	_report("R12-4 Hints: none says «Клик» — «Щёлкнуть», as everywhere", t0)
 	t0 = Time.get_ticks_msec()
 	await _test_title_and_talk()
-	_report("R12-3 / R12-5 / R12-6 The window is titled «Дом пропавших дорог»; the talk partner's mark is gone a second after a click that said nothing and holds while a line is on screen; Agata's line played by the game has its lips by sounds", t0)
+	_report("R12-3 / R12-5 / R12-6 / R12-7 The window is titled «Дом пропавших дорог»; the talk partner's mark is gone a second after a click that said nothing and holds while a line is on screen; Agata's line played by the game has its lips by sounds; the settings open the licenses of the engine, its third-party parts and the fonts", t0)
 	var failed := 0
 	for r in _results:
 		if not r[1]:
@@ -324,9 +329,60 @@ func _test_title_and_talk() -> void:
 			jaw.set("time_override", NAN)
 			_check(none.x < 0.0, "self-check R12-6: a line that is not in the table gives a shape (%.2f, %.2f)" % [none.x, none.y])
 		vd.call("stop", "test")
+	await _test_licenses(main_node)
 	gs.reset()
 	if main_node != null and is_instance_valid(main_node):
 		root.remove_child(main_node)
 		main_node.free()
 	PS.forced_render = ""
+
+
+# --- R12-7 ------------------------------------------------------------------------------------
+
+func _test_licenses(main_node: Node) -> void:
+	var LTX = load("res://scripts/ui/licenses_text.gd")
+	var sd = root.get_node("StoryData")
+	var ui = main_node.get_node("GameUi")
+	ui.call("open_menu_panel", "settings")
+	for i in 4:
+		await process_frame
+	var lic: Button = ui.get("menu_panel").find_child("Licenses", true, false)
+	_check(lic != null and lic.is_visible_in_tree() and lic.text == String(sd.call("text", "@ui.licenses")), "R12-7: the settings have no «Лицензии» button")
+	if lic == null:
+		return
+	lic.pressed.emit()
+	for i in 4:
+		await process_frame
+	_check(bool(ui.call("licenses_open")), "R12-7: «Лицензии» pressed, the screen is not open")
+	var dlg: Control = ui.get("licenses_dialog")
+	var body: RichTextLabel = dlg.find_child("Text", true, false) if dlg != null else null
+	var txt := body.text if body != null else ""
+	_check(txt.length() > 20000, "R12-7: the licenses' text is %d characters long" % txt.length())
+	_check(txt.contains(Engine.get_license_text().strip_edges().substr(0, 80)), "R12-7: the engine's own license is not in the text")
+	var missing: Array = []
+	for c in Engine.get_copyright_info():
+		if not txt.contains(String(c.get("name", ""))):
+			missing.append(String(c.get("name", "")))
+	_check(missing.is_empty() and Engine.get_copyright_info().size() > 10, "R12-7: third-party components of the engine not named: %s" % str(missing.slice(0, 6)))
+	missing = []
+	for n in Engine.get_license_info().keys():
+		if not txt.contains("── %s ──" % String(n)) or not txt.contains(String(Engine.get_license_info()[n]).strip_edges().substr(0, 60)):
+			missing.append(String(n))
+	_check(missing.is_empty(), "R12-7: license texts the engine names are not in the text: %s" % str(missing.slice(0, 6)))
+	var fonts: Array = LTX.fonts()
+	var ids: Array = []
+	for f in fonts:
+		ids.append(String(f.get("id", "")))
+		_check(txt.contains(String(f.get("name", ""))) and String(f.get("text", "")).length() > 3000 and txt.contains(String(f.get("text", ""))), "R12-7: the font «%s» with its license is not in the text" % String(f.get("name", "")))
+	for d in DirAccess.get_directories_at("res://assets/fonts"):
+		_check(ids.has(String(d)), "R12-7: the font folder «%s» has no entry in data/licenses.json (python3 tools/make_licenses.py)" % d)
+	var heads := {"intro": "i", "engine": "e", "third": "t", "fonts": "f", "texts": "x"}
+	_check(txt.contains("SIL OPEN FONT LICENSE") and not String(LTX.build(heads, [])).contains("SIL OPEN FONT LICENSE"), "self-check R12-7: the text built without the fonts still has a font license — the check tells nothing")
+	ui.call("close_licenses")
+	_check(not bool(ui.call("licenses_open")), "R12-7: «Закрыть» leaves the screen open")
+	ui.call("open_menu_panel", "save")
+	for i in 3:
+		await process_frame
+	_check(not lic.visible, "R12-7: «Лицензии» is shown over the list of saves")
+	ui.call("close_menu_panel")
 

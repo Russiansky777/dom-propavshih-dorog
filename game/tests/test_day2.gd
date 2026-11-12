@@ -41,6 +41,9 @@ func _check(cond: bool, message: String) -> void:
 
 
 func _test(test_name: String, fn: Callable) -> void:
+	# review 12.11 (the chain «new game → credits»): ONLY=<part of a test's name> runs that test alone
+	if OS.get_environment("ONLY") != "" and not test_name.to_lower().contains(OS.get_environment("ONLY").to_lower()):
+		return
 	_fails = []
 	_reached_end = false
 	var started := Time.get_ticks_msec()
@@ -86,6 +89,8 @@ func _run() -> void:
 	gs.reset()
 	for s in [AUTOSAVE, MID_SLOT, SLUICE_SLOT]:
 		gs.delete_save(s)
+	if OS.get_environment("CHAIN_IN") != "" and OS.get_environment("CHAIN_KEEP") == "":
+		gs.delete_save(OS.get_environment("CHAIN_IN"))   # the chain's link is used up
 	Engine.time_scale = 1.0
 	if main_node != null and is_instance_valid(main_node):
 		root.remove_child(main_node)
@@ -892,25 +897,42 @@ func _test_walkthrough() -> void:
 	_npc_goal_check = true
 	rm.autosave_enabled = true
 	Engine.time_scale = 4.0
-	# Day one ends at the school; back through the school door into the gallery: the night by the stove
-	# (block 1's N01: fade, H1, morning with Tikhon's line, the save «День второй»).
-	await _day_one_done(false)
-	rm.change_room("H3", "default")
-	await _frames(3)
-	var seen := await _finish()
-	# H17/T6: the day ends with sleep on the lezhanka by the stove.
-	rm.change_room("H1", "from_H3")
-	await _frames(3)
-	await _use("lezhanka")
-	var g0 := 0
-	while not gs.has_flag("done_N01") and g0 < 600:
-		seen.append_array(await _finish())
-		await process_frame
-		g0 += 1
-	await _finish()
-	_check(gs.has_flag("done_N01") and gs.has_flag("night_day1"), "the night by the stove: %s" % str(seen))
+	var seen: Array[String] = []
+	var chain_in := OS.get_environment("CHAIN_IN")
+	if chain_in != "":
+		# review 12.11 — the chain «new game → credits»: day two goes on from what the day-one bot really played to
+		# (run_tests.gd, CHAIN_OUT: the morning of day two in the workshop, the brace in the bag), not from flags set
+		# by hand; the night by the stove was played there.
+		var loaded: bool = rm.load_game(chain_in)
+		_check(loaded, "the chain: the save of day one loads («%s»)" % chain_in)
+		if not loaded:
+			return   # nothing to go on from: the test fails here (it did not reach its end), not after minutes on an empty state
+		await _frames(3)
+		await _finish()
+		print("        chain: day two from the played save — room %s, %d flags, bag %s" % [_room(), gs.flags.size(), str(gs.inventory)])
+		_check(gs.has_flag("done_N01") and gs.has_flag("night_day1") and gs.has_flag("done_M08"), "the chain: day one and its night are played in the save")
+		if _room() != "H1":
+			_check(await _go("H1"), "the chain: from %s to the living room" % _room())
+	else:
+		# Day one ends at the school; back through the school door into the gallery: the night by the stove
+		# (block 1's N01: fade, H1, morning with Tikhon's line, the save «День второй»).
+		await _day_one_done(false)
+		rm.change_room("H3", "default")
+		await _frames(3)
+		seen = await _finish()
+		# H17/T6: the day ends with sleep on the lezhanka by the stove.
+		rm.change_room("H1", "from_H3")
+		await _frames(3)
+		await _use("lezhanka")
+		var g0 := 0
+		while not gs.has_flag("done_N01") and g0 < 600:
+			seen.append_array(await _finish())
+			await process_frame
+			g0 += 1
+		await _finish()
+		_check(gs.has_flag("done_N01") and gs.has_flag("night_day1"), "the night by the stove: %s" % str(seen))
+		_check(seen.any(func(x): return x.begins_with("tikhon:Ты с утра в колокол не бей")), "Tikhon's morning line: %s" % str(seen))
 	_check(_room() == "H1", "morning in the living room (%s)" % _room())
-	_check(seen.any(func(x): return x.begins_with("tikhon:Ты с утра в колокол не бей")), "Tikhon's morning line: %s" % str(seen))
 	_check(sr.journal_goal() == String(sd.scene("N01")["goal"]), "journal: the goal from yesterday — the mill, the sluice key")
 	_check(sr.current_beat.is_empty() and not sr.is_staging(), "after the morning nothing else plays by itself")
 	# To the mill: H1 → Z2 → M1.
@@ -1395,6 +1417,10 @@ func _test_walkthrough() -> void:
 			"Pelageya: «Сейчас — к матери. Назад повезу завтра» (%s)" % str(sr.current_beat))
 	await _finish()
 	_check(_room() == "R3", "still at the far pier")
+	# the chain: the far pier at the end of day two, as really played — test_day3.gd goes on from it (CHAIN_IN)
+	if OS.get_environment("CHAIN_OUT") != "":
+		_check(rm.save_game(OS.get_environment("CHAIN_OUT"), "chain: after day two"), "the chain: the state after day two is saved")
+		print("        chain: day two saved to «%s» — room %s, %d flags, bag %s" % [OS.get_environment("CHAIN_OUT"), _room(), gs.flags.size(), str(gs.inventory)])
 	# Block 3 (22.10): the path leads up to the street of Olkhovka — the meeting with mother (M19) starts there.
 	_check(await _go("O4"), "the path leads up to the street of Olkhovka")
 	_check(gs.has_flag("started_M19"), "the meeting with mother begins on the street (M19)")

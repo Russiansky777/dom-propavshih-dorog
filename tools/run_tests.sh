@@ -101,6 +101,26 @@ echo "[godot] geometry exit code: $geo_code"
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_feedback_0211c.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # прохождение 02.11 (вечер), блок Б: хвост и жесты Тихона, окунь, удочка, переправа, Тихон в кадре ужина
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_review_1011.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # обзор игры 10.11: Тихон перебирается на словах рассказчика (M23d), с самопроверкой
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_review_1211.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # ревью 12.11: в заимствованных жестах («рука к груди», «спокойный») стойка без шва — корпус Агаты не прыгает
+# 12.11 (ревью: «нет сквозной проверки „новая игра → титры“ — стыки между днями проходил только Директор»): цепочка. Три
+# бота идут подряд на настоящих сохранениях друг друга: день первый с новой игры до утра второго дня (run_tests.gd) →
+# его сохранение → день второй до дальней опоры (test_day2.gd) → его сохранение → дни третий и четвёртый, эпилог, титры,
+# титульный экран (test_day3.gd). Выборы первого дня у цепочки свои (варежка взята обратно, рисунок птицы не тронут) —
+# проверки третьего дня идут за сделанным выбором. Самопроверка: звено без сохранения предыдущего дня — провал.
+CHAIN="chain_$$"
+chain_ok=1
+ONLY="walkthrough" CHAIN_OUT="${CHAIN}_d1" "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/run_tests.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || chain_ok=0
+ONLY="whole day two" CHAIN_IN="${CHAIN}_d1" CHAIN_OUT="${CHAIN}_d2" "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_day2.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || chain_ok=0
+ONLY="blocks 3–4 by script" CHAIN_IN="${CHAIN}_d2" "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_day3.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || chain_ok=0
+if ONLY="whole day two" CHAIN_IN="${CHAIN}_no_such_save" "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_day2.gd > "$BUILD_DIR/logs/chain_selfcheck.log" 2>&1; then
+  echo "FAIL  Цепочка «новая игра → титры», самопроверка: звено без сохранения предыдущего дня прошло зелёным" | tee -a "$BUILD_DIR/logs/tests.log"
+  chain_ok=0
+fi
+if [[ "$chain_ok" -eq 1 ]]; then
+  echo "PASS  Цепочка «новая игра → титры»: три бота подряд на настоящих сохранениях друг друга, до титров и титульного экрана; самопроверка — без сохранения предыдущего дня звено падает" | tee -a "$BUILD_DIR/logs/tests.log"
+else
+  echo "FAIL  Цепочка «новая игра → титры»: звено не прошло (строки FAIL выше)" | tee -a "$BUILD_DIR/logs/tests.log"
+  code=1
+fi
 "$GODOT" --headless --fixed-fps 60 --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_hand_hold.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # 10.11: руки Ильи на рукояти ворота — весь оборот в досягаемости с его места в кадре (HandHoldModifier), с самопроверкой
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_l10n.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # английский (03.11): копия story_en, английские субтитры поверх русского голоса, «без субтитров», меню языка с предупреждением
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_feedback_0511.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # замечания 05.11, блок 1: «Облегчить» у колокола, язык в мини-игре, Павел к двери конторы, Агата не идёт на месте
@@ -108,6 +128,7 @@ echo "[godot] geometry exit code: $geo_code"
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/bake_mouth.gd -- all check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # линия губ жителей (data/actors_rest/mouth_<id>.json) совпадает с моделью
 bash "$ROOT/tools/bake_arm_rest.sh" all check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # руки вдоль тела: кривые data/actors_rest/<id>.json совпадают с моделью и клипами
 python3 "$ROOT/tools/bake_lips.py" --check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # 12.11: губы по звукам — таблицы форм рта (game/data/lips) соответствуют записям голоса и их разметке по буквам; сдвиг начала сверяется у каждой 40-й записи
+python3 "$ROOT/tools/make_licenses.py" --check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # 12.11: лицензии шрифтов для экрана «Лицензии» (game/data/licenses.json) — у каждого шрифта его OFL.txt целиком
 "$GODOT" --headless --audio-driver Dummy --fixed-fps 60 --path "$GAME_DIR" -s res://tests/test_animation_state.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # 06.11: свои копии клипов у каждой фигуры, «слушает»=стойка без второй копии idle (предложение второго ИИ)
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_body_clear_state.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # 06.11: BodyClear — проходы без шага времени, догон, выключение
 # K (31.10): правки дефектов генератора — третий сапог Пелагеи (F_hug_pelageya), одинаковые зарубки бруса и обведённая

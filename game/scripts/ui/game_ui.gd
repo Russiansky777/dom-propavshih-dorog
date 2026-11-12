@@ -89,6 +89,10 @@ var slot_rows: Dictionary = {}   # slot -> {info: Label, save: Button, load: But
 var delete_dialog: Control = null   # J (стр. 7): «Вы действительно хотите удалить это сохранение?»
 var lang_buttons: Dictionary = {}   # "voice:ru" | "voice:en" | "subs:ru" | "subs:en" | "subs:none" -> Button (menu, Director 03.11)
 var lang_dialog: Control = null     # the warning before English: «экспериментальные, могут содержать ошибки» + the tick
+## Review 12.11 (before Steam): the licenses of the engine, of the third-party code built into it and of the game's
+## fonts — a game made with Godot has to carry them (LicensesText). Built when first opened: the text is long.
+const LicensesText := preload("res://scripts/ui/licenses_text.gd")
+var licenses_dialog: Control = null
 var _lang_pending: Array = []       # [kind, value] waiting for the tick
 var delete_slot: String = ""
 var fade: ColorRect
@@ -650,6 +654,10 @@ func _build() -> void:
 	ng.name = "NewGame"
 	ng.pressed.connect(_on_new_game)
 	bottom.add_child(ng)
+	var lic := _button(StoryData.text("@ui.licenses"), 190)
+	lic.name = "Licenses"
+	lic.pressed.connect(open_licenses)
+	bottom.add_child(lic)
 	var mclose := _button(StoryData.text("@ui.close"), 160)
 	mclose.name = "CloseMenu"
 	mclose.pressed.connect(toggle_menu)
@@ -1144,6 +1152,9 @@ func open_menu_panel(mode: String = "all") -> void:
 
 ## Closes the save / load / settings panel; false when it was not open (Esc goes on to the pause menu).
 func close_menu_panel() -> bool:
+	if licenses_open():
+		close_licenses()   # Esc on the licenses closes them and keeps the panel
+		return true
 	if delete_dialog_open():
 		_close_delete(false)   # Esc on the question keeps the save and the panel
 		return true
@@ -1196,6 +1207,9 @@ func _apply_menu_mode() -> void:
 	var ng: Control = menu_panel.find_child("NewGame", true, false)
 	if ng != null:
 		ng.visible = menu_mode == "all"
+	var lic: Control = menu_panel.find_child("Licenses", true, false)
+	if lic != null:
+		lic.visible = menu_mode == "all" or menu_mode == "settings"   # with the settings, not over the list of saves
 	var cl: Button = menu_panel.find_child("CloseMenu", true, false)
 	if cl != null:
 		cl.text = StoryData.text("@ui.close" if menu_mode == "all" else "@ui.back")
@@ -1924,6 +1938,89 @@ func _close_lang_dialog(confirmed: bool) -> void:
 
 
 ## The same board as the save-delete question: the warning in both languages, the tick («понимаю, включить») and the cross.
+func open_licenses() -> void:
+	if licenses_dialog == null:
+		_build_licenses_dialog()
+	licenses_dialog.visible = true
+	licenses_dialog.move_to_front()
+
+
+func close_licenses() -> void:
+	if licenses_dialog != null:
+		licenses_dialog.visible = false
+
+
+func licenses_open() -> bool:
+	return licenses_dialog != null and licenses_dialog.visible
+
+
+func _build_licenses_dialog() -> void:
+	licenses_dialog = Control.new()
+	licenses_dialog.name = "LicensesDialog"
+	licenses_dialog.set_anchors_preset(Control.PRESET_FULL_RECT)
+	licenses_dialog.size = Vector2(1920, 1080)
+	licenses_dialog.mouse_filter = Control.MOUSE_FILTER_STOP
+	licenses_dialog.theme = UiTheme.get_theme()
+	menu_layer.add_child(licenses_dialog)
+	var dim := ColorRect.new()
+	dim.name = "Dim"
+	dim.color = Color(0, 0, 0, 0.6)
+	dim.size = Vector2(1920, 1080)
+	dim.mouse_filter = Control.MOUSE_FILTER_STOP
+	dim.gui_input.connect(func(e: InputEvent) -> void:
+		if e is InputEventMouseButton and e.pressed:
+			close_licenses())
+	licenses_dialog.add_child(dim)
+	var panel := Control.new()
+	panel.name = "Panel"
+	panel.size = Vector2(1500, 920)
+	panel.position = (Vector2(1920, 1080) - panel.size) * 0.5
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	var src := MenuConfig.texture("pause_panel.png")
+	var planks: AtlasTexture = null
+	if src != null:
+		planks = AtlasTexture.new()
+		planks.atlas = src
+		planks.region = BOARD_PLANKS
+	panel.draw.connect(func() -> void:
+		var inner := Rect2(Vector2.ZERO, panel.size).grow(-18)
+		CarvedFrame.draw_frame(panel, inner, 18.0)
+		if planks != null:
+			panel.draw_texture_rect(planks, inner, false)
+			panel.draw_rect(inner, Color(0, 0, 0, 0.45))
+		else:
+			panel.draw_rect(inner, Color(0.12, 0.075, 0.045, 0.97)))
+	licenses_dialog.add_child(panel)
+	var head := Label.new()
+	head.name = "Title"
+	head.text = StoryData.text("@ui.licenses")
+	head.theme_type_variation = &"HeaderSmall"
+	head.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	head.position = Vector2(60, 40)
+	head.size = Vector2(panel.size.x - 120, 48)
+	panel.add_child(head)
+	var body := RichTextLabel.new()
+	body.name = "Text"
+	body.bbcode_enabled = false
+	body.scroll_active = true
+	body.selection_enabled = false
+	body.focus_mode = Control.FOCUS_NONE
+	body.position = Vector2(70, 104)
+	body.size = Vector2(panel.size.x - 140, panel.size.y - 104 - 110)
+	body.add_theme_font_size_override("normal_font_size", 22)
+	body.text = LicensesText.build({"intro": StoryData.text("@ui.licenses_intro"), "engine": StoryData.text("@ui.licenses_engine"),
+		"third": StoryData.text("@ui.licenses_third"), "fonts": StoryData.text("@ui.licenses_fonts"),
+		"texts": StoryData.text("@ui.licenses_texts")}, LicensesText.fonts())
+	panel.add_child(body)
+	var cl := _button(StoryData.text("@ui.close"), 200)
+	cl.name = "Close"
+	cl.position = Vector2((panel.size.x - 200) * 0.5, panel.size.y - 92)
+	cl.size = Vector2(200, 52)
+	cl.pressed.connect(close_licenses)
+	panel.add_child(cl)
+	licenses_dialog.visible = false
+
+
 func _build_lang_dialog() -> void:
 	lang_dialog = Control.new()
 	lang_dialog.name = "LangDialog"

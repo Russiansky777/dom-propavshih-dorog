@@ -52,6 +52,9 @@ func _run() -> void:
 		return
 	rm.autosave_slot = TEST_AUTOSAVE_SLOT
 	rm.autosave_enabled = false
+	# set here too (not only by the story data test): ONLY=<name> runs one test alone
+	sd = root.get_node_or_null("StoryData")
+	sr = root.get_node_or_null("StoryRunner")
 
 	await _test("GameState save → modify → load restores flags/inventory/room", _test_save_load)
 	await _test("RoomManager.change_room loads RoomOffice and places player at spawn", _test_change_room)
@@ -86,6 +89,9 @@ func _run() -> void:
 # --- Harness ---------------------------------------------------------------
 
 func _test(test_name: String, fn: Callable) -> void:
+	# review 12.11 (the chain «new game → credits»): ONLY=<part of a test's name> runs that test alone
+	if OS.get_environment("ONLY") != "" and not test_name.to_lower().contains(OS.get_environment("ONLY").to_lower()):
+		return
 	_current_checks = []
 	var started := Time.get_ticks_msec()
 	await fn.call()
@@ -1095,6 +1101,13 @@ func _test_walkthrough() -> void:
 	for sid in ["M01", "M02", "M03", "M04", "M05", "M06", "M07", "M08", "N01", "V01", "V02", "V03", "Q04"]:
 		_check(gs.has_flag("done_" + sid), "scene %s not done" % sid)
 	_check(bot.log.is_empty(), "bot log: %s" % str(bot.log))
+	# review 12.11 — the chain «new game → credits» (tools/run_tests.sh): the three bots played each from a state
+	# built for it (this one from a new game, day two from flags set by hand, days three and four from a start point) —
+	# the joins between the days were walked only by the Director. CHAIN_OUT=<slot>: the state this bot really played
+	# to (the morning of day two, the brace in the bag) is saved; test_day2.gd goes on from it (CHAIN_IN).
+	if OS.get_environment("CHAIN_OUT") != "":
+		_check(rm.save_game(OS.get_environment("CHAIN_OUT"), "chain: after day one"), "the chain: the state after day one is saved")
+		print("        chain: day one saved to «%s» — room %s, %d flags, bag %s" % [OS.get_environment("CHAIN_OUT"), bot.room_id(), gs.flags.size(), str(gs.inventory)])
 	Engine.time_scale = 1.0
 	_cleanup_m1()
 

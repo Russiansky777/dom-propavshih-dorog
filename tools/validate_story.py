@@ -860,6 +860,27 @@ for k, v in expected.items():
 
 proposed = [(s["id"], s["proposed_change"]) for s in scenes if s.get("proposed_change")]
 
+# Формат сохранений (ревью 12.11: «формат сохранений не закреплён: нет эталонных сохранений, номер версии не меняется» —
+# story_version стоял «v3-data-1» с 17.10 при сотне правок сцен). Сохранение хранит флаги, предметы, комнату и сцены по
+# именам; подпись — отпечаток этих имён (флаги flags.json, сцены по порядку, предметы, комнаты). Изменились имена —
+# старые сохранения могут читаться иначе: поднять story_version, снять эталонные сохранения новой версии
+# (game/tests/data/saves_ref/<версия>/ — tests/test_saves.gd читает их все, и прежних версий) и записать новую подпись.
+def _save_signature() -> str:
+    import hashlib
+    sig = {"flags": sorted(flags_doc["flags"].keys()), "scenes": [str(sc_["id"]) for sc_ in scenes],
+           "items": sorted(str(it_["id"]) for it_ in items_doc["items"]), "rooms": sorted(loc_ids)}
+    return hashlib.sha1(json.dumps(sig, ensure_ascii=False, sort_keys=True).encode("utf-8")).hexdigest()[:12]
+
+
+if "--save-signature" in sys.argv:
+    print(_save_signature())
+    sys.exit(0)
+if meta.get("save_signature") != _save_signature():
+    err(f"meta.json save_signature {meta.get('save_signature')!r} не совпадает с данными ({_save_signature()}): имена флагов, сцен, "
+        f"предметов или комнат изменились — поднять story_version (сейчас {meta.get('story_version')!r}), снять эталонные сохранения "
+        f"новой версии в game/tests/data/saves_ref/<версия>/ (цепочка ботов с CHAIN_KEEP=1, см. tests/test_saves.gd) и записать подпись "
+        f"(python3 tools/validate_story.py --save-signature)")
+
 # Заморозка текста (meta.json text_freeze, Директор 12.11, 21:44 «утвердить как есть»): тексты окончательные, пометка
 # draft в данных больше не допускается — новый или изменённый текст попадает в игру только решением Директора и вместе
 # с голосом (validate_voice под заморозкой считает запись с изменённым текстом ошибкой).
