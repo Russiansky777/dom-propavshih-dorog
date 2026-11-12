@@ -251,6 +251,8 @@ func _run() -> void:
 			var have = JSON.parse_string(FileAccess.get_file_as_string(path)) if FileAccess.file_exists(path) else null
 			var same: bool = have is Dictionary and JSON.stringify(have) == JSON.stringify(JSON.parse_string(JSON.stringify(d)))
 			print("%s: %s" % [id, "matches" if same else "DIFFERS from %s" % path])
+			if not same:
+				print("FAIL  lip line %s: %s differs from the model — re-bake: godot --headless --path game -s res://tests/bake_mouth.gd -- %s" % [id, path, id])
 			bad += 0 if same else 1
 		else:
 			var f := FileAccess.open(path, FileAccess.WRITE)

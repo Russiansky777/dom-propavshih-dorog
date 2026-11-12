@@ -344,6 +344,9 @@ func _run() -> void:
 			print("%-9s check: differs from %s by at most %.2f°" % [id, path, worst])
 			if worst > 1.0:
 				bad += 1
+				# 12.11: the full run of 11.11 was red on Nina here and nobody saw it — the summary of a run lists
+				# the lines that begin with FAIL
+				print("FAIL  arm rest %s: the curves in %s differ from the model by %.2f° (> 1°) — re-bake: tools/bake_arm_rest.sh %s" % [id, path, worst, id])
 		else:
 			DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(path.get_base_dir()))
 			var f := FileAccess.open(path, FileAccess.WRITE)

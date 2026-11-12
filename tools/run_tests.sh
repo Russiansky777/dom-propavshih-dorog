@@ -8,6 +8,11 @@
 set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/godot_env.sh"
 
+# 12.11: a check that failed must not stop the run. With `set -e -o pipefail` the form `cmd | tee log; [[ "${PIPESTATUS[0]}"
+# -ne 0 ]] && code=1` left the script at the failing pipeline: on 11.11 and 12.11 the arm-rest check (Nina's curves,
+# 1,29° stale) ended two «full» runs there — the 3D sets, the gamepad, hand-overs, mouths, frame video, the trailer and
+# the log guard after it never ran, and the run showed one red line. Every check now ends with `|| code=1`; the last
+# line of the log («[tests] overall exit code») says the run reached its end — godot_check.yml fails a run without it.
 mkdir -p "$BUILD_DIR/logs"
 : > "$BUILD_DIR/logs/tests.log"
 code=0
@@ -31,7 +36,7 @@ python3 -I "$ROOT/tools/validate_music.py" --quiet 2>&1 | tee -a "$BUILD_DIR/log
 python3 -I "$ROOT/tools/validate_sfx.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # звуки: data/story/sfx.json, громкость относительно музыки
 python3 -I "$ROOT/tools/validate_voice.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # голос: манифест ↔ сцены (sha1), cast.json, громкость, копия игры
 python3 -I "$ROOT/tools/validate_voice_en.py" --quiet 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # английский голос (03.11): assets/voice/en ↔ game/data/story_en, копия игры
-bash "$ROOT/tools/test_voice_trim_stdin.sh" 2>&1 | tee -a "$BUILD_DIR/logs/tests.log"; [[ "${PIPESTATUS[0]}" -ne 0 ]] && code=1  # 09.11: обрезка голоса не читает stdin (sync_voice терял «/» следующего пути)
+bash "$ROOT/tools/test_voice_trim_stdin.sh" 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # 09.11: обрезка голоса не читает stdin (sync_voice терял «/» следующего пути)
 python3 -I "$ROOT/tools/voice_after_h59.py" --check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || echo "[voice] список перезаписи после H59 устарел — python3 tools/voice_after_h59.py (предупреждение)" | tee -a "$BUILD_DIR/logs/tests.log"  # H5/H44/G57: строки, ждущие финальной записи после H59
 godot_import
 
@@ -100,18 +105,18 @@ echo "[godot] geometry exit code: $geo_code"
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_feedback_0511.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # замечания 05.11, блок 1: «Облегчить» у колокола, язык в мини-игре, Павел к двери конторы, Агата не идёт на месте
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_villagers_v3.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # блок 3: жители v3 (модель, кончики пальцев не в теле, разовые действия)
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/bake_mouth.gd -- all check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # линия губ жителей (data/actors_rest/mouth_<id>.json) совпадает с моделью
-bash "$ROOT/tools/bake_arm_rest.sh" all check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log"; [[ "${PIPESTATUS[0]}" -ne 0 ]] && code=1  # руки вдоль тела: кривые data/actors_rest/<id>.json совпадают с моделью и клипами
+bash "$ROOT/tools/bake_arm_rest.sh" all check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # руки вдоль тела: кривые data/actors_rest/<id>.json совпадают с моделью и клипами
 "$GODOT" --headless --audio-driver Dummy --fixed-fps 60 --path "$GAME_DIR" -s res://tests/test_animation_state.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # 06.11: свои копии клипов у каждой фигуры, «слушает»=стойка без второй копии idle (предложение второго ИИ)
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_body_clear_state.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # 06.11: BodyClear — проходы без шага времени, догон, выключение
 # K (31.10): правки дефектов генератора — третий сапог Пелагеи (F_hug_pelageya), одинаковые зарубки бруса и обведённая
 # нужная на рисунке Дуни (M05): копии в игре = оригинал + правка (нужен Pillow; numpy — для кадра объятия)
 if python3 -c "import PIL, numpy" 2>/dev/null; then
-  python3 "$ROOT/tools/retouch_art.py" --check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log"; [[ "${PIPESTATUS[0]}" -ne 0 ]] && code=1
-  python3 "$ROOT/tools/import_room_art.py" F_hug_pelageya --check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log"; [[ "${PIPESTATUS[0]}" -ne 0 ]] && code=1
+  python3 "$ROOT/tools/retouch_art.py" --check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
+  python3 "$ROOT/tools/import_room_art.py" F_hug_pelageya --check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
 fi
 # I-T6: заплатка «канат снят со стопора» R1 собрана с нынешнего кадра (I-T3 сменил дневной кадр R1, заплатка осталась старой); нужен opencv — без него пропуск
-if python3 -c "import cv2" 2>/dev/null; then python3 "$ROOT/tools/make_rope_layers.py" --check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log"; [[ "${PIPESTATUS[0]}" -ne 0 ]] && code=1; fi
-if python3 -c "import cv2" 2>/dev/null; then python3 "$ROOT/tools/make_windlass_layers.py" --check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log"; [[ "${PIPESTATUS[0]}" -ne 0 ]] && code=1; fi  # 10.11: части ворота (заплата, ручки, витки) — из картины стройки
+if python3 -c "import cv2" 2>/dev/null; then python3 "$ROOT/tools/make_rope_layers.py" --check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1; fi
+if python3 -c "import cv2" 2>/dev/null; then python3 "$ROOT/tools/make_windlass_layers.py" --check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1; fi  # 10.11: части ворота (заплата, ручки, витки) — из картины стройки
 # K (31.10): the live 3D figures' tests measure millimetres of a simulation whose idle variants and springs depend on
 # the tests run before them in the same file — one check now and then lands a millimetre over its limit (the braid, the
 # arm by the bag, the stop's self-check), and a red run left the Director without an exe. A 3D test file that fails is
@@ -130,29 +135,29 @@ run_3d test_motion_smooth  # плавность живых фигур (Дире�
 # 08.11: a painted frame alive (background.video, Ogg Theora loop): the player over the picture, plays and wraps, the
 # loop's seam, the 2-second exit fade. Video decodes only with a display — under xvfb (CI, here); without it skipped.
 if command -v xvfb-run >/dev/null; then
-  xvfb-run -a -s "-screen 0 1920x1080x24" "$GODOT" --path "$GAME_DIR" --display-driver x11 --rendering-driver opengl3 --resolution 1920x1080 --audio-driver Dummy -s res://tests/test_frame_video.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log"; [[ "${PIPESTATUS[0]}" -ne 0 ]] && code=1
+  xvfb-run -a -s "-screen 0 1920x1080x24" "$GODOT" --path "$GAME_DIR" --display-driver x11 --rendering-driver opengl3 --resolution 1920x1080 --audio-driver Dummy -s res://tests/test_frame_video.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
   # 09.11 Steam Deck: the pad drives the mouse (PadInput) — stick, buttons, hints, vibration, settings
-  xvfb-run -a -s "-screen 0 1920x1080x24" "$GODOT" --path "$GAME_DIR" --display-driver x11 --rendering-driver opengl3 --resolution 1920x1080 --fixed-fps 60 --audio-driver Dummy -s res://tests/test_gamepad.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log"; [[ "${PIPESTATUS[0]}" -ne 0 ]] && code=1
+  xvfb-run -a -s "-screen 0 1920x1080x24" "$GODOT" --path "$GAME_DIR" --display-driver x11 --rendering-driver opengl3 --resolution 1920x1080 --fixed-fps 60 --audio-driver Dummy -s res://tests/test_gamepad.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
   # 09.11 (Director 11:34–13:36): things in hands and turns as played — Tamara's key from hand to hand, Pelageya's line
   # at the plate, the epilogue frames' turns, small actions taken out, the bag on the bridge (live 3D under xvfb)
-  xvfb-run -a -s "-screen 0 1920x1080x24" "$GODOT" --path "$GAME_DIR" --display-driver x11 --rendering-driver opengl3 --resolution 1920x1080 --fixed-fps 30 --audio-driver Dummy -s res://tests/test_handover.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log"; [[ "${PIPESTATUS[0]}" -ne 0 ]] && code=1
+  xvfb-run -a -s "-screen 0 1920x1080x24" "$GODOT" --path "$GAME_DIR" --display-driver x11 --rendering-driver opengl3 --resolution 1920x1080 --fixed-fps 30 --audio-driver Dummy -s res://tests/test_handover.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
   # the villagers' painted mouths (Director 09.11, 21:56 / 22:18): open by the voice, dark, on the lip line, the jaw bone
   # left alone; self-check — no shape, no mouth (the figures alone, rendered)
-  xvfb-run -a -s "-screen 0 1280x720x24" "$GODOT" --path "$GAME_DIR" --display-driver x11 --rendering-driver opengl3 --resolution 320x180 --fixed-fps 60 --audio-driver Dummy -s res://tests/test_jaw.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log"; [[ "${PIPESTATUS[0]}" -ne 0 ]] && code=1
+  xvfb-run -a -s "-screen 0 1280x720x24" "$GODOT" --path "$GAME_DIR" --display-driver x11 --rendering-driver opengl3 --resolution 320x180 --fixed-fps 60 --audio-driver Dummy -s res://tests/test_jaw.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
 else
   echo "[tests] test_frame_video skipped: no xvfb-run" | tee -a "$BUILD_DIR/logs/tests.log"
   "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_jaw.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # без экрана — данные и раскрытие по голосу
 fi
 # 09.11 вечер: петли-картины без рывков — один ключевой кадр на ролик (Theora выдавала скачок раз в 0,5 с), шов ≤ 3/255,
 # без звука; самопроверка: ролик с ключевым кадром каждые 12 кадров ловится
-python3 -I "$ROOT/tools/validate_video_loops.py" --self-check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log"; [[ "${PIPESTATUS[0]}" -ne 0 ]] && code=1
-python3 -I "$ROOT/tools/validate_occluders.py" --self-check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log"; [[ "${PIPESTATUS[0]}" -ne 0 ]] && code=1  # 10.11: слои переднего плана непрозрачны внутри («Стул и Агата прозрачные»)
+python3 -I "$ROOT/tools/validate_video_loops.py" --self-check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
+python3 -I "$ROOT/tools/validate_occluders.py" --self-check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # 10.11: слои переднего плана непрозрачны внутри («Стул и Агата прозрачные»)
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_trailer.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # TR1: режим съёмки трейлера (data/trailer) — планы читаются, планы собираются, комната в нужном состоянии, сохранения не пишутся
 # 10.11: a script error inside a test stops that test function where it stands — nothing after it is checked and the
 # test still counts as passed (test_ui_cursors, test_batch_j: «green» and blind for days). A run with one is a failure.
-python3 -I "$ROOT/tools/check_test_log.py" --self-check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log"; [[ "${PIPESTATUS[0]}" -ne 0 ]] && code=1
+python3 -I "$ROOT/tools/check_test_log.py" --self-check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
 cp "$BUILD_DIR/logs/tests.log" "$BUILD_DIR/logs/tests_scan.log"
-python3 -I "$ROOT/tools/check_test_log.py" "$BUILD_DIR/logs/tests_scan.log" 2>&1 | tee -a "$BUILD_DIR/logs/tests.log"; [[ "${PIPESTATUS[0]}" -ne 0 ]] && code=1
+python3 -I "$ROOT/tools/check_test_log.py" "$BUILD_DIR/logs/tests_scan.log" 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
 rm -f "$BUILD_DIR/logs/tests_scan.log"
 # CI: every failure becomes an annotation (title, test, its messages) — the checks API shows annotations without the
 # job log, whose download host agents cannot reach (22.10: two red runs with no way to read why).

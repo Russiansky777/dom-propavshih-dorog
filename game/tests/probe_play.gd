@@ -16,6 +16,7 @@ extends SceneTree
 ##   adv:N           — N times, each after the staging and `line_s` seconds (default 0.3)
 ##   line_s:S        — seconds a line stays before `adv:N` advances it
 ##   flag:F          — set a flag
+##   before:ID       — a clean state with every scene before ID done (12.11: the whole-game tour, scene by scene)
 ##   room:ID[,spawn] — change the room (a scene with trigger `enter` starts as in the game)
 ##   info            — print the scene, its line, the frame
 ##   mech:METHOD[,ARG] — call the open mechanic panel's method (windlass: mech:signal_pressed,lower)
@@ -257,6 +258,23 @@ func _run() -> void:
 					if not sr.current_beat.is_empty() and String(sr.current_beat.get("line_id", "")).replace(":", "_").replace("/", "_") == lid and not sr.is_staging():
 						sr.advance()   # the first advance only finished the line's text
 						await _wait(0.15)
+			"before":
+				# before:ID — the story as if every scene before ID were done (the tests' _flags_before): a clean state,
+				# done_/started_ and the grants of each earlier scene; the room and the scene come by later commands
+				gs.reset()
+				sr.call("_on_state_reset")
+				for sid in sd.scene_order:
+					if sid == arg:
+						break
+					var sc0: Dictionary = sd.scene(sid)
+					gs.set_flag("done_" + sid, true)
+					gs.set_flag("started_" + sid, true)
+					for f in sc0.get("grants", {}).get("flags", []):
+						gs.set_flag(String(f), true)
+					for st0 in sc0.get("stage", []):
+						for f in st0.get("sets", []):
+							gs.set_flag(String(f), true)
+				await _wait(0.2)
 			"line_s":
 				line_s = float(arg)
 			"flag":
