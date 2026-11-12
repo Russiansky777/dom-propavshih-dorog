@@ -162,6 +162,9 @@ jobs:
         continue-on-error: true
         env:
           GODOT: /home/runner/godot/Godot_v4.7.2-stable_linux.x86_64
+          # 12.11: only the single exe. The «full» zip (exe + pck, 1.9 GB) differed by the size of the drawn sheets
+          # alone, and the game draws live figures — the sheets are a fallback (DECISIONS 12.11). Back: WIN_FULL=1.
+          WIN_FULL: "0"
         run: tools/export_windows.sh
 
       # The site (deploy below) must not wait on the exe: a failed release upload (22.10: twice in a row, step
@@ -183,7 +186,7 @@ jobs:
             fi
             printf '%s\n' "$out"
           }
-          notes="Текущая сборка main @ ${GITHUB_SHA::7} ($(date -u +%Y-%m-%d\ %H:%M) UTC). DomPropavshihDorog.exe — один файл, картинка как на сайте; DomPropavshihDorog_win.zip — полное качество, распаковать целиком (exe и pck рядом). Не подписана: SmartScreen → «Подробнее» → «Выполнить в любом случае». Веб-версия: https://russiansky777.github.io/dom-propavshih-dorog/"
+          notes="Текущая сборка main @ ${GITHUB_SHA::7} ($(date -u +%Y-%m-%d\ %H:%M) UTC). DomPropavshihDorog.exe — один файл, вся игра. Не подписана: SmartScreen → «Подробнее» → «Выполнить в любом случае». Веб-версия: https://russiansky777.github.io/dom-propavshih-dorog/"
           # Тег двигаем через API, а не git push: из неглубокого клона push тега падал HTTP 500 (с 24.10 exe не обновлялся).
           if gh api "repos/${GITHUB_REPOSITORY}/git/refs/tags/latest" >/dev/null 2>&1; then
             step gh api -X PATCH "repos/${GITHUB_REPOSITORY}/git/refs/tags/latest" -f sha="$GITHUB_SHA" -F force=true
@@ -197,9 +200,12 @@ jobs:
           fi
           ls -la build/windows/
           step gh release upload latest build/windows/DomPropavshihDorog.exe --clobber
-          # Полная ПК-версия (I-T7): exe + pck в zip (≤ 1,9 ГБ), картинка в полном качестве.
+          # The zip is no longer built (WIN_FULL=0 above): an old one left in the release would be a build of another
+          # day next to the new exe. If it is built again (WIN_FULL=1), it is uploaded as before.
           if [ -f build/windows/DomPropavshihDorog_win.zip ]; then
             step gh release upload latest build/windows/DomPropavshihDorog_win.zip --clobber
+          elif gh release view latest --json assets --jq '.assets[].name' | grep -qx DomPropavshihDorog_win.zip; then
+            step gh release delete-asset latest DomPropavshihDorog_win.zip --yes
           fi
 
   deploy:
