@@ -1,10 +1,9 @@
 {
- "_comment": "Тексты необязательных историй Q02 «На карте вырос сад» и Q06 «Второй верстак» (включены Директором 23.10 11:51, Docs/DECISIONS.md; данные — rooms/O1.json, O4.json, H2.json, quests.json, scenes/E5.json M26). Все draft: true — текст доводит владелец текста (ChatGPT с Директором); голоса не записаны (после текстового прохода). Поле line {speaker, text} — слова персонажа рядом с Агатой или мысль Агаты от первого лица (её голос); text — запасной закадровый вариант. Подписи (label*, opt_*, title*, written_* — надписи заглушек) не озвучиваются. H47/H48 (24.10): Q02 — дорога Ульяны по карте тремя кликами (Ульяна остаётся в классе), Q06 — верстак перетаскиванием деталей; новые строки тоже draft.",
+ "_comment": "Тексты необязательных историй Q02 «На карте вырос сад» и Q06 «Второй верстак» (включены Директором 23.10 11:51, Docs/DECISIONS.md; данные — rooms/O1.json, O4.json, H2.json, quests.json, scenes/E5.json M26). 12.11: тексты утверждены Директором как есть («утвердить как есть», 21:44), пометки draft сняты — заморозка текста (meta.json text_freeze); голоса записаны. Поле line {speaker, text} — слова персонажа рядом с Агатой или мысль Агаты от первого лица (её голос); text — запасной закадровый вариант. Подписи (label*, opt_*, title*, written_* — надписи заглушек) не озвучиваются. H47/H48 (24.10): Q02 — дорога Ульяны по карте тремя кликами (Ульяна остаётся в классе), Q06 — верстак перетаскиванием деталей; новые строки тоже draft.",
  "lang": "ru",
  "texts": {
   "O1q.village_map.label": {
-   "text": "Old map of Olkhovka",
-   "draft": true
+   "text": "Old map of Olkhovka"
   },
   "O1q.village_map.look": {
    "text": "Nina has hung up the school map of Olkhovka for the lesson.",
@@ -15,8 +14,7 @@
     "map": [
      "R3-62"
     ]
-   },
-   "draft": true
+   }
   },
   "O1q.village_map.use": {
    "text": "We drew this map as a class. There's the house at the edge — Ilya's now. Beside it, just a fence and empty space.",
@@ -28,7 +26,6 @@
      "R3-63"
     ]
    },
-   "draft": true,
    "line": {
     "speaker": "agata",
     "text": "We drew this map as a class. There's the house at the edge — Ilya's now. Beside it, just a fence and empty space."
@@ -36,7 +33,6 @@
   },
   "O1q.village_map.ulyana_ours": {
    "text": "But that's our garden! On your map there's only a fence behind our house.",
-   "draft": true,
    "line": {
     "speaker": "ulyana",
     "text": "But that's our garden! On your map there's only a fence behind our house."
@@ -44,7 +40,6 @@
   },
   "O1q.village_map.agata_help": {
    "text": "Help me find it, then. How do I get to your house?",
-   "draft": true,
    "line": {
     "speaker": "agata",
     "text": "Help me find it, then. How do I get to your house?"
@@ -52,7 +47,6 @@
   },
   "O1q.village_map.ulyana_route": {
    "text": "Take the road down from the school. Our house is the very last one. The garden's behind it, where your map is blank.",
-   "draft": true,
    "line": {
     "speaker": "ulyana",
     "text": "Take the road down from the school. Our house is the very last one. The garden's behind it, where your map is blank."
@@ -68,7 +62,6 @@
      "R3-65"
     ]
    },
-   "draft": true,
    "line": {
     "speaker": "agata",
     "text": "I'll mark the tracing paper: school, your house, then the garden."
@@ -76,7 +69,6 @@
   },
   "O1q.village_map.traced": {
    "text": "Currants grow there now.",
-   "draft": true,
    "line": {
     "speaker": "agata",
     "text": "Currants grow there now."
@@ -84,71 +76,55 @@
   },
   "O1q.village_map.ulyana_apple": {
    "text": "And an apple tree! Papa planted it when I was born.",
-   "draft": true,
    "line": {
     "speaker": "ulyana",
     "text": "And an apple tree! Papa planted it when I was born."
    }
   },
   "O1q.village_map.prompt": {
-   "text": "Where should the tracing go?",
-   "draft": true
+   "text": "Where should the tracing go?"
   },
   "O1q.village_map.opt_old": {
-   "text": "Pin it over the old map — show what was and what is",
-   "draft": true
+   "text": "Pin it over the old map — show what was and what is"
   },
   "O1q.village_map.opt_new": {
-   "text": "Give it to Ulyana — it's her map now",
-   "draft": true
+   "text": "Give it to Ulyana — it's her map now"
   },
   "O1q.village_map.look_old": {
-   "text": "Tracing paper over the old map of Olkhovka, with Ilya's garden drawn on it.",
-   "draft": true
+   "text": "Tracing paper over the old map of Olkhovka, with Ilya's garden drawn on it."
   },
   "O1q.village_map.look_new": {
-   "text": "The old map of Olkhovka. We gave Ulyana the tracing with the garden.",
-   "draft": true
+   "text": "The old map of Olkhovka. We gave Ulyana the tracing with the garden."
   },
   "O1q.village_map.written_title": {
-   "text": "Olkhovka",
-   "draft": true
+   "text": "Olkhovka"
   },
   "O1q.village_map.written_school": {
-   "text": "school",
-   "draft": true
+   "text": "school"
   },
   "O1q.village_map.written_river": {
-   "text": "Zarechye",
-   "draft": true
+   "text": "Zarechye"
   },
   "O1q.village_map.written_pupils": {
-   "text": "drawn by the pupils of Olkhovka School",
-   "draft": true
+   "text": "drawn by the pupils of Olkhovka School"
   },
   "mech.village_map.title": {
-   "text": "Map of Olkhovka",
-   "draft": true
+   "text": "Map of Olkhovka"
   },
   "mech.village_map.label_hint": {
-   "text": "Trace Ulya's route in order: school → her house → garden. A mistake means starting again.",
-   "draft": true
+   "text": "Trace Ulya's route in order: school → her house → garden. A mistake means starting again."
   },
   "mech.village_map.place_school": {
-   "text": "School",
-   "draft": true
+   "text": "School"
   },
   "mech.village_map.place_house": {
-   "text": "Ulya's house",
-   "draft": true
+   "text": "Ulya's house"
   },
   "mech.village_map.place_garden": {
-   "text": "Garden",
-   "draft": true
+   "text": "Garden"
   },
   "mech.village_map.wrong": {
    "text": "Not there! Start again. From the school to our house, then to the garden.",
-   "draft": true,
    "line": {
     "speaker": "ulyana",
     "text": "Not there! Start again. From the school to our house, then to the garden."
@@ -156,19 +132,16 @@
   },
   "mech.village_map.wrong_again": {
    "text": "Not here. Back to the school again.",
-   "draft": true,
    "line": {
     "speaker": "ulyana",
     "text": "Not here. Back to the school again."
    }
   },
   "O4q.workshop.label": {
-   "text": "Ilya's workshop",
-   "draft": true
+   "text": "Ilya's workshop"
   },
   "O4q.workshop.look": {
-   "text": "Ilya's workshop shed, in his yard. Wood shavings spill right to the doorstep.",
-   "draft": true
+   "text": "Ilya's workshop shed, in his yard. Wood shavings spill right to the doorstep."
   },
   "O4q.workshop.mitya_cramped": {
    "text": "Even Mitya and I are cramped at one bench.",
@@ -180,7 +153,6 @@
      "R3-67"
     ]
    },
-   "draft": true,
    "line": {
     "speaker": "ilya",
     "text": "Even Mitya and I are cramped at one bench."
@@ -194,7 +166,6 @@
     "pace": "ровно",
     "takes": 3
    },
-   "draft": false,
    "line": {
     "speaker": "ilya",
     "text": "Come into my workshop — there's something to do."
@@ -208,7 +179,6 @@
     "pace": "ровно",
     "takes": 3
    },
-   "draft": false,
    "line": {
     "speaker": "ilya",
     "text": "Can't keep Ulya away from the bench now. Knee-deep in shavings."
@@ -217,7 +187,6 @@
   },
   "O4q.workshop.ilya_third": {
    "text": "We'll find room for a third, too.",
-   "draft": true,
    "line": {
     "speaker": "ilya",
     "text": "We'll find room for a third, too."
@@ -234,107 +203,82 @@
      "R3-69"
     ]
    },
-   "draft": true,
    "line": {
     "speaker": "ilya",
     "text": "Ulya follows me everywhere with a plane. Let's make her a bench of her own — a second one."
    }
   },
   "O4q.workshop.prompt": {
-   "text": "Where shall the second bench go?",
-   "draft": true
+   "text": "Where shall the second bench go?"
   },
   "O4q.workshop.opt_ilya": {
-   "text": "Leave it with Ilya — Ulya can learn beside her father",
-   "draft": true
+   "text": "Leave it with Ilya — Ulya can learn beside her father"
   },
   "O4q.workshop.opt_agata": {
-   "text": "Take it to Aunt's workshop — Ulya can visit me there",
-   "draft": true
+   "text": "Take it to Aunt's workshop — Ulya can visit me there"
   },
   "O4q.workshop.look_ilya": {
-   "text": "Ilya's workshop. A second bench by the door — room for three now.",
-   "draft": true
+   "text": "Ilya's workshop. A second bench by the door — room for three now."
   },
   "O4q.workshop.look_agata": {
-   "text": "Ilya's workshop. We moved the second bench to Dunya's workshop.",
-   "draft": true
+   "text": "Ilya's workshop. We moved the second bench to Dunya's workshop."
   },
   "mech.bench.title": {
-   "text": "Second workbench",
-   "draft": true
+   "text": "Second workbench"
   },
   "mech.bench.label_goal": {
-   "text": "Building a second bench — a third place in the workshop, for Ulya.",
-   "draft": true
+   "text": "Building a second bench — a third place in the workshop, for Ulya."
   },
   "mech.bench.label_step1": {
-   "text": "Step 1 of 5 · Slot fitting",
-   "draft": true
+   "text": "Step 1 of 5 · Slot fitting"
   },
   "mech.bench.label_step2": {
-   "text": "Step 2 of 5 · Stop",
-   "draft": true
+   "text": "Step 2 of 5 · Stop"
   },
   "mech.bench.label_step3": {
-   "text": "Step 3 of 5 · Screw",
-   "draft": true
+   "text": "Step 3 of 5 · Screw"
   },
   "mech.bench.label_step4": {
-   "text": "Step 4 of 5 · Tighten the screw",
-   "draft": true
+   "text": "Step 4 of 5 · Tighten the screw"
   },
   "mech.bench.label_step5": {
-   "text": "Step 5 of 5 · Board",
-   "draft": true
+   "text": "Step 5 of 5 · Board"
   },
   "mech.bench.label_done": {
-   "text": "Workbench ready",
-   "draft": true
+   "text": "Workbench ready"
   },
   "mech.bench.label_hint1": {
-   "text": "Drag in the fitting that sits snugly in the slot — the wedge or the spline.",
-   "draft": true
+   "text": "Drag in the fitting that sits snugly in the slot — the wedge or the spline."
   },
   "mech.bench.label_hint2": {
-   "text": "Drag the stop into the slot, right against the spline.",
-   "draft": true
+   "text": "Drag the stop into the slot, right against the spline."
   },
   "mech.bench.label_hint3": {
-   "text": "Drag the screw to the highlighted spot behind the stop.",
-   "draft": true
+   "text": "Drag the screw to the highlighted spot behind the stop."
   },
   "mech.bench.label_hint4": {
-   "text": "Click and hold the screw handle, then move the mouse in a circle.",
-   "draft": true
+   "text": "Click and hold the screw handle, then move the mouse in a circle."
   },
   "mech.bench.label_hint5": {
-   "text": "Drag the board onto the bench, its end against the stop.",
-   "draft": true
+   "text": "Drag the board onto the bench, its end against the stop."
   },
   "mech.bench.label_wedge": {
-   "text": "Wedge",
-   "draft": true
+   "text": "Wedge"
   },
   "mech.bench.label_key": {
-   "text": "Spline",
-   "draft": true
+   "text": "Spline"
   },
   "mech.bench.label_stop": {
-   "text": "Stop",
-   "draft": true
+   "text": "Stop"
   },
   "mech.bench.label_screw": {
-   "text": "Screw",
-   "draft": true
+   "text": "Screw"
   },
   "mech.bench.label_board": {
-   "text": "Board",
-   "draft": true
+   "text": "Board"
   },
   "mech.bench.wedge_loose": {
    "text": "The wedge would be loose here: the slot is straight.",
-   "draft": true,
    "line": {
     "speaker": "ilya",
     "text": "The wedge would be loose here: the slot is straight."
@@ -342,7 +286,6 @@
   },
   "mech.bench.fitted": {
    "text": "There. The spline fits as though it belongs.",
-   "draft": true,
    "line": {
     "speaker": "ilya",
     "text": "There. The spline fits as though it belongs."
@@ -350,7 +293,6 @@
   },
   "mech.bench.stopped": {
    "text": "It won't shift now.",
-   "draft": true,
    "line": {
     "speaker": "mitya",
     "text": "It won't shift now."
@@ -366,7 +308,6 @@
      "R3-71"
     ]
    },
-   "draft": true,
    "line": {
     "speaker": "ilya",
     "text": "Screw's in place. Tighten it all the way."
@@ -374,7 +315,6 @@
   },
   "mech.bench.tightened": {
    "text": "Tight. Pass the board.",
-   "draft": true,
    "line": {
     "speaker": "ilya",
     "text": "Tight. Pass the board."
@@ -391,27 +331,22 @@
      "R3-73"
     ]
    },
-   "draft": true,
    "line": {
     "speaker": "ilya",
     "text": "It holds! You could start planing this very moment."
    }
   },
   "H2q.second_bench.label": {
-   "text": "Second workbench",
-   "draft": true
+   "text": "Second workbench"
   },
   "H2q.second_bench.look": {
-   "text": "Ilya and Mitya brought the second bench from Ilya's workshop. There are two in Dunya's now.",
-   "draft": true
+   "text": "Ilya and Mitya brought the second bench from Ilya's workshop. There are two in Dunya's now."
   },
   "ach.title_q02": {
-   "text": "Ilya's garden on the old map",
-   "draft": true
+   "text": "Ilya's garden on the old map"
   },
   "ach.title_q06": {
-   "text": "Second workbench",
-   "draft": true
+   "text": "Second workbench"
   }
  }
 }

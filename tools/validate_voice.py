@@ -991,9 +991,18 @@ def check_say_requests(req_dir: Path | None = None, probe_root: Path | None = No
     return errors
 
 
+def strict_wanted(argv: list[str], meta: dict) -> bool:
+    """--strict, или заморозка текста (meta.json text_freeze, Директор 12.11 «утвердить как есть»): после неё текст
+    меняется только вместе с голосом — запись с изменённым текстом, не поставленная на перезапись, это ошибка."""
+    return "--strict" in argv or meta.get("text_freeze") is True
+
+
 def main() -> int:
     quiet = "--quiet" in sys.argv
-    strict = "--strict" in sys.argv
+    if not (strict_wanted([], {"text_freeze": True}) and strict_wanted(["--strict"], {}) and not strict_wanted([], {"text_freeze": False})):
+        print("[voice] самопроверка: правило строгого режима под заморозкой текста не работает")
+        return 1
+    strict = strict_wanted(sys.argv, load(STORY / "meta.json"))
     source_only = "--source-only" in sys.argv   # workflow озвучки: копии игры там нет (её делает tools/sync_voice.sh)
     voice_cfg = load(STORY / "voice.json")
     texts = all_texts()

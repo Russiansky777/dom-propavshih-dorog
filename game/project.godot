@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Dom propavshih dorog"
-config/description="Дом пропавших дорог — 2D point-and-click (M0 technical probe)."
+config/description="Дом пропавших дорог — рисованное приключение point-and-click."
 run/main_scene="res://scenes/Main.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"

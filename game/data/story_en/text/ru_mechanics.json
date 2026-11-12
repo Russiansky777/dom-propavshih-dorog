@@ -1,46 +1,37 @@
 {
- "_comment": "Тексты общих механик (агент механик, замечания Директора 23.10, F4–F9, F12): «Рассмотреть» предмет из сумки (examine.<id> — одна строка Агаты, полем line {speaker: agata} — её реплика, не закадровый голос), «Точный удар» (ui.timing_*), подсказки крупных планов (mech.*). Строки draft: true — заменяет владелец текста (ChatGPT с Директором); новых сюжетных фактов здесь нет — всё из items.json use и сцен.",
+ "_comment": "Тексты общих механик (агент механик, замечания Директора 23.10, F4–F9, F12): «Рассмотреть» предмет из сумки (examine.<id> — одна строка Агаты, полем line {speaker: agata} — её реплика, не закадровый голос), «Точный удар» (ui.timing_*), подсказки крупных планов (mech.*). 12.11: тексты утверждены Директором как есть, пометки draft сняты — заморозка текста (meta.json text_freeze); новых сюжетных фактов здесь нет — всё из items.json use и сцен.",
  "lang": "ru",
  "texts": {
   "ui.bag_examine": {
-   "text": "Double-click, or use the corner magnifier, to examine.",
-   "draft": false
+   "text": "Double-click, or use the corner magnifier, to examine."
   },
   "ui.timing_hint": {
-   "text": "Click or press Space when the marker is in the green.",
-   "draft": false
+   "text": "Click or press Space when the marker is in the green."
   },
   "ui.timing_slow": {
-   "text": "Easier minigames",
-   "draft": false
+   "text": "Easier minigames"
   },
   "ui.fullscreen": {
-   "text": "Fullscreen (F11)",
-   "draft": false
+   "text": "Fullscreen (F11)"
   },
   "ui.autosave": {
-   "text": "Autosave",
-   "draft": false
+   "text": "Autosave"
   },
   "ui.quicksave": {
-   "text": "Quicksave (F5)",
-   "draft": false
+   "text": "Quicksave (F5)"
   },
   "ui.timing_slow_short": {
-   "text": "Make easier",
-   "draft": false
+   "text": "Make easier"
   },
   "ui.knot_hint": {
-   "text": "Take the rope end with the mouse and follow the dotted line. Leave the line and it slips free: repeat that movement.",
-   "draft": false
+   "text": "Take the rope end with the mouse and follow the dotted line. Leave the line and it slips free: repeat that movement."
   },
   "examine.key_house": {
    "text": "Heavy, with a worn bit. Dunya used it every day.",
    "line": {
     "speaker": "agata",
     "text": "Heavy, with a worn bit. Dunya used it every day."
-   },
-   "draft": true
+   }
   },
   "examine.door_drawing": {
    "text": "Aunt's drawing of the school door. Three hinges, and the right threshold notch circled.",
@@ -48,7 +39,6 @@
     "speaker": "agata",
     "text": "Aunt's drawing of the school door. Three hinges, and the right threshold notch circled."
    },
-   "draft": false,
    "_k0211": "Директор 02.11, стр. 8: рисунок посадки — в сумке; осмотр — словами Агаты"
   },
   "examine.door_hinges": {
@@ -56,8 +46,7 @@
    "line": {
     "speaker": "agata",
     "text": "All three original school door hinges. Dunya kept them safe."
-   },
-   "draft": true
+   }
   },
   "examine.photo_bridge": {
    "text": "The bridge is still whole. Spans on stone piers; rope fastened to the near pier's plate. Pelageya's boat by the bank.",
@@ -79,48 +68,42 @@
    "line": {
     "speaker": "agata",
     "text": "The bridge is still whole. Spans on stone piers; rope fastened to the near pier's plate. Pelageya's boat by the bank."
-   },
-   "draft": true
+   }
   },
   "examine.drawing_ilya": {
    "text": "A bridge, a boat beneath, smoke above it. Only Ilyusha drew them that way.",
    "line": {
     "speaker": "agata",
     "text": "A bridge, a boat beneath, smoke above it. Only Ilyusha drew them that way."
-   },
-   "draft": true
+   }
   },
   "examine.plan_crossing": {
    "text": "Corrected more than once, in different inks. Someone set it all down in order and waited for it to be read.",
    "line": {
     "speaker": "agata",
     "text": "Corrected more than once, in different inks. Someone set it all down in order and waited for it to be read."
-   },
-   "draft": true
+   }
   },
   "examine.brace_plate": {
    "text": "Heavy, forged iron. Dunya bent it to follow the crack in the plate exactly.",
    "line": {
     "speaker": "agata",
     "text": "Heavy, forged iron. Dunya bent it to follow the crack in the plate exactly."
-   },
-   "draft": true
+   }
   },
   "examine.chalk": {
    "text": "The school chalk crumbles, whitening my fingers at once.",
    "line": {
     "speaker": "agata",
     "text": "The school chalk crumbles, whitening my fingers at once."
-   },
-   "draft": true
+   }
   },
   "examine.mitten": {
    "text": "My woollen mitten, patterned round the edge. I'd know it anywhere.",
    "line": {
     "speaker": "agata",
     "text": "My woollen mitten, patterned round the edge. I'd know it anywhere."
-   },
-   "draft": true
+   }
   },
   "examine.mirror_mill": {
    "text": "Sound glass, but the frame's loose at the corners. It needs drawing together before it falls apart.",
@@ -135,40 +118,34 @@
    "line": {
     "speaker": "agata",
     "text": "Sound glass, but the frame's loose at the corners. It needs drawing together before it falls apart."
-   },
-   "draft": true
+   }
   },
   "examine.bell_clapper": {
    "text": "The mill bell's clapper. Without it, the bell is mute.",
    "line": {
     "speaker": "agata",
     "text": "The mill bell's clapper. Without it, the bell is mute."
-   },
-   "draft": true
+   }
   },
   "examine.journal_manager": {
    "text": "The last entry was made the evening before the flood. Blank pages after that.",
    "line": {
     "speaker": "agata",
     "text": "The last entry was made the evening before the flood. Blank pages after that."
-   },
-   "draft": true
+   }
   },
   "examine.journal_manager.title_page": {
-   "text": "Office ledger",
-   "draft": true
+   "text": "Office ledger"
   },
   "examine.journal_manager.paper_page": {
-   "text": "\"Sluice shut for the night. Lever on the nail. Gone home.\"\n\nRule: drain one notch at a time and wait, or the banks will give way.\n\nThe gauge by the sluice shows the working level for milling.",
-   "draft": true
+   "text": "\"Sluice shut for the night. Lever on the nail. Gone home.\"\n\nRule: drain one notch at a time and wait, or the banks will give way.\n\nThe gauge by the sluice shows the working level for milling."
   },
   "examine.key_sluice": {
    "text": "The sluice lever. An iron shaft, a carved handle, and a square socket to fit the winch.",
    "line": {
     "speaker": "agata",
     "text": "The sluice lever. An iron shaft, a carved handle, and a square socket to fit the winch."
-   },
-   "draft": true
+   }
   },
   "examine.tar": {
    "text": "Black, thick, smelling of birch. Perhaps the winch will turn with this.",
@@ -184,40 +161,33 @@
    "line": {
     "speaker": "agata",
     "text": "A tight screw. It will hold Mother's mirror frame firmly together."
-   },
-   "draft": true
+   }
   },
   "examine.school_ribbon": {
    "text": "Blue, with a narrow border. Mama kept it safe.",
    "line": {
     "speaker": "agata",
     "text": "Blue, with a narrow border. Mama kept it safe."
-   },
-   "draft": true
+   }
   },
   "examine.pocket_watch": {
    "text": "My watch keeps steady time, minute for minute. I can compare it with another clock.",
    "line": {
     "speaker": "agata",
     "text": "My watch keeps steady time, minute for minute. I can compare it with another clock."
-   },
-   "draft": true
+   }
   },
   "mech.nina_mirror.label_nina_clock": {
-   "text": "Mama's",
-   "draft": true
+   "text": "Mama's"
   },
   "mech.nina_mirror.label_my_watch": {
-   "text": "Mine",
-   "draft": true
+   "text": "Mine"
   },
   "mech.nina_mirror.label_watch_slot": {
-   "text": "Set my watch beside it",
-   "draft": true
+   "text": "Set my watch beside it"
   },
   "mech.nina_mirror.label_elapsed": {
-   "text": "{t} elapsed",
-   "draft": true
+   "text": "{t} elapsed"
   },
   "mech.nina_mirror.watch_hold": {
    "text": "Agata holds her watch to the glass. Side by side: her watch, and Mama's clock beyond the glass.",
@@ -228,16 +198,14 @@
     "map": [
      "R3-77"
     ]
-   },
-   "draft": true
+   }
   },
   "mech.nina_mirror.watch_slot_empty": {
    "text": "My watch is in my bag. I'll hold it to the glass and compare.",
    "line": {
     "speaker": "agata",
     "text": "My watch is in my bag. I'll hold it to the glass and compare."
-   },
-   "draft": true
+   }
   },
   "mech.nina_mirror.wrong_item": {
    "text": "Wrong thing. I need to compare it with my watch.",
@@ -252,16 +220,14 @@
    "line": {
     "speaker": "agata",
     "text": "Wrong thing. I need to compare it with my watch."
-   },
-   "draft": true
+   }
   },
   "mech.nina_mirror.watch_hint": {
    "text": "How fast Mama's clock is running! I should compare it with my watch.",
    "line": {
     "speaker": "agata",
     "text": "How fast Mama's clock is running! I should compare it with my watch."
-   },
-   "draft": true
+   }
   },
   "mech.plate.count_1": {
    "text": "One!",
@@ -269,130 +235,104 @@
     "speaker": "agata",
     "text": "One!"
    },
-   "_j": "J (Директор 29.10, стр. 120): после первого и второго удара по скобе Агата считает",
-   "draft": false
+   "_j": "J (Директор 29.10, стр. 120): после первого и второго удара по скобе Агата считает"
   },
   "mech.plate.count_2": {
    "text": "Two!",
    "line": {
     "speaker": "agata",
     "text": "Two!"
-   },
-   "draft": false
+   }
   },
   "mech.plate.label_hint_brace": {
-   "text": "Bracket: three accurate blows in a row, with the marker in the green.",
-   "draft": true
+   "text": "Bracket: three accurate blows in a row, with the marker in the green."
   },
   "mech.plate.label_hint_rope": {
-   "text": "Knot: take the rope end with the mouse and follow the dots, as Pelageya shows you.",
-   "draft": true
+   "text": "Knot: take the rope end with the mouse and follow the dots, as Pelageya shows you."
   },
   "mech.plate.brace_jumped": {
    "text": "Ah, it slipped off! Three blows in a row — I must strike more evenly.",
    "line": {
     "speaker": "agata",
     "text": "Ah, it slipped off! Three blows in a row — I must strike more evenly."
-   },
-   "draft": true
+   }
   },
   "mech.knot.under": {
-   "text": "Under the ring — then up through it",
-   "draft": true
+   "text": "Under the ring — then up through it"
   },
   "mech.knot.around": {
-   "text": "Round — through the bottom of the ring",
-   "draft": true
+   "text": "Round — through the bottom of the ring"
   },
   "mech.knot.through": {
-   "text": "Through the loop — pull tight",
-   "draft": true
+   "text": "Through the loop — pull tight"
   },
   "mech.lantern.label_drag": {
-   "text": "Shutter: take it with the mouse and drag all the way up.",
-   "draft": true
+   "text": "Shutter: take it with the mouse and drag all the way up."
   },
   "mech.office_mirror.schedule_title": {
-   "text": "Bell signals:",
-   "draft": true
+   "text": "Bell signals:"
   },
   "mech.office_mirror.sig_one": {
    "text": "1 strike — \"go\": Pavel guides the hook up",
-   "draft": true,
    "_k": "Директор 01.11, 22:26 — крюк переделан: Павел заводит крюк снизу и ведёт вверх. Было: «1 удар — «пускай»: Павел опускает крюк» (голос ждёт перезаписи — voice_pending.json)"
   },
   "mech.office_mirror.sig_two": {
-   "text": "2 quick strikes — \"stop\"",
-   "draft": true
+   "text": "2 quick strikes — \"stop\""
   },
   "mech.office_mirror.sig_long": {
-   "text": "A long ring (press and hold) — \"raise\": lift the bolt",
-   "draft": true
+   "text": "A long ring (press and hold) — \"raise\": lift the bolt"
   },
   "mech.office_mirror.label_bell": {
-   "text": "Bell: click once for \"go.\" Double-click for \"stop.\" Press and hold for a long ring — \"raise.\"",
-   "draft": true
+   "text": "Bell: click once for \"go.\" Double-click for \"stop.\" Press and hold for a long ring — \"raise.\""
   },
   "mech.office_mirror.label_status_stopped": {
-   "text": "Hook beneath the bolt. Now a long ring: \"raise.\"",
-   "draft": true
+   "text": "Hook beneath the bolt. Now a long ring: \"raise.\""
   },
   "mech.office_mirror.label_status_falling": {
    "text": "No \"stop\" signal — Pavel pushed blindly. The bolt sank deeper into its brackets; the hook fell.",
-   "draft": true,
    "_k": "Директор 01.11, 22:26 — крюк переделан (M09, Павел: «вслепую крюком скрести — засов глубже в скобы загонишь»). Было: «Не у засова — крюк сорвался и падает.»; ключ label_status_sway («Павел нащупывает засов: крюк ходит вверх-вниз…») снят вместе с качанием"
   },
   "mech.shutter.title": {
-   "text": "Shutter",
-   "draft": true
+   "text": "Shutter"
   },
   "mech.shutter.stuck": {
    "text": "Swollen with damp. I need to lift the latch so it seats properly.",
    "line": {
     "speaker": "agata",
     "text": "Swollen with damp. I need to lift the latch so it seats properly."
-   },
-   "draft": true
+   }
   },
   "mech.shutter.label_hint": {
-   "text": "The latch moves up and down. When raised — marker in the green — click the shutter or press Space.",
-   "draft": true
+   "text": "The latch moves up and down. When raised — marker in the green — click the shutter or press Space."
   },
   "mech.shutter.dropped": {
    "text": "Dropped into the bracket again. A little higher, then.",
    "line": {
     "speaker": "agata",
     "text": "Dropped into the bracket again. A little higher, then."
-   },
-   "draft": true
+   }
   },
   "mech.crossing.title": {
-   "text": "Along the rope",
-   "draft": true
+   "text": "Along the rope"
   },
   "mech.crossing.hint": {
-   "text": "Pull hand over hand: click the rope, or drag towards you (down). Space works, too.",
-   "draft": true
+   "text": "Pull hand over hand: click the rope, or drag towards you (down). Space works, too."
   },
   "mech.crossing.label_hint_auto": {
-   "text": "Pelageya pulls the boat along the rope. Click to reach the bank at once.",
-   "draft": true
+   "text": "Pelageya pulls the boat along the rope. Click to reach the bank at once."
   },
   "mech.office_mirror.wedges_hint": {
-   "text": "Click or press Space with the marker in the green to strike. Three accurate blows to each wedge.",
-   "draft": true
+   "text": "Click or press Space with the marker in the green to strike. Three accurate blows to each wedge."
   },
   "mech.office_mirror.wedge_slipped": {
    "text": "Out it came! I'll have to start again — strike more evenly.",
-   "draft": true,
    "line": {
     "speaker": "agata",
     "text": "Out it came! I'll have to start again — strike more evenly."
    }
   },
   "mech.sluice.label_hint": {
-   "text": "Turn one notch at a time: click or press Space in the green. Water falls one level each time. If the winch slips, water rises: start at the first notch.",
-   "draft": true
+   "text": "Turn one notch at a time: click or press Space in the green. Water falls one level each time. If the winch slips, water rises: start at the first notch."
   },
   "mech.sluice.slipped": {
    "text": "Ah, it slipped… Water came back up. Never mind — first notch again, a little more steadily.",
@@ -405,40 +345,33 @@
      "R3-80"
     ]
    },
-   "draft": true,
    "line": {
     "speaker": "pavel",
     "text": "Ah, it slipped… Water came back up. Never mind — first notch again, a little more steadily."
    }
   },
   "mech.sluice.label_status_slipped": {
-   "text": "Winch slipped; water rose. Start at the first notch again.",
-   "draft": true
+   "text": "Winch slipped; water rose. Start at the first notch again."
   },
   "mech.ttt.label_title": {
    "text": "Noughts and crosses",
-   "draft": false,
    "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)",
    "_j": "J (часть G, Директор 25.10 / 29.10: крестики-нолики с Ульяной — мелом, рукой); черновик Claude — на утверждение"
   },
   "mech.ttt.label_hint": {
    "text": "Click a square to place a cross.",
-   "draft": false,
    "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)"
   },
   "mech.ttt.label_her_first": {
    "text": "Ulyana goes first now.",
-   "draft": false,
    "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)"
   },
   "mech.ttt.label_her_turn": {
    "text": "Ulyana is thinking…",
-   "draft": false,
    "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)"
   },
   "mech.ttt.win": {
    "text": "Oh, you beat me! Again — I'll go first this time.",
-   "draft": false,
    "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)",
    "line": {
     "speaker": "ulyana",
@@ -447,7 +380,6 @@
   },
   "mech.ttt.lose": {
    "text": "I won! Three noughts in a row!",
-   "draft": false,
    "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)",
    "line": {
     "speaker": "ulyana",
@@ -456,7 +388,6 @@
   },
   "mech.ttt.draw": {
    "text": "A draw. Papa and I always draw, too.",
-   "draft": false,
    "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)",
    "line": {
     "speaker": "ulyana",
@@ -465,56 +396,45 @@
   },
   "mech.ttt.label_again": {
    "text": "Again",
-   "draft": false,
    "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)"
   },
   "mech.ttt.label_stop": {
    "text": "Enough",
-   "draft": false,
    "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)"
   },
   "mech.rhythm.label_title": {
    "text": "Spoon on a cup",
-   "draft": false,
    "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)",
    "_j": "J (часть G, Директор 25.10 / 29.10: ритм ложечкой с Тихоном); черновик Claude — на утверждение"
   },
   "mech.rhythm.label_listen": {
    "text": "Tikhon taps — listen.",
-   "draft": false,
    "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)"
   },
   "mech.rhythm.label_repeat": {
    "text": "Your turn: click or press Space to repeat the rhythm.",
-   "draft": false,
    "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)"
   },
   "mech.rhythm.label_right": {
    "text": "That's it!",
-   "draft": false,
    "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)"
   },
   "mech.rhythm.label_wrong": {
    "text": "Out of time…",
-   "draft": false,
    "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)"
   },
   "mech.rhythm.label_who_tikhon": {
-   "text": "Tikhon",
-   "draft": true
+   "text": "Tikhon"
   },
   "mech.rhythm.label_who_agata": {
-   "text": "Agata",
-   "draft": true
+   "text": "Agata"
   },
   "mech.rhythm.label_stop": {
    "text": "Enough",
-   "draft": false,
    "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)"
   },
   "mech.rhythm.good_1": {
    "text": "Well, now. What about this?",
-   "draft": false,
    "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)",
    "line": {
     "speaker": "tikhon",
@@ -523,7 +443,6 @@
   },
   "mech.rhythm.good_2": {
    "text": "All right, you have an ear. Last one — a little trickier.",
-   "draft": false,
    "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)",
    "line": {
     "speaker": "tikhon",
@@ -532,7 +451,6 @@
   },
   "mech.rhythm.miss_1": {
    "text": "Missed. Got a tin ear? Listen again.",
-   "draft": false,
    "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)",
    "line": {
     "speaker": "tikhon",
@@ -541,7 +459,6 @@
   },
   "mech.rhythm.miss_2": {
    "text": "No hurry. I'm not hurrying.",
-   "draft": false,
    "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)",
    "line": {
     "speaker": "tikhon",
@@ -550,53 +467,43 @@
   },
   "mech.fish.label_title": {
    "text": "Fishing with Mitya",
-   "draft": false,
    "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)",
    "_j": "J (часть G, Директор 25.10 / 29.10: бечёвка с Митей — рыбалка с натяжением, на конце — рыба); черновик Claude — на утверждение"
   },
   "mech.fish.label_wait": {
    "text": "Watch the float. When it dips, strike at once: click or press Space.",
-   "draft": false,
    "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)"
   },
   "mech.fish.label_fight": {
    "text": "Keep the line taut: hold the mouse button or Space to pull; release to ease off. Don't let it snap or go slack.",
-   "draft": false,
    "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)"
   },
   "mech.fish.label_again": {
    "text": "Again",
-   "draft": false,
    "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)"
   },
   "mech.fish.label_stop": {
    "text": "Enough",
-   "draft": false,
    "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)"
   },
   "mech.fish.label_slack": {
    "text": "escaping",
-   "draft": true,
    "_k": "Вечер 01.11 (Директор: вернуть натяжение, шкала сразу красивая): слово на шкале натяжения — зона, где бечёвка провисла и окунь уходит"
   },
   "mech.fish.label_hold": {
    "text": "hold",
-   "draft": true,
    "_k": "слово на шкале натяжения — зелёная зона: бечёвка натянута как надо, окунь идёт к мосткам"
   },
   "mech.fish.label_over": {
    "text": "snapping",
-   "draft": true,
    "_k": "слово на шкале натяжения — красная зона: тянет слишком сильно, бечёвка лопнет"
   },
   "mech.fish.label_metres": {
    "text": "{n} m",
-   "draft": true,
    "_k": "над окунем на полоске «до мостков»: сколько метров до него"
   },
   "mech.fish.early": {
    "text": "Too soon! Just tasting it.",
-   "draft": false,
    "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)",
    "line": {
     "speaker": "mitya",
@@ -605,7 +512,6 @@
   },
   "mech.fish.late": {
    "text": "Missed it. Never mind, plenty here.",
-   "draft": false,
    "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)",
    "line": {
     "speaker": "mitya",
@@ -614,7 +520,6 @@
   },
   "mech.fish.snap": {
    "text": "Snapped… You have to pull with care, too.",
-   "draft": false,
    "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)",
    "line": {
     "speaker": "mitya",
@@ -623,7 +528,6 @@
   },
   "mech.fish.escaped": {
    "text": "Line went slack — away it went.",
-   "draft": false,
    "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)",
    "line": {
     "speaker": "mitya",
@@ -632,7 +536,6 @@
   },
   "mech.fish.caught_agata": {
    "text": "Got one! Look, Mitya — a catch of my own.",
-   "draft": true,
    "_k0211b": "Директор 02.11 вечер, № 15: чётная поимка — слово Агаты (чередуется с Митиным mech.fish.caught); черновик Claude",
    "line": {
     "speaker": "agata",
@@ -641,7 +544,6 @@
   },
   "mech.fish.caught": {
    "text": "A perch! A fine one. Twenty years here with a lantern — never caught one like that.",
-   "draft": false,
    "_approved": "Директор 29.10, 23:27 (страница «Реплики мини-игр»)",
    "line": {
     "speaker": "mitya",

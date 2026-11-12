@@ -1,5 +1,5 @@
 {
- "_comment": "Тексты дня второго (E2–E3: M09–M18, Docs/SCENARIO_FINAL.md §7): осмотры, подписи, реакции, тексты крупных планов (механик) и строки предметов. Все draft: true — текст доводит владелец текста (ChatGPT с Директором); голоса для этих строк не записаны (генерация — после текстового прохода Директора). Поле line {speaker, text} — слова персонажа рядом с Агатой или мысль Агаты от первого лица: показывается репликой с именем и звучит голосом персонажа; text — запасной закадровый вариант. Ключи H2d./Z3d./R1d. — дополнения дня 2 в комнаты первого дня. Обязательные реплики сцен — в scenes/E2.json и E3.json.",
+ "_comment": "Тексты дня второго (E2–E3: M09–M18, Docs/SCENARIO_FINAL.md §7): осмотры, подписи, реакции, тексты крупных планов (механик) и строки предметов. 12.11: тексты утверждены Директором как есть («утвердить как есть», 21:44), пометки draft сняты — заморозка текста (meta.json text_freeze); голоса записаны. Поле line {speaker, text} — слова персонажа рядом с Агатой или мысль Агаты от первого лица: показывается репликой с именем и звучит голосом персонажа; text — запасной закадровый вариант. Ключи H2d./Z3d./R1d. — дополнения дня 2 в комнаты первого дня. Обязательные реплики сцен — в scenes/E2.json и E3.json.",
  "lang": "ru",
  "texts": {
   "M1.pavel.day1": {
@@ -13,7 +13,6 @@
      14
     ]
    },
-   "draft": true,
    "line": {
     "speaker": "pavel",
     "text": "Evening soon. Come in the morning, while it's light. We'll talk then."
@@ -30,7 +29,6 @@
      79
     ]
    },
-   "draft": true,
    "line": {
     "speaker": "pavel",
     "text": "Look at the office door and the photograph in the entrance hall. Read the mill rules on the board outside. We'll talk after."
@@ -38,31 +36,25 @@
   },
   "M1.pavel.after": {
    "text": "Ring from the workshop. I'll stand by the office door with a lantern.",
-   "draft": true,
    "line": {
     "speaker": "pavel",
     "text": "Ring from the workshop. I'll stand by the office door with a lantern."
    }
   },
   "M1.schedule.label": {
-   "text": "Mill rules",
-   "draft": true
+   "text": "Mill rules"
   },
   "M1.schedule.use": {
-   "text": "The mill rules have faded. The bell marked the start and end of each shift — and sent signals at the sluice: \"One strike — go. Two — stop. A long ring — raise.\"",
-   "draft": true
+   "text": "The mill rules have faded. The bell marked the start and end of each shift — and sent signals at the sluice: \"One strike — go. Two — stop. A long ring — raise.\""
   },
   "M1.schedule.look": {
-   "text": "The mill rules give bell signals: \"One strike — go. Two — stop. A long ring — raise.\"",
-   "draft": true
+   "text": "The mill rules give bell signals: \"One strike — go. Two — stop. A long ring — raise.\""
   },
   "M1.wheel.label": {
-   "text": "Mill wheel",
-   "draft": true
+   "text": "Mill wheel"
   },
   "M1.wheel.label_still": {
-   "text": "Wheel stopped",
-   "draft": true
+   "text": "Wheel stopped"
   },
   "M1.wheel.look_still": {
    "text": "The pond is drained. No water reaches the wheel, so it stands still.",
@@ -73,8 +65,7 @@
     "map": [
      "R3-27"
     ]
-   },
-   "draft": true
+   }
   },
   "M1.wheel.look": {
    "text": "The wheel has its own water supply. That's why the mill can grind with the sluice shut — as long as the pond is full.",
@@ -89,61 +80,47 @@
     "voice_fb": [
      42
     ]
-   },
-   "draft": true
+   }
   },
   "M1.bench.label": {
-   "text": "Workbench",
-   "draft": true
+   "text": "Workbench"
   },
   "M1.bench.look": {
-   "text": "Pavel's tools: hammers, a chisel, a plane. Everything in its place — all covered in shavings, or perhaps flour.",
-   "draft": true
+   "text": "Pavel's tools: hammers, a chisel, a plane. Everything in its place — all covered in shavings, or perhaps flour."
   },
   "M1.exit_Z2.label": {
-   "text": "Outside",
-   "draft": true
+   "text": "Outside"
   },
   "M1.exit_M2.label": {
-   "text": "Entry hall",
-   "draft": true
+   "text": "Entry hall"
   },
   "M1.exit_M4.label": {
-   "text": "To the sluice",
-   "draft": true
+   "text": "To the sluice"
   },
   "M2.office_door.label": {
-   "text": "Office door",
-   "draft": true
+   "text": "Office door"
   },
   "M2.office_door.use": {
-   "text": "The office door won't budge. The gap by the jamb is dark: a bolt holds it shut from inside.",
-   "draft": true
+   "text": "The office door won't budge. The gap by the jamb is dark: a bolt holds it shut from inside."
   },
   "M2.office_door.look": {
    "text": "It won't open: bolted from inside. No breaking down that oak door.",
-   "draft": false,
    "_approved": "Директор 30.10, 01:48 (страница «Четвёртый заход», W024: выбрана запись с этим текстом — черновик координатора; было «Изнутри контора заперта: засов в скобах. Дверь дубовая — не высадишь.»)"
   },
   "M2.office_door_open.label": {
-   "text": "Office door",
-   "draft": true
+   "text": "Office door"
   },
   "M2.office_door_open.use": {
-   "text": "Pavel and Agata lean against the door together. It gives with a creak. The office is open.",
-   "draft": true
+   "text": "Pavel and Agata lean against the door together. It gives with a creak. The office is open."
   },
   "M2.office_door_open.look": {
-   "text": "The bolt is out of its brackets; the door has moved a little.",
-   "draft": true
+   "text": "The bolt is out of its brackets; the door has moved a little."
   },
   "M2.mirror.label": {
-   "text": "Office mirror",
-   "draft": true
+   "text": "Office mirror"
   },
   "M2.mirror.look": {
    "text": "The office mirror. I won't take it without Pavel's say-so.",
-   "draft": true,
    "line": {
     "speaker": "agata",
     "text": "The office mirror. I won't take it without Pavel's say-so."
@@ -161,35 +138,28 @@
      85
     ]
    },
-   "draft": true,
    "line": {
     "speaker": "pavel",
     "text": "Take it. Glass is sound, but the frame's coming apart at the corners."
    }
   },
   "M2.photo.label": {
-   "text": "Office photograph",
-   "draft": true
+   "text": "Office photograph"
   },
   "M2.photo.title": {
-   "text": "Entrance hall photograph",
-   "draft": true
+   "text": "Entrance hall photograph"
   },
   "M2.photo.label_caption": {
-   "text": "Mill office. The mirror in its old frame, in its proper place.",
-   "draft": true
+   "text": "Mill office. The mirror in its old frame, in its proper place."
   },
   "M2.photo.use": {
-   "text": "An old photograph of the office interior. The framed mirror hangs in its proper place on the wall.",
-   "draft": true
+   "text": "An old photograph of the office interior. The framed mirror hangs in its proper place on the wall."
   },
   "M2.photo.look": {
-   "text": "The old photograph shows the office interior.",
-   "draft": true
+   "text": "The old photograph shows the office interior."
   },
   "M2.pavel.after": {
    "text": "The bolt's out! The door's moved — put your shoulder to it with me.",
-   "draft": true,
    "line": {
     "speaker": "pavel",
     "text": "The bolt's out! The door's moved — put your shoulder to it with me."
@@ -197,7 +167,6 @@
   },
   "M2.pavel.at_mirror": {
    "text": "There, by the wall. Take it.",
-   "draft": true,
    "line": {
     "speaker": "pavel",
     "text": "There, by the wall. Take it."
@@ -205,27 +174,22 @@
   },
   "M2.pavel.after_lifted": {
    "text": "Go in. I'll follow.",
-   "draft": true,
    "line": {
     "speaker": "pavel",
     "text": "Go in. I'll follow."
    }
   },
   "M2.exit_M1.label": {
-   "text": "Mill yard",
-   "draft": true
+   "text": "Mill yard"
   },
   "M2.exit_M3.label": {
-   "text": "Office",
-   "draft": true
+   "text": "Office"
   },
   "M2.exit_M3.closed": {
-   "text": "The office won't open: the bolt holds it shut from inside.",
-   "draft": true
+   "text": "The office won't open: the bolt holds it shut from inside."
   },
   "M3.key_nail.label": {
-   "text": "Sluice lever",
-   "draft": true
+   "text": "Sluice lever"
   },
   "M3.key_nail.use": {
    "text": "Agata lifts the lever off the nail. Heavy and cold — into the bag it goes.",
@@ -236,16 +200,13 @@
     "map": [
      "R3-28"
     ]
-   },
-   "draft": true
+   }
   },
   "M3.key_nail.look": {
-   "text": "An iron lever with a carved handle hangs on a nail. Its socket is square.",
-   "draft": true
+   "text": "An iron lever with a carved handle hangs on a nail. Its socket is square."
   },
   "M3.journal.label": {
-   "text": "Office ledger",
-   "draft": true
+   "text": "Office ledger"
   },
   "M3.journal.use": {
    "text": "The manager's last entry: \"Sluice shut for the night. Lever on the nail. Gone home.\" Last year's date. Below: \"Drain one notch at a time and wait, or the banks will give way.\" The water needed for milling is marked, too.",
@@ -256,16 +217,13 @@
     "map": [
      95
     ]
-   },
-   "draft": true
+   }
   },
   "M3.journal.look": {
-   "text": "The office ledgers lie open.",
-   "draft": true
+   "text": "The office ledgers lie open."
   },
   "M3.clamp.label": {
-   "text": "Clamp",
-   "draft": true
+   "text": "Clamp"
   },
   "M3.clamp.use": {
    "text": "A clamp! Dunya's label said: \"Clamp needed. Mine is broken.\" I'll take it for Mother's mirror. Once we've drained the water, I'll see to that.",
@@ -278,19 +236,16 @@
      "R3-29"
     ]
    },
-   "draft": true,
    "line": {
     "speaker": "agata",
     "text": "A clamp! Dunya's label said: \"Clamp needed. Mine is broken.\" I'll take it for Mother's mirror. Once we've drained the water, I'll see to that."
    }
   },
   "M3.clamp.look": {
-   "text": "A sound clamp on the manager's desk.",
-   "draft": true
+   "text": "A sound clamp on the manager's desk."
   },
   "M3.gauge.label": {
-   "text": "Water-level gauge",
-   "draft": true
+   "text": "Water-level gauge"
   },
   "M3.gauge.look": {
    "text": "A measuring staff stands in the water outside the window. It shows the level in the pond.",
@@ -301,29 +256,24 @@
     "map": [
      "R3-31"
     ]
-   },
-   "draft": true
+   }
   },
   "M3.pavel.before": {
    "text": "Take what you need: lever on the nail, ledger on the desk. Take the clamp from the desk, too. Dunya broke hers. Asked for mine to draw a frame together.",
-   "draft": true,
    "line": {
     "speaker": "pavel",
     "text": "Take what you need: lever on the nail, ledger on the desk. Take the clamp from the desk, too. Dunya broke hers. Asked for mine to draw a frame together."
    }
   },
   "M3.exit_M2.label": {
-   "text": "Entry hall",
-   "draft": true
+   "text": "Entry hall"
   },
   "M3.answer.prompt": {
-   "text": "How can I persuade Pavel?",
-   "draft": true
+   "text": "How can I persuade Pavel?"
   },
   "M3.answer.opt_family": {
    "text": "Please help, Pavel. Mother and my brother are stranded over there.",
-   "_30_10": "сверка 30.10 (25.10 стр. 98): на кнопке — та же фраза, что Агата говорит (слова Директора); было сухое «Там мама и брат.»",
-   "draft": true
+   "_30_10": "сверка 30.10 (25.10 стр. 98): на кнопке — та же фраза, что Агата говорит (слова Директора); было сухое «Там мама и брат.»"
   },
   "M3.answer.opt_promise": {
    "text": "We'll refill the pond by winter. I swear.",
@@ -335,12 +285,10 @@
     "map": [
      "R3-49"
     ]
-   },
-   "draft": true
+   }
   },
   "M4.gate.label": {
-   "text": "Sluice gate",
-   "draft": true
+   "text": "Sluice gate"
   },
   "M4.gate.key": {
    "text": "The lever fits into the winch's socket.",
@@ -352,12 +300,10 @@
     "map": [
      "R3-32"
     ]
-   },
-   "draft": true
+   }
   },
   "M4.gate.look": {
-   "text": "The pond sluice: a winch and a notched arc. The ledger says: open one notch at a time, then wait for the water to fall.",
-   "draft": true
+   "text": "The pond sluice: a winch and a notched arc. The ledger says: open one notch at a time, then wait for the water to fall."
   },
   "M4.gate.locked": {
    "text": "I can't turn the winch without its lever. The sluice lever is in the office.",
@@ -369,16 +315,13 @@
     "map": [
      73
     ]
-   },
-   "draft": true
+   }
   },
   "M4.sluice.title": {
-   "text": "Mill-pond sluice",
-   "draft": true
+   "text": "Mill-pond sluice"
   },
   "M4.sluice.label_gauge": {
-   "text": "Water-level gauge",
-   "draft": true
+   "text": "Water-level gauge"
   },
   "M4.sluice.label_status_settled": {
    "text": "The water has stopped falling. Open to the next notch.",
@@ -389,20 +332,16 @@
     "map": [
      "R3-33"
     ]
-   },
-   "draft": true
+   }
   },
   "M4.sluice.label_status_falling": {
-   "text": "Water falling. Pavel holds the winch.",
-   "draft": true
+   "text": "Water falling. Pavel holds the winch."
   },
   "M4.sluice.label_status_open": {
-   "text": "Sluice open. Water will drain by evening.",
-   "draft": true
+   "text": "Sluice open. Water will drain by evening."
   },
   "M4.sluice.wait": {
    "text": "Wait. Let the water fall.",
-   "draft": true,
    "line": {
     "speaker": "pavel",
     "text": "Wait. Let the water fall."
@@ -410,7 +349,6 @@
   },
   "M4.pavel.rusty": {
    "text": "Wait. That winch hasn't turned in a year — rusted solid. Dunya had tar in her workshop. Bring some; we'll grease it.",
-   "draft": false,
    "_j": "J (Р5, Директор 29.10): ворот год не крутили — заржавел; дёготь из Дуниной мастерской до мини-игры затвора",
    "line": {
     "speaker": "pavel",
@@ -419,7 +357,6 @@
   },
   "M4.pavel.turn": {
    "text": "Greased! Turn it now. One notch at a time, as it says.",
-   "draft": false,
    "_k11": "K11 (Директор 01.11, 00:57–01:00, «Одиннадцатый заход»): выбран новый текст (было «Смазан ворот — теперь крути…»)",
    "_j": "J (Р5, Директор 29.10): ворот год не крутили — заржавел; дёготь из Дуниной мастерской до мини-игры затвора",
    "line": {
@@ -429,33 +366,27 @@
   },
   "M4.gate.rusty": {
    "text": "It won't turn — the winch is rusted. There's tar on the workbench in Dunya's workshop.",
-   "draft": false,
    "_j": "J (Р5, Директор 29.10): ворот год не крутили — заржавел; дёготь из Дуниной мастерской до мини-игры затвора — щелчок по затвору без дёгтя (голос Агаты)"
   },
   "M4.gate.tarred": {
    "text": "Agata greases the winch's axle with tar. The winch creaks — and turns.",
-   "draft": false,
    "_k11": "K11 (Директор 01.11, 00:57–01:00, «Одиннадцатый заход»): выбран новый текст (было «Скрипнул ворот — и пошёл»)",
    "_j": "J (Р5, Директор 29.10): ворот год не крутили — заржавел; дёготь из Дуниной мастерской до мини-игры затвора"
   },
   "item.tar": {
    "text": "A jar of tar to grease the winch.",
-   "draft": false,
    "_j": "J (Р5, Директор 29.10): ворот год не крутили — заржавел; дёготь из Дуниной мастерской до мини-игры затвора"
   },
   "ui.goal_tar_fetch": {
    "text": "The sluice winch is rusted. Bring Pavel tar from the workbench in Dunya's workshop.",
-   "draft": false,
    "_j": "J (Р5, Директор 29.10): ворот год не крутили — заржавел; дёготь из Дуниной мастерской до мини-игры затвора"
   },
   "ui.goal_tar_back": {
    "text": "I have the tar. Back to the sluice: grease the winch, then open one notch at a time.",
-   "draft": false,
    "_j": "J (Р5, Директор 29.10): ворот год не крутили — заржавел; дёготь из Дуниной мастерской до мини-игры затвора"
   },
   "M4.pavel.before": {
    "text": "Fit the lever to the winch. One notch at a time, as it says.",
-   "draft": true,
    "line": {
     "speaker": "pavel",
     "text": "Fit the lever to the winch. One notch at a time, as it says."
@@ -472,7 +403,6 @@
      102
     ]
    },
-   "draft": true,
    "line": {
     "speaker": "pavel",
     "text": "Water's flowing. Now we wait. Off you go, for now."
@@ -488,7 +418,6 @@
      "J-117"
     ]
    },
-   "draft": true,
    "line": {
     "speaker": "pavel",
     "text": "Water's down — the plate at the bend is exposed. What else can I do for you?"
@@ -496,60 +425,48 @@
   },
   "M4.sluice.label_status_drained": {
    "text": "Sluice open. Water drained.",
-   "draft": true,
    "_j": "J-A4 (Директор 29.10, стр. 184): после сумерек — уже не «к вечеру сойдёт»"
   },
   "M4.water.label": {
-   "text": "Channel",
-   "draft": true
+   "text": "Channel"
   },
   "M4.water.look": {
-   "text": "Water in the channel by the sluice. The mill pond holds it back.",
-   "draft": true
+   "text": "Water in the channel by the sluice. The mill pond holds it back."
   },
   "M4.exit_M1.label": {
-   "text": "To the mill yard",
-   "draft": true
+   "text": "To the mill yard"
   },
   "R2.pelageya.after": {
    "text": "Hold on to the ring.",
-   "draft": true,
    "line": {
     "speaker": "pelageya",
     "text": "Hold on to the ring."
    }
   },
   "R2.rope.label": {
-   "text": "Bridge rope",
-   "draft": true
+   "text": "Bridge rope"
   },
   "R2.rope.look": {
-   "text": "The rope is taut. Along it, the ring slides into the mist.",
-   "draft": true
+   "text": "The rope is taut. Along it, the ring slides into the mist."
   },
   "R2.exit_R1.label": {
-   "text": "Back to the pier",
-   "draft": true
+   "text": "Back to the pier"
   },
   "R2.exit_Z3.label": {
-   "text": "Back to the bend",
-   "draft": true
+   "text": "Back to the bend"
   },
   "R2.exit_R1.closed": {
    "text": "No turning back. If they're holding their end, we'll go to them.",
-   "draft": true,
    "line": {
     "speaker": "pelageya",
     "text": "No turning back. If they're holding their end, we'll go to them."
    }
   },
   "R2.exit_R3.label": {
-   "text": "To the far pier",
-   "draft": true
+   "text": "To the far pier"
   },
   "R3.mitya.after": {
    "text": "Come on, Agata. Nina's waiting for you.",
-   "draft": true,
    "line": {
     "speaker": "mitya",
     "text": "Come on, Agata. Nina's waiting for you."
@@ -565,51 +482,40 @@
      "R3-34"
     ]
    },
-   "draft": true,
    "line": {
     "speaker": "pelageya",
     "text": "Go on, Agata. I'll stay by the boat for now."
    }
   },
   "R3.stopor.label": {
-   "text": "Far rope clamp",
-   "draft": true
+   "text": "Far rope clamp"
   },
   "R3.stopor.look": {
-   "text": "The far rope clamp is fitted into the pier's old ring. This is where they hold the rope.",
-   "draft": true
+   "text": "The far rope clamp is fitted into the pier's old ring. This is where they hold the rope."
   },
   "R3.lamp_post.label": {
-   "text": "Lantern on a post",
-   "draft": true
+   "text": "Lantern on a post"
   },
   "R3.lamp_post.look": {
-   "text": "A lantern on a post beside the path. They lit it here every evening.",
-   "draft": true
+   "text": "A lantern on a post beside the path. They lit it here every evening."
   },
   "R3.exit_R2.label_pull": {
-   "text": "Pull the boat along the rope",
-   "draft": true
+   "text": "Pull the boat along the rope"
   },
   "Z3.exit_R2.label_pull": {
-   "text": "Pull the boat along the rope",
-   "draft": true
+   "text": "Pull the boat along the rope"
   },
   "R3.exit_R2.label": {
-   "text": "To the boat",
-   "draft": true
+   "text": "To the boat"
   },
   "R3.exit_O4.label": {
-   "text": "Path to the street",
-   "draft": true
+   "text": "Path to the street"
   },
   "R3.shed.label": {
-   "text": "Ferry shed",
-   "draft": true
+   "text": "Ferry shed"
   },
   "R3.shed.look": {
    "text": "Mitya's little shed by the pier. He spent nights here, waiting for the lights.",
-   "draft": true,
    "line": {
     "speaker": "agata",
     "text": "Mitya's little shed by the pier. He spent nights here, waiting for the lights."
@@ -624,104 +530,81 @@
     "map": [
      "R3-36"
     ]
-   },
-   "draft": true
+   }
   },
   "H2d.office_mirror.title": {
-   "text": "Office mirror in Dunya's stand",
-   "draft": true
+   "text": "Office mirror in Dunya's stand"
   },
   "H2d.office_mirror.clamped": {
    "_k27": "Директор 01.11, «Семнадцатый заход» W232: «всё неверно, переработать» — стекло не темнеет, а проясняется (office_mirror_panel: все клинья забиты — стекло ясное, контора сейчас); «ни звука» снято. Было: «Клинья сели. Потемнев, стекло показывает дверь конторы изнутри: засов в скобах. Ни звука.»",
    "text": "The wedges are seated. The glass clears — it shows the office as it is now: the inside of the door, bolt in its brackets.",
-   "draft": true,
    "_k24": "Директор 01.11, стр. 36 («комнату со снимка — на деле только дверь»): в стекле — крупный план двери (closeups/M3_view_*), стола нет. Было: «…показывает комнату со снимка: стол, дверь, засов в скобах…»"
   },
   "H2d.office_mirror.view_first": {
-   "text": "The mill office is visible in the glass. Not a sound.",
-   "draft": true
+   "text": "The mill office is visible in the glass. Not a sound."
   },
   "H2d.office_mirror.view_again": {
-   "text": "The mill office in the glass. The same silence.",
-   "draft": true
+   "text": "The mill office in the glass. The same silence."
   },
   "H2d.office_mirror.glass_touch": {
-   "text": "My hand meets glass. No way through.",
-   "draft": true
+   "text": "My hand meets glass. No way through."
   },
   "H2d.office_mirror.glass_loose": {
-   "text": "The frame has loosened. The glass trembles and clouds over. The wedges need tapping in.",
-   "draft": true
+   "text": "The frame has loosened. The glass trembles and clouds over. The wedges need tapping in."
   },
   "H2d.office_mirror.bell_mute": {
-   "text": "The bell is mute without its clapper. In Dunya's hand, the label says: \"Clapper in the attic chest.\"",
-   "draft": true
+   "text": "The bell is mute without its clapper. In Dunya's hand, the label says: \"Clapper in the attic chest.\""
   },
   "H2d.office_mirror.bell_unclamped": {
-   "text": "Secure the frame first. Without the wedges driven in, I can't see anything through the glass.",
-   "draft": true
+   "text": "Secure the frame first. Without the wedges driven in, I can't see anything through the glass."
   },
   "H2d.office_mirror.hook_slipped": {
-   "text": "The hook slipped. Pavel lifts it and starts again.",
-   "draft": true
+   "text": "The hook slipped. Pavel lifts it and starts again."
   },
   "H2d.office_mirror.label_schedule": {
-   "text": "Bell signals:\nOne strike — go.\nTwo — stop.\nA long ring — raise.",
-   "draft": true
+   "text": "Bell signals:\nOne strike — go.\nTwo — stop.\nA long ring — raise."
   },
   "H2d.office_mirror.label_status_loose": {
-   "text": "Frame loose — tap in the wedges.",
-   "draft": true
+   "text": "Frame loose — tap in the wedges."
   },
   "H2d.office_mirror.label_status_ring_once": {
-   "text": "Ring once — Pavel will bring his lantern to the gap.",
-   "draft": true
+   "text": "Ring once — Pavel will bring his lantern to the gap."
   },
   "H2d.office_mirror.label_status_wait": {
    "text": "Hook at bottom of gap. Pavel awaits signal.",
-   "_k": "Директор 01.11, 22:26 — крюк переделан: Павел ведёт его снизу вверх, крюк упирается в засов снизу. Было: «Крюк наверху. Павел ждёт сигнала.»",
-   "draft": true
+   "_k": "Директор 01.11, 22:26 — крюк переделан: Павел ведёт его снизу вверх, крюк упирается в засов снизу. Было: «Крюк наверху. Павел ждёт сигнала.»"
   },
   "H2d.office_mirror.label_status_up": {
    "text": "Pavel is guiding the hook up the gap. When it touches the bolt, ring twice: \"stop.\"",
    "_i_t2": "I-T2 (Директор, стр. 87): пояснение «2 удара — стой» в самой мини-игре, когда оно нужно",
-   "_k": "Директор 01.11, 22:26 — крюк переделан: Павел ведёт его снизу вверх, крюк упирается в засов снизу; ключ был label_status_down: «Крюк идёт вниз вдоль двери. Дойдёт до засова — два удара подряд: «стой».»",
-   "draft": true
+   "_k": "Директор 01.11, 22:26 — крюк переделан: Павел ведёт его снизу вверх, крюк упирается в засов снизу; ключ был label_status_down: «Крюк идёт вниз вдоль двери. Дойдёт до засова — два удара подряд: «стой».»"
   },
   "H2d.office_mirror.label_status_contact": {
    "text": "The hook has touched the bolt from below. Ring twice — \"stop\" — before Pavel pushes!",
-   "_k": "Директор 01.11, 22:26 — крюк переделан: Павел ведёт его снизу вверх, крюк упирается в засов снизу: миг для «стой»",
-   "draft": true
+   "_k": "Директор 01.11, 22:26 — крюк переделан: Павел ведёт его снизу вверх, крюк упирается в засов снизу: миг для «стой»"
   },
   "H2d.office_mirror.label_status_held": {
    "text": "Hook held, still short of the bolt. One strike tells Pavel to go on.",
-   "_k": "Директор 01.11, 22:26 — крюк переделан: Павел ведёт его снизу вверх, крюк упирается в засов снизу: «стой» вдали от засова — крюк просто стоит",
-   "draft": true
+   "_k": "Директор 01.11, 22:26 — крюк переделан: Павел ведёт его снизу вверх, крюк упирается в засов снизу: «стой» вдали от засова — крюк просто стоит"
   },
   "H2d.office_mirror.label_status_stopped": {
-   "text": "Hook stopped.",
-   "draft": true
+   "text": "Hook stopped."
   },
   "H2d.office_mirror.label_status_lift_bar": {
-   "text": "Pavel raises the hook…",
-   "draft": true
+   "text": "Pavel raises the hook…"
   },
   "H2d.office_mirror.label_status_lift_empty": {
    "text": "An empty pull — the hook hadn't reached the bolt.",
-   "_k": "Директор 01.11, 22:26 — крюк переделан: Павел ведёт его снизу вверх, крюк упирается в засов снизу: «подымай» далеко под засовом. Было: «Павел подымает крюк…»",
-   "draft": true
+   "_k": "Директор 01.11, 22:26 — крюк переделан: Павел ведёт его снизу вверх, крюк упирается в засов снизу: «подымай» далеко под засовом. Было: «Павел подымает крюк…»"
   },
   "H2d.office_mirror.label_status_solved": {
-   "text": "Bolt lifted.",
-   "draft": true
+   "text": "Bolt lifted."
   },
   "H2d.office_mirror.label_status_open": {
-   "text": "Bolt lifted. Door shifted.",
-   "draft": true
+   "text": "Bolt lifted. Door shifted."
   },
   "H2d.office_mirror.label_bell": {
-   "text": "Bell: click once for \"go.\" Double-click for \"stop.\" Press and hold for a long ring — \"raise.\"",
-   "draft": true
+   "text": "Bell: click once for \"go.\" Double-click for \"stop.\" Press and hold for a long ring — \"raise.\""
   },
   "H2d.bell.hang": {
    "text": "The clapper fits. The bell is as good as new again.",
@@ -736,12 +619,10 @@
     "voice_fb": [
      38
     ]
-   },
-   "draft": true
+   }
   },
   "H2d.bell.need_mirror": {
-   "text": "I must ring and watch the office mirror. But it isn't on the stand yet.",
-   "draft": true
+   "text": "I must ring and watch the office mirror. But it isn't on the stand yet."
   },
   "H2d.nina_mirror.clamp": {
    "text": "The clamp draws the frame together. Slowly, the cloudy glass begins to clear…",
@@ -756,25 +637,20 @@
     "voice_fb": [
      39
     ]
-   },
-   "draft": true
+   }
   },
   "H2d.nina_mirror.title": {
-   "text": "Mama's mirror",
-   "draft": true
+   "text": "Mama's mirror"
   },
   "H2d.nina_mirror.knock_first": {
-   "text": "Agata knocks on the glass — no answer. Mama can't hear her.",
-   "draft": true
+   "text": "Agata knocks on the glass — no answer. Mama can't hear her."
   },
   "H2d.nina_mirror.watch_wait": {
    "text": "The clock hand has barely moved. I need to watch longer.",
-   "_k11": "K11 (Директор 01.11, 00:57–01:00, «Одиннадцатый заход»): выбран новый текст (было «…и деления ещё не прошла…»)",
-   "draft": true
+   "_k11": "K11 (Директор 01.11, 00:57–01:00, «Одиннадцатый заход»): выбран новый текст (было «…и деления ещё не прошла…»)"
   },
   "H2d.nina_mirror.watch_again_common": {
    "text": "I'll compare it with my watch again.",
-   "draft": true,
    "line": {
     "speaker": "agata",
     "text": "I'll compare it with my watch again."
@@ -791,7 +667,6 @@
      "25.10-108"
     ]
    },
-   "draft": true,
    "line": {
     "speaker": "tikhon",
     "text": "Your watch against the glass again? Compare all you like — it still runs faster over there. Go and do something useful."
@@ -799,16 +674,13 @@
    "_k25_108": "Сверка 01.11 (Директор 25.10, стр. 108: «снова повторяет Агата эту фразу, надо другую, более взаимодействующую с Тихоном»): при повторном сравнении часов — не повтор «Здесь минута — там двадцать», а ворчание Тихона"
   },
   "H2d.nina_mirror.label_watch": {
-   "text": "Agata's pocket watch",
-   "draft": true
+   "text": "Agata's pocket watch"
   },
   "Z3d.plate_dry.label": {
-   "text": "Pier plate",
-   "draft": true
+   "text": "Pier plate"
   },
   "Z3d.plate_dry.look": {
-   "text": "The water has fallen, exposing the pier's plate: \"Olkhovka\" in cast letters, a ring for the rope, and a crack right across it.",
-   "draft": true
+   "text": "The water has fallen, exposing the pier's plate: \"Olkhovka\" in cast letters, a ring for the rope, and a crack right across it."
   },
   "Z3d.plate_dry.use_skoba": {
    "text": "The cracked plate won't hold the rope. I'll fit the bracket first — it's in my bag.",
@@ -820,7 +692,6 @@
      "R3-37"
     ]
    },
-   "draft": true,
    "line": {
     "speaker": "agata",
     "text": "The cracked plate won't hold the rope. I'll fit the bracket first — it's in my bag."
@@ -836,7 +707,6 @@
      "R3-39"
     ]
    },
-   "draft": true,
    "line": {
     "speaker": "agata",
     "text": "The cracked plate won't hold the rope. I need the bracket — left on Dunya's workbench. I'll have to go back."
@@ -855,24 +725,19 @@
     "voice_fb": [
      44
     ]
-   },
-   "draft": true
+   }
   },
   "Z3d.plate.title": {
-   "text": "Plate on the pier",
-   "draft": true
+   "text": "Plate on the pier"
   },
   "Z3d.plate.label_letters": {
-   "text": "OLKHOVKA",
-   "draft": true
+   "text": "OLKHOVKA"
   },
   "Z3d.plate.label_hint": {
-   "text": "Bracket — three blows. Rope to the ring; tie the knot as Pelageya shows you.",
-   "draft": true
+   "text": "Bracket — three blows. Rope to the ring; tie the knot as Pelageya shows you."
   },
   "Z3d.plate.rope_at_ring": {
-   "text": "The rope's end touches the ring. Pelageya shows me the knot: under the ring first, then round — and through the loop.",
-   "draft": true
+   "text": "The rope's end touches the ring. Pelageya shows me the knot: under the ring first, then round — and through the loop."
   },
   "Z3d.plate.knot_wrong": {
    "text": "Wait, not like that. Watch again: under the ring first, then round — and through the loop.",
@@ -884,7 +749,6 @@
      "R3-41"
     ]
    },
-   "draft": true,
    "line": {
     "speaker": "pelageya",
     "text": "Wait, not like that. Watch again: under the ring first, then round — and through the loop."
@@ -892,7 +756,6 @@
   },
   "Z3d.pelageya.wait_skoba": {
    "text": "Fit the bracket over the crack. Then see to the rope.",
-   "draft": true,
    "line": {
     "speaker": "pelageya",
     "text": "Fit the bracket over the crack. Then see to the rope."
@@ -900,7 +763,6 @@
   },
   "Z3d.pelageya.knot": {
    "text": "Here's the end, by the plate. Now tie it to the ring. Watch; I'll show you.",
-   "draft": true,
    "line": {
     "speaker": "pelageya",
     "text": "Here's the end, by the plate. Now tie it to the ring. Watch; I'll show you."
@@ -917,43 +779,35 @@
      "R3-43"
     ]
    },
-   "draft": true,
    "line": {
     "speaker": "pelageya",
     "text": "It holds! Back to the pier now — take the lantern."
    }
   },
   "Z3d.water_low.label": {
-   "text": "Wet stones",
-   "draft": true
+   "text": "Wet stones"
   },
   "R1d.lantern.title": {
-   "text": "Signal lantern",
-   "draft": true
+   "text": "Signal lantern"
   },
   "R1d.lantern.label_far": {
-   "text": "Far bank",
-   "draft": true
+   "text": "Far bank"
   },
   "R1d.lantern.label_count": {
-   "text": "Three flashes: open the shutter three times. Then wait for a reply.",
-   "draft": true
+   "text": "Three flashes: open the shutter three times. Then wait for a reply."
   },
   "R1d.lantern.count_wrong": {
    "text": "Give three flashes. Exactly three — then wait.",
-   "draft": true,
    "line": {
     "speaker": "pelageya",
     "text": "Give three flashes. Exactly three — then wait."
    }
   },
   "R1d.lantern.use_day": {
-   "text": "Pelageya's signal lantern. Too soon to send flashes: the rope isn't on the plate yet.",
-   "draft": true
+   "text": "Pelageya's signal lantern. Too soon to send flashes: the rope isn't on the plate yet."
   },
   "R1d.pelageya.at_turn": {
    "text": "Pelageya isn't at the pier. She's by the bridge pier at the bend, waiting for me to fit the bracket.",
-   "draft": true,
    "line": {
     "speaker": "agata",
     "text": "Pelageya isn't at the pier. She's by the bridge pier at the bend, waiting for me to fit the bracket."
@@ -961,39 +815,31 @@
   },
   "R1d.pelageya.at_turn_d3": {
    "text": "Pelageya isn't here — she's at the bend, by the boat. That's where to find her.",
-   "draft": true,
    "line": {
     "speaker": "agata",
     "text": "Pelageya isn't here — she's at the bend, by the boat. That's where to find her."
    }
   },
   "item.mirror_mill": {
-   "text": "The office mirror: sound glass, frame loose at the corners.",
-   "draft": true
+   "text": "The office mirror: sound glass, frame loose at the corners."
   },
   "item.bell_clapper": {
-   "text": "The clapper from the mill bell.",
-   "draft": true
+   "text": "The clapper from the mill bell."
   },
   "item.key_sluice": {
-   "text": "The sluice lever, from the nail in the office.",
-   "draft": true
+   "text": "The sluice lever, from the nail in the office."
   },
   "item.journal_manager": {
-   "text": "The manager's last entry, and how to drain the pond.",
-   "draft": true
+   "text": "The manager's last entry, and how to drain the pond."
   },
   "item.clamp": {
-   "text": "For drawing a loose frame together.",
-   "draft": true
+   "text": "For drawing a loose frame together."
   },
   "item.school_ribbon": {
-   "text": "Mama's blue ribbon, with a narrow border.",
-   "draft": true
+   "text": "Mama's blue ribbon, with a narrow border."
   },
   "H2d.stand_zm.enter": {
    "text": "Here's Dunya's stand for the mill mirror: the tall carved frame in the middle of the workshop.",
-   "draft": true,
    "line": {
     "speaker": "agata",
     "text": "Here's Dunya's stand for the mill mirror: the tall carved frame in the middle of the workshop."
@@ -1001,7 +847,6 @@
   },
   "item.mirror_mill.wrong": {
    "text": "The office mirror belongs in Dunya's stand marked \"ЗМ\" — the tall carved frame in the middle of the workshop.",
-   "draft": true,
    "line": {
     "speaker": "agata",
     "text": "The office mirror belongs in Dunya's stand marked \"ЗМ\" — the tall carved frame in the middle of the workshop."
@@ -1009,7 +854,6 @@
   },
   "item.bell_clapper.wrong": {
    "text": "The clapper belongs to the mill bell. It's here in the workshop.",
-   "draft": true,
    "line": {
     "speaker": "agata",
     "text": "The clapper belongs to the mill bell. It's here in the workshop."
@@ -1017,7 +861,6 @@
   },
   "item.key_sluice.wrong": {
    "text": "This lever fits the winch at the mill sluice.",
-   "draft": true,
    "line": {
     "speaker": "agata",
     "text": "This lever fits the winch at the mill sluice."
@@ -1025,7 +868,6 @@
   },
   "item.clamp.wrong": {
    "text": "I need to clamp Mama's mirror frame together in the workshop.",
-   "draft": true,
    "line": {
     "speaker": "agata",
     "text": "I need to clamp Mama's mirror frame together in the workshop."
@@ -1033,7 +875,6 @@
   },
   "item.brace_plate.wrong": {
    "text": "The bracket is for the cracked plate at the bend. But the water's too high to reach it.",
-   "draft": true,
    "line": {
     "speaker": "agata",
     "text": "The bracket is for the cracked plate at the bend. But the water's too high to reach it."
@@ -1041,7 +882,6 @@
   },
   "item.brace_plate.wrong_dry": {
    "text": "The bracket is for the cracked plate at the bend. I'll fit it there.",
-   "draft": true,
    "line": {
     "speaker": "agata",
     "text": "The bracket is for the cracked plate at the bend. I'll fit it there."
@@ -1049,7 +889,6 @@
   },
   "item.key_house.wrong": {
    "text": "The key to Dunya's house. The entrance is on the street.",
-   "draft": true,
    "line": {
     "speaker": "agata",
     "text": "The key to Dunya's house. The entrance is on the street."
@@ -1057,7 +896,6 @@
   },
   "item.door_hinges.wrong": {
    "text": "These hinges belong to the school door in the gallery frame.",
-   "draft": true,
    "line": {
     "speaker": "agata",
     "text": "These hinges belong to the school door in the gallery frame."
@@ -1065,7 +903,6 @@
   },
   "item.chalk.wrong": {
    "text": "Chalk is for writing on the classroom board.",
-   "draft": true,
    "line": {
     "speaker": "agata",
     "text": "Chalk is for writing on the classroom board."
@@ -1073,7 +910,6 @@
   },
   "item.wrong_generic": {
    "text": "It won't work here.",
-   "draft": true,
    "_j": "J (Р8, Директор 29.10)",
    "line": {
     "speaker": "agata",
@@ -1082,14 +918,12 @@
   },
   "item.mitten.wrong": {
    "text": "My mitten. No use for it here.",
-   "draft": true,
    "line": {
     "speaker": "agata",
     "text": "My mitten. No use for it here."
    }
   },
   "H2d.bell.after_office": {
-   "draft": true,
    "text": "The bell has done its work: the office is open. It can hang in peace now.",
    "line": {
     "speaker": "agata",
@@ -1097,7 +931,6 @@
    }
   },
   "H2d.bell.ring_far": {
-   "draft": true,
    "text": "It doesn't ring here — it rings far away, at the mill.",
    "_k17": "Директор 01.11, «Семнадцатый заход» (W231): выбрана прежняя запись — подсказка «на мельнице» остаётся (стр. 33 решена так)",
    "line": {
@@ -1106,7 +939,6 @@
    }
   },
   "R1d.pelageya.day2": {
-   "draft": true,
    "text": "While the plate's underwater, the boat will come back. See Pavel at the mill first — the pond needs draining.",
    "line": {
     "speaker": "pelageya",
@@ -1114,7 +946,6 @@
    }
   },
   "R1d.pelageya.wait_water": {
-   "draft": false,
    "text": "The water's going down! Once the plate is clear, I'll take the rope off the clamp and take the rope to the pier by boat. You can only get it through the ring from the water.",
    "direction": {
     "stress": "пошла",
@@ -1132,7 +963,6 @@
    }
   },
   "R1d.pelageya.lantern": {
-   "draft": true,
    "text": "Lantern's on the post. Three flashes — then wait.",
    "line": {
     "speaker": "pelageya",
@@ -1140,7 +970,6 @@
    }
   },
   "R1d.pelageya.to_boat": {
-   "draft": true,
    "text": "The ring's on the rope. Time to go. Get in.",
    "direction": {
     "stress": "пора",
@@ -1157,23 +986,18 @@
    }
   },
   "R1.exit_R2.closed_check": {
-   "draft": true,
    "text": "Let Pelageya test it with the empty boat first."
   },
   "R1.stopper.label_empty": {
-   "text": "Empty rope clamp",
-   "draft": true
+   "text": "Empty rope clamp"
   },
   "R1.stopper.look_empty": {
-   "text": "Pelageya's rope clamp is empty: she's taken the rope to the bridge pier at the bend.",
-   "draft": true
+   "text": "Pelageya's rope clamp is empty: she's taken the rope to the bridge pier at the bend."
   },
   "R1.stopper.look_ring": {
-   "text": "An empty rope clamp. The rope is fastened to the plate's ring at the bend now. There it runs above the water to the far bank. They're holding it there.",
-   "draft": true
+   "text": "An empty rope clamp. The rope is fastened to the plate's ring at the bend now. There it runs above the water to the far bank. They're holding it there."
   },
   "R3.exit_R2.closed": {
-   "draft": true,
    "text": "Go to your mother first. I'll take you back tomorrow.",
    "line": {
     "speaker": "pelageya",
@@ -1181,7 +1005,6 @@
    }
   },
   "R3.exit_R2.closed_morning": {
-   "draft": true,
    "_k": "Ревью 01.11 (Б-5/А-16): утро третьего дня до класса с мамой (morning_day3) — «завтра» уже наступило; запись K18",
    "text": "Finish talking to your mother first. She'll show you the path to the school.",
    "line": {
@@ -1190,7 +1013,6 @@
    }
   },
   "H2d.nina_mirror.clamp_early": {
-   "draft": true,
    "text": "The sluice first — Pavel's waiting by the winch. Once we've drained the water, I'll see to the mirror.",
    "line": {
     "speaker": "agata",
@@ -1207,7 +1029,6 @@
      "R3-45"
     ]
    },
-   "draft": true,
    "line": {
     "speaker": "tikhon",
     "text": "Did you see Nina? All grey… Then the mistress must have grown old there, too."
@@ -1227,7 +1048,6 @@
      45
     ]
    },
-   "draft": true,
    "line": {
     "speaker": "agata",
     "text": "I did, Tikhon. While I sleep one night, Mama will live a whole week… How can I sleep now?"
@@ -1244,7 +1064,6 @@
      109
     ]
    },
-   "draft": true,
    "line": {
     "speaker": "tikhon",
     "text": "How, how… Lie down and sleep, that's how. I sleep every night, and the world's still standing. While you're awake, get on with things. I'll mind the stove."

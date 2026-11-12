@@ -43,8 +43,29 @@ static var _reopen_mechanic: String = ""
 ## Ревью 01.11 (В-19): the service keys (F2/F3/F4 effects and the frame counter, F8 sprites ↔ live 3D) stay in the
 ## desktop builds, where the Director compares (ACCEPTANCE_J, M1 п. 130–138), and go off in a player's browser page:
 ## a stray F8 there would pull the GLB and freeze the tab. The probe page (Playwright, ?probe…) keeps them.
+## Review 12.11 (before Steam): a player's exe had them too — F8 swaps Agata for the drawn sheets, F2 turns the snow
+## and rain off, F3/F4 show the frame counter and change the quality; any player could press one by chance. On the
+## desktop they are now for our own launches only: a debug build (the editor, the tests), `-- --dev`, or a start
+## point (`-- --start=<id>` — the Director's «точки старта» keep them). A plain launch of the exported game: off.
 static func debug_keys_allowed() -> bool:
-	return probe_wanted or not OS.has_feature("web")
+	return debug_keys_for(OS.has_feature("web"), probe_wanted, OS.is_debug_build(), OS.get_cmdline_user_args())
+
+
+static func debug_keys_for(web: bool, probe: bool, debug_build: bool, user_args: PackedStringArray) -> bool:
+	if web:
+		return probe
+	if debug_build:
+		return true
+	for a in user_args:
+		if String(a) == "--dev" or String(a).begins_with("--start="):
+			return true
+	return false
+
+
+## Review 12.11: the window was titled with the project's folder-safe name («Dom propavshih dorog» — it also names
+## the saves' folder under user://, so it stays as it is: renaming it would lose every save). The window shows the
+## game's own name.
+const WINDOW_TITLE := "Дом пропавших дорог"
 
 
 static func web_probe_wanted() -> bool:
@@ -63,6 +84,7 @@ static func web_probe_wanted() -> bool:
 
 func _ready() -> void:
 	probe_wanted = web_probe_wanted()
+	get_window().title = WINDOW_TITLE
 	DisplaySettings.apply_saved()   # I-T3 §2а: full screen / window as the player left it
 	RoomManager.setup(world, player)
 	RoomManager.room_changed.connect(_mark_probe)

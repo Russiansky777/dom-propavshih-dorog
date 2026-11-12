@@ -360,13 +360,6 @@ func text_line(key_or_text: String) -> Dictionary:
 	return {}
 
 
-func text_is_draft(key_or_text: String) -> bool:
-	if not key_or_text.begins_with("@"):
-		return false
-	var entry: Dictionary = texts.get(key_or_text.substr(1), {})
-	return bool(entry.get("draft", false))
-
-
 func flag_description(flag: String) -> String:
 	var d: Dictionary = flag_desc.get(flag, {})
 	return String(d.get("desc", ""))

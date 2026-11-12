@@ -74,6 +74,11 @@ var active_scene: String = ""
 ## turned back to his own data facing (Mitya to the water). The hotspot id; "" — none. Cleared when the lines run out
 ## and when a scene starts.
 var talk_with: String = ""
+## Review 12.11: a click on a villager that says nothing (or whose talk ended on a path that did not clear the mark)
+## left the mark set — in the next room a villager with the same hotspot id would «listen» to Agata's own thought.
+## The mark goes a second after nothing is on screen and nothing runs.
+var _talk_idle_s: float = 0.0
+const TALK_KEEP_S := 1.0
 var puzzle_open: bool = false
 var puzzle_hotspot: Node2D = null
 var puzzle: Dictionary = {}   # {spec, placed:{slot->piece}, mark:int, errors:int, solved:bool, message, message_key, message_serial, hint}
@@ -691,12 +696,17 @@ func _run_stage(spec: Dictionary) -> void:
 			var secs := float(g.get("s", 2.4))
 			var ser := _stage_serial
 			# after the turn (the target is taken in her own frame — before the turn it would point the old way)
+			# review 12.11: the timers hold the villager weakly — a lambda that captured the node itself made the engine
+			# log «Lambda capture … was freed» when the room was gone before the timer fired (harmless, but an ERROR line)
+			var np_ref: WeakRef = weakref(np)
 			get_tree().create_timer(float(g.get("turn_s", 0.6)), false).timeout.connect(func():
-				if ser == _stage_serial and is_instance_valid(np):
-					np.call("hold_hand_at", side, pt, 1.0, true))
+				var n1 = np_ref.get_ref()
+				if ser == _stage_serial and n1 != null:
+					n1.call("hold_hand_at", side, pt, 1.0, true))
 			get_tree().create_timer(float(g.get("turn_s", 0.6)) + secs, false).timeout.connect(func():
-				if is_instance_valid(np):
-					np.call("hold_hand_at", side, pt, 0.0, true))
+				var n2 = np_ref.get_ref()
+				if n2 != null:
+					n2.call("hold_hand_at", side, pt, 0.0, true))
 		if not spec.has("fade_out_s") and not spec.has("room") and not spec.has("npc_go") and not spec.has("cut") \
 				and not spec.has("frame") and not spec.has("layer_go") and not spec.has("npc_face"):
 			for f in spec.get("sets", []):
@@ -964,9 +974,11 @@ func _stage_handover(ho: Dictionary) -> void:
 			handed_over.emit(String(ho.get("from", "")), share)
 			var rel := float(ho.get("release_s", 0.25))
 			var rel_at := float(ho.get("release_at", -1.0))
+			var rel_ref: WeakRef = weakref(npc)   # review 12.11: held weakly (see hold_hand_at above)
 			get_tree().create_timer(rel, false).timeout.connect(func():
-				if is_instance_valid(npc) and npc.has_method("release_action"):
-					npc.call("release_action", rel_at))
+				var n = rel_ref.get_ref()
+				if n != null and n.has_method("release_action"):
+					n.call("release_action", rel_at))
 		if not acting and t > 0.2:
 			break
 	if mine != null and is_instance_valid(mine):
@@ -1035,18 +1047,24 @@ func _stage_npc_go(spec: Dictionary) -> float:
 			if fc is Array and (fc as Array).size() >= 2 and npc.has_method("face_towards"):
 				# 09.11: a point to turn to on arrival (Pelageya to the line at the pier plate)
 				var fp := Vector2(float(fc[0]), float(fc[1]))
+				var face_ref: WeakRef = weakref(npc)   # review 12.11: held weakly
 				get_tree().create_timer(secs, false).timeout.connect(func():
-					if is_instance_valid(npc):
-						npc.set("partner", null)
-						npc.call("face_towards", fp))
+					var n = face_ref.get_ref()
+					if n != null:
+						n.set("partner", null)
+						n.call("face_towards", fp))
 				fc = ""
 			var other := npc_room.get_node_or_null("npc_" + String(fc)) as Node2D
 			if String(fc) == "agata":
 				other = RoomManager.player   # 09.11: back to her place, turned to Agata
 			if other != null and npc.has_method("set_partner"):
+				var npc_ref: WeakRef = weakref(npc)   # review 12.11: both held weakly
+				var other_ref: WeakRef = weakref(other)
 				get_tree().create_timer(secs, false).timeout.connect(func():
-					if is_instance_valid(npc) and is_instance_valid(other):
-						npc.call("set_partner", other))
+					var n = npc_ref.get_ref()
+					var o2 = other_ref.get_ref()
+					if n != null and o2 != null:
+						n.call("set_partner", o2))
 	return longest
 
 
@@ -1593,6 +1611,7 @@ func interact(h: StoryHotspot) -> void:
 	if not h.is_active():
 		return
 	talk_with = h.hotspot_id if String(h.data.get("kind", "")) == "npc" else ""
+	_talk_idle_s = 0.0
 	var d := h.data
 	# A state may say its own look (rooms data `states[].look` — G14: the stove after the shelf is hung no longer talks
 	# of the mount sockets; G9: the leaning shelf while the wet towel is on the bench) and its own refusal of a choice
@@ -2457,6 +2476,11 @@ func hint_tick(delta: float) -> void:
 
 func _process(delta: float) -> void:
 	hint_tick(delta)
+	if talk_with != "":
+		_talk_idle_s = 0.0 if is_busy() else _talk_idle_s + delta
+		if _talk_idle_s > TALK_KEEP_S:
+			talk_with = ""
+			_talk_idle_s = 0.0
 
 
 ## Reveals the next tier (1..3) for the current hint scene; tiers persist in GameState.counters.

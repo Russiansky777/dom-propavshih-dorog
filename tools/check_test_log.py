@@ -5,6 +5,9 @@ A GDScript error inside a test function stops that function where it stands: not
 test still counts as passed. Found in the first full run after the night 09→10.11: test_ui_cursors called a handler
 removed on 05.11, test_batch_j read a shader parameter gone since 02.11 — both «green» and blind for days.
 A SHADER ERROR too (11.11: the crossing's water shader never compiled — the layer drew the plain painting, no test failed).
+Two engine errors too (review 12.11): «Lambda capture at index N was freed» — a callback of a long-lived node holding a
+node that is gone (five in every full run: StoryRunner's timers kept the villager itself; now weak references), and
+«Index … is out of bounds» (test_jaw read the jaw bone of a model without one, the test stayed «green»).
 
   python3 tools/check_test_log.py build/logs/tests.log      exit 1 and the lines when the log holds a script error
   python3 tools/check_test_log.py --self-check              the check itself: a log with one is caught, a clean one passes
@@ -12,7 +15,8 @@ A SHADER ERROR too (11.11: the crossing's water shader never compiled — the la
 import re
 import sys
 
-BAD = re.compile(r"SCRIPT ERROR|SHADER ERROR|Parse Error|Compile Error|Failed to load script")
+BAD = re.compile(r"SCRIPT ERROR|SHADER ERROR|Parse Error|Compile Error|Failed to load script"
+                 r"|Lambda capture at index \d+ was freed|ERROR: Index .* is out of bounds")
 
 
 def problems(text: str) -> list[str]:
@@ -42,6 +46,17 @@ def self_check() -> int:
         "          at: (null) (:18)\n"
         "PASS  crossing  (900 ms)\n"
     )
+    engine = (
+        "ERROR: Lambda capture at index 0 was freed. Passed \"null\" instead.\n"
+        "   at: call (modules/gdscript/gdscript_lambda_callable.cpp:110)\n"
+        "PASS  Actions: hotspot action_anim plays once  (6750 ms)\n"
+        "ERROR: Index p_bone = -1 is out of bounds (bone_size = 51).\n"
+        "   at: get_bone_pose_rotation (scene/3d/skeleton_3d.cpp:909)\n"
+        "==== jaw: 130 checks, 0 failed ====\n"
+    )
+    if len(problems(engine)) != 2:
+        print(f"self-check FAILED: a log with a freed lambda capture and an index out of bounds gives {problems(engine)}")
+        return 1
     if len(problems(shader)) != 1:
         print(f"self-check FAILED: a log with a shader error gives {problems(shader)}")
         return 1

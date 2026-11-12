@@ -11,6 +11,17 @@ extends SceneTree
 ##       whose data borrows clips, every borrowed clip: the hips' travel and the legs' turns it took from the stance
 ##       change per 1/60 s no more than in the stance clip itself. Self-check — the copy from the start again
 ##       (Actor3D.fill_pingpong off) is caught on Agata.
+##   R12-2 (review: «служебные клавиши F2, F3, F4, F8 работают в exe у любого игрока»; Director 12.11, 21:40 «доделывай
+##       до финальной версии»): on the desktop the service keys are for our own launches only — a debug build, `-- --dev`
+##       or a start point (`-- --start=<id>`); a plain launch of the exported game has none. Self-check — the rule as it
+##       was (everything but the web) gives them to that plain launch.
+##   R12-3 (review: «заголовок окна латиницей»): with the game's main scene up the window is titled «Дом пропавших
+##       дорог»; the project's name (the saves' folder) is left as it was. Self-check — before the scene the title is not it.
+##   R12-4 (review: «Клик по кровати в горнице» вместо «Щёлкнуть»): no scene hint says «Клик»; self-check — the old
+##       hint is caught.
+##   R12-5 (review: «метка собеседника может пережить смену комнаты»): StoryRunner.talk_with set by a click on a villager
+##       that said nothing is gone a second later; while a line is on screen it stays (self-check: the mark does hold
+##       through a talk — Mitya's fix of 11.11).
 
 const DT := 1.0 / 60.0
 
@@ -43,6 +54,15 @@ func _run() -> void:
 	var t0 := Time.get_ticks_msec()
 	await _test_borrowed_stance()
 	_report("R12-1 Borrowed gestures (review 12.11): the stance under «рука к груди» and «спокойный» has no seam — hips and legs move no faster than in the stance clip itself", t0)
+	t0 = Time.get_ticks_msec()
+	_test_service_keys()
+	_report("R12-2 Service keys (F2/F3/F4/F8): only a debug build, «-- --dev» or a start point has them — not a player's exe", t0)
+	t0 = Time.get_ticks_msec()
+	_test_hint_words()
+	_report("R12-4 Hints: none says «Клик» — «Щёлкнуть», as everywhere", t0)
+	t0 = Time.get_ticks_msec()
+	await _test_title_and_talk()
+	_report("R12-3 / R12-5 The window is titled «Дом пропавших дорог»; the talk partner's mark is gone a second after a click that said nothing, and holds while a line is on screen", t0)
 	var failed := 0
 	for r in _results:
 		if not r[1]:
@@ -181,3 +201,98 @@ func _test_borrowed_stance() -> void:
 				seen = true
 	print("        as before (the stance from its start again), the hips a frame at most —" + txt)
 	_check(seen, "self-check: with the stance copied from its start again no seam is found on Agata —%s — the case is not reproduced" % txt)
+
+
+# --- R12-2 ------------------------------------------------------------------------------------
+
+func _test_service_keys() -> void:
+	var M = load("res://scripts/main.gd")
+	var none := PackedStringArray()
+	_check(not M.debug_keys_for(false, false, false, none), "a player's exe (desktop, release, no arguments) has the service keys")
+	_check(not M.debug_keys_for(false, false, false, PackedStringArray(["--title"])), "«-- --title» alone turns the service keys on")
+	_check(M.debug_keys_for(false, false, false, PackedStringArray(["--dev"])), "«-- --dev» does not turn the service keys on")
+	_check(M.debug_keys_for(false, false, false, PackedStringArray(["--start=day2"])), "a start point («-- --start=day2») has no service keys — the Director compares with them")
+	_check(M.debug_keys_for(false, false, true, none), "a debug build (the editor, the tests) has no service keys")
+	_check(not M.debug_keys_for(true, false, false, PackedStringArray(["--dev"])) and M.debug_keys_for(true, true, false, none), "the web: the keys are for the probe page only")
+	# both places that read the keys ask this rule
+	for f in ["res://scripts/actors/player.gd", "res://scripts/ambient/perf_overlay.gd"]:
+		_check(FileAccess.get_file_as_string(f).contains("debug_keys_allowed()"), "%s no longer asks Main.debug_keys_allowed()" % f)
+	# self-check: the rule as it was — everything but a player's web page
+	var old_rule := func(web: bool, probe: bool) -> bool: return probe or not web
+	_check(old_rule.call(false, false), "self-check: the old rule gave a player's exe no keys either — the test tells nothing")
+
+
+# --- R12-4 ------------------------------------------------------------------------------------
+
+func _hint_says_klik(h: String) -> bool:
+	return h.begins_with("Клик") or h.contains(" клик") or h.contains("Кликн") or h.contains("кликн")
+
+
+func _test_hint_words() -> void:
+	var n := 0
+	var dir := DirAccess.open("res://data/story/scenes")
+	for f in dir.get_files():
+		if not String(f).ends_with(".json"):
+			continue
+		var d = JSON.parse_string(FileAccess.get_file_as_string("res://data/story/scenes/" + f))
+		for sc in (d.get("scenes", []) if d is Dictionary else []):
+			for h in sc.get("hints", []):
+				n += 1
+				_check(not _hint_says_klik(String(h)), "scene %s: the hint «%s» says «Клик» — «Щёлкнуть» everywhere else" % [String(sc.get("id", "")), String(h)])
+	_check(n > 50, "only %d scene hints read — the data's shape changed?" % n)
+	_check(_hint_says_klik("Клик по кровати в горнице"), "self-check: the old hint «Клик по кровати в горнице» is not caught")
+
+
+# --- R12-3, R12-5 -------------------------------------------------------------------------------
+
+func _wait_s(s: float) -> void:
+	var t := 0.0
+	var guard := 0
+	while t < s and guard < 200000:
+		await process_frame
+		t += maxf(root.get_process_delta_time(), 0.0005)
+		guard += 1
+
+
+func _test_title_and_talk() -> void:
+	var gs = root.get_node("GameState")
+	var rm = root.get_node("RoomManager")
+	var sr = root.get_node("StoryRunner")
+	var want := "Дом пропавших дорог"
+	var before := String(root.title)
+	var main_node = load("res://scenes/Main.tscn").instantiate()
+	root.add_child(main_node)
+	for i in 4:
+		await process_frame
+	rm.autosave_enabled = false
+	_check(String(root.title) == want, "the window is titled «%s», not «%s»" % [String(root.title), want])
+	_check(before != want, "self-check: the window was titled «%s» before the game's scene — the test tells nothing" % before)
+	_check(String(ProjectSettings.get_setting("application/config/name")) == "Dom propavshih dorog", "the project's name changed to «%s» — it names the saves' folder (user://): every save would be lost" % String(ProjectSettings.get_setting("application/config/name")))
+	# R12-5
+	gs.reset()
+	for f in ["done_M01", "done_M02", "house_unlocked", "done_M03", "met_tikhon"]:
+		gs.set_flag(f, true)
+	rm.change_room("H1", "default", Vector2(1200, 960))
+	for i in 8:
+		await process_frame
+	sr.current_beat = {}
+	sr.talk_with = "mitya"
+	sr.set("_talk_idle_s", 0.0)
+	await _wait_s(0.3)
+	_check(String(sr.talk_with) == "mitya", "the mark is gone 0.3 s after the click — a talk's first line may not be up yet")
+	await _wait_s(1.4)
+	_check(String(sr.talk_with) == "", "1.7 s after a click that said nothing the talk partner's mark is still «%s»" % String(sr.talk_with))
+	# while a line is on screen the mark holds (11.11: Mitya listens to Agata's question)
+	sr.talk_with = "mitya"
+	sr.set("_talk_idle_s", 0.0)
+	sr.current_beat = {"type": "line", "speaker": "agata", "line_id": "R12_5", "text": "Митя, а ты рыбу удишь?"}
+	await _wait_s(2.0)
+	_check(String(sr.talk_with) == "mitya", "self-check: with a line on screen the mark was dropped after 2 s — Mitya would turn away again")
+	sr.current_beat = {}
+	await _wait_s(1.5)
+	_check(String(sr.talk_with) == "", "the line over, 1.5 s later the mark is still «%s»" % String(sr.talk_with))
+	gs.reset()
+	if main_node != null and is_instance_valid(main_node):
+		root.remove_child(main_node)
+		main_node.free()
+

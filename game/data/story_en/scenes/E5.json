@@ -657,8 +657,7 @@
        "if": [
         "q06_table_at_ilya"
        ],
-       "text": "Mitya repairs an oarlock. Their shelf dries nearby, made on the second bench at Ilya's.",
-       "draft": true
+       "text": "Mitya repairs an oarlock. Their shelf dries nearby, made on the second bench at Ilya's."
       }
      ]
     },
@@ -716,8 +715,7 @@
        "if": [
         "q02_old_under_new"
        ],
-       "text": "The old map of Olkhovka hangs by the board, the tracing of Ilya's garden pinned over it. Nina shows the children how the place has changed.",
-       "draft": true
+       "text": "The old map of Olkhovka hangs by the board, the tracing of Ilya's garden pinned over it. Nina shows the children how the place has changed."
       }
      ]
     },
@@ -844,8 +842,7 @@
        "if": [
         "q06_table_at_agata"
        ],
-       "text": "Ilya made a carved frame for the family photograph on the new workbench.",
-       "draft": true
+       "text": "Ilya made a carved frame for the family photograph on the new workbench."
       }
      ]
     },
@@ -932,8 +929,7 @@
        "if": [
         "q02_new_primary"
        ],
-       "text": "The garden drawing is pinned by the door. Ulyana uses it to explain the way to Tikhon.",
-       "draft": true
+       "text": "The garden drawing is pinned by the door. Ulyana uses it to explain the way to Tikhon."
       }
      ]
     },

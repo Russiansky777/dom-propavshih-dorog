@@ -3,12 +3,10 @@
  "lang": "ru",
  "texts": {
   "ui.controls_reveal": {
-   "text": "Space — show everything you can examine and all room exits; in a conversation — next line",
-   "draft": false
+   "text": "Space — show everything you can examine and all room exits; in a conversation — next line"
   },
   "ui.hint_space_tip": {
-   "text": "Space — show all places and actions",
-   "draft": false
+   "text": "Space — show all places and actions"
   }
  }
 }

@@ -3,76 +3,58 @@
  "lang": "ru",
  "texts": {
   "ui.title_continue": {
-   "text": "Continue",
-   "draft": false
+   "text": "Continue"
   },
   "ui.title_new_game": {
-   "text": "New game",
-   "draft": false
+   "text": "New game"
   },
   "ui.title_load": {
-   "text": "Load",
-   "draft": false
+   "text": "Load"
   },
   "ui.title_settings": {
-   "text": "Settings",
-   "draft": false
+   "text": "Settings"
   },
   "ui.title_quit": {
-   "text": "Quit",
-   "draft": false
+   "text": "Quit"
   },
   "ui.pause_continue": {
-   "text": "Continue",
-   "draft": false
+   "text": "Continue"
   },
   "ui.pause_save": {
-   "text": "Save",
-   "draft": false
+   "text": "Save"
   },
   "ui.pause_load": {
-   "text": "Load",
-   "draft": false
+   "text": "Load"
   },
   "ui.pause_settings": {
-   "text": "Settings",
-   "draft": false
+   "text": "Settings"
   },
   "ui.pause_main_menu": {
-   "text": "Main menu",
-   "draft": false
+   "text": "Main menu"
   },
   "ui.pause_quit": {
-   "text": "Quit game",
-   "draft": false
+   "text": "Quit game"
   },
   "ui.pause_esc_hint": {
-   "text": "Esc — return",
-   "draft": false
+   "text": "Esc — return"
   },
   "ui.pause_busy": {
-   "text": "Saving and loading are available when the scene ends",
-   "draft": false
+   "text": "Saving and loading are available when the scene ends"
   },
   "ui.menu_title_save": {
-   "text": "Save game",
-   "draft": false
+   "text": "Save game"
   },
   "ui.menu_title_load": {
-   "text": "Load game",
-   "draft": false
+   "text": "Load game"
   },
   "ui.menu_title_settings": {
-   "text": "Settings",
-   "draft": false
+   "text": "Settings"
   },
   "ui.menu_no_saves": {
-   "text": "No saved games yet.",
-   "draft": false
+   "text": "No saved games yet."
   },
   "ui.back": {
-   "text": "Back",
-   "draft": false
+   "text": "Back"
   },
   "ui.journal_where": {
    "text": "Where: {text}"
@@ -82,52 +64,42 @@
   },
   "ui.lang_voice": {
    "text": "Voice-over",
-   "draft": false,
    "_k": "Директор 03.11: язык голоса и субтитров в настройках"
   },
   "ui.lang_subtitles": {
    "text": "Subtitles",
-   "draft": false,
    "_k": "Директор 03.11: язык голоса и субтитров в настройках"
   },
   "ui.lang_voice_ru": {
    "text": "Русский",
-   "draft": false,
    "_k": "Директор 03.11: язык голоса и субтитров в настройках"
   },
   "ui.lang_voice_en": {
    "text": "English",
-   "draft": false,
    "_k": "Директор 03.11: язык голоса и субтитров в настройках"
   },
   "ui.lang_subs_ru": {
    "text": "Русские",
-   "draft": false,
    "_k": "Директор 03.11: язык голоса и субтитров в настройках"
   },
   "ui.lang_subs_en": {
    "text": "English",
-   "draft": false,
    "_k": "Директор 03.11: язык голоса и субтитров в настройках"
   },
   "ui.lang_subs_none": {
    "text": "No subtitles\nБез субтитров",
-   "draft": false,
    "_k": "Директор 03.11: язык голоса и субтитров в настройках"
   },
   "ui.lang_en_warning": {
    "text": "English subtitles and voice-over are experimental and may contain mistakes.\nАнглийские субтитры и озвучка — экспериментальные и могут содержать ошибки.",
-   "draft": false,
    "_k": "Директор 03.11: язык голоса и субтитров в настройках"
   },
   "ui.lang_en_yes": {
    "text": "I understand — switch to English",
-   "draft": false,
    "_k": "Директор 03.11: язык голоса и субтитров в настройках"
   },
   "ui.lang_en_no": {
    "text": "Keep as it was",
-   "draft": false,
    "_k": "Директор 03.11: язык голоса и субтитров в настройках"
   }
  }

@@ -3,43 +3,34 @@
  "lang": "ru",
  "texts": {
   "map.house": {
-   "text": "Aunt Dunya's house",
-   "draft": false
+   "text": "Aunt Dunya's house"
   },
   "map.mill": {
-   "text": "Mill",
-   "draft": false
+   "text": "Mill"
   },
   "map.olkhovka": {
-   "text": "School",
-   "draft": false
+   "text": "School"
   },
   "map.nina_house": {
    "text": "Mama's house",
-   "draft": false,
    "_k": "K (сверка плана 01.11, П4): в игре — «Дом мамы»"
   },
   "map.ferry_shed": {
    "text": "Ferry shed",
-   "draft": false,
    "_k": "K (сверка плана 01.11, П3): в игре R3.shed — «Сарайчик переправы»; комнаты R4 нет"
   },
   "map.ilya_house": {
    "text": "Ilya's house",
-   "draft": false,
    "_k": "K (сверка плана 01.11, П8)"
   },
   "map.here": {
-   "text": "You are here",
-   "draft": false
+   "text": "You are here"
   },
   "map.close_hint": {
-   "text": "Click or Esc — return",
-   "draft": false
+   "text": "Click or Esc — return"
   },
   "ui.button_plan": {
-   "text": "Map",
-   "draft": false
+   "text": "Map"
   }
  }
 }

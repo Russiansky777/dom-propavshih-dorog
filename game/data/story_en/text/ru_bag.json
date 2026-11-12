@@ -1,60 +1,48 @@
 {
- "_comment": "Сумка (game/scripts/ui/inventory_bag.gd): подписи действий и короткие строки предметов при наведении на кармашек. Ключ item.<id> — id из items.json; название берётся из items.json name, здесь — только одна строка от лица Агаты, не повторяющая название (оно стоит строкой выше), без новых сюжетных фактов (всё — из items.json use и сцен M01–M08). Строки предметов draft: true — заменяет владелец текста (ChatGPT с Директором). Предмет без строки показывает только название и действие. Поле tags — теги подачи закадрового голоса (в подсказку не попадают).",
+ "_comment": "Сумка (game/scripts/ui/inventory_bag.gd): подписи действий и короткие строки предметов при наведении на кармашек. Ключ item.<id> — id из items.json; название берётся из items.json name, здесь — только одна строка от лица Агаты, не повторяющая название (оно стоит строкой выше), без новых сюжетных фактов (всё — из items.json use и сцен M01–M08). 12.11: тексты утверждены Директором как есть, пометки draft сняты — заморозка текста (meta.json text_freeze). Предмет без строки показывает только название и действие. Поле tags — теги подачи закадрового голоса (в подсказку не попадают).",
  "lang": "ru",
  "texts": {
   "ui.bag_take": {
-   "text": "Click an item, then click where you want to use it.",
-   "draft": false
+   "text": "Click an item, then click where you want to use it."
   },
   "ui.bag_put_back": {
-   "text": "In hand. Click again or right-click to return it to your bag.",
-   "draft": false
+   "text": "In hand. Click again or right-click to return it to your bag."
   },
   "item.key_house": {
-   "text": "Tamara kept it safe for me.",
-   "draft": false
+   "text": "Tamara kept it safe for me."
   },
   "item.letter_tamara": {
    "text": "This letter started me on the road here.",
-   "draft": false,
    "tags": [
     "warmly"
    ]
   },
   "item.pocket_watch": {
-   "text": "Wherever I go, the same familiar ticking.",
-   "draft": false
+   "text": "Wherever I go, the same familiar ticking."
   },
   "item.mitten": {
-   "text": "Woollen, and mine. I wouldn't mistake it for another.",
-   "draft": false
+   "text": "Woollen, and mine. I wouldn't mistake it for another."
   },
   "item.door_hinges": {
-   "text": "Dunya set them aside and labelled the box.",
-   "draft": false
+   "text": "Dunya set them aside and labelled the box."
   },
   "item.photo_bridge": {
-   "text": "The old bridge. Its rope fastened to the plate.",
-   "draft": false
+   "text": "The old bridge. Its rope fastened to the plate."
   },
   "item.drawing_ilya": {
    "text": "A boat with smoke above it — Ilyusha's drawing.",
-   "draft": false,
    "tags": [
     "warmly"
    ]
   },
   "item.plan_crossing": {
-   "text": "They hold the far end. The near end is at the bend, on the plate.",
-   "draft": false
+   "text": "They hold the far end. The near end is at the bend, on the plate."
   },
   "item.brace_plate": {
-   "text": "Dunya made the bracket for the crack in the plate.",
-   "draft": false
+   "text": "Dunya made the bracket for the crack in the plate."
   },
   "item.chalk": {
-   "text": "My fingers are white already.",
-   "draft": false
+   "text": "My fingers are white already."
   }
  }
 }

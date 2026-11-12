@@ -860,6 +860,32 @@ for k, v in expected.items():
 
 proposed = [(s["id"], s["proposed_change"]) for s in scenes if s.get("proposed_change")]
 
+# Заморозка текста (meta.json text_freeze, Директор 12.11, 21:44 «утвердить как есть»): тексты окончательные, пометка
+# draft в данных больше не допускается — новый или изменённый текст попадает в игру только решением Директора и вместе
+# с голосом (validate_voice под заморозкой считает запись с изменённым текстом ошибкой).
+def _draft_marks(obj, path: str = "") -> list[str]:
+    out: list[str] = []
+    if isinstance(obj, dict):
+        if obj.get("draft") is True:
+            out.append(path or "(корень)")
+        for k_, v_ in obj.items():
+            out += _draft_marks(v_, f"{path}.{k_}" if path else str(k_))
+    elif isinstance(obj, list):
+        for i_, v_ in enumerate(obj):
+            out += _draft_marks(v_, f"{path}[{i_}]")
+    return out
+
+
+# самопроверка (каждый запуск): пометка в глубине данных находится, чистые данные — нет
+if _draft_marks({"texts": {"a": {"text": "x"}, "b": {"text": "y", "line": {"speaker": "agata"}, "draft": True}}}) != ["texts.b"] \
+        or _draft_marks({"scenes": [{"lines": [{"text": "x", "then": [{"text": "y", "draft": True}]}]}]}) != ["scenes[0].lines[0].then[0]"] \
+        or _draft_marks({"texts": {"a": {"text": "x", "draft": False}}}):
+    err("самопроверка: поиск пометок draft не находит пометку в данных")
+if meta.get("text_freeze") is True:
+    for p_ in sorted(STORY.rglob("*.json")):
+        for where in _draft_marks(json.loads(p_.read_text(encoding="utf-8"))):
+            err(f"{p_.relative_to(STORY)}: {where} — пометка draft при заморозке текста (meta.json text_freeze): текст меняется только решением Директора и вместе с голосом")
+
 # Переименованный флаг (meta.json flag_renames, Р4 29.10: office_shelf_lifted → office_door_opened): новое имя объявлено,
 # старого нет ни во flags.json, ни в данных — иначе старые сохранения и новые данные разойдутся.
 _story_text = "\n".join(p_.read_text(encoding="utf-8") for p_ in STORY.rglob("*.json") if p_.name != "meta.json")

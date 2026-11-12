@@ -3,116 +3,89 @@
  "lang": "ru",
  "texts": {
   "ui.day_card_1": {
-   "text": "Day one",
-   "draft": true
+   "text": "Day one"
   },
   "ui.day_card_2": {
-   "text": "Day two",
-   "draft": true
+   "text": "Day two"
   },
   "ui.day_card_3": {
-   "text": "Day three",
-   "draft": true
+   "text": "Day three"
   },
   "ui.day_card_4": {
-   "text": "Day four",
-   "draft": true
+   "text": "Day four"
   },
   "ui.bedtime_d2_goal": {
-   "text": "Night. Time to sleep: my old bed in Mama's parlour.",
-   "draft": true
+   "text": "Night. Time to sleep: my old bed in Mama's parlour."
   },
   "ui.bedtime_d1_goal": {
    "text": "Night. Home through the school door; sleep on the ledge by Aunt's stove.",
-   "draft": true,
    "_k": "K (сверка журнала 01.11, п. 20): цель M08 сразу сменяется ночной — а Агата в школьном дворе"
   },
   "ui.bedtime_d3_goal": {
-   "text": "Today's work is done. Sleep in Mama's parlour, or on the sleeping ledge by Dunya's stove.",
-   "draft": true
+   "text": "Today's work is done. Sleep in Mama's parlour, or on the sleeping ledge by Dunya's stove."
   },
   "ui.time_d1_afternoon": {
-   "text": "Day one · afternoon",
-   "draft": true
+   "text": "Day one · afternoon"
   },
   "ui.time_d1_dusk": {
-   "text": "Day one · dusk",
-   "draft": true
+   "text": "Day one · dusk"
   },
   "ui.time_d1_night": {
-   "text": "Day one · night",
-   "draft": true
+   "text": "Day one · night"
   },
   "ui.time_d2_morning": {
-   "text": "Day two · morning",
-   "draft": true
+   "text": "Day two · morning"
   },
   "ui.time_d2_midday": {
-   "text": "Day two · midday",
-   "draft": true
+   "text": "Day two · midday"
   },
   "ui.time_d2_afternoon": {
-   "text": "Day two · afternoon",
-   "draft": true
+   "text": "Day two · afternoon"
   },
   "ui.time_d2_dusk": {
-   "text": "Day two · dusk",
-   "draft": true
+   "text": "Day two · dusk"
   },
   "ui.time_d2_evening": {
-   "text": "Day two · evening",
-   "draft": true
+   "text": "Day two · evening"
   },
   "ui.time_d2_night": {
-   "text": "Day two · night",
-   "draft": true
+   "text": "Day two · night"
   },
   "ui.time_d3_morning": {
-   "text": "Day three · morning",
-   "draft": true
+   "text": "Day three · morning"
   },
   "ui.time_d3_day": {
-   "text": "Day three · daylight",
-   "draft": true
+   "text": "Day three · daylight"
   },
   "ui.time_d3_evening": {
-   "text": "Day three · evening",
-   "draft": true
+   "text": "Day three · evening"
   },
   "ui.time_d4_day": {
    "text": "Day four · morning",
-   "draft": true,
    "_k": "K (сверка журнала 01.11, п. 34): бревно кладут поутру (M23b)"
   },
   "ui.time_ep_morning": {
-   "text": "Three weeks later · morning",
-   "draft": true
+   "text": "Three weeks later · morning"
   },
   "ui.time_ep_evening": {
-   "text": "Three weeks later · evening",
-   "draft": true
+   "text": "Three weeks later · evening"
   },
   "ui.time_class_own": {
    "text": "but winter daylight in class",
-   "draft": true,
    "_k": "K (сверка журнала 01.11, п. 14): «своё время» раскрывало загадку до маминого зеркала (M15а)"
   },
   "M1.schedule.title": {
-   "text": "Mill rules",
-   "draft": true
+   "text": "Mill rules"
   },
   "M1.schedule.paper_title": {
-   "text": "Mill rules",
-   "draft": true
+   "text": "Mill rules"
   },
   "M1.schedule.paper_shifts": {
    "text": "Shifts:\n\nMorning — six to two.\nEvening — two to ten.\nNo milling on feast days.\n\nShut the sluice for the night;\nhang the lever on the office nail.",
-   "draft": true,
    "_k": "Ревью 01.11 (А-17): было «По воскресеньям» — день первый по счёту эпилога («три недели спустя, среда» = день четвёртый) воскресенье, а колесо крутится и Павел на смене"
   },
   "M1.schedule.paper_signals": {
-   "text": "Bell signals:\nfor the start and end of shifts,\nand for work at the sluice.\n\nOne strike — go.\nTwo — stop.\nA long ring — raise.\n\nThe manager",
-   "draft": true
+   "text": "Bell signals:\nfor the start and end of shifts,\nand for work at the sluice.\n\nOne strike — go.\nTwo — stop.\nA long ring — raise.\n\nThe manager"
   }
  }
 }

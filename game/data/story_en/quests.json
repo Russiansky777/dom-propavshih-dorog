@@ -111,32 +111,28 @@
       "map": [
        "R3-122"
       ]
-     },
-     "draft": true
+     }
     },
     {
      "speaker": "ulyana",
      "if": [
       "q02_old_under_new"
      ],
-     "text": "Let it hang there! Everyone will see our garden.",
-     "draft": true
+     "text": "Let it hang there! Everyone will see our garden."
     },
     {
      "speaker": "agata",
      "if": [
       "q02_new_primary"
      ],
-     "text": "I'll give it to Ulyana. Her garden — her map.",
-     "draft": true
+     "text": "I'll give it to Ulyana. Her garden — her map."
     },
     {
      "speaker": "ulyana",
      "if": [
       "q02_new_primary"
      ],
-     "text": "My map! I'll hang it by our door, to show visitors the way.",
-     "draft": true
+     "text": "My map! I'll hang it by our door, to show visitors the way."
     }
    ]
   },
@@ -379,24 +375,21 @@
       "map": [
        "R3-124"
       ]
-     },
-     "draft": true
+     }
     },
     {
      "speaker": "ilya",
      "if": [
       "q06_table_at_ilya"
      ],
-     "text": "Then we'll all make the shelf together.",
-     "draft": true
+     "text": "Then we'll all make the shelf together."
     },
     {
      "speaker": "ilya",
      "if": [
       "q06_table_at_agata"
      ],
-     "text": "Mitya and I will carry it to Dunya's workshop. By the window, beside her bench.",
-     "draft": true
+     "text": "Mitya and I will carry it to Dunya's workshop. By the window, beside her bench."
     }
    ]
   },
