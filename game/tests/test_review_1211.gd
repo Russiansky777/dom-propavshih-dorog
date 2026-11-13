@@ -296,6 +296,22 @@ func _test_title_and_talk() -> void:
 	rm.autosave_enabled = false
 	_check(String(root.title) == want, "the window is titled «%s», not «%s»" % [String(root.title), want])
 	_check(before != want, "self-check: the window was titled «%s» before the game's scene — the test tells nothing" % before)
+	# Director 13.11, 16:18: the English name — «The House of Lost Roads»: with the words on screen in English the
+	# game's name is that one (the text ui.game_title; a language change reloads the scene, and _ready titles the window)
+	var LS = load("res://scripts/core/language_settings.gd")
+	var sd0 = root.get_node("StoryData")
+	LS.load_settings()
+	var subs0 := String(LS.subtitles)
+	LS.subtitles = "en"
+	sd0.reload()
+	var en_title := String(main_node.call("game_title"))
+	LS.subtitles = "ru"
+	sd0.reload()
+	var ru_title := String(main_node.call("game_title"))
+	LS.subtitles = subs0
+	sd0.reload()
+	_check(en_title == "The House of Lost Roads", "in English the game is named «%s», not «The House of Lost Roads»" % en_title)
+	_check(ru_title == want, "in Russian the game is named «%s», not «%s»" % [ru_title, want])
 	_check(String(ProjectSettings.get_setting("application/config/name")) == "Dom propavshih dorog", "the project's name changed to «%s» — it names the saves' folder (user://): every save would be lost" % String(ProjectSettings.get_setting("application/config/name")))
 	# R12-5
 	gs.reset()

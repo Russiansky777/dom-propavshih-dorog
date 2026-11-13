@@ -5227,6 +5227,10 @@
    "ru": "Назад",
    "en": "Back"
   },
+  "text:ui.game_title": {
+   "ru": "Дом пропавших дорог",
+   "en": "The House of Lost Roads"
+  },
   "text:ui.licenses": {
    "ru": "Лицензии",
    "en": "Licenses"

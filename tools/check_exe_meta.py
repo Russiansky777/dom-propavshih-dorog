@@ -9,7 +9,8 @@ exported file had the engine's icon and «Godot Engine» in its properties; Dire
 Checks, in the exe's resources:
   - an icon group with the sizes 16, 32, 48, 64, 128, 256;
   - its 256 px picture is the game's `game/icon.png` (mean difference per channel ≤ 6 of 255);
-  - ProductName and FileDescription are the game's name (`application/product_name` of the preset).
+  - ProductName and FileDescription are the game's name (`application/product_name` of the preset), CompanyName —
+    the publisher (`application/company_name`).
 The engine writes these itself on export (`application/modify_resources=true`) with no rcedit or Wine — verified on
 Godot 4.7.2 here on 13.11 with a test project (six sizes and the strings in the exe); the 4.4 manual still asks for
 rcedit, so after an engine change run this check before trusting the build.
@@ -28,11 +29,15 @@ PRESETS = ROOT / "game" / "export_presets.cfg"
 SIZES = [16, 32, 48, 64, 128, 256]
 
 
-def wanted_name() -> str:
+def preset_value(key: str) -> str:
     for line in PRESETS.read_text(encoding="utf-8").splitlines():
-        if line.startswith("application/product_name="):
+        if line.startswith(f"application/{key}="):
             return line.split("=", 1)[1].strip().strip('"')
     return ""
+
+
+def wanted_name() -> str:
+    return preset_value("product_name")
 
 
 def read_exe(path: Path) -> dict:
@@ -93,6 +98,10 @@ def problems(path: Path) -> list[str]:
     for key in ("ProductName", "FileDescription"):
         if not name or info["strings"].get(key) != name:
             bad.append(f"{key} is «{info['strings'].get(key, '')}», wanted «{name}»")
+    # the publisher (Director 13.11, 16:18: «Издатель Yahor Zavatski») — `application/company_name` of the preset
+    company = preset_value("company_name")
+    if not company or info["strings"].get("CompanyName") != company:
+        bad.append(f"CompanyName is «{info['strings'].get('CompanyName', '')}», wanted «{company}»")
     return bad
 
 
@@ -131,7 +140,7 @@ def main(argv: list[str]) -> int:
         for b in bad:
             print(f"  - {b}")
         return 1
-    print(f"check_exe_meta: {exe.name} OK — the game's icon in six sizes, «{wanted_name()}» in the file's properties")
+    print(f"check_exe_meta: {exe.name} OK — the game's icon in six sizes, «{wanted_name()}» and «{preset_value('company_name')}» in the file's properties")
     return 0
 
 

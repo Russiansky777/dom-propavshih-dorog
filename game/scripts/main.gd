@@ -82,9 +82,19 @@ static func web_probe_wanted() -> bool:
 	return int(v) == 1
 
 
+## The game's name in the language of the words on screen (Director 13.11: «The House of Lost Roads» for English) —
+## the text `ui.game_title`; a language change reloads the scene, so _ready sets it again. Without the text — WINDOW_TITLE.
+func game_title() -> String:
+	if StoryData.texts.has("ui.game_title"):
+		var t := StoryData.text("@ui.game_title").strip_edges()
+		if t != "":
+			return t
+	return WINDOW_TITLE
+
+
 func _ready() -> void:
 	probe_wanted = web_probe_wanted()
-	get_window().title = WINDOW_TITLE
+	get_window().title = game_title()
 	DisplaySettings.apply_saved()   # I-T3 §2а: full screen / window as the player left it
 	RoomManager.setup(world, player)
 	RoomManager.room_changed.connect(_mark_probe)

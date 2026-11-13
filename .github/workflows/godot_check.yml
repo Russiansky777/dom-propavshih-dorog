@@ -162,6 +162,7 @@ jobs:
         env:
           GODOT: /home/runner/godot-check/Godot_v4.7.2-stable_linux.x86_64
           XSHOTS: ${{ inputs.xshots }}
+          SHOTS_FULL: "1"   # shots_dialogue.gd: the whole 1920×1080 frame (Steam screenshot candidates), not the crop
         run: |
           set -uo pipefail
           sudo apt-get install -y -qq xvfb > /dev/null 2>&1
@@ -174,7 +175,7 @@ jobs:
               --resolution 1920x1080 -s "res://tests/$script" -- "$PWD/build/check/shots" ${names//,/ } 2>&1 | grep -E "ERROR|SCRIPT|saved|shot" | head -60 | tee -a build/check/out.log
           done
           for f in build/check/shots/*.png; do
-            [ -f "$f" ] && python3 -c "from PIL import Image; import sys; im=Image.open(sys.argv[1]).convert('RGB'); im.save(sys.argv[1][:-4]+'.jpg', quality=85)" "$f" && rm "$f"
+            [ -f "$f" ] && python3 -c "from PIL import Image; import sys; im=Image.open(sys.argv[1]).convert('RGB'); im.save(sys.argv[1][:-4]+'.jpg', quality=93)" "$f" && rm "$f"
           done
           exit 0
 
