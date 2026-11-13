@@ -385,6 +385,33 @@ func _test_o3_stall() -> void:
 	_check(player.call("is_3d"), "the live figure (3D)")
 	var nina := rm.current_room.get_node_or_null("npc_nina") as Node2D
 	_check(nina != null and nina.visible, "Nina in her room (her feet — the obstruction the walk stalled at)")
+	# 13.11 (CI 43319182713 — this test red: «the real walk from the pocket round Nina … worst 1.0»; the same walk ten
+	# times here: four ended where they began, the legs stepping 0.5–1 s). The ellipse round Nina's feet reaches past
+	# the floor's back edge; the arc and the edge left a wedge of floor right of her, and a walk out of it slid along
+	# the arc at a crawl. The feet's outline is now square up to the edge (RoomBuilder.foot_outline) — no wedge.
+	var RB = load("res://scripts/rooms/room_builder.gd")
+	var room_o3 = rm.current_room
+	var wedge := Vector2(1486, 781)
+	var map: RID = room_o3.get_walkable().get_navigation_map()
+	var near: Vector2 = NavigationServer2D.map_get_closest_point(map, wedge)
+	_check(near.distance_to(wedge) > 3.0, "the wedge of floor right of Nina's feet is closed (%s is %.1f px from the floor)" % [str(wedge), near.distance_to(wedge)])
+	RB.square_feet = false
+	room_o3.walk_feet_sig = ""
+	RB.refresh_walkable(room_o3)
+	var waited := 0
+	while NavigationServer2D.map_get_closest_point(map, wedge).distance_to(wedge) > 1.0 and waited < 120:
+		await physics_frame
+		waited += 1
+	near = NavigationServer2D.map_get_closest_point(map, wedge)
+	_check(near.distance_to(wedge) <= 1.0, "self-check: with the ellipse alone the wedge is floor (%s is %.1f px from it) — the check above tells nothing" % [str(wedge), near.distance_to(wedge)])
+	RB.square_feet = true
+	room_o3.walk_feet_sig = ""
+	RB.refresh_walkable(room_o3)
+	waited = 0
+	while NavigationServer2D.map_get_closest_point(map, wedge).distance_to(wedge) <= 3.0 and waited < 120:
+		await physics_frame
+		waited += 1
+	_check(waited < 120, "the floor with the square outline is back after the self-check")
 	var off := await _o3_walk(INF, true)
 	var on := await _o3_walk(0.5, true)
 	var free := await _o3_walk(0.5, false)

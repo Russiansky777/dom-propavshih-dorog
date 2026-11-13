@@ -240,15 +240,50 @@ static func npc_footprints(room: Room, spec: Dictionary, kind: String, idx: Dict
 		feet = Vector2(minf(feet.x, half.x), minf(feet.y, half.y))
 		if half.x < 6.0 or half.y < 3.0:
 			continue
-		var fv := PackedVector2Array()
-		for i in 12:
-			var a := TAU * float(i) / 12.0
-			fv.append(c + Vector2(cos(a) * half.x, sin(a) * half.y))
+		var fv := foot_outline(c, half, floor, keep_clear)
 		var fe := PackedVector2Array()
 		for i in 12:
 			var a := TAU * float(i) / 12.0
 			fe.append(c + Vector2(cos(a) * feet.x, sin(a) * feet.y))
 		out.append([String(h.get("id", "")), fv, Vector2(roundf(c.x), roundf(c.y)), half, fe])
+	return out
+
+
+## The obstruction round a villager's feet: an ellipse of 12 points; a quarter of it that reaches past the floor's edge
+## is squared to its box's corner. 13.11 (CI 43319182713, test 0511-4 red; «идёт на месте» by Nina, Director 05.11): the
+## arc and the floor's edge left a wedge of floor beside the feet (O3: right of Nina, under the window). A walk out of
+## it has to round the ellipse's side point first, but heads along the path's next leg — into the arc — and slides
+## along it at a crawl: of 10 such walks 4 ended where they began, the legs stepping for 0.5–1 s. With the side
+## straight up to the edge there is no wedge: the way out lies along the side. `square_feet` false — the ellipse alone
+## (tests' self-check). A place Agata walks to (`keep_clear`) inside the squared shape — the ellipse stays.
+static var square_feet := true
+
+
+static func foot_outline(c: Vector2, half: Vector2, floor: PackedVector2Array, keep_clear: Array[Vector2]) -> PackedVector2Array:
+	var ring := PackedVector2Array()
+	for i in 12:
+		var a := TAU * float(i) / 12.0
+		ring.append(c + Vector2(cos(a) * half.x, sin(a) * half.y))
+	if not square_feet or floor.size() < 3:
+		return ring
+	# quarters in the ring's order: 0 — right-down (points 1, 2), 1 — left-down (4, 5), 2 — left-up (7, 8), 3 — right-up (10, 11)
+	var corners := [Vector2(1, 1), Vector2(-1, 1), Vector2(-1, -1), Vector2(1, -1)]
+	var out := PackedVector2Array()
+	var squared := false
+	for q in 4:
+		out.append(ring[q * 3])
+		var p1 := ring[q * 3 + 1]
+		var p2 := ring[q * 3 + 2]
+		if Geometry2D.is_point_in_polygon(p1, floor) and Geometry2D.is_point_in_polygon(p2, floor):
+			out.append(p1)
+			out.append(p2)
+		else:
+			out.append(c + Vector2(corners[q].x * half.x, corners[q].y * half.y))
+			squared = true
+	if squared:
+		for p in keep_clear:
+			if Geometry2D.is_point_in_polygon(p, out) and not Geometry2D.is_point_in_polygon(p, ring):
+				return ring
 	return out
 
 
