@@ -777,8 +777,22 @@ func _run_event(e: Dictionary) -> void:
 			StoryRunner.open_mechanic(h.get("mechanic", {}), String(e.get("hotspot", "")))
 		"say":
 			StoryRunner.mechanic_say(String(e.get("key", "")))
+		"line":
+			# v3 (Director 13.11: the hover on a word of Tikhon's — «И печь тут, вестимо»): a line of a scene with its
+			# speaker's name, as the game shows it — {"do": "line", "scene": "M03", "line": 2}
+			var lines: Array = StoryData.scene(String(e.get("scene", ""))).get("mandatory_lines", [])
+			var li := int(e.get("line", -1))
+			if li < 0 or li >= lines.size():
+				push_error("Trailer: no line %s/%d" % [String(e.get("scene", "")), li])
+			else:
+				var sp := String((lines[li] as Dictionary).get("speaker", "narrator"))
+				StoryRunner.call("_push", {"type": "line", "line_id": "%s_%d" % [String(e.get("scene", "")), li], "speaker": sp,
+					"speaker_name": StoryData.character_name(sp), "text": String((lines[li] as Dictionary).get("text", ""))})
 		"click":
 			_send_click(v2(e.get("at"), _cursor_pos))
+		"down", "up":
+			# v3: the hand holds the button between the two (the lantern's shutter is lifted by a drag)
+			_send_button(v2(e.get("at"), _cursor_pos), String(e.get("do", "")) == "down")
 		"press":
 			var ev := InputEventKey.new()
 			ev.keycode = OS.find_keycode_from_string(String(e.get("key", "Space")))
@@ -828,6 +842,17 @@ func _send_mouse_motion(p: Vector2) -> void:
 	ev.position = p
 	ev.global_position = p
 	ev.button_mask = MOUSE_BUTTON_MASK_LEFT if _mouse_down else 0
+	get_viewport().push_input(ev, true)
+
+
+func _send_button(p: Vector2, pressed: bool) -> void:
+	var ev := InputEventMouseButton.new()
+	ev.position = p
+	ev.global_position = p
+	ev.button_index = MOUSE_BUTTON_LEFT
+	ev.pressed = pressed
+	ev.button_mask = MOUSE_BUTTON_MASK_LEFT if pressed else 0
+	_mouse_down = pressed
 	get_viewport().push_input(ev, true)
 
 
