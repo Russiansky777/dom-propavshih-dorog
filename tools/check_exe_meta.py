@@ -102,6 +102,10 @@ def problems(path: Path) -> list[str]:
     company = preset_value("company_name")
     if not company or info["strings"].get("CompanyName") != company:
         bad.append(f"CompanyName is «{info['strings'].get('CompanyName', '')}», wanted «{company}»")
+    # the copyright line (Director 13.11, 22:45: «Строка да, верная» — «© 2026 Yahor Zavatski») — `application/copyright`
+    rights = preset_value("copyright")
+    if not rights or info["strings"].get("LegalCopyright") != rights:
+        bad.append(f"LegalCopyright is «{info['strings'].get('LegalCopyright', '')}», wanted «{rights}»")
     return bad
 
 
