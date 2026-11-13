@@ -41,6 +41,18 @@ if ! export_preset "Windows Lite" ../build/windows/DomPropavshihDorog.exe build/
 fi
 lite_mb=$(( $(stat -c %s build/windows/DomPropavshihDorog.exe) / 1000000 ))
 echo "[godot] Windows Lite: build/windows/DomPropavshihDorog.exe ${lite_mb} MB"
+# 13.11 (ревью 12.11, находка 11: «в exe нет значка и версии»): у файла значок игры (game/icon.png, шесть размеров) и
+# её имя в свойствах — пишет сам движок при экспорте (application/modify_resources). Сначала самопроверка: шаблон
+# движка эту проверку не проходит. Без pefile (код 2) на своей машине — пропуск вслух, в CI — ошибка сборки.
+meta=0
+python3 -I tools/check_exe_meta.py --self-check || meta=$?
+if [[ $meta -eq 0 ]]; then python3 -I tools/check_exe_meta.py build/windows/DomPropavshihDorog.exe || meta=$?; fi
+if [[ $meta -eq 2 && -z "${GITHUB_ACTIONS:-}" ]]; then
+  echo "[godot] check_exe_meta: пропущена — нет pefile/Pillow или шаблона движка"
+elif [[ $meta -ne 0 ]]; then
+  echo "[godot] Windows Lite: значок или имя в exe не те (tools/check_exe_meta.py, код $meta)" >&2
+  exit 1
+fi
 if [[ "$lite_mb" -gt 1900 ]]; then
   echo "[godot] Windows Lite ${lite_mb} MB > 1900 MB (release asset limit 2 GiB)" >&2
   exit 1

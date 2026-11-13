@@ -146,6 +146,7 @@ skipped() {
 }
 if python3 -c "import PIL, numpy" 2>/dev/null; then
   python3 "$ROOT/tools/retouch_art.py" --check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
+  python3 "$ROOT/tools/make_icon.py" --check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # 13.11: значок игры (game/icon.png) — вырез титульной картины; самопроверка — сдвинутый вырез не проходит
   python3 "$ROOT/tools/import_room_art.py" F_hug_pelageya --check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
 else
   skipped "retouch_art --check, import_room_art F_hug_pelageya --check" "Pillow/numpy"

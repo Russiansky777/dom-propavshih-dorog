@@ -31,10 +31,19 @@ extends SceneTree
 ##       third-party component the engine reports and every license text it names, and each of the game's fonts with
 ##       its own license text (data/licenses.json ← assets/fonts/<font>/OFL.txt; every font folder has an entry).
 ##       Self-check — built without the fonts the text has no font license.
+##   R12-8 (Director 12.11, 23:35: «Агата не должна закрывать кого-то»; the play of 13.11: after the meeting with her
+##       brother the family stays in Nina's room until Agata goes to bed, the control is the player's, and a click on
+##       Nina stood Agata with her back to us right in front of Ilya): with the family in the room — the evening from M20
+##       to the morning of day three — every place Agata walks to (each hotspot's stand as it is now, the exit's, the way
+##       in), every point of the floor a click can send her to and the place a real walk into the family ends at cover
+##       nobody (the frames of tools/validate_rooms.py 9b, no more than its npc_overlap_max); the bed and the exit are
+##       still reached. Self-checks — the measure sees the old place (1620, 880) cover Ilya; next morning the floor is
+##       whole again and the talk with Nina is back at its place.
 
 const DT := 1.0 / 60.0
 
 var _results: Array = []
+var _main: Node = null   # the game's scene, once _test_title_and_talk has put it up
 var _cur_ok := true
 var _cur_msgs: Array = []
 
@@ -72,6 +81,14 @@ func _run() -> void:
 	t0 = Time.get_ticks_msec()
 	await _test_title_and_talk()
 	_report("R12-3 / R12-5 / R12-6 / R12-7 The window is titled «Дом пропавших дорог»; the talk partner's mark is gone a second after a click that said nothing and holds while a line is on screen; Agata's line played by the game has its lips by sounds; the settings open the licenses of the engine, its third-party parts and the fonts", t0)
+	t0 = Time.get_ticks_msec()
+	await _test_family_evening()
+	_report("R12-8 Nina's room with the family in it (after M20, until the morning): no place Agata walks to and no point of the floor left to her puts her over anyone; the bed and the exit are reached", t0)
+	root.get_node("GameState").reset()
+	if _main != null and is_instance_valid(_main):
+		root.remove_child(_main)
+		_main.free()
+	load("res://scripts/actors/player.gd").forced_render = ""
 	var failed := 0
 	for r in _results:
 		if not r[1]:
@@ -273,6 +290,7 @@ func _test_title_and_talk() -> void:
 	PS.forced_render = "3d"
 	var main_node = load("res://scenes/Main.tscn").instantiate()
 	root.add_child(main_node)
+	_main = main_node
 	for i in 4:
 		await process_frame
 	rm.autosave_enabled = false
@@ -331,10 +349,6 @@ func _test_title_and_talk() -> void:
 		vd.call("stop", "test")
 	await _test_licenses(main_node)
 	gs.reset()
-	if main_node != null and is_instance_valid(main_node):
-		root.remove_child(main_node)
-		main_node.free()
-	PS.forced_render = ""
 
 
 # --- R12-7 ------------------------------------------------------------------------------------
@@ -386,3 +400,146 @@ func _test_licenses(main_node: Node) -> void:
 	_check(not lic.visible, "R12-7: «Лицензии» is shown over the list of saves")
 	ui.call("close_menu_panel")
 
+
+## The share of the figure farther from the viewer that the nearer one covers — the frames of tools/validate_rooms.py 9b:
+## feet at the point, `hw` × the room's depth scale to each side, `fig` × the scale up (a villager's × its scale_factor).
+func _cover(room, agata: Vector2, feet: Vector2, factor: float, hw: float, fig: float) -> float:
+	var a_s := float(room.depth_scale(agata.y))
+	var n_s := float(room.depth_scale(feet.y)) * factor
+	var ox := minf(agata.x + hw * a_s, feet.x + hw * n_s) - maxf(agata.x - hw * a_s, feet.x - hw * n_s)
+	var oy := minf(agata.y, feet.y) - maxf(agata.y - fig * a_s, feet.y - fig * n_s)
+	if ox <= 0.0 or oy <= 0.0:
+		return 0.0
+	if agata.y > feet.y:
+		return ox / (2.0 * hw * n_s) * oy / (fig * n_s)
+	return ox / (2.0 * hw * a_s) * oy / (fig * a_s)
+
+
+func _test_family_evening() -> void:
+	if _main == null:
+		_check(false, "R12-8: the game's scene is not up")
+		return
+	var gs = root.get_node("GameState")
+	var rm = root.get_node("RoomManager")
+	var sr = root.get_node("StoryRunner")
+	var sd = root.get_node("StoryData")
+	var player: Node2D = _main.get_node("World/Player")
+	var idx = JSON.parse_string(FileAccess.get_file_as_string("res://data/story/rooms/_index.json"))
+	var aref: Dictionary = idx.get("agata_ref", {}) if idx is Dictionary else {}
+	var hw := float(aref.get("figure_half_width_px", 0))
+	var fig := float(aref.get("figure_px", 0))
+	var limit := float(aref.get("npc_overlap_max", 0))
+	_check(hw > 0.0 and fig > 0.0 and limit > 0.0, "R12-8: no figure frame in rooms/_index.json agata_ref")
+	if hw <= 0.0 or fig <= 0.0:
+		return
+	# the evening after the meeting: every main scene through M20 done, nothing after it
+	sr.current_beat = {}
+	sr.call("_on_state_reset")
+	gs.reset()
+	for id in sd.scene_order:
+		var sc: Dictionary = sd.scene(id)
+		if String(sc.get("type", "")) != "main":
+			continue
+		gs.set_flag("done_" + id, true)
+		gs.set_flag("started_" + id, true)
+		for f in sc.get("grants", {}).get("flags", []):
+			gs.set_flag(String(f), true)
+		if id == "M20":
+			break
+	_check(gs.has_flag("wife_came") and not gs.has_flag("morning_day3") and not gs.has_flag("night_olkhovka"), "R12-8: the state is not the evening after M20")
+	rm.change_room("O3", "from_O4")
+	await physics_frame
+	for i in 8:
+		await physics_frame
+	sr.call("_cancel_stage")
+	sr.current_beat = {}
+	var room = rm.current_room
+	var family: Dictionary = {}   # id → [feet, scale factor]
+	for id in ["nina", "ulyana", "ilya", "ilya_wife"]:
+		var n: Node2D = room.get_node_or_null("npc_" + id)
+		_check(n != null and n.visible, "R12-8: %s is not in the room this evening — the test looks at another state" % id)
+		if n != null and n.visible:
+			var spec = JSON.parse_string(FileAccess.get_file_as_string("res://data/actors/%s.json" % id))
+			family[id] = [n.global_position, float((spec as Dictionary).get("npc", {}).get("scale_factor", 1.0)) if spec is Dictionary else 1.0]
+	if family.size() < 4:
+		return
+	var worst_of := func(p: Vector2) -> Array:   # [share, who]
+		var w := [0.0, ""]
+		for id in family:
+			var c := _cover(room, p, family[id][0], family[id][1], hw, fig)
+			if c > float(w[0]):
+				w = [c, id]
+		return w
+	# self-check: the measure sees the defect — the old place of the talk with Nina, right in front of Ilya
+	var old: Array = worst_of.call(Vector2(1620, 880))
+	_check(float(old[0]) > 0.5 and String(old[1]) == "ilya", "self-check R12-8: Agata at (1620, 880) covers %s by %.0f %% — the measure does not see her in front of Ilya" % [String(old[1]), float(old[0]) * 100.0])
+	# 1. every place she walks to by a click on a thing, a villager, the exit; the way in
+	var places: Array = [["the way in from_O4", player.global_position]]
+	for hs in room.get_node("Hotspots").get_children():
+		if hs is Node2D and hs.visible and hs.has_method("get_stand_position") and (not hs.has_method("can_click") or bool(hs.call("can_click"))):
+			places.append([String(hs.name), hs.call("get_stand_position")])
+	for ex in room.get_node("Exits").get_children():
+		if ex.has_method("get_stand_position"):
+			places.append([String(ex.name), ex.call("get_stand_position")])
+	_check(places.size() >= 10, "R12-8: only %d places found in the room" % places.size())
+	var map: RID = room.get_walkable().get_navigation_map()
+	# a freshly baked floor answers only after the map's next syncs (run_tests.gd: ~5 physics frames) — wait for it
+	var ready := 0
+	while NavigationServer2D.map_get_closest_point(map, player.global_position).distance_to(player.global_position) > 3.0 and ready < 180:
+		await physics_frame
+		ready += 1
+	_check(ready < 180, "R12-8: the floor's map does not answer (the way in %s → %s)" % [str(player.global_position), str(NavigationServer2D.map_get_closest_point(map, player.global_position))])
+	for pl in places:
+		var w: Array = worst_of.call(pl[1])
+		_check(float(w[0]) <= limit, "R12-8: at «%s» %s Agata and %s are one over the other (%.0f %% of the figure behind)" % [pl[0], str(pl[1]), String(w[1]), float(w[0]) * 100.0])
+		var on: Vector2 = NavigationServer2D.map_get_closest_point(map, pl[1])
+		_check(on.distance_to(pl[1]) <= 3.0, "R12-8: «%s» %s is off the floor left to her this evening (nearest %s)" % [pl[0], str(pl[1]), str(on)])
+	# 2. the floor: wherever a click sends her, she covers nobody
+	var bad := 0
+	var bad_s := ""
+	var seen := 0
+	var y := 745.0
+	while y <= 1075.0:
+		var x := 1050.0
+		while x <= 1915.0:
+			var q: Vector2 = NavigationServer2D.map_get_closest_point(map, Vector2(x, y))
+			var w: Array = worst_of.call(q)
+			seen += 1
+			if float(w[0]) > limit or q.x < 1040.0 or q.y < 730.0:   # (0, 0) — a map that does not answer — is no floor point
+				bad += 1
+				if bad_s == "":
+					bad_s = "a click at (%.0f, %.0f) → %s: %s covered by %.0f %%" % [x, y, str(q), String(w[1]), float(w[0]) * 100.0]
+			x += 35.0
+		y += 22.0
+	_check(bad == 0, "R12-8: %d of %d floor points put Agata over someone; %s" % [bad, seen, bad_s])
+	# 3. a real walk into the family: she stops where she covers nobody
+	player.call("walk_to", Vector2(1610, 950))
+	var t := 0.0
+	while t < 0.3 or (bool(player.call("is_walking")) and t < 12.0):
+		await physics_frame
+		t += 1.0 / 60.0
+	var w3: Array = worst_of.call(player.global_position)
+	_check(not bool(player.call("is_walking")) and float(w3[0]) <= limit, "R12-8: sent to (1610, 950) Agata stops at %s — %s covered by %.0f %%" % [str(player.global_position), String(w3[1]), float(w3[0]) * 100.0])
+	# 4. the bed (the goal of the evening) and the exit are reached from where the scene left her — by the clock
+	var clock: Node = room.get_node_or_null("Hotspots/clock")
+	var from: Vector2 = clock.call("get_stand_position") if clock != null else player.global_position
+	for nm in ["Hotspots/bed", "Exits/to_O4"]:
+		var node: Node = room.get_node_or_null(nm)
+		_check(node != null, "R12-8: no %s in the room" % nm)
+		if node == null:
+			continue
+		var to: Vector2 = node.call("get_stand_position")
+		var path: PackedVector2Array = NavigationServer2D.map_get_path(map, from, to, true)
+		_check(path.size() >= 2 and path[path.size() - 1].distance_to(to) <= 4.0, "R12-8: no way from the clock to %s %s (path ends at %s)" % [nm, str(to), str(path[path.size() - 1]) if path.size() > 0 else "—"])
+	# self-check: the morning after — the family gone, the floor whole, the talk with Nina back at its place
+	gs.set_flag("night_olkhovka", true)
+	gs.set_flag("morning_day3", true)
+	map = room.get_walkable().get_navigation_map()
+	ready = 0
+	while NavigationServer2D.map_get_closest_point(map, Vector2(1610, 950)).distance_to(Vector2(1610, 950)) > 3.0 and ready < 180:
+		await physics_frame
+		ready += 1
+	var free: Vector2 = NavigationServer2D.map_get_closest_point(map, Vector2(1610, 950))
+	_check(free.distance_to(Vector2(1610, 950)) <= 3.0, "self-check R12-8: next morning (1610, 950) is still off the floor (nearest %s) — the limit outlives the evening" % str(free))
+	var nina_hs: Node = room.get_node_or_null("Hotspots/nina")
+	_check(nina_hs != null and (nina_hs.call("get_stand_position") as Vector2).distance_to(Vector2(1620, 880)) <= 2.0, "self-check R12-8: next morning the talk with Nina is not at (1620, 880)")

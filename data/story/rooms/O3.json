@@ -4,6 +4,10 @@
   "art_source": {"files": {"night.png": "assets/incoming/O3_night.png", "state_notches_left.png": "assets/incoming/O3_state_notches_left.png", "state_table_no_mirror.png": "assets/incoming/O3_state_table_no_mirror.png", "state_table_no_mirror_night.png": "assets/incoming/O3_state_table_no_mirror_night.png"}, "canvas": [1672, 941], "alpha_min": 0, "_note": "Партия 8: только ночь горницы — полный холст к O3_bg, (0,0), полупрозрачный по всему кадру (alpha_min 0: не чистить). Фон и ходики — общие с крупным планом мамина зеркала (game/assets/closeups/O3_*, tools/import_closeups.py). Копия — tools/import_room_art.py O3"},
   "background": {"kind": "interior", "image": "res://assets/closeups/O3_bg.png", "wall": "#6a5040", "floor": "#5a3a24", "accent": "#8a6a4a", "horizon": 730},
   "walkable": [[1050, 745], [1290, 742], [1300, 775], [1755, 780], [1790, 800], [1840, 868], [1915, 885], [1915, 1075], [1060, 1075], [1050, 1000]],
+  "walkable_holes_if": [
+    {"if": ["started_M20"], "unless": ["morning_day3"], "hole": [[1126, 735], [1925, 735], [1925, 1085], [1076, 1085]],
+      "_note": "13.11 (Директор 12.11, 23:35: «Агата не должна закрывать кого-то»): пока родня стоит в горнице (с начала M20 до утра третьего дня), пол Агаты — полоса у левого края (ходики, стол, кровать, выход): правее она встала бы перед Ниной, Ульяной, Ильёй или его женой. Граница — где её фигура закрывала бы Нину больше чем на четверть рамки (validate_rooms 9b); стоянки окна, иконы и разговора с Ниной на это время — у ходиков (states)"}
+  ],
   "no_walk_samples": [[600, 900, "стол"], [880, 900, "стул"], [1500, 700, "лавка под окном"], [150, 650, "кровать"], [1830, 700, "столик с кувшином"]],
   "walk_samples": [[1400, 900], [1150, 800], [1700, 1000], [1760, 960], [1100, 1050]],
   "door_ref": "none — горница, выход к зрителю, двери в кадре нет",
@@ -32,6 +36,7 @@
   "hotspots": [
     {
       "id": "nina", "kind": "npc", "label": "@char.nina", "rect": [1250, 160, 160, 630], "stand": [1620, 880], "draw": false, "pick_priority": 2,
+      "states": [{"if": ["started_M20"], "unless": ["morning_day3"], "stand": [1090, 840], "_k1311": "13.11 (Директор 12.11, 23:35: «Агата не должна закрывать кого-то»): пока родня стоит в горнице после встречи с братом (с M20 до утра третьего дня), Агата говорит с мамой оттуда же, где стояла в сцене, — у ходиков; прежняя стоянка (1620, 880) ставила её спиной к зрителю прямо перед Ильёй (кадр прохождения 13.11: закрывала его целиком)"}],
       "hidden_if": ["done_M21b"],
       "hidden_when": [{"all": ["night_olkhovka"], "not": ["morning_day3"]}, {"all": ["started_M19"], "not": ["m19_nina_home", "done_M19"]}],
       "_hidden_when_note": "G29/G41: пока в M19 Нина на крыльце (улица O4), в горнице её нет; затемнение M19 (stage at 6) ставит m19_nina_home — она уже дома",
@@ -123,11 +128,13 @@
     {
       "id": "window", "kind": "object", "label": "@O3.window.label", "rect": [1380, 160, 260, 340], "stand": [1700, 880], "draw": false,
       "look": "@O3.window.look",
-      "states": [{"if": ["morning_day3"], "label": "@O3.window.label"}]
+      "states": [{"if": ["started_M20"], "unless": ["morning_day3"], "stand": [1090, 840], "_k1311": "13.11 (Директор 12.11, 23:35: «Агата не должна закрывать кого-то»): пока родня стоит в горнице после встречи с братом (с M20 до утра третьего дня), Агата смотрит в окно от ходиков: стоянка (1700, 880) — перед Ильёй и его женой"},
+        {"if": ["morning_day3"], "label": "@O3.window.label"}]
     },
     {
       "id": "icon", "kind": "object", "label": "@O3.icon.label", "rect": [1820, 90, 90, 200], "stand": [1850, 900], "draw": false,
-      "look": "@O3.icon.look"
+      "look": "@O3.icon.look",
+      "states": [{"if": ["started_M20"], "unless": ["morning_day3"], "stand": [1090, 840], "_k1311": "13.11 (Директор 12.11, 23:35: «Агата не должна закрывать кого-то»): пока родня стоит в горнице после встречи с братом (с M20 до утра третьего дня), Агата смотрит на икону от ходиков: стоянка (1850, 900) — перед женой Ильи"}]
     },
     {
       "id": "bed", "kind": "object", "action_anim": "reach", "label": "@O3.bed.label", "rect": [0, 400, 236, 340], "stand": [1062, 900], "agata_face": [300, 640], "draw": false,
@@ -138,7 +145,8 @@
     }
   ],
   "exits": [
-    {"to": "O4", "label": "@O3.exit_O4.label", "side": "bottom", "x": 1500, "cue": "down", "spawn": "from_O3", "draw": false}
+    {"to": "O4", "label": "@O3.exit_O4.label", "side": "bottom", "x": 1240, "rect": [1050, 1000, 380, 80], "stand": [1070, 1045], "cue": "down", "spawn": "from_O3", "draw": false,
+      "_k1311": "13.11 (Директор 12.11, 23:35: «Агата не должна закрывать кого-то»): выход к зрителю — у левого края пола, там же, где Агата входит (from_O4 1070, 1050); было side bottom x 1500 (полоса 1300–1700, стоянка 1500, 1030) — перед Ульяной и Ильёй, пока родня в горнице"}
   ],
   "scenes": {
     "M19c": {"complete_when": [{"all": ["o3_clock_compared"]}]},

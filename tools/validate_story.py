@@ -162,9 +162,15 @@ for rf in sorted((STORY / "rooms").glob("*.json")):
         for fl in (ex.get("on_pass") or {}).get("sets", []) or []:
             if room_doc["id"] not in loc_ids:
                 continue
-            ul = {"loc": room_doc["id"], "item": "", "sets": [fl], "req": []}
+            # Ревью 12.11 (находка 14): условия прохода (`on_pass.if`) учитываются — флаг ставится не при первом входе
+            # в комнату, а когда они выполнены (M1: council_left — только со двора совета, council_yard); один и тот
+            # же флаг на нескольких выходах комнаты — одна запись (в отчёте было три одинаковые строки).
+            req = list((ex.get("on_pass") or {}).get("if", []) or [])
+            granted_flags.setdefault(fl, []).append(f"{room_doc['id']}:проход в {ex.get('to')}")
+            if any(u["loc"] == room_doc["id"] and u["sets"] == [fl] and u["req"] == req and u.get("how") == "проход через выход" for u in room_unlocks):
+                continue
+            ul = {"loc": room_doc["id"], "item": "", "sets": [fl], "req": req, "how": "проход через выход"}
             room_unlocks.append(ul)
-            granted_flags.setdefault(fl, []).append(f"{ul['loc']}:проход в {ex.get('to')}")
 
 # Предметы, которые игрок берёт сам хотспотом комнаты (items.json → source_hotspot «<комната>.<хотспот>»):
 # use.gives с use.requires. Не выдача сцены: симуляция даёт предмет, как только requires выполнены и комната
@@ -538,7 +544,7 @@ while progress:
             continue
         flags |= set(ul["sets"])
         applied_unlocks.add(ui)
-        unlock_log.append(f"{ul['loc']}: {ul['item'] or 'первый вход'} → {', '.join(ul['sets'])} (перед {len(order) + 1}-й основной сценой)")
+        unlock_log.append(f"{ul['loc']}: {ul['item'] or ul.get('how', 'первый вход')} → {', '.join(ul['sets'])} (перед {len(order) + 1}-й основной сценой)")
     for ti, tk in enumerate(room_takes):
         if ("take", ti) in applied_unlocks or not set(tk["req"]) <= flags \
                 or not all(("has_" + x) in flags for x in tk["req_items"]):
@@ -566,6 +572,11 @@ while progress:
             timeline.append((s["id"], set(flags)))
             flags |= set(s["grants"].get("flags", []))
             flags |= {"has_" + it for it in s["grants"].get("items", [])}
+            # Ревью 12.11 (находка 14): флаги, которые ставят постановки сцены без условий (`stage[].sets` без `if`), —
+            # тоже её итог (M23b: council_yard — без него проход со двора совета, council_left, в отчёт не попадал)
+            for st_ in s.get("stage", []) or []:
+                if not st_.get("if"):
+                    flags |= set(st_.get("sets", []) or [])
             for ch in s.get("choices", []):
                 # для симуляции берём первый вариант; остальные проверяются отдельно
                 if "sets" in ch["options"][0]:

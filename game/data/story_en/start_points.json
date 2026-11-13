@@ -381,7 +381,7 @@
    "title": "Партия H (T6): день второй — после разговора с братом, ночь в горнице",
    "done_through": "M20",
    "room": "O3",
-   "spawn": "default",
+   "spawn": "from_O4",
    "flags": [
     "house_unlocked",
     "house_open",

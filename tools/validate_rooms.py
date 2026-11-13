@@ -129,6 +129,22 @@ for q in quests:
 
 
 
+def flags_held_at(scene_id: str) -> set[str]:
+    """Флаги, которые точно стоят к началу сцены: done_/started_ и флаги всех основных сцен до неё по порядку файлов
+    (для задания — до последней основной сцены из его requires включительно), плюс started_ её самой. Флаги, которые
+    ставят предметы и комнаты, сюда не входят — по этому набору можно судить только «точно скрыт», не «точно виден»."""
+    main = [sid for sid, sc in scenes.items() if sc.get("type") == "main"]
+    if scene_id in main:
+        upto = main.index(scene_id)
+    else:
+        need = [f[5:] for f in scenes.get(scene_id, {}).get("requires", {}).get("flags", []) if f.startswith("done_")]
+        upto = max([main.index(n) + 1 for n in need if n in main], default=0)
+    held: set[str] = {f"started_{scene_id}"}
+    for sid in main[:upto]:
+        held |= {f"done_{sid}", f"started_{sid}"} | set(story_flags_of(sid))
+    return held
+
+
 def story_flags_of(scene_id: str) -> list[str]:
     """Флаги, которые ставит сцена: её grants, sets её постановок, выборы её реплик."""
     sc = scenes.get(scene_id, {})
@@ -1148,53 +1164,125 @@ for rid, room in rooms.items():
             actor = load(actor_path) if actor_path.exists() else None
             if (actor is None and "image" not in h) or (actor or {}).get("type") == "puppet":
                 continue
+            shown9b = set(h.get("visible_if", []))
             if h.get("scene_only"):
-                # Виден только внутри сцены без управления (O3: Илья, Ульяна, жена Ильи — M20): Агата не ходит к
-                # стоянкам, пока он виден. Флаги его видимости — из этой сцены.
+                # Появляется в сцене без управления; флаги его видимости — из этой сцены.
                 sc_only = str(h["scene_only"])
-                if not set(h.get("visible_if", [])) <= {f"started_{sc_only}"} | set(story_flags_of(sc_only)):
+                if not shown9b <= {f"started_{sc_only}"} | set(story_flags_of(sc_only)):
                     err(f"{ctx}.{h.get('id')}: scene_only {sc_only}, но visible_if {h.get('visible_if')} не из этой сцены")
-                continue
+                # Уходит вместе со сценой (O4: Нина на крыльце — hidden_when all [done_M19]) — Агата не ходит к
+                # стоянкам, пока он виден, не сравниваем. Остаётся после сцены (13.11, O3: Илья, Ульяна и жена Ильи
+                # стоят в горнице от M20 до утра, управление возвращается) — сравниваем, как любого жителя, при
+                # флагах этой сцены: до 13.11 такие пропускались, и стоянка разговора с Ниной ставила Агату спиной
+                # к зрителю прямо перед Ильёй (Директор 12.11: «Агата не должна закрывать кого-то»).
+                done9b = f"done_{sc_only}"
+                if done9b in h.get("hidden_if", []) or any(e.get("all") == [done9b] for e in h.get("hidden_when", [])):
+                    continue
+                shown9b |= {f"started_{sc_only}", done9b} | set(story_flags_of(sc_only))
             r = h["rect"]
             factor = float((actor or {}).get("npc", {}).get("scale_factor", 1.0))
-            npcs9b.append((h, r[0] + r[2] / 2, r[1] + r[3], factor))
+            npcs9b.append((h, r[0] + r[2] / 2, r[1] + r[3], factor, shown9b))
 
         def apart(a: dict, b: dict) -> bool:
             return bool(set(a.get("visible_if", [])) & set(b.get("hidden_if", []))) or \
                 bool(set(b.get("visible_if", [])) & set(a.get("hidden_if", [])))
 
-        places9b = [(f"hotspots.{h.get('id')}.stand", h, h["stand"]) for h in room.get("hotspots", [])
-                    if h.get("kind") != "npc" and "stand" in h]
+        # 13.11: стоянка разговора с жителем — тоже место Агаты (сравнивается с остальными жителями; со своим — п. 9),
+        # и стоянки выходов.
+        places9b = [(f"hotspots.{h.get('id')}.stand", h, h["stand"]) for h in room.get("hotspots", []) if "stand" in h]
+        for ex9 in room.get("exits", []):
+            _r9, st9 = exit_geometry(room, ex9)
+            if st9 is not None:
+                places9b.append((f"exits.{ex9.get('to')}.stand", {}, list(st9)))
         # spawns.default — запасная точка (входы и постановки называют свою), её не сравниваем.
         places9b += [(f"spawns.{sid}", {}, pos) for sid, pos in room.get("spawns", {}).items() if sid != "default"]
+        # 13.11: …кроме случая, когда постановка сцены сама ставит на неё Агату (`room` этой комнаты со `spawn`
+        # default или без него): тогда это место в сюжете. Z3, M15s: после скобы Агата появлялась на (900, 850) —
+        # перед Пелагеей, пока та уходила к лодке. Жители, точно скрытые к этой сцене (flags_held_at), не сравниваются.
+        if "default" in room.get("spawns", {}):
+            for sid9, sc9 in scenes.items():
+                if any(st9.get("room") == rid and st9.get("spawn", "default") == "default" for st9 in sc9.get("stage", []) or []):
+                    places9b.append((f"spawns.default (постановка {sid9})", {"_held": flags_held_at(sid9)}, room["spawns"]["default"]))
+        # 13.11: места, куда постановка ставит или ведёт Агату (`player_to`, `agata_go`), — тоже её места в сюжете.
+        # Комната — последняя, названная постановками сцены до этой (иначе первая из locations); к флагам «точно
+        # стоят» добавлены sets постановок сцены до этой включительно.
+        for sid9, sc9 in scenes.items():
+            cur9 = (sc9.get("locations") or [None])[0]
+            sets9: set[str] = set()
+            for st9 in sorted(sc9.get("stage", []) or [], key=lambda t: t["at"] if isinstance(t.get("at"), int) else 10 ** 6):
+                cur9 = st9.get("room", cur9)
+                sets9 |= set(st9.get("sets", []))
+                for k9 in ("player_to", "agata_go"):
+                    to9 = (st9.get(k9) or {}).get("to")
+                    if cur9 == rid and isinstance(to9, list) and len(to9) == 2:
+                        places9b.append((f"сцена {sid9} (постановка at {st9.get('at')}, {k9})", {"_held": flags_held_at(sid9) | sets9}, to9))
         # Комнаты-исключения (_index.json agata_ref.npc_overlap_warn_rooms: стоянки правит владелец комнаты) —
         # предупреждение вместо ошибки, пока их не поправят.
         report9b = warn if rid in aref9.get("npc_overlap_warn_rooms", []) else err
+
+        def covered9b(sx: float, sy: float, fx: float, fy: float, factor: float):
+            """Доля рамки того, кто дальше от зрителя, закрытая тем, кто ближе: (доля, кто закрыт — "npc"/"agata")."""
+            a_s = depth_scale(sy)
+            a_hw, a_h = hw0 * a_s, fig0 * a_s
+            n_s = depth_scale(fy) * factor
+            n_hw, n_h = hw0 * n_s, fig0 * n_s
+            ox = min(sx + a_hw, fx + n_hw) - max(sx - a_hw, fx - n_hw)
+            oy = min(sy, fy) - max(sy - a_h, fy - n_h)
+            if ox <= 0 or oy <= 0:
+                return 0.0, ""
+            behind_hw, behind_h, who = (n_hw, n_h, "npc") if sy > fy else (a_hw, a_h, "agata")
+            return ox / (2 * behind_hw) * oy / behind_h, who
+
         for where, src, (sx0, sy0) in places9b:
-            for nh, fx, fy, factor in npcs9b:
-                if apart(src, nh):
+            for nh, fx, fy, factor, shown in npcs9b:
+                if apart(src, nh) or src is nh:
                     continue
+                held9 = src.get("_held")
+                if held9 is not None and (set(nh.get("hidden_if", [])) & held9 or any(
+                        set(e.get("all", [])) <= held9 and not set(e.get("not", [])) & held9 for e in nh.get("hidden_when", []))):
+                    continue
+                if held9 is not None:
+                    # the villager's own place for the flags that hold at that scene (Z3: Pelageya by the boat's bow
+                    # once it is hauled, M17)
+                    for nst in nh.get("states", []):
+                        if nst.get("if") and set(nst["if"]) <= held9 and not set(nst.get("unless", [])) & held9:
+                            if "rect" in nst:
+                                fx, fy = nst["rect"][0] + nst["rect"][2] / 2, nst["rect"][1] + nst["rect"][3]
+                            break
                 # 11.11: while the NPC is shown (its visible_if), the object's state for those flags may stand Agata
-                # elsewhere (M1: the schedule and the bench while the people of the council stand in the yard)
+                # elsewhere (M1: the schedule and the bench while the people of the council stand in the yard).
+                # 13.11: the state that holds while the NPC is shown — its `if` among the flags of the NPC's showing
+                # (for one who stays after his scene — that scene's flags too), no `unless` of it among them; a state
+                # that cannot be clicked (`pickable` false: Pavel in the council's yard) is no place for Agata.
                 sx, sy = sx0, sy0
                 nv = set(nh.get("visible_if", []))
-                for st_ in (src.get("states", []) if nv else []):
-                    if "stand" in st_ and nv <= set(st_.get("if", [])):
-                        sx, sy = st_["stand"]
+                off = False
+                for st_ in (src.get("states", []) if shown else []):
+                    sif = set(st_.get("if", []))
+                    if (nv and nv <= sif) or (sif <= shown and not set(st_.get("unless", [])) & shown):
+                        if st_.get("pickable", True) is False:
+                            off = True
+                        elif "stand" in st_:
+                            sx, sy = st_["stand"]
                         break
-                a_s = depth_scale(sy)
-                a_hw, a_h = hw0 * a_s, fig0 * a_s
-                n_s = depth_scale(fy) * factor
-                n_hw, n_h = hw0 * n_s, fig0 * n_s
-                ox = min(sx + a_hw, fx + n_hw) - max(sx - a_hw, fx - n_hw)
-                oy = min(sy, fy) - max(sy - a_h, fy - n_h)
-                if ox <= 0 or oy <= 0:
+                if off:
                     continue
-                behind_hw, behind_h, who = (n_hw, n_h, f"NPC {nh.get('id')}") if sy > fy else (a_hw, a_h, "Агату")
-                covered = ox / (2 * behind_hw) * oy / behind_h
+                covered, who = covered9b(sx, sy, fx, fy, factor)
                 if covered > aref9.get("npc_overlap_max", 0.25):
+                    who_s = f"NPC {nh.get('id')}" if who == "npc" else "Агату"
                     report9b(f"{ctx}.{where} {[sx, sy]}: Агата и NPC {nh.get('id')} (ноги {fx:.0f},{fy:.0f}) — одна фигура в другой: "
-                        f"закрыто {covered:.0%} фигуры ({who}); сдвиньте стоянку или NPC")
+                        f"закрыто {covered:.0%} фигуры ({who_s}); сдвиньте стоянку или NPC")
+        # 13.11 — самопроверка на горнице (O3): прежняя стоянка разговора с Ниной (1620, 880) ставила Агату перед
+        # Ильёй — правило обязано это видеть; место у ходиков (1090, 840) — проходит.
+        if rid == "O3":
+            il9 = next(((fx, fy, factor) for nh, fx, fy, factor, _sh in npcs9b if nh.get("id") == "ilya"), None)
+            if il9 is None:
+                err(f"{ctx}: проверка 9b не сравнивает Илью (остаётся в горнице после M20) — самопроверка невозможна")
+            else:
+                if covered9b(1620, 880, *il9)[0] <= aref9.get("npc_overlap_max", 0.25):
+                    err("validate_rooms 9b: самопроверка не сработала — Агата на (1620, 880) перед Ильёй прошла бы")
+                if any(covered9b(1090, 840, fx, fy, factor)[0] > aref9.get("npc_overlap_max", 0.25) for _nh, fx, fy, factor, _sh in npcs9b):
+                    err("validate_rooms 9b: самопроверка — место у ходиков (1090, 840) не прошло")
         # Нарисованный предмет (слой с id своего хотспота) не стоит за фигурой NPC: O4 — Митя стоял прямо перед своей
         # дощечкой партии 8 и закрывал её (23.10). Предмет за фигурой (низ выше ног NPC) закрыт больше чем наполовину — ошибка.
         layer_ids9c = {str(l.get("id")) for l in room.get("layers", [])}
@@ -1202,7 +1290,7 @@ for rid, room in rooms.items():
             if oh.get("kind") == "npc" or str(oh.get("id")) not in layer_ids9c or "rect" not in oh:
                 continue
             ox0, oy0, ow, oh_h = oh["rect"]
-            for nh, fx, fy, factor in npcs9b:
+            for nh, fx, fy, factor, _shown in npcs9b:
                 if apart(oh, nh) or oy0 + oh_h >= fy:
                     continue
                 n_s = depth_scale(fy) * factor
@@ -1306,6 +1394,32 @@ for rid, room in rooms.items():
             err(f"{ctx}: вырез walkable_holes_if[{i}] не пересекает пол — опечатка в координатах?")
         check_flags(f"{ctx}.walkable_holes_if[{i}].if", e.get("if"))
         check_flags(f"{ctx}.walkable_holes_if[{i}].unless", e.get("unless"))
+        # 13.11: пока вырез действует, в нём нет места, куда Агата идёт: стоянки предмета или жителя в состоянии
+        # при флагах выреза (states: if среди них, unless — нет; `pickable` false — туда не ходят), стоянки выхода,
+        # точки входа (кроме запасной default). O3: пока родня в горнице, пол Агаты — полоса слева; стоянки окна,
+        # иконы и разговора с Ниной на это время перенесены к ходикам, выход — к левому краю.
+        hf = set(e.get("if", []))
+        hole_places = []
+        for hh in room.get("hotspots", []):
+            if "stand" not in hh or set(hh.get("hidden_if", [])) & hf or not set(hh.get("visible_if", [])) <= hf:
+                continue
+            st_pt, skip = hh["stand"], False
+            for st_ in hh.get("states", []):
+                if set(st_.get("if", [])) <= hf and not set(st_.get("unless", [])) & hf:
+                    skip = st_.get("pickable", True) is False
+                    st_pt = st_.get("stand", st_pt)
+                    break
+            if not skip and hh.get("pickable", True) is not False:
+                hole_places.append((f"hotspots.{hh.get('id')}.stand", st_pt))
+        for ex_h in room.get("exits", []):
+            _rh, st_h = exit_geometry(room, ex_h)
+            if st_h is not None:
+                hole_places.append((f"exits.{ex_h.get('to')}.stand", list(st_h)))
+        hole_places += [(f"spawns.{sid}", pos) for sid, pos in room.get("spawns", {}).items() if sid != "default"]
+        for where_h, pt_h in hole_places:
+            if point_in_poly(pt_h, h):
+                err(f"{ctx}.{where_h} {list(pt_h)}: внутри выреза walkable_holes_if[{i}] (флаги {sorted(hf)}) — Агата туда не дойдёт, "
+                    f"пока он действует; дайте стоянку для этого состояния (states) или сдвиньте вырез")
 
     # спавны
     spawns = room.get("spawns", {})
