@@ -380,6 +380,18 @@ func _test_fishing_fight(sp: Dictionary) -> void:
 	var far: Array = sp.get("far", [0, 0])
 	_check(g.position.x >= 0.0 and g.end.x <= 1920.0 and g.end.y < 986.0, "the gauge on screen, above the buttons: %s" % str(g))
 	_check(not g.has_point(Vector2(float(fl[0]), float(fl[1]))) and not g.has_point(Vector2(float(far[0]), float(far[1])) + Vector2(46, 30)), "the gauge clear of the float and of the perch's way")
+	# 13.11 (a frame for Steam: the «Облегчить» switch lay over the gauge's lower right — the half of the way to the
+	# jetty hidden since the switch was moved over «Хватит» on 02.11): the gauge with its frame clear of the switch
+	# (240 × 44 at easy_at), of «Ещё» (200 × 54 at again_at) and of «Хватит» (1680, 990, 200 × 56)
+	var ea13: Array = sp.get("easy_at", [0, 0])
+	var ag13: Array = sp.get("again_at", [0, 0])
+	var easy13 := Rect2(float(ea13[0]), float(ea13[1]), 240, 44)
+	var over: Array = []
+	for b in [["«Облегчить»", easy13], ["«Ещё»", Rect2(float(ag13[0]), float(ag13[1]), 200, 54)], ["«Хватит»", Rect2(1680, 990, 200, 56)]]:
+		if g.intersects(b[1]):
+			over.append("%s %s" % [b[0], str(b[1])])
+	_check(over.is_empty(), "the gauge %s lies under %s" % [str(g), ", ".join(over)])
+	_check(Rect2(1430, 818, 440, 144).grow(14.0).intersects(Rect2(1640, 932, 240, 44)), "self-check: the gauge and the switch as they were until 13.11 do overlap — the check above sees it")
 	# «Облегчить» (easy_minigames): a wider green, a weaker, slower perch
 	var normal := FishingLogic.new(sp.get("fight", {}), false, 1)
 	var easy := FishingLogic.new(sp.get("fight", {}), true, 1)
