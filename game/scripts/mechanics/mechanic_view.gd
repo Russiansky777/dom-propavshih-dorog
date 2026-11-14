@@ -89,7 +89,9 @@ func _open(s: Dictionary) -> void:
 	title_label = Label.new()
 	title_label.name = "Title"
 	title_label.text = StoryData.text(String(spec.get("title", "")))
-	title_label.position = Vector2(40, 96)
+	# 14.11: `title_pos` — a panel with a frame of its own (mother's mirror) puts the title over the frame's left edge
+	var tp: Array = spec.get("title_pos", [40, 96])
+	title_label.position = Vector2(float(tp[0]), float(tp[1]))
 	title_label.size = Vector2(900, 60)
 	title_label.theme_type_variation = &"CloseupTitle"
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE

@@ -197,6 +197,7 @@ if ! python3 -I -c "import PIL, numpy" 2>/dev/null; then
 else
 python3 -I "$ROOT/tools/validate_occluders.py" --self-check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # 10.11: слои переднего плана непрозрачны внутри («Стул и Агата прозрачные»)
 fi
+"$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_feedback_1411.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # Директор 14.11: надпись «Мамино зеркало» не лежит на раме (самопроверка — прежняя раскладка)
 "$GODOT" --headless --audio-driver Dummy --path "$GAME_DIR" -s res://tests/test_trailer.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1  # TR1: режим съёмки трейлера (data/trailer) — планы читаются, планы собираются, комната в нужном состоянии, сохранения не пишутся
 # 14.11: a trailer shot from a ready video (kind `clip`, the crossing by fal): the frames picked for 30 / 60 / 6 fps,
 # the grade against the trailer's shader, a shot longer than its clip refused; then every clip shot of the plans.

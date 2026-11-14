@@ -12,6 +12,8 @@ extends Node
 ##   room       — a real room of the game in a story state (`state` as a start point): Agata walks with the game's
 ##                own walk, the camera eases its zoom and follows her; occluders move faster than the room.
 ##   title_card — the game's name in the menu's gold on black with a glint across the letters, the tagline under it.
+##                An art shot with `title` (and the card's other keys) shows the same name over the picture: the
+##                picture dims by `title_scrim` as the words come up (14.11, the trailer's last shot).
 ##   clip       — a ready video instead of the engine's picture (14.11: the crossing brought to life by fal): the
 ##                frames come from tools/trailer_clip.py (tools/trailer_render.sh calls it, not Godot); here the
 ##                shot is an empty stage, so that a plan with one loads and runs in the tests.
@@ -111,6 +113,8 @@ func build() -> void:
 	match String(shot.get("kind", "")):
 		"art":
 			_build_art()
+			if shot.has("title"):
+				_build_title()   # 14.11: the name comes up over the picture itself (the trailer's last shot)
 		"room":
 			_build_room()
 		"title_card":
@@ -144,6 +148,8 @@ func _apply(dt: float) -> void:
 	match String(shot.get("kind", "")):
 		"art":
 			_tick_art(u)
+			if shot.has("title"):
+				_tick_title()
 		"room":
 			_tick_room(u, dt)
 		"title_card":
@@ -386,6 +392,21 @@ func _build_room() -> void:
 		_player.call("enter_room", RoomManager.current_room, v2(ag["from"]))
 		if ag.has("to"):
 			_player.call("face_towards", v2(ag["to"]))
+		elif ag.has("face"):
+			# 14.11 (Director: «на кадре с мамой они отвёрнуты друг от друга»): where she looks while she stands
+			_player.call("face_towards", v2(ag["face"]))
+	# 14.11: `npc_face` [{id, face: "agata" | [x, y]}] — a villager turned to her or to a point, as a scene's staging
+	# does it (StoryRunner `npc_face`): the shot shows people who talk to each other, not their idle places
+	for g in shot.get("npc_face", []):
+		var np := RoomManager.current_room.get_node_or_null("npc_" + String(g.get("id", "")))
+		if np == null or not np.has_method("face_towards"):
+			push_error("Trailer: npc_face — no villager '%s' in %s" % [g.get("id", ""), state["room"]])
+			continue
+		var at: Vector2 = v2(g["face"]) if g.get("face") is Array else _player.global_position
+		np.set("partner", null)
+		np.call("face_towards", at)
+		if np.has_method("hold_face"):
+			np.call("hold_face", at)
 	_camera = Camera2D.new()
 	_camera.name = "Camera"
 	_world.add_child(_camera)
@@ -471,9 +492,16 @@ func _build_title() -> void:
 	var layer := CanvasLayer.new()
 	layer.name = "TitleCard"
 	add_child(layer)
+	# 14.11 (Director: «Дом пропавших дорог», «Steam» — на последнем кадре; «да, поверх, как-то красиво»): on a picture
+	# (an art shot with `title`) the black is a veil that comes down with the words (`title_scrim`, how dark), and the
+	# words stand above the picture's grade (the Post layer is 100) — the same gold as on the black card.
+	var over := String(shot.get("kind", "")) != "title_card"
+	if over:
+		layer.layer = 110
 	var black := ColorRect.new()
-	black.color = Color.BLACK
+	black.color = Color(0, 0, 0, 0.0 if over else 1.0)
 	black.size = SCREEN
+	black.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layer.add_child(black)
 	var font := UiTheme.font(String(shot.get("font", "body")))
 	# A warm breath of light behind the words (the lamp's gold, very faint).
@@ -534,7 +562,7 @@ func _build_title() -> void:
 	layer.add_child(sub)
 	var w := font.get_string_size(title.text, HORIZONTAL_ALIGNMENT_LEFT, -1, int(shot.get("title_px", 120))).x / SCREEN.x
 	var gw := float(shot.get("glint_width", 0.14))
-	_title = {"halo": halo, "title": title, "shadow": shadow, "sub": sub, "rules": rules, "mat": mat,
+	_title = {"halo": halo, "title": title, "shadow": shadow, "sub": sub, "rules": rules, "mat": mat, "black": black, "over": over,
 		"span": Vector2(0.5 - w / 2.0 - gw, 0.5 + w / 2.0 + gw)}
 
 
@@ -562,6 +590,8 @@ func _tick_title() -> void:
 	var t := _t
 	var a := _window(t, shot.get("title_in"))
 	(_title["mat"] as ShaderMaterial).set_shader_parameter("appear", a)
+	if bool(_title.get("over", false)):
+		(_title["black"] as ColorRect).color.a = float(shot.get("title_scrim", 0.5)) * a
 	(_title["shadow"] as Label).modulate.a = 0.7 * a
 	(_title["rules"] as Control).modulate.a = a
 	(_title["halo"] as Sprite2D).modulate.a = float(shot.get("halo_alpha", 0.07)) * a
@@ -843,6 +873,11 @@ func _gloss_point(n: int) -> Vector2:
 
 
 func _send_mouse_motion(p: Vector2) -> void:
+	# 14.11: the game's hover reads the real pointer (GameUi: get_global_mouse_position), and under Xvfb it rests at
+	# the middle of the screen — in the cottage that is the door, and its caption «На крыльцо» showed in the first
+	# half-second of the shot (draft v3, 0:09,8). The real pointer follows the film's hand.
+	if DisplayServer.get_name() != "headless":
+		get_viewport().warp_mouse(p)
 	var ev := InputEventMouseMotion.new()
 	ev.position = p
 	ev.global_position = p

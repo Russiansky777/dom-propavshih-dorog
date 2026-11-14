@@ -290,6 +290,7 @@ def assemble(plan_arg: str) -> Path:
     tl = timeline(plan)
     total = sum(s["dur"] for s in tl)
     end_fade = float(plan.get("end_fade_s", 0.4))
+    start_fade = float(plan.get("start_fade_s", 0.0))   # 14.11 (Director: «нужен фейд-ин в начале видео»)
     grain = float(plan.get("grain", 5))
 
     # --- video ---------------------------------------------------------------------------------
@@ -307,8 +308,9 @@ def assemble(plan_arg: str) -> Path:
         dur = float(tl[i]["tin"].get("duration", 0.5))
         chains.append(f"[{last}][v{i}]xfade=transition={kind}:duration={dur}:offset={tl[i]['start']:.4f}[x{i}]")
         last = f"x{i}"
+    fade_in = f"fade=t=in:st=0:d={start_fade}," if start_fade > 0.0 else ""
     chains.append(f"[{last}]trim=duration={total:.4f},noise=c0s={grain}:c0f=t+u:c1s={grain * 0.4}:c1f=t+u:c2s={grain * 0.4}:c2f=t+u,"
-                  f"fade=t=out:st={total - end_fade:.4f}:d={end_fade},format=yuv420p[vout]")
+                  f"{fade_in}fade=t=out:st={total - end_fade:.4f}:d={end_fade},format=yuv420p[vout]")
 
     # --- audio ---------------------------------------------------------------------------------
     a = plan["audio"]

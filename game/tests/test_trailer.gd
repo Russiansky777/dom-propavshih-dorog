@@ -134,8 +134,28 @@ func _t_shots() -> void:
 						"%s: camera shows past the room %s" % [s["id"], cam.position])
 				for st in s.get("state", {}).get("flags", []):
 					_check(gs.has_flag(String(st)), "%s: flag %s not set" % [s["id"], st])
-			if s.get("kind") == "title_card":
+			if s.get("kind") == "title_card" or (s.get("kind") == "art" and s.has("title")):
 				_check(tr.get_node_or_null("TitleCard") != null, "%s: no title card" % s["id"])
+			if s.get("kind") == "art" and s.has("title"):
+				# 14.11: the name over the picture — above the picture's grade, the black a veil (clear at the start)
+				var tc: CanvasLayer = tr.get_node_or_null("TitleCard")
+				_check(tc != null and tc.layer > 100, "%s: the title over a picture stands above the grade (layer %s)" % [s["id"], tc.layer if tc != null else "-"])
+				var veil: ColorRect = tc.get_child(0) as ColorRect if tc != null else null
+				_check(veil != null and veil.color.a < 0.99, "%s: the picture under the title is not black" % s["id"])
+			if s.get("kind") == "room":
+				# 14.11: people turned to each other in a shot (`npc_face`, `agata.face`)
+				for g in s.get("npc_face", []):
+					var np: Node = rm.current_room.get_node_or_null("npc_" + String(g.get("id", ""))) if rm.current_room != null else null
+					var want: Vector2 = Vector2(float(g["face"][0]), float(g["face"][1])) if g.get("face") is Array else (rm.player as Node2D).global_position
+					_check(np != null and (np.get("last_face_target") as Vector2).distance_to(want) < 2.0,
+						"%s: %s is not turned to %s" % [s["id"], g.get("id"), str(want)])
+				if s.get("agata", {}).has("face") and not agata_to:
+					var fp := Vector2(float(s["agata"]["face"][0]), float(s["agata"]["face"][1]))
+					var pl2: Node2D = rm.player
+					var dir := int(pl2.get("direction"))
+					# her sheet's rows: 2 — to the right, 6 — to the left (probe_trailer_shot.gd prints them)
+					_check((fp.x < pl2.global_position.x and dir in [5, 6, 7]) or (fp.x > pl2.global_position.x and dir in [1, 2, 3]),
+						"%s: Agata does not look towards %s (direction %d)" % [s["id"], str(fp), dir])
 			if s.get("kind") == "art":
 				_check(tr.get_node_or_null("Stage") != null and tr.get_node("Stage").get_child_count() >= 2, "%s: no layers" % s["id"])
 			tr.queue_free()
