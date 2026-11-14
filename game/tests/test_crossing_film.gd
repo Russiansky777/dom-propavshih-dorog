@@ -13,7 +13,8 @@ extends SceneTree
 ##        room's own day layer — the crossing shows the day painting of the boat (R2/day.png), the far pier of the day
 ##        where there is one, thin fog, and no film (there is none of the day view yet); in the evening — the evening
 ##        painting and the film. Before: the evening view between two rooms in daylight on days three and four.
-##   CF-5 self-check — with the films switched off (the test's switch) the same crossing is the painted one: no film,
+##   CF-5 self-check — a film that jumps in (`in_s` near 0) is caught by CF-2's measure; with the films switched off
+##        (the test's switch) the same crossing is the painted one: no film,
 ##        the rope drawn, and the picture is the painting's own; the crossing by hand gets no film even if its data named one.
 ## Video decodes only with a display:
 ##   godot --path game --display-driver x11 --rendering-driver opengl3 -s res://tests/test_crossing_film.gd
@@ -207,26 +208,12 @@ func _test_start() -> void:
 	var pr: Dictionary = panel.call("probe")
 	_check(float(pr["film_alpha"]) < 0.2, "the first picture is drawn before the film is in (film share %.2f)" % float(pr["film_alpha"]))
 	_check(_diff(first, painted) < 4.0, "the first picture is the painted view (differs by %.1f of 255)" % _diff(first, painted))
-	# the film comes in: its share against the time, frame by frame
-	var last_a := float(pr["film_alpha"])
-	var last_ms := Time.get_ticks_msec()
-	var worst := 0.0
-	var went_back := false
-	var waited := 0
-	while float(panel.call("probe")["film_alpha"]) < 0.999 and waited < 600:
-		await process_frame
-		waited += 1
-		var a := float(panel.call("probe")["film_alpha"])
-		var now := Time.get_ticks_msec()
-		var dt := maxf(float(now - last_ms) / 1000.0, 1.0 / 240.0)
-		# the smooth step over 0.6 s climbs 2.5 a second at its steepest; a slow frame may take a longer stride
-		worst = maxf(worst, (a - last_a) - 2.6 * dt - 0.03)
-		went_back = went_back or a < last_a - 0.0001
-		last_a = a
-		last_ms = now
+	# the film comes in: its share against its own time, frame by frame
+	var came: Dictionary = await _come_in(panel)
 	pr = panel.call("probe")
-	_check(float(pr["film_alpha"]) >= 0.999, "the film is the whole picture in the end (share %.2f after %d frames)" % [float(pr["film_alpha"]), waited])
-	_check(worst <= 0.0 and not went_back, "the film comes in smoothly (a stride %.3f over what the time allows; went back: %s)" % [worst, went_back])
+	_check(float(pr["film_alpha"]) >= 0.999, "the film is the whole picture in the end (share %.2f after %d frames)" % [float(pr["film_alpha"]), int(came["frames"])])
+	_check(float(came["worst"]) <= 0.0 and not bool(came["went_back"]), "the film comes in smoothly (a stride %.3f over what its time allows; went back: %s)" % [float(came["worst"]), came["went_back"]])
+	_check(float(came["took"]) >= 0.5, "the film takes its time to come in: %.2f s of the film's own time (0.6 in the data)" % float(came["took"]))
 	_check(float(pr["rope_alpha"]) < 0.01, "the painted rope is gone under the film's own (alpha %.2f)" % float(pr["rope_alpha"]))
 	_check(absf(float(pr["stage_y"])) < 0.01, "the boat's bob has stopped (the film rocks by itself): %.2f px" % float(pr["stage_y"]))
 	var stage: Node = panel.get_node("Stage")
@@ -244,29 +231,66 @@ func _test_start() -> void:
 	await _close(o)
 
 
+## Follows the film's share until it is the whole picture. The stride of the share is held against the FILM's own
+## time between the same two readings (probe `film_t`), not against the wall clock: under Xvfb a slow frame is
+## followed by a fast one, and the panel's step is the engine's delta of the frame before — on 14.11 the wall clock
+## made a stride «0.125 over» out of that (run 43641370804). The smooth step over 0.6 s climbs 2.5 a second at its
+## steepest; a film that jumps in (`in_s` near 0) takes a whole stride in one frame's time.
+func _come_in(panel: Node) -> Dictionary:
+	var pr: Dictionary = panel.call("probe")
+	var last_a := float(pr["film_alpha"])
+	var last_t := float(pr["film_t"])
+	var t_first := -1.0
+	var worst := -1.0
+	var went_back := false
+	var frames := 0
+	while float(panel.call("probe")["film_alpha"]) < 0.999 and frames < 900:
+		await process_frame
+		frames += 1
+		pr = panel.call("probe")
+		var a := float(pr["film_alpha"])
+		var ft := float(pr["film_t"])
+		if t_first < 0.0 and ft > 0.0:
+			t_first = last_t
+		worst = maxf(worst, (a - last_a) - 2.6 * (ft - last_t) - 0.01)
+		went_back = went_back or a < last_a - 0.0001
+		last_a = a
+		last_t = ft
+	return {"worst": worst, "went_back": went_back, "frames": frames, "took": last_t - maxf(t_first, 0.0)}
+
+
 func _test_end() -> void:
 	_evening()
 	var spec := _auto_spec()
 	var o: Dictionary = await _open(spec)
 	var panel: Node = o["panel"]
+	# the wall clock only bounds the wait (a loaded machine under Xvfb draws a frame in most of a second); what is
+	# checked is the game's own time — the film's position when «crossed» comes
 	var t0 := Time.get_ticks_msec()
-	while not bool(panel.call("probe")["crossed"]) and Time.get_ticks_msec() - t0 < 9000:
+	while not bool(panel.call("probe")["crossed"]) and Time.get_ticks_msec() - t0 < 60000:
 		await process_frame
 	var pr: Dictionary = panel.call("probe")
 	var length := float((panel.get("film") as VideoStreamPlayer).get_stream_length()) if panel.get("film") != null else 0.0
 	_check(bool(pr["crossed"]), "the boat comes across by itself (%.1f s)" % (float(Time.get_ticks_msec() - t0) / 1000.0))
+	# the crossing lasts pulls × pull_s and the hold whatever the frames are: «crossed» within a frame or two of that
+	var want_s := int(spec.get("pulls", 10)) * float(spec.get("pull_s", 0.9)) + float(spec.get("arrive_hold_s", 0.8))
+	_check(float(pr["film_t"]) <= want_s + 0.6, "the crossing took %.2f s of the game's time (pulls and hold: %.2f s)" % [float(pr["film_t"]), want_s])
 	_check(bool(pr["film_playing"]) and not bool(pr["film_held"]), "«crossed» comes while the film runs (position %.2f s)" % float(pr["film_pos"]))
 	_check(length <= 0.0 or float(pr["film_pos"]) + BLACK_FADE_S <= length, "the film has %.2f s left for the black's %.1f s (length %.2f, position %.2f)" % [length - float(pr["film_pos"]), BLACK_FADE_S, length, float(pr["film_pos"])])
 	await _close(o)
 	# a click: straight to the shore, as before
 	o = await _open(spec)
 	panel = o["panel"]
-	await _frames(20)
+	await _frames(6)
+	var before := int(panel.call("probe")["pulls"])
 	panel.call("pull")
+	await _frames(1)
+	pr = panel.call("probe")
+	_check(before < int(spec.get("pulls", 10)) and int(pr["pulls"]) == int(spec.get("pulls", 10)), "a click skips to the shore: pulls %d → %d of %d" % [before, int(pr["pulls"]), int(spec.get("pulls", 10))])
 	t0 = Time.get_ticks_msec()
-	while not bool(panel.call("probe")["crossed"]) and Time.get_ticks_msec() - t0 < 3000:
+	while not bool(panel.call("probe")["crossed"]) and Time.get_ticks_msec() - t0 < 60000:
 		await process_frame
-	_check(bool(panel.call("probe")["crossed"]) and Time.get_ticks_msec() - t0 < 2000, "a click skips to the shore (%.1f s)" % (float(Time.get_ticks_msec() - t0) / 1000.0))
+	_check(bool(panel.call("probe")["crossed"]), "after the click the boat is across")
 	await _close(o)
 
 
@@ -284,6 +308,13 @@ func _test_self_check() -> void:
 	_check(float(pr["band_scale"]) > 1.01, "films off: the painted far shore grows as before (%.3f)" % float(pr["band_scale"]))
 	await _close(o)
 	script.set("films_enabled", true)
+	# a film that jumps in (no time to come in) is caught by the measure of CF-2
+	var jump := _auto_spec()
+	jump["film"]["in_s"] = 0.001
+	o = await _open(jump)
+	var came: Dictionary = await _come_in(o["panel"])
+	_check(float(came["worst"]) > 0.0 and float(came["took"]) < 0.5, "a film that jumps in is caught (stride %.3f over, came in %.2f s)" % [float(came["worst"]), float(came["took"])])
+	await _close(o)
 	# by hand: a film in the data is not taken
 	var hand := _auto_spec()
 	hand["auto"] = false

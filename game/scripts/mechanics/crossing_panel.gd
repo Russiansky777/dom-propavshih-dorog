@@ -403,11 +403,22 @@ func tick(delta: float) -> void:
 		# the rope runs back through the ring while the hands haul (fast at first, then easing)
 		rope_phase += delta * float(spec.get("rope_speed", 140.0)) * (1.0 - clampf(pull_t / ps, 0.0, 1.0))
 		if pull_t >= ps:
+			var over := pull_t - ps
 			pulling = false
 			pulls += 1
 			if queued > 0 and pulls < pulls_total:
 				queued -= 1
 				_start_pull()
+			elif bool(spec.get("auto", false)):
+				# 14.11: the ferry's pulls follow one another with no frame's pause between them, the time left over
+				# carried into the next — the crossing lasts pulls × pull_s on any machine, slow frames or not (its film
+				# is cut to that length; with a frame lost at every pull a slow machine ran out of film before the shore)
+				while over >= ps and pulls < pulls_total:
+					over -= ps
+					pulls += 1
+				if pulls < pulls_total:
+					_start_pull()
+					pull_t = over
 	progress = lerpf(progress, _target_progress(), clampf(delta * 10.0, 0.0, 1.0))
 	if absf(progress - _target_progress()) < 0.0005:
 		progress = _target_progress()
@@ -515,7 +526,7 @@ func probe() -> Dictionary:
 		"water": water_mat != null,
 		"pier_w": pier.size.x if pier != null else 0.0, "arrival": arrival.modulate.a, "crossed": crossed_sent,
 		"day": is_day, "bg": String(spec.get("art", {}).get("bg", "")),
-		"film": film != null, "film_alpha": film_alpha, "film_playing": film != null and film.is_playing(),
+		"film": film != null, "film_alpha": film_alpha, "film_t": _film_t, "film_playing": film != null and film.is_playing(),
 		"film_pos": film.stream_position if film != null else 0.0, "film_held": _film_hold != null,
 		"rope_alpha": rope.modulate.a, "stage_y": stage.position.y,
 		"rope": {"x": _ring.x + 140.0, "y": _ring.y + 120.0}, "center": {"x": 960.0, "y": 640.0}}
