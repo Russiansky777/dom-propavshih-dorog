@@ -36,7 +36,12 @@ env:
 
 jobs:
   check:
-    runs-on: ubuntu-latest
+    # 14.11: ubuntu-latest → ubuntu-24.04. On the evening of 13.11 «latest» began to give ubuntu-26.04: run 43516452603
+    # (e70cbf36) was the first on it — green, but the test step took 139 min 41 s (79–107 min in the six runs before, all on
+    # 24.04; this job's limit is 150), and its ffmpeg 8.0.1 (6.1.1 on 24.04) did not show the stdin defect in the self-check
+    # of tools/test_voice_trim_stdin.sh (WARN instead of PASS). The image stays the one every earlier run was made on;
+    # a move to 26.04 is a separate step with its own timing (Docs/DECISIONS.md 14.11).
+    runs-on: ubuntu-24.04
     # 10.11: 90 → 150. Полный прогон шёл 74 мин (утро 10.11), 80 мин (день) и вечером не уложился в 90 (запуск
     # 42890387777 снят по времени без вердикта и без лога в «checks») — за день добавились проверки ворота, роликов и обзора
     timeout-minutes: 150
@@ -113,7 +118,22 @@ jobs:
           set -uo pipefail
           code=0
           if [ "$SCRIPTS" = "full" ]; then
-            tools/run_tests.sh > build/check/out.log 2>&1; code=$?
+            # 14.11: run 43516452603 spent 139 min 41 s here with the job's limit at 150 — ten minutes more and the job would
+            # have been cut with no log in «checks» and nothing to say where it stood (as 42890387777 on 10.11). Two things:
+            #  - every five minutes this step's own log gets the time and the last line of the tests' log — a timeline of
+            #    the sets (`gh api …/actions/jobs/<id>/logs`), to see which of them a slow run spent its time on;
+            #  - the tests are stopped after 135 minutes, before the job's limit: the log is still published, and the
+            #    guard below marks the run as failed, with the last lines showing the set it stood at.
+            ( while sleep 300; do
+                echo "[timeline $(date -u +%H:%M:%S)] $(grep -c '' build/logs/tests.log 2>/dev/null || true) lines · $(tail -n 1 build/logs/tests.log 2>/dev/null | cut -c1-160)"
+              done ) 2>/dev/null &   # 2>: no «Terminated» line in the log when the loop is stopped below
+            beat=$!
+            timeout 8100 tools/run_tests.sh > build/check/out.log 2>&1; code=$?
+            pkill -P "$beat" 2>/dev/null || true   # the waiting `sleep` — the loop ends with it
+            kill "$beat" 2>/dev/null || true
+            if [ "$code" -eq 124 ]; then
+              echo "FAIL  tools/run_tests.sh was stopped after 135 minutes — the lines above show the set it stood at" | tee -a build/check/out.log
+            fi
             cp build/logs/tests.log build/check/tests.log 2>/dev/null || true
             # 12.11: a run that stopped half-way (11.11, 12.11: a failing check ended the script, ten sets never ran) says so
             if ! grep -q "^\[tests\] overall exit code:" build/check/out.log; then

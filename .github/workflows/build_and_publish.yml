@@ -37,7 +37,9 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # 14.11: ubuntu-latest → ubuntu-24.04 — the image of every build so far (the exe of 11.11, run 43028867158); «latest»
+    # began to give ubuntu-26.04 on 13.11 (godot_check.yml, Docs/DECISIONS.md 14.11), no build was ever made on it.
+    runs-on: ubuntu-24.04
     # 120: с жителями v2 (атласы ~1,2 ГБ) импорт и тесты дольше 40 минут — сборка 40231228355 оборвалась по времени на тестах.
     timeout-minutes: 120
     # ревью 01.11 (В-10): the site goes out only when the smoke run of the built wasm passed (deploy below)
