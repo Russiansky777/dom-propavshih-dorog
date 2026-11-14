@@ -1,0 +1,43 @@
+{
+  "_comment": "Переправа для ролика v3 (Директор 14.11, 19:56: «Да нужен фал, делай и покажи именно тот кусок»; 13.11, 22:51: «по поводу фал — ну можем попробовать сделать, если это сделает лучше»). Кадр 0:24–0:27 ролика: вид с носа лодки вдоль каната в сумерках (комната R2, вечерний рисунок + канат с кольцом, без подписей и подсказки игры). Два дубля с разными описаниями движения — выбрать лучший глазами. Kling 3.0 Pro image-to-video, 5 с, без звука: $0,112 за секунду (https://www.fal.ai/models/fal-ai/kling-video/v3/pro/image-to-video, смотрено 14.11) → $0,56 за дубль, $1,12 за запуск. В игру ролик не идёт — только в трейлер.",
+  "trial": "crossing_1",
+  "image_max": 0,
+  "jpeg_q": 95,
+  "attempts": 1,
+  "frames": [
+    {
+      "id": "R2_crossing_a",
+      "layers": [
+        "game/assets/rooms/R2/bg.png",
+        "game/assets/rooms/R2/fg_rope.png"
+      ],
+      "size": [
+        1920,
+        1080
+      ],
+      "prompt": "First-person view from the bow of a wooden rowboat, the camera is fixed to the boat. The boat glides steadily forward across dark evening water, pulled along the taut rope; ripples and small waves stream past the bow toward the viewer, the rope slides through the iron ring. Low mist drifts over the water, light snow falls. The misty far shore slowly comes closer. Painterly look unchanged, no new objects, no people, no text."
+    },
+    {
+      "id": "R2_crossing_b",
+      "layers": [
+        "game/assets/rooms/R2/bg.png",
+        "game/assets/rooms/R2/fg_rope.png"
+      ],
+      "size": [
+        1920,
+        1080
+      ],
+      "prompt": "View from inside a wooden rowboat looking over its bow. The boat moves forward at a calm, clearly visible pace; the water flows past both sides of the bow, the bow rocks gently. The fog ahead thins and the far shore with warm lit windows grows nearer. The rope stays taut and straight, running through the iron ring on the right side. Snow falls softly. The boat and the rope keep their shape. Painterly look unchanged, no new objects, no people, no text."
+    }
+  ],
+  "models": [
+    {
+      "id": "fal-ai/kling-video/v3/pro/image-to-video",
+      "image_key": "start_image_url",
+      "args": {
+        "duration": "5",
+        "generate_audio": false
+      }
+    }
+  ]
+}

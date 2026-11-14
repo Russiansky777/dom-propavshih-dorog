@@ -12,6 +12,13 @@
 ошибка) + last_run.log. Ключ в журнал не попадает.
 
   python3 tools/video_trial.py --request pipeline/requests/video_hug_1.json [--out assets/incoming/video]
+
+Кадр можно собрать из слоёв игры вместо готовой картинки (14.11, переправа для ролика: рисунок лодки + канат):
+  {"id": "R2_crossing", "layers": ["game/assets/rooms/R2/bg.png", "game/assets/rooms/R2/fg_rope.png"],
+   "size": [1920, 1080], "prompt": "..."}
+— слои одного размера кладутся друг на друга по порядку, итог приводится к `size`.
+`--images-only <каталог>` — только сохранить стартовые картинки запроса (PNG), без ключа и без заказа: посмотреть
+глазами то, что уйдёт в модель.
 """
 import argparse
 import json
@@ -49,11 +56,41 @@ def find_video_url(res) -> str:
     return ""
 
 
+def start_image(fr):
+    """The frame's start picture: `image` as it is, or `layers` (same size, alpha over) scaled to `size`."""
+    from PIL import Image
+    if fr.get("layers"):
+        ims = [Image.open(p).convert("RGBA") for p in fr["layers"]]
+        if any(i.size != ims[0].size for i in ims):
+            raise ValueError("%s: layers differ in size: %s" % (fr["id"], [i.size for i in ims]))
+        im = ims[0]
+        for top in ims[1:]:
+            im = Image.alpha_composite(im, top)
+        im = im.convert("RGB")
+    else:
+        im = Image.open(fr["image"]).convert("RGB")
+    if fr.get("size"):
+        w, h = (int(v) for v in fr["size"])
+        if im.size != (w, h):
+            im = im.resize((w, h), Image.LANCZOS)
+    return im
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--request", required=True)
     ap.add_argument("--out", default="assets/incoming/video")
+    ap.add_argument("--images-only", metavar="DIR", help="save the start pictures there and stop (no key, no order)")
     a = ap.parse_args()
+    if a.images_only:
+        req = json.load(open(a.request, encoding="utf-8"))
+        os.makedirs(a.images_only, exist_ok=True)
+        for fr in req["frames"]:
+            im = start_image(fr)
+            dst = os.path.join(a.images_only, fr["id"] + ".png")
+            im.save(dst)
+            print(f"{dst}: {im.width}x{im.height}")
+        return 0
     if not os.environ.get("FAL_KEY"):
         print("нет FAL_KEY (секрет FAL_API)", file=sys.stderr)
         return 2
@@ -73,12 +110,12 @@ def main() -> int:
     # все кадры разом (Директор 09.11, 17:49 — 6 клипов по ~4,5 мин подряд были бы полчаса): время прогона — самый
     # медленный клип, не сумма; отчёт пишется под замком
     def frame_job(fr):
-        print(f"== кадр {fr['id']}: {fr['image']}", flush=True)
+        print(f"== кадр {fr['id']}: {fr.get('image') or ' + '.join(fr['layers'])}", flush=True)
         # картинка идёт прямо в запросе (data URI, JPEG до 1280 px): загрузка в хранилище fal отвечала 403 на
         # токен хранилища (run 42524225322) — ключу она не нужна
         from PIL import Image
         import base64, io
-        im = Image.open(fr["image"]).convert("RGB")
+        im = start_image(fr)
         # Director 09.11, 12:40 («почему мы делали 1280… разве у нас игра в 1280?»): request `image_max` (px of the long
         # side; 0 — the picture as it is) and `jpeg_q`; old requests keep 1280 / 92
         cap = int(req.get("image_max", 1280))
