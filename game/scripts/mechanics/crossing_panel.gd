@@ -12,6 +12,14 @@ extends MechanicPanel
 ## Coordinates: canvas px of the 1672×941 paintings (shown full screen ×1920/1672).
 ## `auto` (T9, R51 — Director 24.10: a repeated crossing is short): Pelageya ferries — the pulls run by themselves,
 ## and a click, a drag or Space skips to the shore. The first crossing (M18p) stays by hand.
+## `film` (Director 14.11, 21:08 «а сделать в игре так, как на видео, мы можем?»; 21:15 «можно на повторные, но он с
+## резким началом и концом ведь, тоже надо учитывать»): an `auto` crossing may show the same view as a film —
+## {"video": "res://….ogv", "in_s": 0.6} — the painting brought to life (fal, the take of the trailer). It starts from
+## the painting itself: the film's first picture is the painted view, and it comes in over `in_s` — no jump at the
+## start; the painted rope and ring give way to the film's own, the boat's bob stops (the film rocks by itself), the
+## game's fog and snow stay over it (the far bank comes out of the fog as in the painted crossing). The end is the game's own: the black of the `crossed` event comes down over the film
+## still running (tools/validate_films.py: the film is long enough for the crossing and its black). No film (no
+## picture from the decoder, the file gone) — the crossing is the painted one, as before. The crossing by hand has none.
 
 ## (uv_rect: the crop's place in the whole painting — an AtlasTexture's UV runs over the whole picture)
 const BAND_SHADER := "shader_type canvas_item;\nuniform float feather = 0.28;\nuniform vec4 uv_rect = vec4(0.0, 0.0, 1.0, 1.0);\nvoid fragment() {\n\tvec4 c = texture(TEXTURE, UV);\n\tvec2 q = (UV - uv_rect.xy) / uv_rect.zw;\n\tfloat a = smoothstep(0.0, feather, q.y) * smoothstep(0.0, feather, 1.0 - q.y);\n\tCOLOR = vec4(c.rgb, c.a * a) * COLOR;\n}\n"
@@ -108,6 +116,12 @@ var arrival: TextureRect = null
 var ring_back: TextureRect = null   # партия 17: the ring's arc behind the rope (data art.ring_back)
 var snow: SnowField = null
 var hint: Label = null
+var film: VideoStreamPlayer = null   # 14.11: a repeated crossing as a film of the same view (data `film`)
+var film_alpha: float = 0.0
+var _film_t: float = 0.0             # since the film's first picture
+var _film_hold: TextureRect = null   # the film's last picture, should it end before the black has come down
+## tests (self-check): false — a crossing with `film` in its data is built without it
+static var films_enabled := true
 var pulls_total: int = 10
 var pulls: int = 0               # finished pulls
 var pulling: bool = false
@@ -176,6 +190,7 @@ func build() -> void:
 		var ptex: Texture2D = (pier.texture as AtlasTexture).atlas if pier.texture is AtlasTexture else null
 		fm.set_shader_parameter("uv_rect", _uv_rect(pr, ptex.get_size() if ptex != null else Vector2(1672, 941)))
 		pier.material = fm
+	_build_film()
 	# Fog over the river between us and the far bank.
 	fog = ColorRect.new()
 	fog.name = "Fog"
@@ -253,6 +268,44 @@ func build() -> void:
 	hint = label(text("hint"), v2(spec.get("hint_pos", [560, 980])), 800, &"CloseupLabel")
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_apply_view()
+
+
+## The film of an `auto` crossing: over the painting and the far pier; under the game's fog (it thins as the boat
+## comes on, as over the painting — the far bank comes out of it), the snow, the rope and the ring.
+func _build_film() -> void:
+	var fd: Dictionary = spec.get("film", {})
+	var path := String(fd.get("video", ""))
+	if not films_enabled or not bool(spec.get("auto", false)) or path == "" or not ResourceLoader.exists(path):
+		return
+	film = VideoStreamPlayer.new()
+	film.name = "Film"
+	film.expand = true
+	film.size = Vector2(1920, 1080)
+	film.volume_db = -80.0
+	film.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	film.stream = load(path)
+	film.modulate.a = 0.0
+	film.finished.connect(_on_film_finished)
+	stage.add_child(film)
+	film.play()
+
+
+## The film has run out (a slow machine, a long hold): its last picture stays — the painted view under it stands at
+## the far end of the crossing by now and would flash through.
+func _on_film_finished() -> void:
+	var tex := film.get_video_texture() if film != null else null
+	var img := tex.get_image() if tex != null else null
+	if img == null or img.is_empty():
+		return
+	_film_hold = TextureRect.new()
+	_film_hold.name = "FilmHold"
+	_film_hold.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_film_hold.stretch_mode = TextureRect.STRETCH_SCALE
+	_film_hold.size = film.size
+	_film_hold.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_film_hold.texture = ImageTexture.create_from_image(img)
+	_film_hold.modulate.a = film_alpha
+	film.add_sibling(_film_hold)
 
 
 static func _uv_rect(r: Array, tex: Vector2) -> Vector4:
@@ -336,11 +389,25 @@ func tick(delta: float) -> void:
 		water_mat.set_shader_parameter("flow", water_flow)
 		water_mat.set_shader_parameter("t", clock)
 	rope_mat.set_shader_parameter("phase", rope_phase)
-	# The boat: a slow bob on the water, a surge and a dip of the bow with each pull.
+	# The film comes in over the painting once it has a picture; the painted rope and ring give way to its own.
+	var painted := 1.0
+	if film != null:
+		if _film_t > 0.0 or film.stream_position > 0.0:
+			_film_t += delta
+		var u := clampf(_film_t / maxf(float(spec.get("film", {}).get("in_s", 0.6)), 0.001), 0.0, 1.0)
+		film_alpha = u * u * (3.0 - 2.0 * u)
+		film.modulate.a = film_alpha
+		if _film_hold != null:
+			_film_hold.modulate.a = film_alpha
+		painted = 1.0 - film_alpha
+		for n in [rope, ring, ring_back]:
+			if n != null:
+				(n as CanvasItem).modulate.a = painted
+	# The boat: a slow bob on the water, a surge and a dip of the bow with each pull (the film rocks by itself).
 	_jolt = maxf(_jolt - delta * 2.2, 0.0)
 	var surge := sin(clampf(pull_t / float(spec.get("pull_s", 0.9)), 0.0, 1.0) * PI) if pulling else 0.0
-	stage.position = Vector2(0, sin(clock * 0.9) * 3.0 + surge * 5.0)
-	stage.rotation = sin(clock * 0.7) * 0.003
+	stage.position = Vector2(0, sin(clock * 0.9) * 3.0 + surge * 5.0) * painted
+	stage.rotation = sin(clock * 0.7) * 0.003 * painted
 	ring.rotation_degrees = sin(_jolt * 30.0) * 3.5 * _jolt
 	ring.position = v2(spec.get("ring_box", [1105, 590, 110, 110])) * k + Vector2(-_jolt * 4.0, 0)
 	if ring_back != null:
@@ -417,6 +484,9 @@ func probe() -> Dictionary:
 		"band_scale": band.scale.x, "fog": float(fog_mat.get_shader_parameter("density")), "snow": snow.ratio, "water_flow": water_flow,
 		"water": water_mat != null,
 		"pier_w": pier.size.x if pier != null else 0.0, "arrival": arrival.modulate.a, "crossed": crossed_sent,
+		"film": film != null, "film_alpha": film_alpha, "film_playing": film != null and film.is_playing(),
+		"film_pos": film.stream_position if film != null else 0.0, "film_held": _film_hold != null,
+		"rope_alpha": rope.modulate.a, "stage_y": stage.position.y,
 		"rope": {"x": _ring.x + 140.0, "y": _ring.y + 120.0}, "center": {"x": 960.0, "y": 640.0}}
 
 

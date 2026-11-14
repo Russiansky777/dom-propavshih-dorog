@@ -173,6 +173,7 @@ run_3d test_motion_smooth  # плавность живых фигур (Дире�
 # loop's seam, the 2-second exit fade. Video decodes only with a display — under xvfb (CI, here); without it skipped.
 if command -v xvfb-run >/dev/null; then
   xvfb-run -a -s "-screen 0 1920x1080x24" "$GODOT" --path "$GAME_DIR" --display-driver x11 --rendering-driver opengl3 --resolution 1920x1080 --audio-driver Dummy -s res://tests/test_frame_video.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
+  xvfb-run -a -s "-screen 0 1920x1080x24" "$GODOT" --path "$GAME_DIR" --display-driver x11 --rendering-driver opengl3 --resolution 1920x1080 --audio-driver Dummy -s res://tests/test_crossing_film.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
   # 09.11 Steam Deck: the pad drives the mouse (PadInput) — stick, buttons, hints, vibration, settings
   xvfb-run -a -s "-screen 0 1920x1080x24" "$GODOT" --path "$GAME_DIR" --display-driver x11 --rendering-driver opengl3 --resolution 1920x1080 --fixed-fps 60 --audio-driver Dummy -s res://tests/test_gamepad.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
   # 09.11 (Director 11:34–13:36): things in hands and turns as played — Tamara's key from hand to hand, Pelageya's line
@@ -189,6 +190,8 @@ fi
 # без звука; самопроверка: ролик с ключевым кадром каждые 12 кадров ловится
 if command -v ffmpeg >/dev/null && command -v ffprobe >/dev/null; then
   python3 -I "$ROOT/tools/validate_video_loops.py" --self-check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
+  # 14.11: a mechanic shown as a film (the repeated crossing) — starts from the painting, long enough for its end
+  python3 -I "$ROOT/tools/validate_films.py" --self-check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
 else
   skipped "validate_video_loops --self-check" "ffmpeg/ffprobe"
 fi
