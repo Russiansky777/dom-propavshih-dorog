@@ -38,7 +38,22 @@ def films() -> list[tuple[str, dict]]:
         if isinstance(x, dict):
             if isinstance(x.get("film"), dict) and x["film"].get("video"):
                 out.append((where, x))
+            # the day's view of the same mechanic (`day` {unless, …overrides}): its film against the day's painting,
+            # with the mechanic's own numbers (pulls, hold, the event's black)
+            day = x.get("day")
+            if "type" in x and isinstance(day, dict) and isinstance(day.get("film"), dict) and day["film"].get("video"):
+                merged = json.loads(json.dumps(x))
+                for k, v in day.items():
+                    if k in ("if", "unless") or k.startswith("_"):
+                        continue
+                    if isinstance(v, dict) and isinstance(merged.get(k), dict):
+                        merged[k].update(v)
+                    else:
+                        merged[k] = v
+                out.append((where + "/day", merged))
             for k, v in x.items():
+                if k == "day" and "type" in x:
+                    continue
                 walk(v, where + "/" + str(k))
         elif isinstance(x, list):
             for i, v in enumerate(x):

@@ -116,6 +116,7 @@ var arrival: TextureRect = null
 var ring_back: TextureRect = null   # партия 17: the ring's arc behind the rope (data art.ring_back)
 var snow: SnowField = null
 var hint: Label = null
+var is_day: bool = false             # 14.11: the day's painting and numbers are in use (data `day`)
 var film: VideoStreamPlayer = null   # 14.11: a repeated crossing as a film of the same view (data `film`)
 var film_alpha: float = 0.0
 var _film_t: float = 0.0             # since the film's first picture
@@ -139,7 +140,36 @@ var _ring: Vector2 = Vector2.ZERO
 var _jolt: float = 0.0
 
 
+## 14.11 (found while the film was put in): by day — days three and four — the crossing showed the evening painting
+## between two rooms in daylight (the room R2 has its day picture, the mechanic had none). `day` {unless: [flags],
+## …overrides} — the same rule as the room's day layer (none of the `unless` flags set): the keys beside it replace the
+## spec's (dictionaries are merged, `null` removes a key — `"film": null`: no film until there is one of the day view).
+func _apply_day() -> void:
+	var dv: Dictionary = spec.get("day", {})
+	if dv.is_empty():
+		return
+	for f in dv.get("unless", []):
+		if flag(String(f)):
+			return
+	for f in dv.get("if", []):
+		if not flag(String(f)):
+			return
+	is_day = true
+	for key in dv.keys():
+		if key in ["if", "unless"] or String(key).begins_with("_"):
+			continue
+		if dv[key] == null:
+			spec.erase(key)
+		elif dv[key] is Dictionary and spec.get(key) is Dictionary:
+			var merged: Dictionary = (spec[key] as Dictionary).duplicate(true)
+			merged.merge(dv[key] as Dictionary, true)
+			spec[key] = merged
+		else:
+			spec[key] = dv[key]
+
+
 func build() -> void:
+	_apply_day()
 	k = 1920.0 / 1672.0
 	pulls_total = maxi(int(spec.get("pulls", 10)), 1)
 	var art: Dictionary = spec.get("art", {})
@@ -484,6 +514,7 @@ func probe() -> Dictionary:
 		"band_scale": band.scale.x, "fog": float(fog_mat.get_shader_parameter("density")), "snow": snow.ratio, "water_flow": water_flow,
 		"water": water_mat != null,
 		"pier_w": pier.size.x if pier != null else 0.0, "arrival": arrival.modulate.a, "crossed": crossed_sent,
+		"day": is_day, "bg": String(spec.get("art", {}).get("bg", "")),
 		"film": film != null, "film_alpha": film_alpha, "film_playing": film != null and film.is_playing(),
 		"film_pos": film.stream_position if film != null else 0.0, "film_held": _film_hold != null,
 		"rope_alpha": rope.modulate.a, "stage_y": stage.position.y,

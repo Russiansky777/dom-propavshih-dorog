@@ -192,6 +192,25 @@
      "arrival": "res://assets/rooms/R3/bg.png"
     },
     "auto": true,
+    "day": {
+     "unless": [
+      "tod_day1",
+      "tod_day2",
+      "tod_d3_evening"
+     ],
+     "art": {
+      "bg": "res://assets/rooms/R2/day.png"
+     },
+     "pier": {
+      "image": "res://assets/rooms/R3/day.png"
+     },
+     "fog": [
+      0.12,
+      0.04
+     ],
+     "film": null,
+     "_k1411": "14.11: днём (дни 3–4) переправа шла вечерней картиной между двумя дневными комнатами. Условие — как у слоя day комнаты R2; картина лодки и дальняя опора — дневные, туман сошёл (01.11-44); ролика дневного вида пока нет — рисованная переправа с живой водой"
+    },
     "film": {
      "video": "res://assets/closeups/crossing_live.ogv",
      "in_s": 0.6,
@@ -393,6 +412,25 @@
      "arrival": "res://assets/rooms/R3/bg.png"
     },
     "auto": true,
+    "day": {
+     "unless": [
+      "tod_day1",
+      "tod_day2",
+      "tod_d3_evening"
+     ],
+     "art": {
+      "bg": "res://assets/rooms/R2/day.png"
+     },
+     "pier": {
+      "image": "res://assets/rooms/R3/day.png"
+     },
+     "fog": [
+      0.12,
+      0.04
+     ],
+     "film": null,
+     "_k1411": "14.11: днём (дни 3–4) переправа шла вечерней картиной между двумя дневными комнатами. Условие — как у слоя day комнаты R2; картина лодки и дальняя опора — дневные, туман сошёл (01.11-44); ролика дневного вида пока нет — рисованная переправа с живой водой"
+    },
     "film": {
      "video": "res://assets/closeups/crossing_live.ogv",
      "in_s": 0.6,

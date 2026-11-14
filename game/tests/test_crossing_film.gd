@@ -9,6 +9,10 @@ extends SceneTree
 ##   CF-3 it is alive: the picture half a second on is another one (the water runs), and it is not the painted view;
 ##   CF-4 the end: «crossed» comes while the film still runs, with time left for the black of the event (0.7 s);
 ##        a click skips to the shore as before;
+##   CF-6 (found 14.11 while the film was put in) by day — no time-of-day flag of the evenings set, the rule of the
+##        room's own day layer — the crossing shows the day painting of the boat (R2/day.png), the far pier of the day
+##        where there is one, thin fog, and no film (there is none of the day view yet); in the evening — the evening
+##        painting and the film. Before: the evening view between two rooms in daylight on days three and four.
 ##   CF-5 self-check — with the films switched off (the test's switch) the same crossing is the painted one: no film,
 ##        the rope drawn, and the picture is the painting's own; the crossing by hand gets no film even if its data named one.
 ## Video decodes only with a display:
@@ -56,6 +60,7 @@ func _run() -> void:
 	await _test("CF-2 CF-3 the film comes in from the painting, smoothly, and is alive", _test_start)
 	await _test("CF-4 «crossed» comes over the running film; a click skips to the shore", _test_end)
 	await _test("CF-5 self-check: films off — the painted crossing; by hand — never a film", _test_self_check)
+	await _test("CF-6 by day the crossing is the day's painting (no evening view between two day rooms); self-check — in the evening it is the evening's", _test_day)
 	var failed := _results.count(false)
 	print("==== crossing film: %d tests, %d passed, %d failed ====" % [_results.size(), _results.size() - failed, failed])
 	quit(1 if failed > 0 else 0)
@@ -79,6 +84,25 @@ func _crossings() -> Array:
 	for s in sd.scenes_list() if sd.has_method("scenes_list") else []:
 		pass
 	return out
+
+
+## The story as far as a start point (the main scenes done in order — the time of day follows them, it is not a
+## flag one can set: game/scripts/core/time_of_day.gd).
+func _story_to(point_id: String) -> void:
+	gs.reset()
+	var upto := String(sd.start_points.get(point_id, {}).get("done_through", ""))
+	for id in sd.scene_order:
+		if String(sd.scene(id).get("type", "")) != "main":
+			continue
+		gs.set_flag("started_" + String(id), true)
+		gs.set_flag("done_" + String(id), true)
+		if String(id) == upto:
+			break
+
+
+## The film is the evening view's: the tests of the film cross on the evening of day two (the lanterns' start point).
+func _evening() -> void:
+	_story_to("lights")
 
 
 func _auto_spec() -> Dictionary:
@@ -144,6 +168,14 @@ func _test_data() -> void:
 			autos += 1
 			var path := String(spec.get("film", {}).get("video", ""))
 			_check(path != "" and ResourceLoader.exists(path), "%s: the repeated crossing names no film that exists (%s)" % [c["where"], path])
+			var day: Dictionary = spec.get("day", {})
+			var day_bg := String(day.get("art", {}).get("bg", ""))
+			_check(day_bg.ends_with("R2/day.png") and ResourceLoader.exists(day_bg), "%s: no day painting for the crossing by day (%s)" % [c["where"], day_bg])
+			var room_day: Array = []
+			for l in sd.rooms["R2"].get("layers", []):
+				if String(l.get("id", "")) == "day":
+					room_day = l.get("unless", [])
+			_check(day.get("unless", []) == room_day and not room_day.is_empty(), "%s: the day view follows the room's day layer (%s against %s)" % [c["where"], str(day.get("unless")), str(room_day)])
 		else:
 			_check(not spec.has("film"), "%s: a crossing by hand names a film" % c["where"])
 	_check(autos >= 4, "repeated crossings in the rooms: %d (R2 two, R3, Z3)" % autos)
@@ -155,7 +187,7 @@ func _test_data() -> void:
 
 
 func _test_start() -> void:
-	gs.reset()
+	_evening()
 	# the painted view of the same crossing, for comparison: films off, the first picture
 	var script: Script = load("res://scripts/mechanics/crossing_panel.gd")
 	script.set("films_enabled", false)
@@ -213,7 +245,7 @@ func _test_start() -> void:
 
 
 func _test_end() -> void:
-	gs.reset()
+	_evening()
 	var spec := _auto_spec()
 	var o: Dictionary = await _open(spec)
 	var panel: Node = o["panel"]
@@ -239,7 +271,7 @@ func _test_end() -> void:
 
 
 func _test_self_check() -> void:
-	gs.reset()
+	_evening()
 	var script: Script = load("res://scripts/mechanics/crossing_panel.gd")
 	script.set("films_enabled", false)
 	var o: Dictionary = await _open(_auto_spec())
@@ -258,4 +290,28 @@ func _test_self_check() -> void:
 	o = await _open(hand)
 	await _frames(10)
 	_check(not bool((o["panel"] as Node).call("probe")["film"]), "the crossing by hand takes no film")
+	await _close(o)
+
+
+func _test_day() -> void:
+	# day three by day (the free day's start point): none of the flags the room's day layer names
+	_story_to("freewalk")
+	var spec := _auto_spec()
+	_check(not (spec.get("day", {}).get("unless", []) as Array).any(func(fl): return gs.has_flag(String(fl))), "the free day of day three is a day for the room's day layer")
+	var o: Dictionary = await _open(spec)
+	var pr: Dictionary = (o["panel"] as Node).call("probe")
+	_check(bool(pr["day"]) and String(pr["bg"]).ends_with("R2/day.png"), "by day the boat's view is the day painting (%s)" % String(pr["bg"]))
+	_check(not bool(pr["film"]), "by day there is no film of the evening view")
+	_check(float(pr["fog"]) < 0.2, "by day the fog is thin (%.2f)" % float(pr["fog"]))
+	await _frames(3)
+	var day_pic := await _grab()
+	await _close(o)
+	_evening()
+	_check((spec.get("day", {}).get("unless", []) as Array).any(func(fl): return gs.has_flag(String(fl))), "the evening of day two is not a day for it")
+	o = await _open(spec)
+	pr = (o["panel"] as Node).call("probe")
+	_check(not bool(pr["day"]) and String(pr["bg"]).ends_with("R2/bg.png") and bool(pr["film"]), "self-check: in the evening — the evening painting and the film (%s, film %s)" % [String(pr["bg"]), pr["film"]])
+	await _frames(3)
+	var eve_pic := await _grab()
+	_check(_diff(day_pic, eve_pic, 0.0, 0.4) > 20.0, "the day's sky is not the evening's (the upper picture differs by %.1f of 255)" % _diff(day_pic, eve_pic, 0.0, 0.4))
 	await _close(o)

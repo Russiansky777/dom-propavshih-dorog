@@ -1,0 +1,31 @@
+{
+  "_comment": "Дневная переправа для игры (и, если понадобится, для ролика): вид с носа лодки днём — R2/day.png + канат, как комната R2 днём. НЕ ЗАПУСКАТЬ без «да» Директора (вопрос задан 14.11, 21:57): два дубля Kling 3.0 Pro по 5 с = $1,12 (цена — https://www.fal.ai/models/fal-ai/kling-video/v3/pro/image-to-video, смотрено 14.11). Описание — как у выбранного вечернего дубля b (канат прямой, лодка держит форму), без снега и тумана: ясный зимний день.",
+  "trial": "crossing_day_1",
+  "image_max": 0,
+  "jpeg_q": 95,
+  "attempts": 2,
+  "frames": [
+    {
+      "id": "R2_crossing_day",
+      "layers": [
+        "game/assets/rooms/R2/day.png",
+        "game/assets/rooms/R2/fg_rope.png"
+      ],
+      "size": [
+        1920,
+        1080
+      ],
+      "prompt": "View from inside a wooden rowboat looking over its bow on a clear winter day. The boat moves forward at a calm, clearly visible pace; the water flows past both sides of the bow, the bow rocks gently. The snowy far shores slowly grow nearer. The rope stays taut and straight, running through the iron ring on the right side. The boat and the rope keep their shape. Bright daylight, no fog, no snowfall. Painterly look unchanged, no new objects, no people, no text."
+    }
+  ],
+  "models": [
+    {
+      "id": "fal-ai/kling-video/v3/pro/image-to-video",
+      "image_key": "start_image_url",
+      "args": {
+        "duration": "5",
+        "generate_audio": false
+      }
+    }
+  ]
+}
