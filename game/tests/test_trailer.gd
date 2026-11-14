@@ -78,7 +78,13 @@ func _t_plans() -> void:
 			if a.has("file"):
 				paths.append(a["file"])
 		for s in plan.get("shots", []):
-			_check(String(s.get("kind", "")) in ["art", "room", "title_card", "phrase", "daycard"], "%s/%s: unknown kind" % [p, s.get("id")])
+			_check(String(s.get("kind", "")) in ["art", "room", "title_card", "phrase", "daycard", "clip"], "%s/%s: unknown kind" % [p, s.get("id")])
+			if s.get("kind") == "clip":
+				# 14.11: a shot from a ready video (the crossing by fal) — the file is in the repository, outside the game;
+				# its length against the shot is checked by tools/trailer_clip.py --check (run_tests.sh)
+				var clip_path := ProjectSettings.globalize_path("res://").path_join("..").path_join(String(s.get("clip", {}).get("file", ""))).simplify_path()
+				_check(String(s.get("clip", {}).get("file", "")) != "" and FileAccess.file_exists(clip_path), "%s/%s: no clip file %s" % [p, s.get("id"), clip_path])
+				_check(not s.has("preroll_s"), "%s/%s: a clip shot has no preroll" % [p, s.get("id")])
 			_check(float(s.get("duration", 0)) > 0.0, "%s/%s: no duration" % [p, s.get("id")])
 			for k in ["art", "fx_mask", "depth_tex"]:
 				if s.has(k):

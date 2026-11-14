@@ -12,6 +12,9 @@ extends Node
 ##   room       — a real room of the game in a story state (`state` as a start point): Agata walks with the game's
 ##                own walk, the camera eases its zoom and follows her; occluders move faster than the room.
 ##   title_card — the game's name in the menu's gold on black with a glint across the letters, the tagline under it.
+##   clip       — a ready video instead of the engine's picture (14.11: the crossing brought to life by fal): the
+##                frames come from tools/trailer_clip.py (tools/trailer_render.sh calls it, not Godot); here the
+##                shot is an empty stage, so that a plan with one loads and runs in the tests.
 ## The shot runs for its duration plus a tail (the next shot's transition) plus `preroll_s` at the start (cut off in
 ## the edit: the room's light and sound settle). After the last frame the tree quits — Movie Maker closes the files.
 
@@ -116,6 +119,8 @@ func build() -> void:
 			_build_phrase()
 		"daycard":
 			_build_daycard()
+		"clip":
+			pass   # nothing to film: tools/trailer_clip.py lays the frames out of the video file
 		_:
 			push_error("Trailer: unknown shot kind '%s'" % shot.get("kind", ""))
 	_build_post()

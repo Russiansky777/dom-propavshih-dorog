@@ -1,0 +1,115 @@
+{
+  "_comment": "Проверочный план кадра `clip` (14.11): кадр из готового видео вместо съёмки движком — переправа, оживлённая fal (дубль b, запрос pipeline/requests/video_crossing_1.json). Для тестов (test_trailer, tools/trailer_clip.py --check) и пробного рендера: tools/trailer_render.sh data/trailer/test_clip.json. В ролик кадр встаёт отдельной правкой trailer_v3 после ответа Директора.",
+  "id": "test_clip",
+  "fps": 30,
+  "render_size": [
+    1920,
+    1080
+  ],
+  "out_size": [
+    1920,
+    1080
+  ],
+  "handle_s": 0.0,
+  "shots": [
+    {
+      "id": "crossing",
+      "kind": "clip",
+      "duration": 2.8,
+      "transition_in": {
+        "kind": "cut",
+        "duration": 0.0
+      },
+      "clip": {
+        "file": "assets/incoming/video/crossing_1/R2_crossing_b__fal-ai-kling-video-v3-pro-image-to-video_1.mp4",
+        "first_frame": 6,
+        "play_fps": 30,
+        "_note": "дубль 24 к/с идёт по кадру на кадр при 30 к/с — в 1,25 раза быстрее, без повторов; с 6-го кадра: первые кадры модель стоит на месте"
+      },
+      "grade": {
+        "tint": [
+          1.04,
+          0.98,
+          0.9
+        ],
+        "lift": [
+          0.008,
+          0.004,
+          0.0
+        ]
+      }
+    },
+    {
+      "id": "title",
+      "kind": "title_card",
+      "duration": 1.6,
+      "transition_in": {
+        "kind": "dissolve",
+        "duration": 0.8
+      },
+      "title": "Дом пропавших дорог",
+      "subtitle": "Вещи помнят место, которому служили.",
+      "font": "body",
+      "title_px": 132,
+      "subtitle_px": 48,
+      "title_y": 470,
+      "subtitle_y": 628,
+      "gold": [
+        [
+          0.55,
+          0.36,
+          0.14
+        ],
+        [
+          1.0,
+          0.86,
+          0.6
+        ],
+        [
+          0.78,
+          0.55,
+          0.24
+        ]
+      ],
+      "subtitle_color": [
+        0.86,
+        0.79,
+        0.68
+      ],
+      "line_color": [
+        1.0,
+        0.72,
+        0.36
+      ],
+      "rule_half_px": 330,
+      "rule_y": [
+        372,
+        574
+      ],
+      "title_in": [
+        0.15,
+        0.95
+      ],
+      "subtitle_in": [
+        0.75,
+        1.35
+      ],
+      "glint": [
+        0.7,
+        1.7
+      ],
+      "glint_width": 0.045,
+      "glint_gain": 0.55
+    }
+  ],
+  "audio": {
+    "music": "res://assets/music/02_roads.ogg",
+    "music_start_s": 30.0,
+    "music_fade_in_s": 0.4,
+    "music_fade_out_s": 0.8,
+    "voice": [],
+    "ambience": [],
+    "loudness_lufs": -14.0,
+    "true_peak_db": -1.5
+  }
+}

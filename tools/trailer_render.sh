@@ -5,6 +5,8 @@
 # frames only; SKIP_EXISTING=1 keeps shots already rendered (a shot is done when build/trailer/<id>/<shot>/.done exists).
 # A shot's own `render_size` (phrases on black need no 4K) beats the plan's. Output: build/trailer/<id>.mp4.
 # Needs xvfb, ffmpeg (sudo apt-get install -y xvfb mesa-utils ffmpeg).
+# A shot of kind `clip` (a ready video, e.g. a picture brought to life by fal) is not filmed: tools/trailer_clip.py
+# lays its frames out of the file.
 set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/godot_env.sh"
 
@@ -22,7 +24,7 @@ size = [int(v) for v in sys.argv[2].split("x")] if sys.argv[2] else p.get("rende
 fps = int(sys.argv[3]) if sys.argv[3] else p.get("fps", 60)
 def sz(s):
     return size if sys.argv[2] else (s.get("render_size") or size)
-print(fps, *[f'{s["id"]}:{sz(s)[0]}x{sz(s)[1]}' for s in p["shots"]])
+print(fps, *[f'{s["id"]}:{s.get("kind", "")}:{sz(s)[0]}x{sz(s)[1]}' for s in p["shots"]])
 PY
 )"
 read -ra ENTRIES <<< "$LIST_JSON"; FPS_USE="${ENTRIES[0]}"; ENTRIES=("${ENTRIES[@]:1}")
@@ -33,6 +35,7 @@ mkdir -p "$OUT" "$BUILD_DIR/logs"
 trap 'rm -f "$GAME_DIR/override.cfg"' EXIT
 for entry in "${ENTRIES[@]}"; do
   shot="${entry%%:*}"; size="${entry##*:}"; W="${size%x*}"; H="${size#*x}"
+  kind="${entry#*:}"; kind="${kind%%:*}"
   if [[ $# -gt 0 ]]; then case " $* " in *" $shot "*) ;; *) continue ;; esac; fi
   if [[ "${SKIP_EXISTING:-}" == 1 && -f "$OUT/$shot/.done" ]]; then echo "[trailer] $shot: kept"; continue; fi
   # Movie Maker records at the window size; the window size override (not --resolution) lifts it above 1920×1080.
@@ -40,6 +43,14 @@ for entry in "${ENTRIES[@]}"; do
   rm -rf "${OUT:?}/$shot"; mkdir -p "$OUT/$shot"
   echo "[trailer] $PLAN/$shot (${W}x${H}, ${FPS_USE} fps)"
   start=$(date +%s)
+  if [[ "$kind" == "clip" ]]; then
+    # 14.11: a shot from a ready video (the crossing by fal) — its frames are laid out of the file, graded as the
+    # engine grades a shot; Godot is not started for it
+    python3 -I "$ROOT/tools/trailer_clip.py" "$PLAN_FILE" "$shot" "$OUT/$shot" --size "${W}x${H}" --fps "$FPS_USE"
+    touch "$OUT/$shot/.done"
+    echo "[trailer] $shot: $(find "$OUT/$shot" -name 'f*.png' | wc -l) frames in $(( $(date +%s) - start )) s"
+    continue
+  fi
   LIBGL_ALWAYS_SOFTWARE=1 xvfb-run -a -s "-screen 0 ${W}x${H}x24" \
     "$GODOT" --path "$GAME_DIR" --rendering-driver opengl3 --disable-vsync \
       --write-movie "$OUT/$shot/f.png" --fixed-fps "$FPS_USE" \
