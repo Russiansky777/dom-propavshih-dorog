@@ -1,0 +1,8 @@
+run 43630040224 2026-11-14T19:06:57Z request: pipeline/requests/video_crossing_1.json
+== кадр R2_crossing_a: game/assets/rooms/R2/bg.png + game/assets/rooms/R2/fg_rope.png
+== кадр R2_crossing_b: game/assets/rooms/R2/bg.png + game/assets/rooms/R2/fg_rope.png
+   картинка 1920x1080, 426 КБ
+   картинка 1920x1080, 426 КБ
+   fal-ai/kling-video/v3/pro/image-to-video #1: OK 157.9 с, 15331 КБ
+   fal-ai/kling-video/v3/pro/image-to-video #1: OK 220.7 с, 15064 КБ
+готово: 2 клипов, 0 ошибок → assets/incoming/video/crossing_1

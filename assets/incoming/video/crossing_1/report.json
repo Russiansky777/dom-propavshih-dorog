@@ -1,0 +1,31 @@
+{
+ "trial": "crossing_1",
+ "runs": [
+  {
+   "frame": "R2_crossing_b",
+   "model": "fal-ai/kling-video/v3/pro/image-to-video",
+   "attempt": 1,
+   "file": "R2_crossing_b__fal-ai-kling-video-v3-pro-image-to-video_1.mp4",
+   "args": {
+    "prompt": "View from inside a wooden rowboat looking over its bow. The boat moves forward at a calm, clearly visible pace; the water flows past both sides of the bow, the bow rocks gently. The fog ahead thins and the far shore with warm lit windows grows nearer. The rope stays taut and straight, running through the iron ring on the right side. Snow falls softly. The boat and the rope keep their shape. Painterly look unchanged, no new objects, no people, no text.",
+    "duration": "5",
+    "generate_audio": false
+   },
+   "seconds": 157.9,
+   "bytes": 15699932
+  },
+  {
+   "frame": "R2_crossing_a",
+   "model": "fal-ai/kling-video/v3/pro/image-to-video",
+   "attempt": 1,
+   "file": "R2_crossing_a__fal-ai-kling-video-v3-pro-image-to-video_1.mp4",
+   "args": {
+    "prompt": "First-person view from the bow of a wooden rowboat, the camera is fixed to the boat. The boat glides steadily forward across dark evening water, pulled along the taut rope; ripples and small waves stream past the bow toward the viewer, the rope slides through the iron ring. Low mist drifts over the water, light snow falls. The misty far shore slowly comes closer. Painterly look unchanged, no new objects, no people, no text.",
+    "duration": "5",
+    "generate_audio": false
+   },
+   "seconds": 220.7,
+   "bytes": 15426248
+  }
+ ]
+}
