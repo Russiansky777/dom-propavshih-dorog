@@ -482,6 +482,16 @@ func _tick_room(u: float, dt: float) -> void:
 			(n as Node2D).position = _occ_base[n] - shift * p
 	for m in _motes:
 		(m as Node2D).queue_redraw()
+	# 15.11 (the mill: Pavel speaks to Agata as she comes up): a villager turned to her keeps turned to her while she
+	# walks — not to the place she started from (full run 43736902120: «pavel is not turned to» her)
+	for g in shot.get("npc_face", []):
+		if g.get("face") is Array:
+			continue
+		var np := RoomManager.current_room.get_node_or_null("npc_" + String(g.get("id", "")))
+		if np != null and np.has_method("face_towards") and (np.get("last_face_target") as Vector2).distance_to(_player.global_position) > 1.0:
+			np.call("face_towards", _player.global_position)
+			if np.has_method("hold_face"):
+				np.call("hold_face", _player.global_position)
 	_tick_ui()
 
 

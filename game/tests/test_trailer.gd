@@ -151,8 +151,11 @@ func _t_shots() -> void:
 				for g in s.get("npc_face", []):
 					var np: Node = rm.current_room.get_node_or_null("npc_" + String(g.get("id", ""))) if rm.current_room != null else null
 					var want: Vector2 = Vector2(float(g["face"][0]), float(g["face"][1])) if g.get("face") is Array else (rm.player as Node2D).global_position
-					_check(np != null and (np.get("last_face_target") as Vector2).distance_to(want) < 2.0,
-						"%s: %s is not turned to %s" % [s["id"], g.get("id"), str(want)])
+					# 15.11: she may be walking (the mill) — turned to her within a frame's step or two, not to where she began
+					# (her start is 50 px behind by now: the run 43736902120 caught that)
+					var tol := 12.0 if agata_to and not (g.get("face") is Array) else 2.0
+					_check(np != null and (np.get("last_face_target") as Vector2).distance_to(want) < tol,
+						"%s: %s is not turned to %s (turned to %s)" % [s["id"], g.get("id"), str(want), str(np.get("last_face_target") if np != null else "-")])
 				if s.get("agata", {}).has("face") and not agata_to:
 					var fp := Vector2(float(s["agata"]["face"][0]), float(s["agata"]["face"][1]))
 					var pl2: Node2D = rm.player
