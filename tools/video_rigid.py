@@ -128,9 +128,18 @@ class Region:
     def moved(self, warp_full):
         """The painting and the mask moved as the clip moves the region (dst(W·x) = painting(x))."""
         import cv2
-        p = cv2.warpAffine(self.paint, warp_full, (self.w, self.h), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE)
+        p = cv2.warpAffine(self.paint, warp_full, (self.w, self.h), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REFLECT_101)
         m = cv2.warpAffine(self.mask, warp_full, (self.w, self.h), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE)
         inner = cv2.warpAffine(self.inner_full.astype(np.uint8), warp_full, (self.w, self.h), flags=cv2.INTER_NEAREST) > 0
+        # Director 15.11, 23:53 («вот проблема лодки»: stripes of smeared rows by the frame's right edge): the boat runs
+        # out of the frame, and moved left or up the painting has nothing to show in the strip it left by the edge —
+        # the painting's last column was drawn out over it. There the clip's own picture stays (the same boat in the
+        # same place, a strip of a few pixels), the painted boat ends softly before it.
+        have = cv2.warpAffine(np.ones((self.h, self.w), np.float32), warp_full, (self.w, self.h), flags=cv2.INTER_LINEAR,
+                              borderMode=cv2.BORDER_CONSTANT, borderValue=0)
+        have = np.clip((cv2.GaussianBlur(have, (0, 0), 4.0) - 0.5) * 2.0, 0.0, 1.0)
+        m = m * have
+        inner &= have > 0.99
         if self.keep:
             c = self.corridor(warp_full)
             m = m * (1.0 - c)
@@ -265,9 +274,33 @@ def kept(spec: dict, film: str, clip: str, every: int = 4) -> list:
     return out
 
 
+def edge_smear(spec: dict, film: str, every: int = 6, strip: int = 20) -> int:
+    """The most rows of one frame that are drawn out flat along the frame's right edge (the painting's last column
+    smeared over the strip the moved boat left): rows of the region by that edge whose last `strip` pixels do not
+    change."""
+    w, h = probe_size(film)
+    rows = Region(spec, w, h).mask[:, w - 1] > 0.99
+    worst = 0
+    for i, f in enumerate(frames(film, w, h)):
+        if i % every:
+            continue
+        part = f[rows, w - strip:, :].astype(np.int16)
+        flat = np.abs(np.diff(part, axis=1)).max(axis=(1, 2)) <= 2
+        worst = max(worst, int(flat.sum()))
+    return worst
+
+
+SMEAR_ROWS = 12      # flat rows by the edge a living picture may have by chance (a smear is dozens to hundreds)
+
+
 def check(spec: dict) -> int:
     _need()
     bad = 0
+    for film in spec.get("games", []):
+        rows = edge_smear(spec, str(ROOT / film))
+        ok = rows <= SMEAR_ROWS
+        bad += 0 if ok else 1
+        print(("PASS  " if ok else "FAIL  ") + f"{film}: nothing smeared along the frame's right edge — {rows} flat rows at worst (limit {SMEAR_ROWS})")
     for film in spec.get("games", []):
         r = rigidity(spec, str(ROOT / film))
         worst = max(r, key=lambda x: x[1])
@@ -306,6 +339,23 @@ def self_check(spec: dict) -> int:
         ok2 = bad > KEEP_LIMIT and good <= KEEP_LIMIT
         ok = ok and ok2
         print(("PASS  " if ok2 else "FAIL  ") + f"self-check: the rope pasted from the painting (as on 15.11 evening) is off the clip's by {bad:.2f} of 255 (caught: over {KEEP_LIMIT}); kept, {good:.2f}")
+    # the smear of 15.11 night: the picture moved left with its last column drawn out over the strip by the edge
+    import cv2
+    w, h = probe_size(str(cut))
+    smeared = tmp / "smeared.mp4"
+    enc = subprocess.Popen(["ffmpeg", "-nostdin", "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{w}x{h}", "-r", "24",
+                            "-i", "-", "-c:v", "libx264", "-crf", "8", "-preset", "veryfast", "-pix_fmt", "yuv420p", str(smeared)],
+                           stdin=subprocess.PIPE)
+    for i, f in enumerate(frames(str(cut), w, h)):
+        if i >= 12:
+            break
+        enc.stdin.write(np.ascontiguousarray(cv2.warpAffine(f, np.float32([[1, 0, -24], [0, 1, 0]]), (w, h), borderMode=cv2.BORDER_REPLICATE)).tobytes())
+    enc.stdin.close()
+    enc.wait()
+    sm, clean = edge_smear(spec, str(smeared)), edge_smear(spec, str(held))
+    ok3 = sm > SMEAR_ROWS and clean <= SMEAR_ROWS
+    ok = ok and ok3
+    print(("PASS  " if ok3 else "FAIL  ") + f"self-check: a picture drawn out over the strip by the right edge has {sm} flat rows there (caught: over {SMEAR_ROWS}); the held clip, {clean}")
     for p in tmp.iterdir():
         p.unlink()
     tmp.rmdir()

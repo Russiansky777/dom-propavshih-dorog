@@ -151,7 +151,7 @@ func _test_lips() -> void:
 			_check(opened >= during.size() / 5, "%s: %s — the mouth hardly opens (%d of %d frames)" % [s["id"], lid, opened, during.size()])
 			_check(String(r["speaker"]) == "tikhon" or shut >= 1, "%s: %s — the mouth never shuts while the line is said (letters, pauses)" % [s["id"], lid])
 			_check(after.is_empty() or float(after.max()) < 0.05, "%s: %s — the mouth still moves after the line (%.2f)" % [s["id"], lid, float(after.max()) if not after.is_empty() else 0.0])
-	_check(seen >= 4, "speak events in the plan: %d (Agata and Tikhon in the cottage, Pavel at the mill, Nina in the class)" % seen)
+	_check(seen >= 5, "speak events in the plan: %d (Agata and Tikhon in the cottage, Pavel at the mill, Agata and Nina in the class)" % seen)
 
 
 func _test_self_check() -> void:
