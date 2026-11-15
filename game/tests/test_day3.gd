@@ -44,6 +44,8 @@ var frames_seen: Array[String] = []
 
 
 func _initialize() -> void:
+	if OS.get_environment("PLAY_LOG") != "":   # the review's record of what the player is shown (tests/play_tap.gd)
+		root.add_child.call_deferred(load("res://tests/play_tap.gd").new())
 	_run()
 
 
@@ -842,7 +844,8 @@ func _test_walkthrough() -> void:
 	seen.append_array(await _finish())
 	# H17 (Director 24.10): the last deed of the day — Agata says it is late; the day ends at the bed in the attic.
 	_check(gs.has_flag("bedtime_d3_evening"), "H17: all four deeds — Agata said «пора домой, спать» (flag bedtime_d3_evening)")
-	_check(not gs.has_flag("started_M24") and gs.journal_goal == sd.text("@ui.bedtime_d3_goal"), "H17: the evening waits for the bed; the journal says where it is")
+	# 15.11: with Ilya's workshop offered and not begun the goal adds that it waits till morning (test_review_1511 R15-2)
+	_check(not gs.has_flag("started_M24") and gs.journal_goal.begins_with(sd.text("@ui.bedtime_d3_goal")), "H17: the evening waits for the bed; the journal says where it is: %s" % gs.journal_goal)
 	# T6 (Director 24.10): days two and three end in the bed at mum's (O3), no longer in the attic.
 	_check(await _route(["O3"]), "to mum's room for the night")
 	await _use("bed")

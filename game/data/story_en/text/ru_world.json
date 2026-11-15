@@ -24,6 +24,9 @@
   "ui.bedtime_d3_goal": {
    "text": "Today's work is done. Sleep in Mama's parlour, or on the sleeping ledge by Dunya's stove."
   },
+  "ui.bedtime_d3_goal_ilya": {
+   "text": "Ilya's workshop can wait till morning."
+  },
   "ui.time_d1_afternoon": {
    "text": "Day one · afternoon"
   },

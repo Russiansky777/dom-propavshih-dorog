@@ -6,6 +6,7 @@ extends SceneTree
 ## Commands (one argument each):
 ##   wait:S          — S seconds (engine time)
 ##   click:X,Y       — Agata clicks the room point (as the player)
+##   use:ID          — Agata clicks the hotspot ID where it is now
 ##   walkend         — wait until Agata stops walking (≤ 20 s)
 ##   tp:X,Y[,FX,FY]  — put Agata there at once, facing the point FX,FY
 ##   perf            — where a frame's time goes
@@ -116,6 +117,26 @@ func _run() -> void:
 			"click":
 				var p := arg.split(",")
 				rm.player.call("click_at", Vector2(float(p[0]), float(p[1])))
+			"item":
+				# item:ID — pick the thing in the bag (as a click on its slot)
+				sr.select_item(arg)
+				print("item %s selected: %s" % [arg, sr.selected_item])
+			"ui":
+				# ui — what the interface shows: the caption at the pointer, the hint line
+				var gui = root.find_child("GameUi", true, false)
+				if gui != null:
+					var hl: Label = gui.get("hover_label")
+					var hint: Label = gui.get("hint_line")
+					print("ui hover «%s» visible %s at %s; hint «%s»; busy %s; mouse %s" % [hl.text, hl.visible, hl.position, hint.text, sr.is_busy(), root.get_mouse_position()])
+			"use":
+				# use:ID — click the hotspot where it is now (its place may change with its state)
+				var hs: Node2D = rm.current_room.get_node_or_null("Hotspots/" + arg)
+				if hs == null or not hs.visible:
+					print("use %s: no such visible hotspot" % arg)
+				else:
+					var picked = rm.current_room.pick(hs.global_position)
+					print("use %s at %s (picked %s)" % [arg, hs.global_position, String(picked.get("hotspot_id")) if picked != null else "-"])
+					rm.player.call("click_at", hs.global_position)
 			"tp":
 				# tp:X,Y[,FX,FY] — put Agata there at once (no walk), facing the point FX,FY
 				var p := arg.split(",")

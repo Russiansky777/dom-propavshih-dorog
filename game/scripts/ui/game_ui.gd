@@ -136,7 +136,10 @@ func _ready() -> void:
 		if c is Control:
 			(c as Control).theme = UiTheme.get_theme()
 	StoryRunner.beat_changed.connect(_render_dialogue)
-	StoryRunner.item_selection_changed.connect(func(_i): _render_inventory())
+	StoryRunner.item_selection_changed.connect(_on_item_selection)
+	# 15.11 (the review before release): a thing used within the 7 s of its «Выбрано: …» line left that line lying over
+	# the mini-game it had just opened (the clamp over mother's mirror, the brace over the plate, the tar over the sluice)
+	StoryRunner.mechanic_opened.connect(func(_spec): _drop_selection_hint())
 	StoryRunner.item_received.connect(_on_item_received)
 	StoryRunner.loop_transition.connect(_on_loop_transition)
 	StoryRunner.stage_fade.connect(_on_stage_fade)
@@ -961,6 +964,26 @@ func _next_line() -> bool:
 	else:
 		StoryRunner.advance()
 	return true
+
+
+var _sel_hint := ""   # the «Выбрано: …» line of the thing picked now ("" — none)
+
+
+func _on_item_selection(item: String) -> void:
+	_render_inventory()
+	if item == "":
+		_drop_selection_hint()
+	else:
+		_sel_hint = StoryData.text("@ui.item_selected", {"item": StoryData.item_name(item)})
+
+
+## The line «Выбрано: …» goes with the choice it speaks of: the thing put back or used — the line is gone at once
+## (any other hint on the line stays its time).
+func _drop_selection_hint() -> void:
+	if _sel_hint != "" and hint_line.text == _sel_hint:
+		_hint_serial += 1
+		hint_line.text = ""
+	_sel_hint = ""
 
 
 func show_hint(text: String) -> void:

@@ -1807,7 +1807,7 @@ func _bedtime_check() -> void:
 		return
 	GameState.set_flag("bedtime_" + st, true)
 	if bt.has("goal"):
-		GameState.set_goal(StoryData.text(String(bt["goal"])))
+		GameState.set_goal(StoryData.bedtime_goal(bt))
 	if bt.has("text"):
 		narrate_key(String(bt["text"]))
 

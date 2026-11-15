@@ -41,6 +41,8 @@ func _initialize() -> void:
 	MID_SLOT += sfx
 	gs = root.get_node_or_null("GameState")
 	rm = root.get_node_or_null("RoomManager")
+	if OS.get_environment("PLAY_LOG") != "":   # the review's record of what the player is shown (tests/play_tap.gd)
+		root.add_child.call_deferred(load("res://tests/play_tap.gd").new())
 	_run()
 
 

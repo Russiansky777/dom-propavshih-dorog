@@ -32,6 +32,8 @@ var _reached_end: bool = false   # a test that stops on a script error never rea
 
 
 func _initialize() -> void:
+	if OS.get_environment("PLAY_LOG") != "":   # the review's record of what the player is shown (tests/play_tap.gd)
+		root.add_child.call_deferred(load("res://tests/play_tap.gd").new())
 	_run()
 
 

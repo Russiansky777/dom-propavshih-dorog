@@ -282,6 +282,25 @@ func scene_goal(sc: Dictionary) -> String:
 	return (lead + " " + tail).strip_edges()
 
 
+## The journal's line of a time state's `bedtime` (data/story/time/_index.json): its `goal`, and after it every
+## `goal_also` item {if?, unless?, text} whose flags hold — what the day leaves for tomorrow (review 15.11: with the
+## four errands of day three done the goal read «Дела дня сделаны», though a minute before it listed Ilya's workshop,
+## optional and never begun, among what is not done).
+func bedtime_goal(bt: Dictionary) -> String:
+	var out := text(String(bt.get("goal", "")))
+	for it in bt.get("goal_also", []):
+		var ok := true
+		for f in it.get("if", []):
+			if not GameState.has_flag(String(f)):
+				ok = false
+		for f in it.get("unless", []):
+			if GameState.has_flag(String(f)):
+				ok = false
+		if ok:
+			out += " " + text(String(it.get("text", "")))
+	return out.strip_edges()
+
+
 func scenes_in(room_id: String) -> Array[String]:
 	var out: Array[String] = []
 	for id in scene_order:

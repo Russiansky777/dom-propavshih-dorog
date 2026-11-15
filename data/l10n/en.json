@@ -5283,6 +5283,10 @@
    "ru": "Дела дня сделаны. Пора спать — у мамы в горнице или в Дунином доме, на лежанке у печи.",
    "en": "Today's work is done. Sleep in Mama's parlour, or on the sleeping ledge by Dunya's stove."
   },
+  "text:ui.bedtime_d3_goal_ilya": {
+   "ru": "К Илье в мастерскую можно и утром.",
+   "en": "Ilya's workshop can wait till morning."
+  },
   "text:ui.time_d1_afternoon": {
    "ru": "День первый · после полудня",
    "en": "Day one · afternoon"
