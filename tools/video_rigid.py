@@ -26,6 +26,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parent.parent
 LIMIT = 6.0          # mean difference (of 255) of the region from the painting moved as a whole
+KEEP_LIMIT = 5.0     # mean difference (of 255) from the clip on what is kept (the encoding alone: ~2)
 SMOOTH_WARP = 3      # frames
 SMOOTH_GAIN = 9
 
@@ -49,12 +50,17 @@ def frames(path: str, w: int, h: int):
     p = subprocess.Popen(["ffmpeg", "-nostdin", "-v", "error", "-i", path, "-f", "rawvideo", "-pix_fmt", "rgb24", "-"],
                          stdout=subprocess.PIPE)
     n = w * h * 3
-    while True:
-        b = p.stdout.read(n)
-        if len(b) < n:
-            break
-        yield np.frombuffer(b, np.uint8).reshape(h, w, 3)
-    p.wait()
+    try:
+        while True:
+            b = p.stdout.read(n)
+            if len(b) < n:
+                break
+            yield np.frombuffer(b, np.uint8).reshape(h, w, 3)
+    finally:   # left early (a shorter film beside a longer clip) — the decoder goes quietly
+        if p.poll() is None:
+            p.kill()
+        p.stdout.close()
+        p.wait()
 
 
 class Region:
@@ -75,9 +81,33 @@ class Region:
         # registration at half size, over the inside of the region (its edge is where water and pier meet the boat)
         self.tw, self.th = w // 2, h // 2
         self.tpl = cv2.resize(cv2.cvtColor(self.paint.astype(np.uint8), cv2.COLOR_RGB2GRAY), (self.tw, self.th), interpolation=cv2.INTER_AREA).astype(np.float32)
+        # `film_keep` (Director 15.11, 22:03: «канат теперь в „стало“ корёжит»): what crosses the region but is not
+        # part of it stays the clip's — the mooring rope runs from the bollard on the pier (still) over the bow (rocking
+        # with the boat); a painted rope cut at the region's edge broke where the clip's rope met it. A corridor along
+        # it: each point moves with the region by its `follow` (0 — stays, 1 — as the boat), `width` px of the canvas.
+        self.keep = []
+        for k in spec.get("film_keep", []):
+            pts = np.array([[x * w / cw, y * h / ch] for x, y in k["points"]], np.float64)
+            self.keep.append((pts, np.array(k.get("follow", [1.0] * len(pts)), np.float64), float(k["width"]) * w / cw))
+        self.keep_feather = f
         inner = cv2.erode(m, np.ones((15, 15), np.uint8))
+        inner[self.corridor(np.eye(2, 3), core=False) > 0.01] = 0   # registered on the boards, not on the rope
         self.inner = cv2.resize(inner, (self.tw, self.th), interpolation=cv2.INTER_NEAREST)
         self.inner_full = inner > 0
+
+    def corridor(self, warp_full, core: bool = False):
+        """0…1 — where the clip is kept (the rope's corridor for this frame's map); `core` — its middle, the rope itself,
+        narrowed by the margin and not softened (what the check compares with the clip)."""
+        import cv2
+        out = np.zeros((self.h, self.w), np.float32)
+        for pts, follow, width in self.keep:
+            moved = pts @ warp_full[:, :2].T + warp_full[:, 2]
+            at = pts + (moved - pts) * follow[:, None]
+            wd = width * (0.5 if core else 1.0)
+            cv2.polylines(out, [np.round(at).astype(np.int32)], False, 1.0, thickness=max(1, int(round(wd))), lineType=cv2.LINE_AA)
+        if not core and self.keep_feather > 0 and self.keep:
+            out = cv2.GaussianBlur(out, (0, 0), self.keep_feather)
+        return np.clip(out, 0.0, 1.0)
 
     def register(self, frame, warp0=None):
         import cv2
@@ -101,6 +131,10 @@ class Region:
         p = cv2.warpAffine(self.paint, warp_full, (self.w, self.h), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE)
         m = cv2.warpAffine(self.mask, warp_full, (self.w, self.h), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE)
         inner = cv2.warpAffine(self.inner_full.astype(np.uint8), warp_full, (self.w, self.h), flags=cv2.INTER_NEAREST) > 0
+        if self.keep:
+            c = self.corridor(warp_full)
+            m = m * (1.0 - c)
+            inner &= c < 0.01
         return p, m, inner
 
 
@@ -209,6 +243,28 @@ def rigidity(spec: dict, film: str, every: int = 3) -> list:
     return out
 
 
+def kept(spec: dict, film: str, clip: str, every: int = 4) -> list:
+    """Per sampled frame: how far the film is from the clip on what it keeps (the rope through the boat, the middle of
+    its corridor inside the region) — 0 but for the encoding when the clip's rope is left whole."""
+    import cv2
+    w, h = probe_size(film)
+    reg = Region(spec, w, h)
+    if not reg.keep:
+        return []
+    out, prev = [], None
+    for i, (f, c) in enumerate(zip(frames(film, w, h), frames(clip, w, h))):
+        cc, prev = reg.register(f, prev)
+        if i % every:
+            continue
+        wf = reg.full(prev)
+        region = cv2.warpAffine(reg.mask, wf, (w, h), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE) > 0.99
+        core = (reg.corridor(wf, core=True) > 0.5) & region
+        if core.sum() < 100:
+            continue
+        out.append((i, float(np.abs(f[core].astype(np.float32) - c[core].astype(np.float32)).mean())))
+    return out
+
+
 def check(spec: dict) -> int:
     _need()
     bad = 0
@@ -218,6 +274,14 @@ def check(spec: dict) -> int:
         ok = worst[1] <= LIMIT
         bad += 0 if ok else 1
         print(("PASS  " if ok else "FAIL  ") + f"{film}: the boat is the painting moving as a whole — off by {worst[1]:.2f} of 255 at worst (frame {worst[0]}, limit {LIMIT})")
+    # the intro is the clip's frames from its first: the rope over the bow there is the clip's own, whole
+    intro = spec.get("loop", {}).get("intro")
+    if intro and spec.get("film_keep"):
+        r = kept(spec, str(ROOT / (intro + ".ogv")), str(ROOT / spec["clip"]))
+        worst = max(r, key=lambda x: x[1])
+        ok = worst[1] <= KEEP_LIMIT
+        bad += 0 if ok else 1
+        print(("PASS  " if ok else "FAIL  ") + f"{intro}.ogv: the rope over the bow is the clip's own, whole — off it by {worst[1]:.2f} of 255 at worst (frame {worst[0]}, limit {KEEP_LIMIT})")
     return 1 if bad else 0
 
 
@@ -231,11 +295,20 @@ def self_check(spec: dict) -> int:
     held = tmp / "held.mp4"
     hold(dict(spec, clip=str(cut)), str(held))
     after = max(d for _, d in rigidity(spec, str(held)))
+    ok = raw > LIMIT and after <= LIMIT
+    print(("PASS  " if ok else "FAIL  ") + f"self-check: the clip's own boat is off by {raw:.2f} of 255 (caught: over {LIMIT}); held, {after:.2f}")
+    if spec.get("film_keep"):
+        # the version of 15.11 evening: the painted rope over the bow, cut at the region's edge (Director 22:03)
+        cut_rope = tmp / "cut_rope.mp4"
+        hold(dict({k: v for k, v in spec.items() if k != "film_keep"}, clip=str(cut)), str(cut_rope))
+        bad = max(d for _, d in kept(spec, str(cut_rope), str(cut)))
+        good = max(d for _, d in kept(spec, str(held), str(cut)))
+        ok2 = bad > KEEP_LIMIT and good <= KEEP_LIMIT
+        ok = ok and ok2
+        print(("PASS  " if ok2 else "FAIL  ") + f"self-check: the rope pasted from the painting (as on 15.11 evening) is off the clip's by {bad:.2f} of 255 (caught: over {KEEP_LIMIT}); kept, {good:.2f}")
     for p in tmp.iterdir():
         p.unlink()
     tmp.rmdir()
-    ok = raw > LIMIT and after <= LIMIT
-    print(("PASS  " if ok else "FAIL  ") + f"self-check: the clip's own boat is off by {raw:.2f} of 255 (caught: over {LIMIT}); held, {after:.2f}")
     return 0 if ok else 1
 
 
