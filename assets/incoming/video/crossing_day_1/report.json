@@ -1,0 +1,31 @@
+{
+ "trial": "crossing_day_1",
+ "runs": [
+  {
+   "frame": "R2_crossing_day",
+   "model": "fal-ai/kling-video/v3/pro/image-to-video",
+   "attempt": 1,
+   "file": "R2_crossing_day__fal-ai-kling-video-v3-pro-image-to-video_1.mp4",
+   "args": {
+    "prompt": "View from inside a wooden rowboat looking over its bow on a clear winter day. The boat moves forward at a calm, clearly visible pace; the water flows past both sides of the bow, the bow rocks gently. The snowy far shores slowly grow nearer. The rope stays taut and straight, running through the iron ring on the right side. The boat and the rope keep their shape. Bright daylight, no fog, no snowfall. Painterly look unchanged, no new objects, no people, no text.",
+    "duration": "5",
+    "generate_audio": false
+   },
+   "seconds": 152.5,
+   "bytes": 20844995
+  },
+  {
+   "frame": "R2_crossing_day",
+   "model": "fal-ai/kling-video/v3/pro/image-to-video",
+   "attempt": 2,
+   "file": "R2_crossing_day__fal-ai-kling-video-v3-pro-image-to-video_2.mp4",
+   "args": {
+    "prompt": "View from inside a wooden rowboat looking over its bow on a clear winter day. The boat moves forward at a calm, clearly visible pace; the water flows past both sides of the bow, the bow rocks gently. The snowy far shores slowly grow nearer. The rope stays taut and straight, running through the iron ring on the right side. The boat and the rope keep their shape. Bright daylight, no fog, no snowfall. Painterly look unchanged, no new objects, no people, no text.",
+    "duration": "5",
+    "generate_audio": false
+   },
+   "seconds": 178.5,
+   "bytes": 20552497
+  }
+ ]
+}

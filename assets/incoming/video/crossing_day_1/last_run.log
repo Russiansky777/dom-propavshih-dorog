@@ -1,0 +1,6 @@
+run 43711188165 2026-11-15T11:57:43Z request: pipeline/requests/video_crossing_day_1.json
+== кадр R2_crossing_day: game/assets/rooms/R2/day.png + game/assets/rooms/R2/fg_rope.png
+   картинка 1920x1080, 653 КБ
+   fal-ai/kling-video/v3/pro/image-to-video #1: OK 152.5 с, 20356 КБ
+   fal-ai/kling-video/v3/pro/image-to-video #2: OK 178.5 с, 20070 КБ
+готово: 2 клипов, 0 ошибок → assets/incoming/video/crossing_day_1
