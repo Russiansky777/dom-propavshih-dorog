@@ -41,6 +41,14 @@ func _run() -> void:
 				var cam: Camera2D = tr.get_node_or_null("World/Camera")
 				if cam != null:
 					line += "  cam (%4.0f, %4.0f) ×%.3f" % [cam.position.x, cam.position.y, cam.zoom.x]
+				for sp in tr.call("speaks_probe"):
+					var jm = null
+					if String(sp["speaker"]) == "agata" and pl != null:
+						jm = pl.get("jaw")
+					elif rm.current_room != null and rm.current_room.get_node_or_null("npc_" + String(sp["speaker"])) != null:
+						var lv = rm.current_room.get_node("npc_" + String(sp["speaker"])).get("live")
+						jm = lv.get("jaw") if lv != null else null
+					line += "  [%s %s open %.2f]" % [sp["line_id"], "speaks" if bool(sp["speaking"]) else "silent", float(jm.get("open")) if jm != null and jm.get("open") != null else -1.0]
 				var mv = tr.get("_mech_view")
 				if mv != null and mv.get("panel") != null and (mv.get("panel") as Node).has_method("probe"):
 					var pr2: Dictionary = (mv.get("panel") as Node).call("probe")

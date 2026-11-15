@@ -11,8 +11,8 @@ extends SceneTree
 ##        a click skips to the shore as before;
 ##   CF-6 (found 14.11 while the film was put in) by day — no time-of-day flag of the evenings set, the rule of the
 ##        room's own day layer — the crossing shows the day painting of the boat (R2/day.png), the far pier of the day
-##        where there is one, thin fog, and no film (there is none of the day view yet); in the evening — the evening
-##        painting and the film. Before: the evening view between two rooms in daylight on days three and four.
+##        where there is one, thin fog, and the day's own film (fal, 15.11); in the evening — the evening painting and
+##        the evening film. Before: the evening view between two rooms in daylight on days three and four.
 ##   CF-5 self-check — a film that jumps in (`in_s` near 0) is caught by CF-2's measure; with the films switched off
 ##        (the test's switch) the same crossing is the painted one: no film,
 ##        the rope drawn, and the picture is the painting's own; the crossing by hand gets no film even if its data named one.
@@ -170,6 +170,8 @@ func _test_data() -> void:
 			var path := String(spec.get("film", {}).get("video", ""))
 			_check(path != "" and ResourceLoader.exists(path), "%s: the repeated crossing names no film that exists (%s)" % [c["where"], path])
 			var day: Dictionary = spec.get("day", {})
+			var day_film := String((day.get("film", {}) if day.get("film") is Dictionary else {}).get("video", ""))
+			_check(day_film.ends_with("crossing_live_day.ogv") and ResourceLoader.exists(day_film), "%s: the day view names no day film that exists (%s)" % [c["where"], day_film])
 			var day_bg := String(day.get("art", {}).get("bg", ""))
 			_check(day_bg.ends_with("R2/day.png") and ResourceLoader.exists(day_bg), "%s: no day painting for the crossing by day (%s)" % [c["where"], day_bg])
 			var room_day: Array = []
@@ -332,7 +334,8 @@ func _test_day() -> void:
 	var o: Dictionary = await _open(spec)
 	var pr: Dictionary = (o["panel"] as Node).call("probe")
 	_check(bool(pr["day"]) and String(pr["bg"]).ends_with("R2/day.png"), "by day the boat's view is the day painting (%s)" % String(pr["bg"]))
-	_check(not bool(pr["film"]), "by day there is no film of the evening view")
+	# 15.11 (Director: «дневной ролик можешь заказывать да»): by day — the day's own film
+	_check(bool(pr["film"]) and String(pr["film_path"]).ends_with("crossing_live_day.ogv"), "by day the film is the day's (%s)" % String(pr["film_path"]))
 	_check(float(pr["fog"]) < 0.2, "by day the fog is thin (%.2f)" % float(pr["fog"]))
 	await _frames(3)
 	var day_pic := await _grab()
@@ -341,7 +344,8 @@ func _test_day() -> void:
 	_check((spec.get("day", {}).get("unless", []) as Array).any(func(fl): return gs.has_flag(String(fl))), "the evening of day two is not a day for it")
 	o = await _open(spec)
 	pr = (o["panel"] as Node).call("probe")
-	_check(not bool(pr["day"]) and String(pr["bg"]).ends_with("R2/bg.png") and bool(pr["film"]), "self-check: in the evening — the evening painting and the film (%s, film %s)" % [String(pr["bg"]), pr["film"]])
+	_check(not bool(pr["day"]) and String(pr["bg"]).ends_with("R2/bg.png") and String(pr["film_path"]).ends_with("crossing_live.ogv"),
+			"self-check: in the evening — the evening painting and the evening film (%s, %s)" % [String(pr["bg"]), String(pr["film_path"])])
 	await _frames(3)
 	var eve_pic := await _grab()
 	_check(_diff(day_pic, eve_pic, 0.0, 0.4) > 20.0, "the day's sky is not the evening's (the upper picture differs by %.1f of 255)" % _diff(day_pic, eve_pic, 0.0, 0.4))

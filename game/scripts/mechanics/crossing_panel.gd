@@ -526,7 +526,8 @@ func probe() -> Dictionary:
 		"water": water_mat != null,
 		"pier_w": pier.size.x if pier != null else 0.0, "arrival": arrival.modulate.a, "crossed": crossed_sent,
 		"day": is_day, "bg": String(spec.get("art", {}).get("bg", "")),
-		"film": film != null, "film_alpha": film_alpha, "film_t": _film_t, "film_playing": film != null and film.is_playing(),
+		"film": film != null, "film_alpha": film_alpha, "film_t": _film_t,
+		"film_path": String(spec.get("film", {}).get("video", "")) if film != null else "", "film_playing": film != null and film.is_playing(),
 		"film_pos": film.stream_position if film != null else 0.0, "film_held": _film_hold != null,
 		"rope_alpha": rope.modulate.a, "stage_y": stage.position.y,
 		"rope": {"x": _ring.x + 140.0, "y": _ring.y + 120.0}, "center": {"x": 960.0, "y": 640.0}}

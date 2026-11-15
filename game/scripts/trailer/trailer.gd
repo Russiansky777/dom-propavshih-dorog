@@ -34,6 +34,11 @@ var quit_at_end: bool = true
 var errors: Array[String] = []
 
 var _t: float = 0.0                # shot time (negative during the preroll)
+## 15.11 (Director: «у Нины на видео нет движений мимики»): the voices of the film are laid in at the assembly, so in
+## the render nobody spoke and no mouth moved. A `speak` event drives the speaker's lips by the line's own letters
+## (as the game does it: JawModifier / the puppet's mouth) for the length of its recording, in the film's own time.
+## [{line_id, speaker, start, length, jaw, puppet, found}]
+var _speaks: Array = []
 var _stage: Node2D = null          # art: the picture's space (art px)
 var _layers: Array = []            # art: [{node, mat}]
 var _attached: Array = []          # art: [{node, depth}] mist / glow / motes, zoomed by their depth
@@ -774,6 +779,7 @@ func _tick_ui() -> void:
 		_ui_done[i] = true
 		_run_event(e)
 	_tick_strikes()
+	_tick_speaks()
 	if _t < _press_until and _t >= _press_next:
 		_press_next = _t + _press_gap
 		_run_event({"do": "press", "key": "Space"})
@@ -800,6 +806,81 @@ func _tick_ui() -> void:
 		_cursor.position = _cursor_pos
 
 
+func _speak(e: Dictionary) -> void:
+	var scene_id := String(e.get("scene", ""))
+	var lines: Array = StoryData.scene(scene_id).get("mandatory_lines", [])
+	var li := int(e.get("line", -1))
+	if li < 0 or li >= lines.size():
+		push_error("Trailer: speak — no line %s/%d" % [scene_id, li])
+		return
+	var sp := String((lines[li] as Dictionary).get("speaker", "narrator"))
+	var lid := "%s_%d" % [scene_id, li]
+	if bool(e.get("box", true)):
+		if not StoryRunner.current_beat.is_empty():
+			StoryRunner.advance()   # the box shows one line at a time: the one before gives way
+		StoryRunner.call("_push", {"type": "line", "line_id": lid, "speaker": sp,
+			"speaker_name": StoryData.character_name(sp), "text": String((lines[li] as Dictionary).get("text", ""))})
+	var rec := {"line_id": lid, "speaker": sp, "start": _t, "length": voice_length(lid), "jaw": null, "puppet": null, "found": false}
+	var room := RoomManager.current_room
+	if sp == "agata" and RoomManager.player != null:
+		rec["jaw"] = RoomManager.player.get("jaw")
+		rec["found"] = true
+	elif room != null and room.get_node_or_null("npc_" + sp) != null:
+		var live = room.get_node("npc_" + sp).get("live")
+		rec["jaw"] = live.get("jaw") if live != null else null
+		rec["found"] = true
+	elif room != null and room.get_node_or_null("puppet_" + sp) != null:
+		rec["puppet"] = room.get_node("puppet_" + sp)
+		rec["found"] = true
+	if not bool(rec["found"]):
+		push_error("Trailer: speak — no figure of '%s' in the room" % sp)
+	if float(rec["length"]) <= 0.0:
+		push_error("Trailer: speak — no recording of %s" % lid)
+	_speaks.append(rec)
+
+
+## The length of a line's recording (s); 0 — none.
+static func voice_length(line_id: String) -> float:
+	var path := "res://assets/voice/ru/%s.ogg" % line_id
+	if not ResourceLoader.exists(path):
+		return 0.0
+	var st = load(path)
+	return float(st.get_length()) if st is AudioStream else 0.0
+
+
+## Every frame: the lips of whoever speaks now, by the film's clock.
+func _tick_speaks() -> void:
+	for rec in _speaks:
+		var t := _t - float(rec["start"])
+		var on := t >= 0.0 and t < float(rec["length"])
+		var jm = rec["jaw"]
+		if jm != null and is_instance_valid(jm):
+			jm.set("speaking_override", 1 if on else 0)
+			jm.set("line_override", String(rec["line_id"]) if on else "")
+			jm.set("time_override", t if on else NAN)
+			jm.set("lang_override", "ru")
+			jm.set("level_override", float(jm.get("db_open")) if on else NAN)
+		var pup = rec["puppet"]
+		if pup != null and is_instance_valid(pup):
+			pup.set("speaking_override", 1 if on else 0)
+
+
+## What the speak events did (tests): [{line_id, speaker, found, speaking}]
+func speaks_probe() -> Array:
+	var out: Array = []
+	for rec in _speaks:
+		var jm = rec["jaw"]
+		var pup = rec["puppet"]
+		var speaking := false
+		if jm != null and is_instance_valid(jm):
+			speaking = bool(jm.call("speaking"))
+		elif pup != null and is_instance_valid(pup):
+			speaking = bool(pup.call("_speaking"))
+		out.append({"line_id": rec["line_id"], "speaker": rec["speaker"], "found": rec["found"], "speaking": speaking,
+			"has_jaw": jm != null, "has_puppet": pup != null, "t": _t - float(rec["start"]), "length": rec["length"]})
+	return out
+
+
 func _run_event(e: Dictionary) -> void:
 	match String(e.get("do", "")):
 		"view":
@@ -823,6 +904,11 @@ func _run_event(e: Dictionary) -> void:
 				var sp := String((lines[li] as Dictionary).get("speaker", "narrator"))
 				StoryRunner.call("_push", {"type": "line", "line_id": "%s_%d" % [String(e.get("scene", "")), li], "speaker": sp,
 					"speaker_name": StoryData.character_name(sp), "text": String((lines[li] as Dictionary).get("text", ""))})
+		"speak":
+			# {"do": "speak", "scene": "M03", "line": 1, "box": true, "voice": true}: the line said aloud — in the box
+			# (as `line`), the speaker's lips by its letters while its recording lasts; the assembly lays the recording
+			# in at the same moment (tools/trailer_assemble.py reads these events)
+			_speak(e)
 		"click":
 			_send_click(v2(e.get("at"), _cursor_pos))
 		"down", "up":

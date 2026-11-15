@@ -15,6 +15,7 @@ var _fails: Array[String] = []
 var sd: Node = null
 var rm: Node = null
 var gs: Node = null
+var _speak_seen: Array = []   # what the speak events of the plans did (printed once)
 
 
 func _initialize() -> void:
@@ -51,6 +52,9 @@ func _run() -> void:
 	gs = root.get_node("GameState")
 	await _test("plans read, resources exist", _t_plans)
 	await _test("every shot builds and runs", _t_shots)
+	for rec in _speak_seen:
+		print("  [speak] %s (%s): figure %s, jaw %s, puppet %s, speaking %s at %.2f of %.2f s" % [rec.get("line_id"), rec.get("speaker"),
+			rec.get("found"), rec.get("has_jaw"), rec.get("has_puppet"), rec.get("speaking"), float(rec.get("t", 0)), float(rec.get("length", 0))])
 	await _test("ease curves start and end at rest", _t_ease)
 	var failed := _results.filter(func(r): return not r[1]).size()
 	print("[trailer] %d/%d passed" % [_results.size() - failed, _results.size()])
@@ -158,6 +162,21 @@ func _t_shots() -> void:
 						"%s: Agata does not look towards %s (direction %d)" % [s["id"], str(fp), dir])
 			if s.get("kind") == "art":
 				_check(tr.get_node_or_null("Stage") != null and tr.get_node("Stage").get_child_count() >= 2, "%s: no layers" % s["id"])
+			# 15.11 (Director: «у Нины на видео нет движений мимики»): a line said in a shot moves its speaker's lips
+			var speaks: Array = (s.get("ui", {}).get("events", []) as Array).filter(func(e): return String(e.get("do", "")) == "speak")
+			for k in speaks.size():
+				var e: Dictionary = speaks[k]
+				var lid := "%s_%d" % [String(e.get("scene", "")), int(e.get("line", -1))]
+				_check(float(tr.call("voice_length", lid)) > 0.5, "%s: no recording of %s" % [s["id"], lid])
+				var at_frame := int((float(s.get("preroll_s", 0.0)) + float(e.get("at_s", 0.0)) + 0.4) * int(plan.get("fps", 60)))
+				while int(tr.get("frame")) < at_frame and int(tr.get("frame")) < frames - 1:
+					await process_frame
+				var pr: Array = tr.call("speaks_probe")
+				var rec: Dictionary = pr[k] if k < pr.size() else {}
+				_check(rec.get("line_id", "") == lid and bool(rec.get("found", false)), "%s: %s — the speaker's figure not found (%s)" % [s["id"], lid, str(rec)])
+				_check((not bool(rec.get("has_jaw", false)) and not bool(rec.get("has_puppet", false))) or bool(rec.get("speaking", false)),
+					"%s: %s — the lips do not move while the line is said (%s)" % [s["id"], lid, str(rec)])
+				_speak_seen.append(rec)
 			tr.queue_free()
 			await process_frame
 			if rm.current_room != null:

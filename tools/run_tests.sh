@@ -174,6 +174,8 @@ run_3d test_motion_smooth  # плавность живых фигур (Дире�
 if command -v xvfb-run >/dev/null; then
   xvfb-run -a -s "-screen 0 1920x1080x24" "$GODOT" --path "$GAME_DIR" --display-driver x11 --rendering-driver opengl3 --resolution 1920x1080 --audio-driver Dummy -s res://tests/test_frame_video.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
   xvfb-run -a -s "-screen 0 1920x1080x24" "$GODOT" --path "$GAME_DIR" --display-driver x11 --rendering-driver opengl3 --resolution 1920x1080 --audio-driver Dummy -s res://tests/test_crossing_film.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
+  # 15.11: in the trailer a line said moves its speaker's lips (Agata, Tikhon, Nina); self-check — shown only, the mouth stays shut
+  xvfb-run -a -s "-screen 0 1920x1080x24" "$GODOT" --path "$GAME_DIR" --display-driver x11 --rendering-driver opengl3 --resolution 960x540 --audio-driver Dummy --fixed-fps 15 -s res://tests/test_trailer_speak.gd -- --fps=15 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
   # 09.11 Steam Deck: the pad drives the mouse (PadInput) — stick, buttons, hints, vibration, settings
   xvfb-run -a -s "-screen 0 1920x1080x24" "$GODOT" --path "$GAME_DIR" --display-driver x11 --rendering-driver opengl3 --resolution 1920x1080 --fixed-fps 60 --audio-driver Dummy -s res://tests/test_gamepad.gd 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
   # 09.11 (Director 11:34–13:36): things in hands and turns as played — Tamara's key from hand to hand, Pelageya's line

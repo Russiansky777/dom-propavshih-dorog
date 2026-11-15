@@ -224,7 +224,14 @@ def audio_mix(plan: dict, tl: list[dict], work: Path, total: float) -> np.ndarra
     music *= db(float(a.get("music_gain_db", 0.0)))
     # --- voices: level = the music's own level at that place (Director: «ровно с музыкой»), the music ducks under them
     voices = []
-    for v in a.get("voice", []):
+    # 15.11: a line said in a shot (`speak` event of its ui) brings its recording at the same moment
+    spoken = []
+    for s in plan["shots"]:
+        for e in s.get("ui", {}).get("events", []):
+            if e.get("do") == "speak" and e.get("voice", True):
+                spoken.append({"shot": s["id"], "at_s": float(e.get("at_s", 0.0)), "gain_db": float(e.get("gain_db", 0.0)),
+                               "file": f"res://assets/voice/ru/{e['scene']}_{int(e['line'])}.ogg"})
+    for v in list(a.get("voice", [])) + spoken:
         s = by_id[v["shot"]]
         at = s["start"] + float(v.get("at_s", 0.0))
         x = decode_stereo(res(v["file"]))

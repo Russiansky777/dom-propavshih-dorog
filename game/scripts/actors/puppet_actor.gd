@@ -219,7 +219,13 @@ func _build_mouth() -> void:
 	bones[bone_name].add_child(mouth)
 
 
+## -1 — the voice decides (as in the game); 1 / 0 — speaks / silent whatever plays (the trailer's lines, 15.11)
+var speaking_override: int = -1
+
+
 func _speaking() -> bool:
+	if speaking_override >= 0:
+		return speaking_override == 1
 	return VoiceDirector.is_playing() and String(VoiceDirector.current_speaker) == actor_id
 
 
