@@ -16,8 +16,8 @@ development»), и то, что генерируется во время игр�
 - 3D-модели персонажей и большая часть их движений сгенерированы в Meshy, затем подогнаны и перенесены в игру.
 - Голоса (русский и английский) синтезированы в ElevenLabs; часть звуковых эффектов — тоже.
 - Музыка сгенерирована в Suno.
-- 12 коротких роликов-петель («ожившие» картины ужина и объятий) сделаны из собственных картин игры моделью Kling
-  (image-to-video).
+- 14 коротких роликов («ожившие» картины ужина и объятий — 12; переправа на лодке вечером и днём — 2, добавлены
+  14–15.11) сделаны из собственных картин игры моделью Kling (image-to-video).
 - Код написан с помощью ИИ-помощников (Claude Code, Codex).
 - Во время игры ИИ ничего не генерирует: всё содержимое готово заранее и одинаково у всех игроков.
 
@@ -33,7 +33,7 @@ development»), и то, что генерируется во время игр�
 > - Voice acting (Russian and English): synthesized with ElevenLabs text-to-speech. Some sound effects were generated
 >   with ElevenLabs as well.
 > - Music: generated with Suno.
-> - Twelve short looping video clips that bring painted scenes to life were made from the game's own paintings with
+> - Fourteen short video clips that bring painted scenes to life were made from the game's own paintings with
 >   the Kling image-to-video model.
 > - Code: written with AI coding assistants (Claude Code, Codex).
 
