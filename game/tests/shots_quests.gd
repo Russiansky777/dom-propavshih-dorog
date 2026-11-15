@@ -132,6 +132,11 @@ func _shot(n: String) -> void:
 			await _state(g[0], g[1], {"H1": "default", "R3": "from_O4"}.get(g[1], "from_O2"))
 			var hm = rm.current_room.get_node_or_null("Hotspots/" + String(g[2]))
 			var spec := {}
+			if hm != null and rm.player != null:
+				# 15.11 (Director: on the fishing shot for Steam «Агаты нет»): the game offers these games in a talk —
+				# Agata stands at the speaker's place when one begins; the shot did not move her from the room's door
+				rm.player.call("enter_room", rm.current_room, hm.call("get_stand_position"))
+				await _frames(20)
 			if hm != null:
 				for o in hm.data.get("choice", {}).get("options", []):
 					if o.get("mechanic", {}).get("type", "") == g[3]:
