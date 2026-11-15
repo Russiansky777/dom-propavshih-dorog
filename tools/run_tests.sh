@@ -194,6 +194,10 @@ if command -v ffmpeg >/dev/null && command -v ffprobe >/dev/null; then
   python3 -I "$ROOT/tools/validate_video_loops.py" --self-check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
   # 14.11: a mechanic shown as a film (the repeated crossing) — starts from the painting, long enough for its end
   python3 -I "$ROOT/tools/validate_films.py" --self-check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
+  # 15.11 (Director 16:44/17:15: «лодку корёжит» — the boat rocking at the far pier in the hug of Pelageya and Mitya):
+  # the boat in the film is the painting moving as a whole; self-check — the clip's own boat is caught, a held one passes
+  python3 -I "$ROOT/tools/video_rigid.py" "$ROOT/tools/rigid/F_hug_pelageya.json" --check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
+  python3 -I "$ROOT/tools/video_rigid.py" "$ROOT/tools/rigid/F_hug_pelageya.json" --self-check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
 else
   skipped "validate_video_loops --self-check" "ffmpeg/ffprobe"
 fi
