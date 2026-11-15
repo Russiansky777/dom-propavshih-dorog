@@ -166,7 +166,7 @@ func _t_shots() -> void:
 			var speaks: Array = (s.get("ui", {}).get("events", []) as Array).filter(func(e): return String(e.get("do", "")) == "speak")
 			for k in speaks.size():
 				var e: Dictionary = speaks[k]
-				var lid := "%s_%d" % [String(e.get("scene", "")), int(e.get("line", -1))]
+				var lid := String(tr.call("speak_line_id", e))
 				_check(float(tr.call("voice_length", lid)) > 0.5, "%s: no recording of %s" % [s["id"], lid])
 				var at_frame := int((float(s.get("preroll_s", 0.0)) + float(e.get("at_s", 0.0)) + 0.4) * int(plan.get("fps", 60)))
 				while int(tr.get("frame")) < at_frame and int(tr.get("frame")) < frames - 1:

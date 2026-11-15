@@ -761,6 +761,9 @@ func _strip_game_ui() -> void:
 	_game_ui.set_meta("keep_only", box)
 
 
+var _pointer_set := false
+
+
 func _tick_ui() -> void:
 	var ui: Dictionary = shot.get("ui", {})
 	if ui.is_empty():
@@ -798,7 +801,10 @@ func _tick_ui() -> void:
 				from = to
 		else:
 			break
-	if pos != _cursor_pos or _cursor != null and not _cursor.visible:
+	# 15.11 (the mill, draft: «Верстак» over Pavel's head in the first frame): with no hand to draw and no moves the
+	# real pointer was never set and rested at the middle of the screen, over a hotspot — set it once, at the start
+	if pos != _cursor_pos or _cursor != null and not _cursor.visible or not _pointer_set:
+		_pointer_set = true
 		_cursor_pos = pos
 		_send_mouse_motion(pos)
 	if _cursor != null:
@@ -807,19 +813,17 @@ func _tick_ui() -> void:
 
 
 func _speak(e: Dictionary) -> void:
-	var scene_id := String(e.get("scene", ""))
-	var lines: Array = StoryData.scene(scene_id).get("mandatory_lines", [])
-	var li := int(e.get("line", -1))
-	if li < 0 or li >= lines.size():
-		push_error("Trailer: speak — no line %s/%d" % [scene_id, li])
+	var entry := speak_entry(e)
+	if entry.is_empty():
+		push_error("Trailer: speak — no line %s/%s%s" % [e.get("scene", ""), e.get("line", ""), (" then %s" % e["then"]) if e.has("then") else ""])
 		return
-	var sp := String((lines[li] as Dictionary).get("speaker", "narrator"))
-	var lid := "%s_%d" % [scene_id, li]
+	var sp := String(entry.get("speaker", "narrator"))
+	var lid := speak_line_id(e)
 	if bool(e.get("box", true)):
 		if not StoryRunner.current_beat.is_empty():
 			StoryRunner.advance()   # the box shows one line at a time: the one before gives way
 		StoryRunner.call("_push", {"type": "line", "line_id": lid, "speaker": sp,
-			"speaker_name": StoryData.character_name(sp), "text": String((lines[li] as Dictionary).get("text", ""))})
+			"speaker_name": StoryData.character_name(sp), "text": String(entry.get("text", ""))})
 	var rec := {"line_id": lid, "speaker": sp, "start": _t, "length": voice_length(lid), "jaw": null, "puppet": null, "found": false}
 	var room := RoomManager.current_room
 	if sp == "agata" and RoomManager.player != null:
@@ -837,6 +841,33 @@ func _speak(e: Dictionary) -> void:
 	if float(rec["length"]) <= 0.0:
 		push_error("Trailer: speak — no recording of %s" % lid)
 	_speaks.append(rec)
+
+
+## 15.11 (Director 16:44: «ты кто такой будешь и потом и печь тут вестимо — а между этим не было ничего? это странно
+## и несвязно звучит»): a `speak` may name a line said after another — `then`: the index in that line's `then` list
+## (the game's own order: M03 line 1 → then 0, then 1 → line 2), its recording `<scene>_<line>_then<n>`.
+static func speak_line_id(e: Dictionary) -> String:
+	var lid := "%s_%d" % [String(e.get("scene", "")), int(e.get("line", -1))]
+	return lid + ("_then%d" % int(e["then"]) if e.has("then") else "")
+
+
+## The line a `speak` names ({speaker, text, …}); {} — none.
+static func speak_entry(e: Dictionary) -> Dictionary:
+	var sd: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("StoryData")
+	if sd == null:
+		return {}
+	var lines: Array = sd.scene(String(e.get("scene", ""))).get("mandatory_lines", [])
+	var li := int(e.get("line", -1))
+	if li < 0 or li >= lines.size():
+		return {}
+	var entry: Dictionary = lines[li]
+	if e.has("then"):
+		var th: Array = entry.get("then", [])
+		var ti := int(e["then"])
+		if ti < 0 or ti >= th.size():
+			return {}
+		entry = th[ti]
+	return entry
 
 
 ## The length of a line's recording (s); 0 — none.

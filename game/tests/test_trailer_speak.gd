@@ -77,8 +77,8 @@ func _sample(shot_id: String, events_override = null) -> Dictionary:
 	var windows: Array = []
 	for e in shot.get("ui", {}).get("events", []):
 		if String(e.get("do", "")) in ["speak", "line"]:
-			var lid := "%s_%d" % [String(e["scene"]), int(e["line"])]
-			windows.append({"lid": lid, "at": float(e["at_s"]), "len": float(tr.call("voice_length", lid)), "speaker": _speaker(String(e["scene"]), int(e["line"]))})
+			var lid := String(tr.call("speak_line_id", e))
+			windows.append({"lid": lid, "at": float(e["at_s"]), "len": float(tr.call("voice_length", lid)), "speaker": String(tr.call("speak_entry", e).get("speaker", ""))})
 	var out := {}
 	var stop_t := -pre
 	for w in windows:
@@ -107,11 +107,6 @@ func _sample(shot_id: String, events_override = null) -> Dictionary:
 	rm.autosave_enabled = true
 	await process_frame
 	return out
-
-
-func _speaker(scene_id: String, li: int) -> String:
-	var lines: Array = root.get_node("StoryData").scene(scene_id).get("mandatory_lines", [])
-	return String((lines[li] as Dictionary).get("speaker", "")) if li < lines.size() else ""
 
 
 ## 0…1 — how open the mouth is now; -1 — no figure.
@@ -156,7 +151,7 @@ func _test_lips() -> void:
 			_check(opened >= during.size() / 5, "%s: %s — the mouth hardly opens (%d of %d frames)" % [s["id"], lid, opened, during.size()])
 			_check(String(r["speaker"]) == "tikhon" or shut >= 1, "%s: %s — the mouth never shuts while the line is said (letters, pauses)" % [s["id"], lid])
 			_check(after.is_empty() or float(after.max()) < 0.05, "%s: %s — the mouth still moves after the line (%.2f)" % [s["id"], lid, float(after.max()) if not after.is_empty() else 0.0])
-	_check(seen >= 3, "speak events in the plan: %d (Agata and Tikhon in the cottage, Nina in the class)" % seen)
+	_check(seen >= 4, "speak events in the plan: %d (Agata and Tikhon in the cottage, Pavel at the mill, Nina in the class)" % seen)
 
 
 func _test_self_check() -> void:

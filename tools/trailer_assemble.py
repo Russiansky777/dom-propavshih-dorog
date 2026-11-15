@@ -230,7 +230,8 @@ def audio_mix(plan: dict, tl: list[dict], work: Path, total: float) -> np.ndarra
         for e in s.get("ui", {}).get("events", []):
             if e.get("do") == "speak" and e.get("voice", True):
                 spoken.append({"shot": s["id"], "at_s": float(e.get("at_s", 0.0)), "gain_db": float(e.get("gain_db", 0.0)),
-                               "file": f"res://assets/voice/ru/{e['scene']}_{int(e['line'])}.ogg"})
+                               "file": f"res://assets/voice/ru/{e['scene']}_{int(e['line'])}"
+                                       + (f"_then{int(e['then'])}" if "then" in e else "") + ".ogg"})
     for v in list(a.get("voice", [])) + spoken:
         s = by_id[v["shot"]]
         at = s["start"] + float(v.get("at_s", 0.0))
