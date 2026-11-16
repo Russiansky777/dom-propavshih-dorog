@@ -1,0 +1,31 @@
+{
+  "_comment": "Третий ролик воды у колеса — под петлю (Директор 16.11, 15:40: «Проба 1 нормально, но колесо чуть корёжит всё равно + будет ли это максимально бесшовно циклично? попробуй ещё»; 15:45: «и колесо быстрее крутится почему-то»). Первый и последний кадр заданы одной и той же картинкой — кадром дубля 1 на 2,0 с (вода уже льётся полотном, белой плиты ещё нет): ролик возвращается в неё, повтор идёт кадр в кадр. Колесо в игре будет наше, нарисованное (жёсткое, со своей скоростью) — из ролика берётся только вода, поэтому как модель крутит своё колесо, неважно. Kling 3.0 Pro, 5 с, без звука, $0,56 (цена сверена 16.11); с двумя первыми дублями $1,68, на счёте по расчёту останется $2,22. В игру ролик не идёт — проба.",
+  "trial": "wheel_3",
+  "image_max": 0,
+  "jpeg_q": 95,
+  "attempts": 1,
+  "frames": [
+    {
+      "id": "M1_wheel_loop",
+      "image": "Docs/evidence/wheel_water/loop_start.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "prompt": "Locked-off static camera, no camera movement, no zoom. The large wooden water wheel of the old log mill turns slowly and steadily clockwise. A steady sheet of clear water pours off the wheel on its right side and falls into the mill race, splashing; ripples and small waves spread across the dark water and flow away along the race. The flow is continuous and even from the first frame to the last. The water surface stays dark, wet and transparent, reflecting the grey sky. Everything else stays perfectly still: the log house, the fence, the road, the trees, the sacks. Overcast autumn day. Painterly look unchanged, no new objects, no people, no text. Seamless loop: the video ends exactly on its first frame."
+    }
+  ],
+  "models": [
+    {
+      "id": "fal-ai/kling-video/v3/pro/image-to-video",
+      "image_key": [
+        "start_image_url",
+        "end_image_url"
+      ],
+      "args": {
+        "duration": "5",
+        "generate_audio": false
+      }
+    }
+  ]
+}
