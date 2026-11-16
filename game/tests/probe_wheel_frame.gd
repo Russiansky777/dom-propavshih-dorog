@@ -3,12 +3,16 @@ extends SceneTree
 ## пока тестово попробуем… короткое видео просто пришлёшь, как оно смотрится»; Docs/PLAN_WHEEL_WATER.md): the room M1
 ## at the second day, nobody in it, no interface, the wheel stopped at a given angle — the picture a video model starts
 ## from, and the same room filmed as it is now (the code's water) for a «было». Needs a display:
-##   godot --path game --display-driver x11 --rendering-driver opengl3 --resolution 1920x1080 \
-##       -s res://tests/probe_wheel_frame.gd -- <out_dir> [angle_deg] [film_seconds] [fps]
+##   godot --path game --display-driver x11 --rendering-driver opengl3 --resolution 1920x1080 --fixed-fps <fps> \
+##       -s res://tests/probe_wheel_frame.gd -- <out_dir> [angle_deg] [film_seconds] [fps] [clean_seconds]
+## `--fixed-fps` is what makes a filmed second a game's second: without it a frame that takes 0.4 s to draw on a
+## software display moves the wheel by 0.4 s (the first «сейчас в игре» of 16.11 ran several times too fast for that).
 ## Writes <out_dir>/start_water.png (the wheel at angle_deg, the code's water as drawn at that moment; no drizzle, no
 ## exit arrow), <out_dir>/start_clean.png (the same without the code's streams, spray and foam — the painting and the
 ## wheel only)
-## and, with film_seconds > 0, <out_dir>/now_NNN.png — the room as it is now, wheel turning, `fps` frames a second.
+## and, with film_seconds > 0, <out_dir>/now_NNN.jpg — the room as it is now, wheel turning, `fps` frames a second;
+## with clean_seconds > 0, <out_dir>/clean_NNN.jpg after them — the same room with our wheel turning at the game's
+## speed and none of the code's water, no drizzle, no exit arrow: what live water from a clip is laid over.
 
 
 func _initialize() -> void:
@@ -17,7 +21,11 @@ func _initialize() -> void:
 
 func _frame(path: String) -> void:
 	await RenderingServer.frame_post_draw
-	root.get_viewport().get_texture().get_image().save_png(path)
+	var img := root.get_viewport().get_texture().get_image()
+	if path.ends_with(".jpg"):
+		img.save_jpg(path, 0.97)
+	else:
+		img.save_png(path)
 	print("frame ", path)
 
 
@@ -28,6 +36,7 @@ func _run() -> void:
 	var angle := float(a[1]) if a.size() > 1 else 0.0
 	var film_s := float(a[2]) if a.size() > 2 else 0.0
 	var fps := int(a[3]) if a.size() > 3 else 15
+	var clean_s := float(a[4]) if a.size() > 4 else 0.0
 	var rm = root.get_node("RoomManager")
 	var main_node = load("res://scenes/Main.tscn").instantiate()
 	main_node.set("title_mode", "skip")
@@ -59,10 +68,25 @@ func _run() -> void:
 		var n_frames := int(film_s * fps)
 		for k in n_frames:
 			await process_frame
-			await _frame("%s/now_%03d.png" % [out, k])
+			await _frame("%s/now_%03d.jpg" % [out, k])
 	else:
 		for i in 60:
 			await process_frame
+	# our wheel turning over the bare painting: no water of the code's, no drizzle, no exit arrow
+	if clean_s > 0.0:
+		for n in root.find_children("Rain", "", true, false):
+			n.set("visible", false)
+		for n in root.find_children("*", "ExitCue", true, false):
+			n.set("visible", false)
+		for w in root.find_children("*", "AmbientWheel", true, false):
+			(w as Node2D).visible = false
+		for i in 3:
+			await process_frame
+		for k in int(clean_s * fps):
+			await process_frame
+			await _frame("%s/clean_%03d.jpg" % [out, k])
+		for w in root.find_children("*", "AmbientWheel", true, false):
+			(w as Node2D).visible = true
 	# the wheel stopped at the angle
 	var wheel: Node = null
 	for n in root.find_children("*", "Node2D", true, false):
