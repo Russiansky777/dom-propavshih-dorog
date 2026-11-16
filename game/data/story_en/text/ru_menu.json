@@ -111,13 +111,17 @@
    "_k": "Ревью 12.11 (до Steam): экран лицензий движка, его сторонних компонентов и шрифтов — кнопка в настройках"
   },
   "ui.licenses_intro": {
-   "text": "This game is made with Godot Engine. Below are the engine's license, the notices of the third-party components built into it, the licenses of the game's fonts, and the full license texts."
+   "text": "This game is made with Godot Engine. Below are the engine's license, the notices of the third-party components built into it, the license of the Steam library, the licenses of the game's fonts, and the full license texts."
   },
   "ui.licenses_engine": {
    "text": "Godot Engine"
   },
   "ui.licenses_third": {
    "text": "Third-party components of the engine"
+  },
+  "ui.licenses_libs": {
+   "text": "Game libraries",
+   "_k": "Директор 16.11: Steam — достижения, оверлей, сохранения; GodotSteam под лицензией MIT (её текст обязателен в копиях)"
   },
   "ui.licenses_fonts": {
    "text": "Fonts"

@@ -57,6 +57,24 @@ if [[ "$lite_mb" -gt 1900 ]]; then
   echo "[godot] Windows Lite ${lite_mb} MB > 1900 MB (release asset limit 2 GiB)" >&2
   exit 1
 fi
+# 16.11 (Steam, Директор: «так надо чтобы и достижения и оверлей и сохранения»): библиотеки GodotSteam движок кладёт
+# рядом с exe (game/addons/godotsteam/win64). Папка для Steam = exe + эти две; без них игра в Steam не увидит Steam
+# (ни оверлея, ни достижений) — сборка падает. Релиз GitHub по-прежнему выкладывает один exe: без библиотек рядом
+# игра работает как раньше. steam_proba_overlay.zip — проба оверлея до своего AppID: две библиотеки и
+# steam_appid.txt с 480 (тестовое приложение Valve «Spacewar»): распаковать рядом с exe, открыть Steam, Shift+Tab.
+steam_dlls=(libgodotsteam.windows.template_release.x86_64.dll steam_api64.dll)
+for f in "${steam_dlls[@]}"; do
+  if [[ ! -s "build/windows/$f" ]]; then
+    echo "[godot] Windows Lite: рядом с exe нет $f (Steam: достижения, оверлей)" >&2
+    ls -la build/windows >&2
+    exit 1
+  fi
+done
+rm -f build/windows/steam_proba_overlay.zip
+printf '480' > build/windows/steam_appid.txt
+(cd build/windows && zip -q -j steam_proba_overlay.zip "${steam_dlls[@]}" steam_appid.txt)
+rm -f build/windows/steam_appid.txt
+echo "[godot] Steam: ${steam_dlls[*]} рядом с exe; проба оверлея → build/windows/steam_proba_overlay.zip"
 
 [[ "${WIN_FULL:-1}" == "0" ]] && { ls -la build/windows; exit 0; }
 

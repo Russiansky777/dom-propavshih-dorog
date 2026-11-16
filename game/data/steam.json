@@ -1,0 +1,8 @@
+{
+ "_comment": "Steam (SteamService, game/scripts/core/steam_service.gd; Docs/STEAM.md). app_id — номер приложения в Steamworks (0 — пока нет: игру запускает Steam и сам передаёт номер). Достижения Steam — следы выборов из data/story/achievements.json под API-именами prefix + ID заглавными (ACH_BOARD…); names — своё API-имя для id, skip — id, которые в Steam не идут. Те же API-имена заводятся в Steamworks (Docs/STEAM_ACHIEVEMENTS.md). enabled false — Steam не трогать вовсе.",
+ "enabled": true,
+ "app_id": 0,
+ "prefix": "ACH_",
+ "names": {},
+ "skip": []
+}

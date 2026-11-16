@@ -18,6 +18,10 @@ on:
         description: "Без тестов (только сборка сайта и exe; тесты уже прошли у агента)"
         type: boolean
         default: false
+      publish:
+        description: "Выложить (сайт и exe в релиз latest). Нет — только собрать и проверить, релиз не трогать"
+        type: boolean
+        default: true
 
 permissions:
   contents: write
@@ -176,7 +180,8 @@ jobs:
       # failure is an annotation with the command and its output (readable through the checks API without the
       # job log), and the job still succeeds so GitHub Pages gets the new build.
       - name: Publish Windows exe to rolling release «latest»
-        if: steps.export_win.outcome == 'success'
+        # 16.11: `publish: false` — a trial build (Steam libraries beside the exe) without replacing what the Director is testing
+        if: steps.export_win.outcome == 'success' && inputs.publish != false
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
@@ -204,6 +209,10 @@ jobs:
           fi
           ls -la build/windows/
           step gh release upload latest build/windows/DomPropavshihDorog.exe --clobber
+          # 16.11 (Steam): проба оверлея до своего AppID — библиотеки GodotSteam + steam_appid.txt (480), см. export_windows.sh
+          if [ -f build/windows/steam_proba_overlay.zip ]; then
+            step gh release upload latest build/windows/steam_proba_overlay.zip --clobber
+          fi
           # The zip is no longer built (WIN_FULL=0 above): an old one left in the release would be a build of another
           # day next to the new exe. If it is built again (WIN_FULL=1), it is uploaded as before.
           if [ -f build/windows/DomPropavshihDorog_win.zip ]; then
@@ -214,7 +223,7 @@ jobs:
 
   deploy:
     needs: build
-    if: needs.build.outputs.site_ok == 'true'
+    if: needs.build.outputs.site_ok == 'true' && inputs.publish != false
     runs-on: ubuntu-latest
     environment:
       name: github-pages

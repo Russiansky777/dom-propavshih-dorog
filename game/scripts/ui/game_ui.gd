@@ -2033,7 +2033,8 @@ func _build_licenses_dialog() -> void:
 	body.add_theme_font_size_override("normal_font_size", 22)
 	body.text = LicensesText.build({"intro": StoryData.text("@ui.licenses_intro"), "engine": StoryData.text("@ui.licenses_engine"),
 		"third": StoryData.text("@ui.licenses_third"), "fonts": StoryData.text("@ui.licenses_fonts"),
-		"texts": StoryData.text("@ui.licenses_texts")}, LicensesText.fonts())
+		"libs": StoryData.text("@ui.licenses_libs"), "texts": StoryData.text("@ui.licenses_texts")},
+		LicensesText.fonts(), LicensesText.libraries())
 	panel.add_child(body)
 	var cl := _button(StoryData.text("@ui.close"), 200)
 	cl.name = "Close"

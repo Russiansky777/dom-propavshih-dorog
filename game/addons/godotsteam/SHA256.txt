@@ -1,0 +1,1 @@
+d4358888959a03f4df0c71aafbcdca8f34b8cb9d4522aa5c8454f0e9e3debbf7  godotsteam-4.24-gdextension-plugin-4.4.zip  codeberg v4.24-gde https://codeberg.org/godotsteam/godotsteam/releases/download/v4.24-gde/godotsteam-4.24-gdextension-plugin-4.4.zip
