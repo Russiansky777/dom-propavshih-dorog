@@ -18,10 +18,23 @@ extends Node2D
 ##   SOURCES — fixed spouts (a painted wheel that does not turn — the epilogue cascade): each source segment pours as
 ##             a curtain of `streams` side-by-side ribbons with a given velocity.
 ##   LANDING — where water meets the water line: white churn, a small crown of spray, now and then a breath of mist.
+##   FILM    — live water from a video clip over all of the above (Director 16.11, 16:43–17:28: «эта вода хорошая, а
+##             можно каким-то образом совместить и то, что было, и эту воду?» → «вот, этот вариант мне нравится… давай
+##             вставлять так»): `film` {video, rect [x, y, w, h], gap_px} — one Ogg Theora loop made by
+##             tools/wheel_water.py --pack from the fal.ai trial clip: the sheet of water falling on the descending side,
+##             the churn under it, the race; over the wheel only the water itself. The colour is on top of the stream,
+##             its opacity under it; shaders/wheel_water_film.gdshader puts them together. The code's streams off the
+##             rising buckets, their drops and the foam at the left stay as they were. The wheel is the room's own
+##             painted layer turned by code — nothing of the clip's wheel shows. No file (or `films_enabled` off) — the
+##             code's water alone, as before. Hidden with the node (pond let down), the player is paused.
 ## Units: screen px, s; gravity `gravity_px_s2`. All randomness from a seeded RNG (stable in tests).
 
 const RIBBON_SHADER := preload("res://shaders/wheel_water_ribbon.gdshader")
 const FOAM_SHADER := preload("res://shaders/wheel_water_foam.gdshader")
+const FILM_SHADER := preload("res://shaders/wheel_water_film.gdshader")
+## tests: false — no film is made (the code's water alone, as without the file)
+static var films_enabled := true
+var film: VideoStreamPlayer = null
 
 var cfg: Dictionary = {}
 var room: Node = null
@@ -76,6 +89,7 @@ func setup(p_cfg: Dictionary, p_room: Node, particles_k: float = 1.0) -> void:
 	_foam_col.a = float(cfg.get("foam", {}).get("alpha", 0.55))
 	_k = clampf(particles_k, 0.2, 1.0)
 	_make_items()
+	_make_film()
 	var lid := String(cfg.get("layer", ""))
 	if lid != "" and room != null:
 		var ln := room.get_node_or_null("Layers/" + lid)
@@ -122,6 +136,45 @@ func _make_items() -> void:
 	_top_item.name = "Drops"
 	add_child(_top_item)
 	_top_item.draw.connect(_draw_top)
+
+
+func _make_film() -> void:
+	var f: Dictionary = cfg.get("film", {})
+	var path := String(f.get("video", ""))
+	if f.is_empty() or not films_enabled or path == "" or not ResourceLoader.exists(path):
+		return
+	var stream = load(path)
+	if not stream is VideoStream:
+		push_warning("AmbientWheel: film %s is not a video" % path)
+		return
+	var r: Array = f.get("rect", [0, 0, 0, 0])
+	var gap := float(f.get("gap_px", 16))
+	film = VideoStreamPlayer.new()
+	film.name = "Film"
+	film.stream = stream
+	film.expand = true
+	film.loop = true
+	film.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	film.position = Vector2(float(r[0]), float(r[1]))
+	film.size = Vector2(float(r[2]), float(r[3]))
+	var total := float(r[3]) * 2.0 + gap
+	var m := ShaderMaterial.new()
+	m.shader = FILM_SHADER
+	m.set_shader_parameter("color_frac", float(r[3]) / total)
+	m.set_shader_parameter("alpha_from", (float(r[3]) + gap) / total)
+	film.material = m
+	film.autoplay = true   # the room is assembled out of the tree: the player starts as it enters it
+	add_child(film)        # last child: over the code's foam, streams and drops
+	visibility_changed.connect(_film_pause)
+	film.ready.connect(_film_pause)
+	if film.is_inside_tree():
+		film.play()
+		_film_pause()
+
+
+func _film_pause() -> void:
+	if film != null and is_instance_valid(film) and film.is_inside_tree():
+		film.paused = not is_visible_in_tree()
 
 
 func _lace() -> bool:

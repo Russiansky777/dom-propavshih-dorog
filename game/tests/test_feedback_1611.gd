@@ -14,6 +14,11 @@ extends SceneTree
 ##       да»): the titles of the same mini-games lie on the same dark plate — their own, or the hint's when the hint
 ##       is right under the title (the fishing). Checked inside F16-2's run (the same mini-games opened once). Self-
 ##       check — on the dark backdrop (the noughts and crosses) the title has no plate.
+##   F16-5 (16.11, 17:20 «вот, этот вариант мне нравится»; 17:28 «давай вставлять так и собирать игру»): at the mill
+##       wheel (M1) the live water of the fal trial clip lies over the code's water — a looping video player (`film` of
+##       the `wheel_water` entry) at its rectangle, over the code's foam, streams and drops (the last child), under the
+##       drizzle and the time-of-day grade; with the pond let down it is hidden with the rest of the wheel's water and
+##       paused. Self-check — with the films turned off the room is built without one, and the check notices.
 ##   F16-3 («Можно убрать кадр с ходиками, а добавить… рыбалку»): the film (trailer_v3) has no shot of mother's mirror,
 ##       opens with the game itself (a room), and has the fishing after the street of Olkhovka and before the map: the
 ##       mini-game is Mitya's own (the choice's, in the room), the float goes under at its second, the hand strikes with
@@ -58,6 +63,7 @@ func _run() -> void:
 	rm = root.get_node("RoomManager")
 	await _test("F16-1 the line of a picked thing names no gender («его»); self-check — the old wording is caught", _test_selected_line)
 	await _test("F16-2 the hints (and F16-4 the titles) of the mini-games over a picture lie on a plate that covers the words and hugs them; self-checks — a stale plate, the dark backdrop", _test_hint_plates)
+	await _test("F16-5 the mill wheel's live water: a looping film over the code's water, under the drizzle and the grade, gone with the pond let down; self-check — films off, none", _test_wheel_film)
 	await _test("F16-3 the film: no mother's mirror, the fishing after the street — bite, strike, the string in the green; self-check — no hand, no green", _test_film_fishing)
 	var failed := _results.count(false)
 	print("==== feedback 16.11: %d tests, %d passed, %d failed ====" % [_results.size(), _results.size() - failed, failed])
@@ -255,6 +261,95 @@ func _test_hint_plates() -> void:
 	sr.close_mechanic()
 	for i in 2:
 		await process_frame
+	main_node.queue_free()
+	await process_frame
+	if rm.current_room != null:
+		rm.current_room.queue_free()
+		rm.current_room = null
+	gs.reset()
+	await process_frame
+
+
+# --- F16-5 ---------------------------------------------------------------------------------------
+
+## The mill yard (M1) on the second day, as the probe and the trailer enter it; its wheel's water node.
+func _mill_wheel() -> Node:
+	var p: Dictionary = (sd.start_points.get("day2", {}) as Dictionary).duplicate(true)
+	p["room"] = "M1"
+	rm.start_with(p)
+	for i in 8:
+		await process_frame
+	for n in rm.current_room.find_children("*", "AmbientWheel", true, false):
+		if String(n.name) == "wheel_water":
+			return n
+	return null
+
+
+func _film_ok(w: Node, entry: Dictionary) -> String:
+	if w == null:
+		return "no wheel water node in M1"
+	var f = w.get("film")
+	if f == null or not is_instance_valid(f):
+		return "no film at the wheel"
+	var fe: Dictionary = entry.get("film", {})
+	var r: Array = fe.get("rect", [])
+	if (f as VideoStreamPlayer).stream == null or (f as VideoStreamPlayer).stream.resource_path != String(fe.get("video", "")):
+		return "the film plays %s, the data names %s" % [str((f as VideoStreamPlayer).stream), fe.get("video", "")]
+	if (f as Control).position != Vector2(r[0], r[1]) or (f as Control).size != Vector2(r[2], r[3]):
+		return "the film stands at %s %s, the data says %s" % [str((f as Control).position), str((f as Control).size), str(r)]
+	if not (f as VideoStreamPlayer).loop:
+		return "the film does not loop"
+	if (f as Node).get_index() != w.get_child_count() - 1:
+		return "the film is not over the code's water (child %d of %d)" % [(f as Node).get_index(), w.get_child_count()]
+	var mat := (f as CanvasItem).material as ShaderMaterial
+	if mat == null or mat.shader == null or not mat.shader.resource_path.ends_with("wheel_water_film.gdshader"):
+		return "the film has no shader putting its colour and opacity together"
+	return ""
+
+
+func _test_wheel_film() -> void:
+	gs.reset()
+	var main_node = load("res://scenes/Main.tscn").instantiate()
+	main_node.set("title_mode", "skip")
+	root.add_child(main_node)
+	for i in 4:
+		await process_frame
+	rm.autosave_enabled = false
+	var entry: Dictionary = {}
+	var amb = JSON.parse_string(FileAccess.get_file_as_string("res://data/story/ambient/M1.json"))
+	for e in amb.get("wheel_water", []):
+		if String(e.get("id", "")) == "wheel_water":
+			entry = e
+	_check(not entry.get("film", {}).is_empty(), "M1's wheel water names its film in the data")
+	_check(ResourceLoader.exists(String(entry.get("film", {}).get("video", ""))), "the film's file is in the game")
+	var w: Node = await _mill_wheel()
+	var why := _film_ok(w, entry)
+	_check(why == "", "M1, day two: " + why)
+	if w != null and w.get("film") != null:
+		var f: VideoStreamPlayer = w.get("film")
+		for i in 6:
+			await process_frame
+		_check(f.is_playing() and not f.paused, "the film plays in the yard (playing %s, paused %s)" % [f.is_playing(), f.paused])
+		var rain: Node = null
+		for n in rm.current_room.find_children("Rain", "", true, false):
+			rain = n
+		var wz := (w as CanvasItem).z_index
+		var grade_z := int(load("res://scripts/rooms/time_grade.gd").get("GRADE_Z"))   # by path: the class leans on the autoloads
+		_check(rain != null and (rain as CanvasItem).z_index > wz, "the drizzle falls over the film (z %d over %d)" % [(rain as CanvasItem).z_index if rain != null else -1, wz])
+		_check(grade_z > 0 and wz < grade_z, "the time-of-day grade lies over the film (z %d under %d)" % [wz, grade_z])
+		gs.set_flag("pond_lowered", true)
+		for i in 4:
+			await process_frame
+		_check(not (w as CanvasItem).is_visible_in_tree() and f.paused, "the pond let down: the wheel's water hidden, the film paused (visible %s, paused %s)" % [(w as CanvasItem).is_visible_in_tree(), f.paused])
+		gs.set_flag("pond_lowered", false)
+		for i in 4:
+			await process_frame
+		_check((w as CanvasItem).is_visible_in_tree() and not f.paused, "the pond filled again: the film plays on")
+	# self-check: films off — the room is built without one, and the check above notices
+	AmbientWheel.films_enabled = false
+	var w2: Node = await _mill_wheel()
+	_check(_film_ok(w2, entry) != "" and (w2 == null or w2.get("film") == null), "self-check: with the films off M1 has no film, and the check says so")
+	AmbientWheel.films_enabled = true
 	main_node.queue_free()
 	await process_frame
 	if rm.current_room != null:

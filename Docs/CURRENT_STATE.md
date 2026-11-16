@@ -1,3 +1,10 @@
+# Current state — 16.11, 19:15: живая вода у мельничного колеса внесена в игру и проверена; запущены полный прогон и сборка exe (Opus 5.5)
+- **Директор 16.11, 17:20:** «вот, этот вариант мне нравится» (вода пробы 1 + струи из игры). **17:28:** «нет, давай вставлять так и собирать игру» — без ролика-петли за $0,56; сборка — по этому слову.
+- **Внесено:** `game/assets/rooms/M1/wheel_water_film.ogv` (`tools/wheel_water.py --pack`), `ambient_wheel.gd` (`film`), `shaders/wheel_water_film.gdshader`, `data/story/ambient/M1.json` (`wheel_water.film`). Устройство — `Docs/PLAN_WHEEL_WATER.md`, «В игре». Кадры из игры: `Docs/evidence/wheel_water/v_igre_dvor_melnicy.mp4`, `v_igre_den_sumerki_vecher.jpg`.
+- **Проверено здесь:** `test_feedback_1611` 4/4 (новый F16-5 — вода у колеса, с самопроверкой), `test_batch_j` 40/40, `test_batch_k` 33/33, `test_feedback_0111_k2` 15/15, `test_feedback_0111_k1` 16/16, `test_world`, `test_time_of_day`, `test_saves`, `test_exit_cues`, `test_batch_h_t2`, `test_batch_i_t5`, `test_feedback_0211b`, `test_review_1011` 25/25, `test_trailer` 3/3; `wheel_water.py --check --self-check` (в `run_tests.sh`), `validate_video_loops.py --self-check` (шов воды — по обычному шагу, самопроверка), `validate_story`, `validate_ambient`, `check_gdscript` — 0 ошибок.
+- **Чеклист сборки:** `Docs/ACCEPTANCE_1611.md` (номер и хэш сборки вписать, когда соберётся).
+- **Запущено:** полный прогон и сборка exe — номера ниже, в следующей записи.
+
 # Current state — 16.11, 17:20: вода у колеса — показан совмещённый вариант (вода пробы 1 справа + струи из игры слева); ждём слова Директора: вносить или сначала заказать ролик-петлю в характере пробы 1 ($0,56); потом одна сборка (Opus 5.5)
 - **Директор 16.11, 16:43:** «эта вода хорошая, а можно каким-то образом совместить и то, что было, и эту воду? или это нереально?» — сделано: `Docs/evidence/wheel_water/voda_dva_varianta.mp4`, `voda_proba1_i_iz_igry.mp4` (отправлены 17:18). Петля 2,71 с, полотно «дышит» ~27 % (ролик густеет со временем) — сказано Директору, предложен ролик-петля $0,56. Подробно — `Docs/PLAN_WHEEL_WATER.md`, «четвёртая часть». В игру не внесено.
 

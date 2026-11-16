@@ -4,7 +4,9 @@
 Проверяет каждый ролик:
   1. ключевой кадр один — в начале (Theora на промежуточных кадрах не кодирует мелкое движение, и оно выскакивает на
      каждом ключевом кадре: рывок раз в 0,5 с при ключевых кадрах ffmpeg по умолчанию);
-  2. шов петли: средняя разница последнего и первого кадра ≤ 3/255 (конец клипа приходит в картину);
+  2. шов петли: средняя разница последнего и первого кадра ≤ 3/255 (конец клипа приходит в картину) — или не больше
+     полутора обычных шагов между соседними кадрами того же ролика (16.11, вода у мельничного колеса: вода меняется
+     каждый кадр, и стык, равный обычной смене кадра, не виден);
   3. нет звуковой дорожки;
   4. картина живая (Директор 09.11, 22:18: «сцена с Агатой и мамой почему-то не живая — мы же её сделали и утвердили»:
      утверждённый 08.11 клип объятия заменили вечером 09.11 почти неподвижным — Kling Pro с последним кадром = первому):
@@ -37,6 +39,7 @@ import tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SEAM_MAX = 3.0
+SEAM_STEP_K = 1.5   # 16.11: или полтора обычных шага между соседними кадрами того же ролика
 DRIFT_MAX = 1.0   # точек кадра 1080p
 
 
@@ -51,15 +54,19 @@ def has_audio(path: str) -> bool:
     return "audio" in out
 
 
-def seam(path: str) -> float:
+def seam(path: str, with_step: bool = False):
     try:
         import numpy as np
     except ImportError:   # без numpy шов не мерится
-        return 0.0
+        return (0.0, 0.0) if with_step else 0.0
     p = subprocess.run(["ffmpeg", "-nostdin", "-loglevel", "error", "-i", path, "-vf", "scale=480:270", "-f", "rawvideo",
                         "-pix_fmt", "rgb24", "-"], capture_output=True, check=True)
     a = np.frombuffer(p.stdout, np.uint8).reshape(-1, 270, 480, 3).astype(int)
-    return float(abs(a[-1] - a[0]).mean())
+    s = float(abs(a[-1] - a[0]).mean())
+    if not with_step:
+        return s
+    step = float(np.median([abs(a[k + 1] - a[k]).mean() for k in range(len(a) - 1)])) if len(a) > 1 else 0.0
+    return s, step
 
 
 def motion(path: str) -> float:
@@ -211,9 +218,12 @@ def check(path: str, motion_min=None) -> list:
     k = keyframes(path)
     if k != [0]:
         errs.append(f"ключевые кадры {k[:6]}{'…' if len(k) > 6 else ''} ({len(k)} шт.) — нужен один, в начале")
-    s = seam(path)
-    if s > SEAM_MAX:
-        errs.append(f"шов петли {s:.2f}/255 > {SEAM_MAX}")
+    # 16.11 (живая вода у мельничного колеса — вода меняется каждый кадр): шов не больше полутора обычных шагов
+    # между соседними кадрами того же ролика тоже незаметен; у петель-картин обычный шаг мал (≤ 1), и для них
+    # предел остаётся 3/255
+    s, step = seam(path, True)
+    if s > max(SEAM_MAX, SEAM_STEP_K * step):
+        errs.append(f"шов петли {s:.2f}/255 > {SEAM_MAX} (обычный шаг между кадрами {step:.2f})")
     if has_audio(path):
         errs.append("есть звуковая дорожка")
     d = drift(path)
@@ -263,6 +273,18 @@ def main() -> int:
             caught3 = any("камера сползает" in e for e in check(slid))
             print(("OK    " if caught3 else "FAIL  ") + "самопроверка: картина, съезжающая на 8 точек, " + ("поймана" if caught3 else "НЕ поймана"))
             bad += not caught3
+            # 16.11: живая вода, обрезанная на треть, — шов больше обычного шага, должен быть пойман и при пределе
+            # «полтора шага»
+            water = [f for f in files if f.endswith("wheel_water_film.ogv")]
+            if water:
+                n = int(subprocess.check_output(["ffprobe", "-v", "error", "-count_frames", "-select_streams", "v:0", "-show_entries",
+                                                 "stream=nb_read_frames", "-of", "csv=p=0", water[0]]).decode().strip() or 0)
+                cut = os.path.join(d, "water_cut.ogv")
+                subprocess.run(["ffmpeg", "-nostdin", "-loglevel", "error", "-y", "-i", water[0], "-frames:v", str(n - n // 3), "-an",
+                                "-c:v", "libtheora", "-q:v", "10", "-g", str(n + 8), cut], check=True)
+                caught6 = any("шов петли" in e for e in check(cut))
+                print(("OK    " if caught6 else "FAIL  ") + "самопроверка: живая вода у колеса, обрезанная на треть, " + ("поймана (шов)" if caught6 else "НЕ поймана"))
+                bad += not caught6
         if len(intro_of) >= 2:
             # вступление одной комнаты перед петлёй другой — картины разные, переход должен быть пойман
             (i1, _l1), (_i2, l2) = sorted(intro_of.items())[:2]

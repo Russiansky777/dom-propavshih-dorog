@@ -14,7 +14,19 @@
   python3 tools/wheel_water.py --clip assets/incoming/video/wheel_3/…mp4 --game /path/clean_%03d.jpg \
       --out Docs/evidence/wheel_water/voda_kak_v_igre.mp4 [--from 0 --to 5 --seam 0.5] [--mask-out mask.png]
 Печатает: длину петли, разницу на стыке против обычной разницы соседних кадров (в области воды), долю кадра под
-маской. Это инструмент пробы: в игру он ничего не пишет.
+маской.
+
+В игру (Директор 16.11, 17:28: «давай вставлять так и собирать игру» — о варианте «вода пробы 1 + струи из игры»):
+  python3 tools/wheel_water.py --clip assets/incoming/video/wheel_1/…mp4 --from 1.75 --to 5.05 --seam 0.6 --front \
+      --rim 45 --cut 1170,620,1470,730 --pack game/assets/rooms/M1/wheel_water_film.ogv \
+      --tone-ref Docs/evidence/wheel_water/start_clean.png
+  → один поток Ogg Theora: сверху цвет воды (прямоугольник `--rect`, по умолчанию — охват маски, кратно 16), под ним
+    через `--gap` пикселей — её непрозрачность (серым); игра складывает их шейдером (AmbientWheel, `film`) поверх
+    своей воды у колеса. Печатает прямоугольник для data/story/ambient/M1.json.
+  python3 tools/wheel_water.py --check game/assets/rooms/M1/wheel_water_film.ogv --rect … [--self-check]
+  → петля без скачка (стык ≤ 1,5 × обычного шага), колесо ролика не видно (в круге нашего колеса выше воды, вне
+    FRONT, непрозрачность ≤ 8 из 255; в FRONT под непрозрачностью — светлая вода), код 0/1; --self-check: обрезанная
+    петля и маска без выреза колеса ловятся.
 """
 import argparse
 import json
@@ -150,11 +162,95 @@ def tone_match(loop, game0, mask, hub, radius):
     return gains
 
 
+# --- Пакет для игры: цвет над непрозрачностью в одном потоке Theora ------------------------------------------------
+
+GAP = 16
+SEAM_K = 1.5          # стык петли — не больше полутора обычных шагов между кадрами
+WHEEL_ALPHA_MAX = 8   # из 255: столько колеса ролика можно «видеть» в круге нашего колеса (99,9 % точек; шум сжатия)
+WHEEL_ALPHA_PEAK = 24 # из 255: и ни одной точки ярче (звон сжатия у края маски)
+FRONT_LUMA_MIN = 110  # средняя яркость того, что взято из ролика внутри круга (вода светлая, дерево тёмное)
+
+
+def auto_rect(mask, front):
+    m = np.maximum(mask, front if front is not None else 0.0) > 0.004
+    ys, xs = np.nonzero(m)
+    x0 = int(xs.min()) // 16 * 16
+    y0 = int(ys.min()) // 16 * 16
+    x1 = min(W, -(-int(xs.max() + 1) // 16) * 16)
+    y1 = min(H, -(-int(ys.max() + 1) // 16) * 16)
+    return [x0, y0, x1 - x0, y1 - y0]
+
+
+def theora(path, w, h, n, quality=10):
+    os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
+    return subprocess.Popen(["ffmpeg", "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "bgr24", "-s", "%dx%d" % (w, h),
+                             "-r", str(FPS), "-i", "-", "-an", "-c:v", "libtheora", "-q:v", str(quality), "-g", str(n + 8), path],
+                            stdin=subprocess.PIPE)
+
+
+def pack_frame(color, alpha, rect, gap=GAP):
+    x, y, w, h = rect
+    out = np.zeros((h * 2 + gap, w, 3), np.uint8)
+    out[:h] = color[y:y + h, x:x + w]
+    a = np.clip(alpha[y:y + h, x:x + w] * 255.0 + 0.5, 0, 255).astype(np.uint8)
+    out[h + gap:] = a[..., None]
+    return out
+
+
+def read_pack(path, rect, gap=GAP):
+    """The packed stream back: [(colour BGR h×w, alpha 0…1 h×w)] per frame."""
+    x, y, w, h = rect
+    cap = cv2.VideoCapture(path)
+    out = []
+    while True:
+        ok, f = cap.read()
+        if not ok:
+            break
+        out.append((f[:h], f[h + gap:h * 2 + gap, :, 1].astype(np.float32) / 255.0))
+    cap.release()
+    return out
+
+
+def wheel_zone(rect, hub, radius, water_line):
+    """Inside the pack's rectangle: True where our wheel stands above the water and no clip but water may show."""
+    x, y, w, h = rect
+    yy, xx = np.mgrid[y:y + h, x:x + w].astype(np.float32)
+    (xa, ya), (xb, yb) = water_line
+    line_y = ya + (xx - xa) * (yb - ya) / (xb - xa)
+    inside = (xx - hub[0]) ** 2 + (yy - hub[1]) ** 2 < (radius - 4) ** 2
+    above = yy < line_y - 6
+    fr = np.zeros((H, W), np.uint8)
+    cv2.fillPoly(fr, [np.array(FRONT, np.int32)], 1)
+    front = fr[y:y + h, x:x + w] > 0
+    return inside & above & ~front, inside & above & front
+
+
+def check_pack(frames, rect, hub, radius, water_line):
+    """[(ok, message)] — the loop goes round without a jump; the clip's wheel never shows over ours."""
+    res = []
+    alpha_any = np.max(np.stack([a for _, a in frames]), axis=0) > 0.5
+    lum = [cv2.cvtColor(c, cv2.COLOR_BGR2GRAY).astype(np.float32) for c, _ in frames]
+    steps = [float(np.abs(lum[k + 1] - lum[k])[alpha_any].mean()) for k in range(len(lum) - 1)]
+    step = float(np.median(steps))
+    seam = float(np.abs(lum[0] - lum[-1])[alpha_any].mean())
+    res.append((seam <= SEAM_K * step, "петля %d кадров: стык (последний → первый) %.2f из 255, обычный шаг %.2f (предел — %.1f шага)" % (len(frames), seam, step, SEAM_K)))
+    off, front = wheel_zone(rect, hub, radius, water_line)
+    offa = np.concatenate([a[off] for _, a in frames]) * 255.0
+    p999, peak = float(np.percentile(offa, 99.9)), float(offa.max())
+    res.append((p999 <= WHEEL_ALPHA_MAX and peak <= WHEEL_ALPHA_PEAK, "колесо ролика над нашим не видно: непрозрачность в круге колеса вне места падения воды — %.1f из 255 у 99,9 %% точек, наибольшая %.1f (пределы %d и %d)" % (p999, peak, WHEEL_ALPHA_MAX, WHEEL_ALPHA_PEAK)))
+    num = sum(float((l * a)[front & (a > 0.15)].sum()) for l, (_, a) in zip(lum, frames))
+    den = sum(float(a[front & (a > 0.15)].sum()) for _, a in frames)
+    share = den / max(1.0, float(front.sum()) * len(frames))
+    took = num / den if share >= 0.002 else 255.0      # under 0.2 % of the zone taken — nothing of the clip shows there
+    res.append((took >= FRONT_LUMA_MIN, "поверх нашего колеса из ролика берётся только вода: средняя яркость взятого %s при доле %.2f %% зоны (вода светлая; предел %d)" % ("%.0f" % took if share >= 0.002 else "— (почти ничего)", 100.0 * share, FRONT_LUMA_MIN)))
+    return res
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--clip", required=True)
-    ap.add_argument("--game", required=True, help="кадры игры, шаблон printf: /path/clean_%%03d.jpg")
-    ap.add_argument("--out", required=True)
+    ap.add_argument("--clip", default="")
+    ap.add_argument("--game", default="", help="кадры игры, шаблон printf: /path/clean_%%03d.jpg")
+    ap.add_argument("--out", default="")
     ap.add_argument("--from", dest="t0", type=float, default=0.0)
     ap.add_argument("--to", dest="t1", type=float, default=1e9)
     ap.add_argument("--seam", type=float, default=0.5)
@@ -162,10 +258,44 @@ def main() -> int:
     ap.add_argument("--feather", type=float, default=8.0, help="мягкий край маски воды, px")
     ap.add_argument("--cut", default="", help="x0,y0,x1,y1 — область, где ролик не брать (брак дубля)")
     ap.add_argument("--front", action="store_true", help="у колеса брать из ролика только воду (FRONT, waterlike)")
+    ap.add_argument("--pack", default="", help="в игру: поток Theora — цвет над непрозрачностью")
+    ap.add_argument("--rect", default="", help="x,y,w,h прямоугольника пакета (по умолчанию — охват маски)")
+    ap.add_argument("--tone-ref", default="", help="кадр игры для подгонки тона (при --pack)")
+    ap.add_argument("--check", default="", help="проверить готовый пакет .ogv")
+    ap.add_argument("--self-check", action="store_true")
     ap.add_argument("--mask-out", default="")
     ap.add_argument("--crf", type=int, default=17)
     a = ap.parse_args()
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    if a.check:
+        hub, radius, wl = wheel_geometry(root)
+        rect = [int(v) for v in a.rect.split(",")]
+        frames = read_pack(a.check, rect)
+        if not frames:
+            print("FAIL  %s: не читается" % a.check)
+            return 1
+        ok_all = True
+        for ok, msg in check_pack(frames, rect, hub, radius, wl):
+            print(("PASS  " if ok else "FAIL  ") + "%s: %s" % (os.path.basename(a.check), msg))
+            ok_all = ok_all and ok
+        if a.self_check:
+            cut = frames[:len(frames) - len(frames) // 3]          # a loop cut short: its end is not its beginning
+            bad = check_pack(cut, rect, hub, radius, wl)[0]
+            print(("PASS  " if not bad[0] else "FAIL  ") + "self-check: петля, обрезанная на треть, ловится — " + bad[1])
+            ok_all = ok_all and not bad[0]
+            off, _ = wheel_zone(rect, hub, radius, wl)
+            leak = [(c, np.where(off, 1.0, al)) for c, al in frames[:6]]   # the clip's wheel let through
+            bad2 = check_pack(leak, rect, hub, radius, wl)[1]
+            print(("PASS  " if not bad2[0] else "FAIL  ") + "self-check: маска без выреза колеса ловится — " + bad2[1])
+            ok_all = ok_all and not bad2[0]
+            _, fr = wheel_zone(rect, hub, radius, wl)
+            wood = [(np.full_like(c, (40, 60, 90)), np.where(fr, 1.0, al)) for c, al in frames[:6]]   # brown wood taken
+            bad3 = check_pack(wood, rect, hub, radius, wl)[2]
+            print(("PASS  " if not bad3[0] else "FAIL  ") + "self-check: дерево ролика поверх колеса ловится — " + bad3[1])
+            ok_all = ok_all and not bad3[0]
+        return 0 if ok_all else 1
+    if not a.clip or (not a.pack and (not a.game or not a.out)):
+        ap.error("нужны --clip и --game с --out, или --pack, или --check")
     frames, fps = read_clip(a.clip, a.t0, a.t1)
     if len(frames) < 24:
         print("слишком мало кадров ролика: %d" % len(frames), file=sys.stderr)
@@ -178,6 +308,25 @@ def main() -> int:
     front = poly_soft(FRONT, a.feather) if a.front else None
     if a.mask_out:
         cv2.imwrite(a.mask_out, (mask * 255).astype(np.uint8))
+    if a.pack:
+        front = poly_soft(FRONT, a.feather) if a.front else None
+        rect = [int(v) for v in a.rect.split(",")] if a.rect else auto_rect(mask, front)
+        ref = cv2.imread(a.tone_ref) if a.tone_ref else None
+        if ref is None:
+            ap.error("--pack: нужен --tone-ref (кадр игры)")
+        gains = tone_match(loop, ref, mask, hub, radius)
+        lut = [np.clip(np.arange(256, dtype=np.float32) * g[0] + g[1], 0, 255).astype(np.uint8) for g in gains]
+        x, y, w, h = rect
+        p = theora(a.pack, w, h * 2 + GAP, len(loop))
+        for fr in loop:
+            col = np.stack([lut[c][fr[..., c]] for c in range(3)], axis=-1)
+            al = np.maximum(mask, front * waterlike(fr)) if front is not None else mask
+            p.stdin.write(pack_frame(col, al, rect).tobytes())
+        p.stdin.close()
+        p.wait()
+        print("пакет: %s — %d кадров (%.2f с), прямоугольник %s, тон B,G,R: %s" % (a.pack, len(loop), len(loop) / fps, ",".join(str(v) for v in rect),
+              ", ".join("%.3f %+.1f" % g for g in gains)))
+        return 0 if p.returncode == 0 else 1
     game = []
     i = 0
     while os.path.exists(a.game % i):

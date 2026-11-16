@@ -198,6 +198,10 @@ if command -v ffmpeg >/dev/null && command -v ffprobe >/dev/null; then
   # the boat in the film is the painting moving as a whole; self-check — the clip's own boat is caught, a held one passes
   python3 -I "$ROOT/tools/video_rigid.py" "$ROOT/tools/rigid/F_hug_pelageya.json" --check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
   python3 -I "$ROOT/tools/video_rigid.py" "$ROOT/tools/rigid/F_hug_pelageya.json" --self-check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
+  # Директор 16.11, 17:28 («давай вставлять так»): живая вода у мельничного колеса (M1) — петля без скачка, колесо ролика
+  # не видно поверх нашего, поверх колеса из ролика берётся только вода; самопроверки — обрезанная петля, маска без
+  # выреза колеса и дерево ролика ловятся
+  python3 -I "$ROOT/tools/wheel_water.py" --check "$ROOT/game/assets/rooms/M1/wheel_water_film.ogv" --rect "$(python3 -I -c "import json,sys; e=[w for w in json.load(open(sys.argv[1]))['wheel_water'] if w['id']=='wheel_water'][0]; print(','.join(str(v) for v in e['film']['rect']))" "$ROOT/data/story/ambient/M1.json")" --self-check 2>&1 | tee -a "$BUILD_DIR/logs/tests.log" || code=1
 else
   skipped "validate_video_loops --self-check" "ffmpeg/ffprobe"
 fi
