@@ -1,0 +1,5 @@
+run 43891525518 2026-11-16T15:02:09Z request: pipeline/requests/video_wheel_3.json
+== кадр M1_wheel_loop: Docs/evidence/wheel_water/loop_start.png
+   картинка 1920x1080, 793 КБ
+   fal-ai/kling-video/v3/pro/image-to-video #1: OK 280.7 с, 14332 КБ
+готово: 1 клипов, 0 ошибок → assets/incoming/video/wheel_3

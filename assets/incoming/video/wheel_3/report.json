@@ -1,0 +1,18 @@
+{
+ "trial": "wheel_3",
+ "runs": [
+  {
+   "frame": "M1_wheel_loop",
+   "model": "fal-ai/kling-video/v3/pro/image-to-video",
+   "attempt": 1,
+   "file": "M1_wheel_loop__fal-ai-kling-video-v3-pro-image-to-video_1.mp4",
+   "args": {
+    "prompt": "Locked-off static camera, no camera movement, no zoom. The large wooden water wheel of the old log mill turns slowly and steadily clockwise. A steady sheet of clear water pours off the wheel on its right side and falls into the mill race, splashing; ripples and small waves spread across the dark water and flow away along the race. The flow is continuous and even from the first frame to the last. The water surface stays dark, wet and transparent, reflecting the grey sky. Everything else stays perfectly still: the log house, the fence, the road, the trees, the sacks. Overcast autumn day. Painterly look unchanged, no new objects, no people, no text. Seamless loop: the video ends exactly on its first frame.",
+    "duration": "5",
+    "generate_audio": false
+   },
+   "seconds": 280.7,
+   "bytes": 14676829
+  }
+ ]
+}
