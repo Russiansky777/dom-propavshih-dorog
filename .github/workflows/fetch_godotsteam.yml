@@ -56,11 +56,13 @@ jobs:
                   continue
               if not isinstance(rel, list) or not rel:
                   continue
-              cands = [r for r in rel if not tag or r.get("tag_name") == tag]
+              # a GDExtension release is tagged `<v>-gde` beside the module one (`<v>`, editors and templates)
+              cands = [r for r in rel if (not tag or r.get("tag_name") in (tag, tag + "-gde"))
+                       and any("gdextension" in (a.get("name") or "").lower() for a in r.get("assets", []))]
               for r in cands[:1]:
                   for a in r.get("assets", []):
                       n = (a.get("name") or "")
-                      if "gdextension" in n.lower() or "plugin" in n.lower():
+                      if "gdextension" in n.lower():
                           picked.append((src, r.get("tag_name"), n, a.get("browser_download_url")))
               if picked:
                   break
@@ -75,7 +77,8 @@ jobs:
           print(open("out/SHA256.txt").read() or "nothing picked")
           EOF
           ls -la out/dl
-          for z in out/dl/*.zip; do [ -f "$z" ] && unzip -l "$z" | tail -60; done
+          for z in out/dl/*.zip; do if [ -f "$z" ]; then unzip -l "$z" | tail -60; fi; done
+          test -s out/SHA256.txt
 
       - uses: actions/upload-artifact@v4
         with:
