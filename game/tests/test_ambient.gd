@@ -225,6 +225,19 @@ func _collect(n: Node, out: Array) -> void:
 		_collect(c, out)
 
 
+## Why an ambient node would take a click from the room ("" — it would not). A Control is allowed only when the mouse
+## goes through it (MOUSE_FILTER_IGNORE) — 16.11: the mill wheel's live water is a VideoStreamPlayer (a Control); the
+## real click through it is checked by test_feedback_1611 F16-5.
+func _takes_clicks(n: Node) -> String:
+	if n is CollisionObject2D:
+		return "is a CollisionObject2D (would take clicks)"
+	if n is Control and (n as Control).mouse_filter != Control.MOUSE_FILTER_IGNORE:
+		return "is a Control that does not let the mouse through (would take clicks)"
+	if n.is_processing_input() or n.is_processing_unhandled_input():
+		return "processes input"
+	return ""
+
+
 func _test_no_input() -> void:
 	for rid in _ambient_rooms():
 		if not sd.has_room(rid):
@@ -237,10 +250,20 @@ func _test_no_input() -> void:
 		var nodes: Array = []
 		_collect(amb, nodes)
 		for n in nodes:
-			_check(not (n is CollisionObject2D), "%s: %s is a CollisionObject2D (would take clicks)" % [rid, n.get_path()])
-			_check(not (n is Control), "%s: %s is a Control (would take clicks)" % [rid, n.get_path()])
-			_check(not n.is_processing_input() and not n.is_processing_unhandled_input(), "%s: %s processes input" % [rid, n.name])
+			var why := _takes_clicks(n)
+			_check(why == "", "%s: %s %s" % [rid, n.get_path(), why])
 		_free(room)
+	# self-check (16.11): a Control that stops the mouse and a body with collisions are caught; a Control that lets
+	# every click through (the mill wheel's water film, MOUSE_FILTER_IGNORE) is not
+	var stop := Control.new()
+	var pass_ := Control.new()
+	pass_.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var body := Area2D.new()
+	_check(_takes_clicks(stop) != "" and _takes_clicks(body) != "" and _takes_clicks(pass_) == "",
+		"self-check: the input rule misjudges a stopping Control, an Area2D or a see-through Control")
+	stop.free()
+	pass_.free()
+	body.free()
 	# Z2 under the rain: Room.pick still finds the porch exit and the landmarks hotspot.
 	gs.reset()
 	await _spawn_main()

@@ -18,7 +18,9 @@ extends SceneTree
 ##       wheel (M1) the live water of the fal trial clip lies over the code's water — a looping video player (`film` of
 ##       the `wheel_water` entry) at its rectangle, over the code's foam, streams and drops (the last child), under the
 ##       drizzle and the time-of-day grade; with the pond let down it is hidden with the rest of the wheel's water and
-##       paused. Self-check — with the films turned off the room is built without one, and the check notices.
+##       paused. Self-check — with the films turned off the room is built without one, and the check notices. A real
+##       click on the wheel through the film reaches the room (full run 43925344455 flagged the film as a Control that
+##       would take clicks — it lets the mouse through); self-check — the same film stopping the mouse eats the click.
 ##   F16-3 («Можно убрать кадр с ходиками, а добавить… рыбалку»): the film (trailer_v3) has no shot of mother's mirror,
 ##       opens with the game itself (a room), and has the fishing after the street of Olkhovka and before the map: the
 ##       mini-game is Mitya's own (the choice's, in the room), the float goes under at its second, the hand strikes with
@@ -307,6 +309,41 @@ func _film_ok(w: Node, entry: Dictionary) -> String:
 	return ""
 
 
+## A real mouse click (move, press, release through Input) at `at` (game canvas) — does Agata start for it?
+func _click_reaches_room(at: Vector2) -> bool:
+	for i in 120:
+		if not sr.is_busy():
+			break
+		await process_frame
+	var pl: Node = rm.player
+	if pl == null:
+		return false
+	var got := [false]
+	var mark := func(_a = null, _b = null): got[0] = true
+	pl.walk_started.connect(mark)
+	pl.interaction_performed.connect(mark)
+	pl.action_started.connect(mark)
+	var win := root.get_final_transform() * at
+	var m := InputEventMouseMotion.new()
+	m.position = win
+	m.global_position = win
+	Input.parse_input_event(m)
+	await process_frame
+	for pressed in [true, false]:
+		var ev := InputEventMouseButton.new()
+		ev.button_index = MOUSE_BUTTON_LEFT
+		ev.pressed = pressed
+		ev.position = win
+		ev.global_position = win
+		Input.parse_input_event(ev)
+		await process_frame
+	await process_frame
+	pl.walk_started.disconnect(mark)
+	pl.interaction_performed.disconnect(mark)
+	pl.action_started.disconnect(mark)
+	return got[0]
+
+
 func _test_wheel_film() -> void:
 	gs.reset()
 	var main_node = load("res://scenes/Main.tscn").instantiate()
@@ -345,6 +382,14 @@ func _test_wheel_film() -> void:
 		for i in 4:
 			await process_frame
 		_check((w as CanvasItem).is_visible_in_tree() and not f.paused, "the pond filled again: the film plays on")
+		# a real click on the wheel through the film (full run 43925344455: the film is a Control) reaches the room;
+		# self-check first — the same film stopping the mouse eats the click, and the check notices
+		var at := Vector2(1395, 500)   # the wheel hotspot's middle, inside the film's rectangle
+		_check(Rect2(f.position, f.size).has_point(at), "the click point is not over the film")
+		f.mouse_filter = Control.MOUSE_FILTER_STOP
+		_check(not await _click_reaches_room(at), "self-check: a film that stops the mouse still let the click into the room")
+		f.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_check(await _click_reaches_room(at), "a click on the wheel through the live water does not reach the room")
 	# self-check: films off — the room is built without one, and the check above notices
 	AmbientWheel.films_enabled = false
 	var w2: Node = await _mill_wheel()
