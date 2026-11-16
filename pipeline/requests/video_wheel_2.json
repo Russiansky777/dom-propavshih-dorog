@@ -1,0 +1,28 @@
+{
+  "_comment": "Второй дубль пробы воды у колеса (16.11). В первом (wheel_1) камера стоит, колесо цело и крутится, вода, падающая с лопастей, — настоящая, но слова «white foam… patches of foam drift away» модель нарисовала плоской белой плитой у левого края (похоже на лёд или снег). Здесь описание без пены и без белого: тёмная прозрачная вода, рябь, брызги. Тот же стартовый кадр, Kling 3.0 Pro, 5 с, без звука, $0,56 (цена сверена 16.11); вместе с первым дублем $1,12 — в пределах «первая проба ~$1–2» из плана, который Директор видел. В игру ролик не идёт.",
+  "trial": "wheel_2",
+  "image_max": 0,
+  "jpeg_q": 95,
+  "attempts": 1,
+  "frames": [
+    {
+      "id": "M1_wheel_clean_b",
+      "image": "Docs/evidence/wheel_water/start_clean.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "prompt": "Locked-off static camera, no camera movement, no zoom. The large wooden water wheel of the old log mill turns slowly and steadily clockwise. Clear water pours in thin streams off its paddles and falls into the mill race with small splashes and light spray. Under the wheel the dark water is churned: ripples and small waves spread outward and flow away along the race. The water surface stays dark, wet and transparent everywhere, reflecting the grey sky. Everything else stays perfectly still: the log house, the fence, the road, the trees, the sacks. Overcast autumn day. The wheel keeps its shape and size. Painterly look unchanged, no new objects, no people, no text."
+    }
+  ],
+  "models": [
+    {
+      "id": "fal-ai/kling-video/v3/pro/image-to-video",
+      "image_key": "start_image_url",
+      "args": {
+        "duration": "5",
+        "generate_audio": false
+      }
+    }
+  ]
+}
