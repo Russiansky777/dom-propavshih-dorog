@@ -1,8 +1,9 @@
 name: fetch-godotsteam
 # Steam (Директор 16.11: «так надо чтобы и достижения и оверлей и сохранения»): достать готовую сборку GodotSteam
 # GDExtension (MIT, https://store.godotengine.org/asset/godotsteam/godotsteam-gdextension/) — сессия Claude до
-# codeberg.org не достаёт, раннер GitHub достаёт. Ничего не коммитит: список выпусков и архивы с sha256 — в
-# артефакт прогона; Claude смотрит их, проверяет загрузку в Godot 4.7.2 и кладёт аддон в game/addons/godotsteam.
+# codeberg.org не достаёт, раннер GitHub достаёт. В main не пишет: аддон (только win64 — игра, linux64 — проверки в
+# CI и у агента) и SHA256.txt кладутся отдельной веткой `vendor-godotsteam`; Claude смотрит её, проверяет загрузку в
+# Godot 4.7.2 и сам переносит в game/addons/godotsteam. Артефакты прогона сессии недоступны (хранилище закрыто).
 # Только вручную; `tag` — выпуск (пусто — последний на Codeberg).
 on:
   workflow_dispatch:
@@ -13,7 +14,7 @@ on:
         default: ""
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   fetch:
@@ -80,8 +81,29 @@ jobs:
           for z in out/dl/*.zip; do if [ -f "$z" ]; then unzip -l "$z" | tail -60; fi; done
           test -s out/SHA256.txt
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/checkout@v4
         with:
-          name: godotsteam
-          path: out/
-          retention-days: 7
+          path: repo
+          sparse-checkout: |
+            .github
+          sparse-checkout-cone-mode: true
+
+      - name: Push the addon to branch vendor-godotsteam
+        run: |
+          set -euo pipefail
+          rm -rf x && mkdir x && unzip -q out/dl/*.zip -d x
+          cd repo
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan vendor-godotsteam
+          git rm -rq --cached . || true
+          rm -rf ./* .github
+          mkdir -p game/addons/godotsteam
+          src=../x/addons/godotsteam
+          cp $src/godotsteam.gdextension $src/license.md $src/readme.md game/addons/godotsteam/
+          cp -r $src/win64 $src/linux64 game/addons/godotsteam/
+          cp ../out/SHA256.txt ../out/codeberg_releases.json game/addons/godotsteam/ 2>/dev/null || true
+          git add -A game
+          git commit -q -m "GodotSteam GDExtension $(cut -d' ' -f5 ../out/SHA256.txt | head -1): win64 + linux64 [skip ci]"
+          git push -f origin vendor-godotsteam
+          git log --stat -1 | cat
