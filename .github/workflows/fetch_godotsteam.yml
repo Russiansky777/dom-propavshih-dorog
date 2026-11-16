@@ -1,0 +1,84 @@
+name: fetch-godotsteam
+# Steam (Директор 16.11: «так надо чтобы и достижения и оверлей и сохранения»): достать готовую сборку GodotSteam
+# GDExtension (MIT, https://store.godotengine.org/asset/godotsteam/godotsteam-gdextension/) — сессия Claude до
+# codeberg.org не достаёт, раннер GitHub достаёт. Ничего не коммитит: список выпусков и архивы с sha256 — в
+# артефакт прогона; Claude смотрит их, проверяет загрузку в Godot 4.7.2 и кладёт аддон в game/addons/godotsteam.
+# Только вручную; `tag` — выпуск (пусто — последний на Codeberg).
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Выпуск GodotSteam (пусто — последний)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  fetch:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: List releases (Codeberg and the archived GitHub repo)
+        run: |
+          set -uo pipefail
+          mkdir -p out
+          curl -sSL --retry 3 "https://codeberg.org/api/v1/repos/godotsteam/godotsteam/releases?limit=15" -o out/codeberg_releases.json || true
+          curl -sSL --retry 3 -H "Accept: application/vnd.github+json" "https://api.github.com/repos/GodotSteam/GodotSteam/releases?per_page=15" -o out/github_releases.json || true
+          python3 - <<'EOF'
+          import json
+          for src in ("codeberg", "github"):
+              try:
+                  rel = json.load(open(f"out/{src}_releases.json"))
+              except Exception as e:
+                  print(src, "unreadable", e); continue
+              if not isinstance(rel, list):
+                  print(src, "not a list:", str(rel)[:300]); continue
+              for r in rel:
+                  names = [a.get("name") for a in r.get("assets", [])]
+                  print(src, "|", r.get("tag_name"), "|", r.get("published_at") or r.get("created_at"), "|", ", ".join(names))
+          EOF
+
+      - name: Download the GDExtension archives
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -uo pipefail
+          python3 - <<'EOF'
+          import json, os, urllib.request, hashlib
+          tag = os.environ.get("TAG", "").strip()
+          picked = []
+          for src in ("codeberg", "github"):
+              try:
+                  rel = json.load(open(f"out/{src}_releases.json"))
+              except Exception:
+                  continue
+              if not isinstance(rel, list) or not rel:
+                  continue
+              cands = [r for r in rel if not tag or r.get("tag_name") == tag]
+              for r in cands[:1]:
+                  for a in r.get("assets", []):
+                      n = (a.get("name") or "")
+                      if "gdextension" in n.lower() or "plugin" in n.lower():
+                          picked.append((src, r.get("tag_name"), n, a.get("browser_download_url")))
+              if picked:
+                  break
+          os.makedirs("out/dl", exist_ok=True)
+          with open("out/SHA256.txt", "w") as sums:
+              for src, t, n, url in picked:
+                  dst = f"out/dl/{n}"
+                  print("download", src, t, n, url)
+                  urllib.request.urlretrieve(url, dst)
+                  h = hashlib.sha256(open(dst, "rb").read()).hexdigest()
+                  sums.write(f"{h}  {n}  {src} {t} {url}\n")
+          print(open("out/SHA256.txt").read() or "nothing picked")
+          EOF
+          ls -la out/dl
+          for z in out/dl/*.zip; do [ -f "$z" ] && unzip -l "$z" | tail -60; done
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: godotsteam
+          path: out/
+          retention-days: 7
