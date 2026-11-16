@@ -75,14 +75,36 @@ def wheel_geometry(root):
 RACE = [(1200, 655), (1500, 650), (1760, 645), (1920, 730), (1920, 872), (1800, 846), (1700, 816), (1600, 782),
         (1500, 746), (1400, 713), (1300, 702), (1215, 690)]
 FALL = [(1470, 500), (1670, 500), (1670, 665), (1470, 665)]
+# Где вода в ролике идёт поверх колеса и рядом с ним (16.11, по первой пробе, которую Директор назвал «намного
+# реалистичнее»: «там и вода на колесе и под ним была лучше»): нижняя правая четверть обода. Вне круга колеса
+# (место падения, протока) ролик берётся целиком; внутри круга — только сама вода, светлое и бесцветное (струи,
+# брызги, пена); дерево колеса ролика (оно у модели гнётся и крутится по-своему) не берётся: под водой — наше колесо.
+FRONT = [(1490, 430), (1690, 430), (1690, 700), (1490, 700)]
 
 
-def water_mask(hub, radius, water_line, rim_px, feather_px, cut=None):
+def waterlike(frame, lo=85.0, span=55.0, s_hi=125.0, s_span=55.0):
+    """0…1 per pixel: how much a clip pixel is water (light, colourless) rather than wood, boards or shadow."""
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV).astype(np.float32)
+    lum = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY).astype(np.float32)
+    a = np.clip((lum - lo) / span, 0.0, 1.0) * np.clip((s_hi - hsv[..., 1]) / s_span, 0.0, 1.0)
+    return cv2.GaussianBlur(a, (0, 0), 1.2)
+
+
+def poly_soft(poly, feather_px):
+    m = np.zeros((H, W), np.uint8)
+    cv2.fillPoly(m, [np.array(poly, np.int32)], 255)
+    k = int(feather_px) * 2 + 1
+    m = cv2.erode(m, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k, k)))
+    return cv2.GaussianBlur(m.astype(np.float32) / 255.0, (0, 0), feather_px * 0.6)
+
+
+def water_mask(hub, radius, water_line, rim_px, feather_px, cut=None, fall=True):
     """Where the clip's water is taken: the race and the place of the fall, feathered; nothing inside the wheel's
     circle (radius + rim_px) above the water line — there the game's own picture and wheel."""
     m = np.zeros((H, W), np.uint8)
     cv2.fillPoly(m, [np.array(RACE, np.int32)], 255)
-    cv2.fillPoly(m, [np.array(FALL, np.int32)], 255)
+    if fall:
+        cv2.fillPoly(m, [np.array(FALL, np.int32)], 255)
     # feather inwards: the mask never reaches past the polygons (the banks stay the game's own picture)
     k = int(feather_px) * 2 + 1
     m = cv2.erode(m, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k, k)))
@@ -139,6 +161,7 @@ def main() -> int:
     ap.add_argument("--rim", type=float, default=10.0, help="запас вокруг круга колеса, px")
     ap.add_argument("--feather", type=float, default=8.0, help="мягкий край маски воды, px")
     ap.add_argument("--cut", default="", help="x0,y0,x1,y1 — область, где ролик не брать (брак дубля)")
+    ap.add_argument("--front", action="store_true", help="у колеса брать из ролика только воду (FRONT, waterlike)")
     ap.add_argument("--mask-out", default="")
     ap.add_argument("--crf", type=int, default=17)
     a = ap.parse_args()
@@ -152,6 +175,7 @@ def main() -> int:
     hub, radius, wl = wheel_geometry(root)
     cut = [int(v) for v in a.cut.split(",")] if a.cut else None
     mask = water_mask(hub, radius, wl, a.rim, a.feather, cut)
+    front = poly_soft(FRONT, a.feather) if a.front else None
     if a.mask_out:
         cv2.imwrite(a.mask_out, (mask * 255).astype(np.uint8))
     game = []
@@ -181,7 +205,10 @@ def main() -> int:
         g = cv2.imread(path).astype(np.float32)
         w = loop[k % len(loop)]
         wt = np.stack([lut[c][w[..., c]] for c in range(3)], axis=-1)
-        out = g * (1.0 - m3) + wt * m3
+        mk = m3
+        if front is not None:
+            mk = np.maximum(mask, front * waterlike(w))[..., None]
+        out = g * (1.0 - mk) + wt * mk
         out = np.clip(out, 0, 255).astype(np.uint8)
         p.stdin.write(out.tobytes())
     p.stdin.close()

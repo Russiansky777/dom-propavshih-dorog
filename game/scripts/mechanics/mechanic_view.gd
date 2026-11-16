@@ -96,6 +96,7 @@ func _open(s: Dictionary) -> void:
 	title_label.theme_type_variation = &"CloseupTitle"
 	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(title_label)
+	_title_plate()
 	close_button = Button.new()
 	close_button.name = "Close"
 	close_button.text = StoryData.text(String(spec.get("close_label", "@ui.close")))
@@ -109,6 +110,29 @@ func _open(s: Dictionary) -> void:
 	close_button.visible = bool(spec.get("closable", true))
 	visible = true
 	panel.opened()
+
+
+## The title of a mini-game played over a whole picture lies on the same dark plate as its hint (Director 16.11,
+## 14:55: «Заголовки — дай одну картинкой, как было и как может стать»): such a panel has put a plate under its hint
+## (MechanicPanel.plate) — on the dark backdrop there is none and the title needs none. A hint right under the title
+## (the fishing) shares one plate with it; elsewhere the title gets a plate of its own.
+const TITLE_JOIN_PX := 40.0
+
+
+func _title_plate() -> void:
+	var plates: Array = panel.find_children("*", "HintPlate", true, false)
+	if plates.is_empty() or title_label.text.strip_edges() == "":
+		return
+	var tw := HintPlate.words_of(title_label)
+	for p in plates:
+		var hp := p as HintPlate
+		hp.fit()
+		if hp.words.size.x > 0.0 and absf(hp.words.position.x - tw.position.x) < TITLE_JOIN_PX \
+				and hp.words.position.y - tw.end.y < TITLE_JOIN_PX and hp.words.position.y > tw.position.y:
+			hp.labels.append(title_label)
+			hp.fit()
+			return
+	HintPlate.under([title_label])
 
 
 func _close() -> void:

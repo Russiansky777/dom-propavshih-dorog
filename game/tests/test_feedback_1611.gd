@@ -10,6 +10,10 @@ extends SceneTree
 ##       the words need (not the label's box), and goes when the words go. The words are measured here on their own —
 ##       by the font, not by the plate's measure. Self-checks — a plate left at a short line does not pass for a long
 ##       one; a mini-game on the dark backdrop (the noughts and crosses) has no plate.
+##   F16-4 (16.11, 14:55 «Заголовки — дай одну картинкой, как было и как может стать»; 16:30 «подложку давай оставим,
+##       да»): the titles of the same mini-games lie on the same dark plate — their own, or the hint's when the hint
+##       is right under the title (the fishing). Checked inside F16-2's run (the same mini-games opened once). Self-
+##       check — on the dark backdrop (the noughts and crosses) the title has no plate.
 ##   F16-3 («Можно убрать кадр с ходиками, а добавить… рыбалку»): the film (trailer_v3) has no shot of mother's mirror,
 ##       opens with the game itself (a room), and has the fishing after the street of Olkhovka and before the map: the
 ##       mini-game is Mitya's own (the choice's, in the room), the float goes under at its second, the hand strikes with
@@ -53,7 +57,7 @@ func _run() -> void:
 	sd = root.get_node("StoryData")
 	rm = root.get_node("RoomManager")
 	await _test("F16-1 the line of a picked thing names no gender («его»); self-check — the old wording is caught", _test_selected_line)
-	await _test("F16-2 the hints of the mini-games over a picture lie on a plate that covers the words and hugs them; self-checks — a stale plate, the dark backdrop", _test_hint_plates)
+	await _test("F16-2 the hints (and F16-4 the titles) of the mini-games over a picture lie on a plate that covers the words and hugs them; self-checks — a stale plate, the dark backdrop", _test_hint_plates)
 	await _test("F16-3 the film: no mother's mirror, the fishing after the street — bite, strike, the string in the green; self-check — no hand, no green", _test_film_fishing)
 	var failed := _results.count(false)
 	print("==== feedback 16.11: %d tests, %d passed, %d failed ====" % [_results.size(), _results.size() - failed, failed])
@@ -216,6 +220,22 @@ func _test_hint_plates() -> void:
 					await process_frame
 				_check(_fits(hp) != "", "self-check: a plate left at a short line does not pass for a long one")
 				hp.set_process(true)
+		# F16-4: the title lies on a plate too — its own, or the hint's when the hint is right under it (the fishing)
+		var title: Label = mv.get("title_label")
+		var tplate: HintPlate = null
+		for q in (mv.get("root") as Node).find_children("*", "HintPlate", true, false):
+			if (q as HintPlate).labels.has(title):
+				tplate = q
+		_check(tplate != null, "%s: the title «%s» lies on a plate" % [gname, title.text])
+		if tplate != null:
+			var why_t := _fits(tplate)
+			_check(why_t == "", "%s, the title: %s" % [gname, why_t])
+			var under := tplate.get_index() < title.get_index() if tplate.get_parent() == title.get_parent() \
+				else tplate.get_parent().get_index() < title.get_index()
+			_check(under, "%s: the title's plate is drawn under the title" % gname)
+			if gname == "fishing":
+				_check(tplate.labels.size() > 1, "fishing: the title and the hint right under it share one plate")
+			print("        %s: the title's plate %s" % [gname, str(Rect2(tplate.position, tplate.size))])
 		seen += 1
 		sr.close_mechanic()
 		for f in g[2]:
@@ -231,6 +251,7 @@ func _test_hint_plates() -> void:
 		await process_frame
 	var pt: Node = mv.get("panel")
 	_check(pt != null and pt.find_children("*", "HintPlate", true, false).is_empty(), "self-check: the noughts and crosses (dark backdrop) have no plate")
+	_check((mv.get("root") as Node).find_children("*", "HintPlate", true, false).is_empty(), "self-check: on the dark backdrop the title has no plate either")
 	sr.close_mechanic()
 	for i in 2:
 		await process_frame
