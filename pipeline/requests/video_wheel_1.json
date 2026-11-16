@@ -1,0 +1,28 @@
+{
+  "_comment": "Проба живой воды у мельничного колеса (Директор 16.11, 14:40: «по воде… давай пока тестово попробуем, всё равно кредиты фал есть, короткое видео просто пришлёшь, как оно смотрится»; план — Docs/PLAN_WHEEL_WATER.md). Стартовый кадр — двор мельницы M1 днём второго дня, как его рисует игра (game/tests/probe_wheel_frame.gd): без людей, без интерфейса, без мороси и стрелки выхода, колесо на 0°, без нынешней воды из кода (струй, брызг, пены) — модель рисует воду сама. Один дубль. Kling 3.0 Pro image-to-video, 5 с, без звука: $0,112 за секунду (https://www.fal.ai/models/fal-ai/kling-video/v3/pro/image-to-video, смотрено 16.11: «For every second of video you generated, you will be charged $0.112 (audio off)») → $0,56 за запуск; на счёте до заказа $3,90. В игру ролик не идёт — только показать Директору.",
+  "trial": "wheel_1",
+  "image_max": 0,
+  "jpeg_q": 95,
+  "attempts": 1,
+  "frames": [
+    {
+      "id": "M1_wheel_clean",
+      "image": "Docs/evidence/wheel_water/start_clean.png",
+      "size": [
+        1920,
+        1080
+      ],
+      "prompt": "Locked-off static camera, no camera movement, no zoom. The large wooden water wheel of the old log mill turns slowly and steadily clockwise, driven by the mill race. Its lower paddles plunge into the water on the right and push through it, churning white foam and small splashes at the waterline; water streams and drips from the wet rising paddles on the left side of the wheel and falls back into the race. Ripples and patches of foam drift away to the left along the dark water. Everything else stays perfectly still: the log house, the fence, the road, the trees, the sacks. Overcast autumn day. The wheel keeps its shape and size. Painterly look unchanged, no new objects, no people, no text."
+    }
+  ],
+  "models": [
+    {
+      "id": "fal-ai/kling-video/v3/pro/image-to-video",
+      "image_key": "start_image_url",
+      "args": {
+        "duration": "5",
+        "generate_audio": false
+      }
+    }
+  ]
+}
