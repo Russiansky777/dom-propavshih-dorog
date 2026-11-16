@@ -157,6 +157,13 @@ func label(t: String, pos: Vector2, w: float, variation: StringName = &"CloseupL
 	return l
 
 
+## A dark see-through plate under words that lie over a painting (HintPlate; Director 16.11, 00:28: «подложку можем
+## добавить где нужно»): one plate for the given labels together, as wide as their words. For the mini-games played
+## over a whole picture — on the dark backdrop the words need none.
+func plate(over: Array[Label]) -> HintPlate:
+	return HintPlate.under(over)
+
+
 ## A clickable invisible area (with a hover outline) over part of the close-up.
 func hit_area(rect: Rect2, on_input: Callable, node_name: String = "Hit") -> Control:
 	var c := Control.new()

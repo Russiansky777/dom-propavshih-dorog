@@ -34,7 +34,7 @@
    "en": "In bag: {item}"
   },
   "text:ui.item_selected": {
-   "ru": "Выбрано: {item} — щёлкнуть по месту, где его применить. Повторный щелчок по предмету отменит выбор.",
+   "ru": "Выбрано: {item}. Щёлкнуть по месту, где применить. Повторный щелчок по предмету отменит выбор.",
    "en": "Selected: {item} — click where you want to use it. Click the item again to cancel."
   },
   "text:ui.hint_generic_1": {

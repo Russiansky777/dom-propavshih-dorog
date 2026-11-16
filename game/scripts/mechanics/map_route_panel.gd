@@ -85,6 +85,7 @@ func build() -> void:
 		tracing_art.visible = false
 	hint = label(text("label_hint"), v2(spec.get("hint_pos", [1150, 96])), 740)
 	hint.name = "Hint"
+	plate([hint])   # 16.11: cream words over the map's pale paper
 	# The way at the bottom: «1 Школа — 2 Дом Ули — 3 Сад», each lit when found.
 	var at := v2(spec.get("progress_pos", [560, 984]))
 	for i in route.size():

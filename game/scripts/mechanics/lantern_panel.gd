@@ -79,11 +79,12 @@ func build() -> void:
 	if spec.has("far_label_pos"):
 		label(text("label_far"), v2(spec["far_label_pos"]), 420)
 	var hp := v2(spec.get("hint_pos", [1180, 860]))
-	label(text("label_count"), hp, 640)
+	var count_label := label(text("label_count"), hp, 640)
 	marks = label("", hp + Vector2(0, 84), 640)   # under the two lines of the hint
 	marks.name = "FlashMarks"
 	drag_hint = label(text("label_drag"), hp + Vector2(0, -50), 640)
 	drag_hint.name = "DragHint"
+	plate([count_label, marks, drag_hint])   # 16.11: the three lines over the wet planks share one plate
 	far_snow.modulate.a = 0.55 if flag("road_held_both_ends") else 0.0
 	if flag("far_lights_answered"):
 		answered_sent = true

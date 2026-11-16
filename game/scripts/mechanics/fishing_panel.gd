@@ -158,6 +158,7 @@ func build() -> void:
 	if in_room:
 		# the hint under the title at the upper left (the text box is at the bottom, the water at the right)
 		hint = label(text("wait"), Vector2(40, 160), 760, &"CloseupLabel")
+		plate([hint])   # 16.11: in the room the hint lies over the snow and the fence
 		# стр. 59: «Ещё» right beside «Хватит» (MechanicView's own button, 200 × 56 at (1680, 990))
 		var ag: Array = spec.get("again_at", [1460, 990])
 		again_btn = _button(text("again"), Vector2(float(ag[0]), float(ag[1])), "Again")
@@ -248,9 +249,7 @@ func tick(delta: float) -> void:
 					sound("plop")
 					next_event = phase_t + _rng.randf_range(0.9, 1.8)
 				else:
-					phase = "bite"
-					phase_t = 0.0
-					sound("float_dive")
+					bite_now()
 		"bite":
 			if phase_t > float(spec.get("bite_s", 0.9)):
 				lost += 1
@@ -259,6 +258,15 @@ func tick(delta: float) -> void:
 		"fight":
 			_fight(delta)
 	_draw.queue_redraw()
+
+
+## The float goes under now — the wait is over (tick); the trailer's fishing shot calls it at its own second.
+func bite_now() -> void:
+	if phase != "wait":
+		return
+	phase = "bite"
+	phase_t = 0.0
+	sound("float_dive")
 
 
 func _fight(delta: float) -> void:

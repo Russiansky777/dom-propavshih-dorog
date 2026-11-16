@@ -297,6 +297,7 @@ func build() -> void:
 	arrival.modulate.a = 0.0
 	hint = label(text("hint"), v2(spec.get("hint_pos", [560, 980])), 800, &"CloseupLabel")
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	plate([hint])   # 16.11: over the boat's planks
 	_apply_view()
 
 

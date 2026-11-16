@@ -125,6 +125,7 @@ func build() -> void:
 	reply_label = label("", v2(spec.get("reply_pos", [700, 520])) * _k, 520, &"CloseupLabel")
 	hint_label = label(text("label_hint"), v2(spec.get("hint_pos", [560, 948])), 1080)
 	hint_label.name = "Hint"
+	plate([hint_label])   # 16.11: «Бревно должно лечь…» lay over the snow
 	_redraw()
 
 

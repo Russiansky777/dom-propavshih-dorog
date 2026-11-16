@@ -113,6 +113,7 @@ func build() -> void:
 	timing.struck.connect(_on_struck)
 	strike_bar = timing   # G26: a click anywhere on the plate strikes too
 	hint = label("", v2(spec.get("hint_pos", [1150, 120])), 720)
+	plate([hint])   # 16.11: over the support's moss and rust
 	_refresh()
 
 

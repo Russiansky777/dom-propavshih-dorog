@@ -137,6 +137,13 @@ func build() -> void:
 	_apply(0.0)
 
 
+## 16.11: a mini-game a shot opened is not left open in the story's state when the shot is gone (the tests play shot
+## after shot in one tree; the fishing opens its game before the first frame).
+func _exit_tree() -> void:
+	if StoryRunner.mechanic_open:
+		StoryRunner.close_mechanic()
+
+
 func _process(_delta: float) -> void:
 	if plan.is_empty():
 		return
@@ -792,6 +799,7 @@ func _tick_ui() -> void:
 		_ui_done[i] = true
 		_run_event(e)
 	_tick_strikes()
+	_tick_line()
 	_tick_speaks()
 	if _t < _press_until and _t >= _press_next:
 		_press_next = _t + _press_gap
@@ -931,7 +939,17 @@ func _run_event(e: Dictionary) -> void:
 			var h := _hotspot_data(String(e.get("room", "")), String(e.get("hotspot", "")))
 			for f in e.get("flags", []):
 				GameState.set_flag(String(f), true)
-			StoryRunner.open_mechanic(h.get("mechanic", {}), String(e.get("hotspot", "")))
+			StoryRunner.open_mechanic(mechanic_spec(h, e), String(e.get("hotspot", "")))
+		"panel":
+			# 16.11 (the fishing shot): a word to the open mini-game — {"do": "panel", "call": "bite_now"}
+			var pn = _mech_view.get("panel") if _mech_view != null else null
+			if pn == null or not is_instance_valid(pn) or not (pn as Object).has_method(String(e.get("call", ""))):
+				push_error("Trailer: panel — no open mini-game with %s" % String(e.get("call", "")))
+			else:
+				(pn as Object).callv(String(e.get("call", "")), e.get("args", []))
+		"hold_line":
+			# 16.11 (the fishing shot): the string kept in the green for `for_s` — _tick_line pulls and lets go
+			_line_until = _t + float(e.get("for_s", 2.0))
 		"say":
 			StoryRunner.mechanic_say(String(e.get("key", "")))
 		"line":
@@ -978,6 +996,22 @@ func _run_event(e: Dictionary) -> void:
 			_press_next = _t
 		_:
 			push_error("Trailer: unknown ui event %s" % str(e))
+
+
+## The mini-game a `mechanic` event opens: the hotspot's own, or — `option` — the one a choice of the hotspot's talk
+## leads to (the fishing: Mitya's «Порыбачить»); `spec` — the event's own values over the data's (a fixed `seed`).
+static func mechanic_spec(h: Dictionary, e: Dictionary) -> Dictionary:
+	var spec: Dictionary = h.get("mechanic", {})
+	if e.has("option"):
+		spec = {}
+		for o in h.get("choice", {}).get("options", []):
+			if String((o as Dictionary).get("id", "")) == String(e["option"]):
+				spec = (o as Dictionary).get("mechanic", {})
+		if spec.is_empty():
+			push_error("Trailer: mechanic — no option '%s' with a mini-game" % String(e["option"]))
+	if e.get("spec") is Dictionary:
+		spec = spec.merged(e["spec"], true)
+	return spec
 
 
 func _hotspot_data(room_id: String, hotspot_id: String) -> Dictionary:
@@ -1046,6 +1080,23 @@ func _tick_strikes() -> void:
 			_strikes_left -= 1
 			_strike_next = _t + _strike_gap
 			return
+
+
+## The fishing's string is kept in the green (the film shows the game being played well): pull while the tension is
+## under the middle of the green, let go above it — what a player's finger does.
+var _line_until: float = -1.0
+var line_held_frames: int = 0      # tests: frames the hand worked the string
+
+
+func _tick_line() -> void:
+	if _t >= _line_until or _mech_view == null:
+		return
+	var pn = _mech_view.get("panel")
+	if pn == null or not is_instance_valid(pn) or String(pn.get("phase")) != "fight":
+		return
+	var g: Vector2 = pn.get("green")
+	(pn as Object).call("press", float(pn.get("tension")) < (g.x + g.y) * 0.5)
+	line_held_frames += 1
 
 
 ## The close buttons, page buttons and the like are the game's interface: not in the picture.
