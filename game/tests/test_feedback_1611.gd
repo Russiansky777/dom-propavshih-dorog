@@ -85,7 +85,7 @@ func _test_selected_line() -> void:
 
 # --- F16-2 ---------------------------------------------------------------------------------------
 
-## The mini-games played over a whole picture: [name, the spec's getter, flags].
+## The mini-games played over a whole picture: [name, its data, flags, plates].
 func _spec_room(room_id: String, hotspot: String, option: String = "") -> Dictionary:
 	for h in sd.rooms[room_id].get("hotspots", []):
 		if String(h.get("id", "")) != hotspot:
@@ -152,12 +152,12 @@ func _test_hint_plates() -> void:
 	rm.autosave_enabled = false
 	var mv = main_node.get_node("MechanicView")
 	var games := [
-		["windlass", _spec_scene("windlass"), []],
-		["crossing", _spec_room("R2", "rope"), []],
-		["plate", _spec_room("Z3", "pier_plate"), ["skoba_on_plate"]],
-		["lantern", _spec_room("R1", "lantern"), []],
-		["map_route", _spec_room("O1", "village_map"), []],
-		["fishing", _spec_room("R3", "mitya", "fish"), []],
+		["windlass", _spec_scene("windlass"), [], 1],
+		["crossing", _spec_room("R2", "rope"), [], 1],
+		["plate", _spec_room("Z3", "pier_plate"), ["skoba_on_plate"], 1],
+		["lantern", _spec_room("R1", "lantern"), [], 1],   # three lines, one plate
+		["map_route", _spec_room("O1", "village_map"), [], 2],   # the hint and the row of the way's three names
+		["fishing", _spec_room("R3", "mitya", "fish"), [], 1],
 	]
 	var seen := 0
 	for g in games:
@@ -174,7 +174,7 @@ func _test_hint_plates() -> void:
 			await process_frame
 		var pn: Node = mv.get("panel")
 		var plates: Array = pn.find_children("*", "HintPlate", true, false) if pn != null else []
-		_check(plates.size() == 1, "%s: one plate under its hint (%d)" % [gname, plates.size()])
+		_check(plates.size() == int(g[3]), "%s: %d plate(s) under its words (%d)" % [gname, int(g[3]), plates.size()])
 		for p in plates:
 			var hp := p as HintPlate
 			var first: Label = hp.labels[0]
@@ -183,9 +183,10 @@ func _test_hint_plates() -> void:
 			var said := false
 			for l in hp.labels:
 				said = said or l.text.strip_edges() != ""
-			_check(said, "%s: the hint has words when the mini-game opens" % gname)
+			_check(said, "%s: the words are there when the mini-game opens" % gname)
 			var why := _fits(hp)
 			_check(why == "", "%s: %s" % [gname, why])
+			print("        %s: the plate %s under the words %s" % [gname, str(Rect2(hp.position, hp.size)), str(hp.words)])
 			# the words change — the plate follows; the words go — the plate goes
 			var keep: Array = []
 			for l in hp.labels:
@@ -204,7 +205,7 @@ func _test_hint_plates() -> void:
 				hp.labels[i].text = keep[i]
 			for i in 3:
 				await process_frame
-			if seen == 0:
+			if seen == 0 and p == plates[0]:
 				# self-check: a plate that did not follow its words is caught
 				first.text = "Да."
 				for i in 3:
@@ -215,7 +216,7 @@ func _test_hint_plates() -> void:
 					await process_frame
 				_check(_fits(hp) != "", "self-check: a plate left at a short line does not pass for a long one")
 				hp.set_process(true)
-			seen += 1
+		seen += 1
 		sr.close_mechanic()
 		for f in g[2]:
 			gs.set_flag(String(f), false)
@@ -275,6 +276,7 @@ func _test_film_fishing() -> void:
 	_check(float(held.get("in_green", 0.0)) >= 0.6, "the string is kept in the green most of the fight (%.0f %%)" % (float(held.get("in_green", 0.0)) * 100.0))
 	_check(int(held.get("hand", 0)) > 30, "the hand works the string (%d frames)" % int(held.get("hand", 0)))
 	var loose := await _play_fishing(shot, false)
+	print("        the fishing shot: with the hand %s; without %s" % [str(held), str(loose)])
 	_check(float(loose.get("in_green", 1.0)) < float(held.get("in_green", 0.0)) - 0.2 or String(loose.get("phase_end", "")) != "fight",
 		"self-check: without the hand on the string the green is lost (%.0f %% against %.0f %%, phase «%s»)" % [float(loose.get("in_green", 0.0)) * 100.0, float(held.get("in_green", 0.0)) * 100.0, loose.get("phase_end", "")])
 

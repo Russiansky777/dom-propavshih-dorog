@@ -94,6 +94,7 @@ func build() -> void:
 		l.name = "Way%d" % (i + 1)
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		progress.append(l)
+	plate(progress)   # 16.11: the three names of the way lay pale on the pale paper
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	if done():
 		found = route.size()
