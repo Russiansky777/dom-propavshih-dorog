@@ -361,6 +361,41 @@
    ]
   },
   {
+   "id": "epilogue_ribbon",
+   "title": "Проверка: эпилог, мама вплела ленту",
+   "done_through": "M25",
+   "room": "Z3",
+   "spawn": "from_R1",
+   "flags": [
+    "board_mama",
+    "v03_marked",
+    "v03_add_boat",
+    "mitten_placed",
+    "v01_cup_blue",
+    "v01_photo_table",
+    "pavel_answer_promise",
+    "house_unlocked",
+    "house_open",
+    "h2_bundle_unwrapped",
+    "office_mirror_mounted",
+    "office_mirror_clamped",
+    "bell_clapper_hung",
+    "nina_mirror_clamped",
+    "sluice_key_inserted",
+    "skoba_on_plate",
+    "has_brace_plate",
+    "mitten_taken_back",
+    "mitten_found_on_path",
+    "tikhon_told_nina",
+    "beam_dunya",
+    "ribbon_braided"
+   ],
+   "remove_items": [
+    "school_ribbon"
+   ],
+   "_note": "Приёмка 17.11 (финальная сборка): та же точка, что epilogue, но мама вплела ленту (ribbon_braided, ленты в сумке нет) — за ужином после «Вечером ужинают в Дунином доме…» звучит «У Агаты в косе мамина лента — как бывало в праздник.» (M26_16_then0, выбор Директора 17.11); в конце среди следов — «Мамина лента снова в косе». Запуск — tools/launchers/12 Проверка — эпилог, мама вплела ленту.bat"
+  },
+  {
    "id": "bedtime",
    "title": "Партия H (T2/T6): день первый после школы — ночь, лежанка у печи",
    "done_through": "M08",

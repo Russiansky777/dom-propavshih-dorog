@@ -17,8 +17,7 @@ extends SceneTree
 ##   R17-8 Director 17.11 (evening) «Ленту — можно, давай сделаем да»: Mama takes the ribbon in Dunya's house too.
 ##   R17-9 Director 17.11 «надписи приняты»: close-up titles on one line above their pictures (the big ones lower).
 ##   R17-10 Director 17.11 «давай озвучим ок»: the epilogue's trace of Mama's ribbon (M26 №16 `then`, ru and en voice).
-##       Written ahead of the line: the Director picks one of two recorded variants by ear; `_test_epilogue_ribbon` joins
-##       `_run` in the same commit as the line and its recordings (until then it would only say the line is missing).
+##       The Director picked v2 by ear: «У Агаты в косе мамина лента — как бывало в праздник.» (M26_16_then0).
 ##   Every one with its self-check.
 
 var _results: Array = []
@@ -64,6 +63,7 @@ func _run() -> void:
 	await _test("R17-7 M21b: Agata reads the village list over it, then the talk with Mama goes on in the room, not over the paper; self-check — without the scene's close_view it stays over it", _test_m21b_room)
 	await _test("R17-8 Mama's ribbon in Dunya's house (the free day): a real click with it on Mama braids it — the close-up, the trace, the ribbon gone; self-check — without the house's item_use it stays in the bag", _test_ribbon_h1)
 	await _test("R17-9 Director 17.11 «надписи приняты»: every close-up's title on one line, clear of its picture, the picture clear of the buttons (ru, en, every page); self-check — the old place of the picture (y 130) wraps the title", _test_titles_one_line)
+	await _test("R17-10 Director 17.11 «давай озвучим ок» (v2): the epilogue's ribbon line — a follow-up of the dinner under ribbon_braided, right after it, voiced in ru and en; self-check — without its `if` it would show without the ribbon", _test_epilogue_ribbon)
 	var failed := _results.count(false)
 	print("==== review 17.11: %d tests, %d passed, %d failed ====" % [_results.size(), _results.size() - failed, failed])
 	quit(1 if failed > 0 else 0)
@@ -722,6 +722,18 @@ func _test_epilogue_ribbon() -> void:
 		var e: Dictionary = (vd.get("manifest") as Dictionary).get(lid, {})
 		_check(String(e.get("speaker", "")) == "narrator", "%s: %s is read by «%s», not the narrator" % [lang, lid, String(e.get("speaker", ""))])
 	_set_lang("ru")
+	# the Director's start point for it (launcher «12 Проверка — эпилог, мама вплела ленту»): the epilogue's own point
+	# plus the ribbon braided and gone from the bag — nothing else differs
+	var ep: Dictionary = sd.start_points.get("epilogue", {})
+	var epr: Dictionary = sd.start_points.get("epilogue_ribbon", {})
+	_check(not epr.is_empty(), "no start point epilogue_ribbon")
+	if not epr.is_empty():
+		var extra: Array = (epr.get("flags", []) as Array).filter(func(f): return not (ep.get("flags", []) as Array).has(f))
+		var lost: Array = (ep.get("flags", []) as Array).filter(func(f): return not (epr.get("flags", []) as Array).has(f))
+		_check(extra == ["ribbon_braided"] and lost.is_empty(), "epilogue_ribbon = epilogue + ribbon_braided (more %s, less %s)" % [str(extra), str(lost)])
+		_check((epr.get("remove_items", []) as Array).has("school_ribbon"), "epilogue_ribbon: the ribbon is not taken out of the bag")
+		for key in ["done_through", "room", "spawn"]:
+			_check(str(epr.get(key)) == str(ep.get(key)), "epilogue_ribbon: %s %s, the epilogue's is %s" % [key, str(epr.get(key)), str(ep.get(key))])
 	# self-check: the same follow-up without its `if` would be shown without the ribbon — the check above sees the flag
 	var bare: Dictionary = sub.duplicate(true)
 	bare.erase("if")
