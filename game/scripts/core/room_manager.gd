@@ -238,7 +238,10 @@ func start_with(p: Dictionary) -> bool:
 			var iid := String(it)
 			GameState.set_flag("has_" + iid, true)
 			var meta: Dictionary = StoryData.item(iid)
-			if bool(meta.get("inventory", false)) and not bool(meta.get("consumed", false)) and not GameState.has_item(iid):
+			# consumed true — the story uses it up on the way: not in the bag of a later start point; "optional" (ревью
+			# 17.11: Mama's ribbon — given to Mama only if the player wishes, item_use consumes) — it stays in the bag
+			var used_up = meta.get("consumed", false)
+			if bool(meta.get("inventory", false)) and not (used_up is bool and used_up) and not GameState.has_item(iid):
 				GameState.add_item(iid)
 		for rid in StoryData.scene_trigger_rooms(id):
 			var cw = StoryData.room(rid).get("scenes", {}).get(id, {}).get("complete_when", [])

@@ -1971,6 +1971,30 @@ for it, meta in items.items():
         err(f"items.json: {it} consumed: true, но его нигде не расходуют (сцена consumes / item_use consumes)")
     if not meta.get("consumed") and it in consumers:
         err(f"items.json: {it} consumed: false, а его расходуют: {consumers[it]}")
+
+
+# 10а (ревью 17.11, мамина лента): consumed "optional" — предмет уходит из сумки только по желанию игрока (item_use
+# consumes у хотспота: отдать ленту маме), сюжет его не расходует — точки старта кладут его в сумку
+# (RoomManager.start_with). Сцена, которая его расходует, сделала бы это обязательным — тогда consumed: true.
+def optional_consumed_problems(items_: dict, consumers_: dict, scene_ids: set) -> list[str]:
+    out_: list[str] = []
+    for it_, meta_ in items_.items():
+        c_ = meta_.get("consumed")
+        if c_ not in (True, False, None, "optional"):
+            out_.append(f"items.json: {it_} consumed: {c_!r} — бывает true, false или \"optional\"")
+        if c_ == "optional":
+            by_scene = [x for x in consumers_.get(it_, []) if x in scene_ids]
+            if by_scene:
+                out_.append(f"items.json: {it_} consumed: \"optional\", а его расходует сцена {by_scene} — значит, обязательно: consumed true")
+    return out_
+
+
+for p_ in optional_consumed_problems(items, consumers, set(scenes.keys())):
+    err(p_)
+if not optional_consumed_problems({"x": {"consumed": "optional"}}, {"x": ["M17"]}, {"M17"}) \
+        or optional_consumed_problems({"x": {"consumed": "optional"}}, {"x": ["O3.nina"]}, {"M17"}) \
+        or not optional_consumed_problems({"x": {"consumed": "yes"}}, {}, set()):
+    err("validate_rooms 10а: самопроверка — «optional» по сцене не пойман, по хотспоту пойман или странное значение пропущено")
 scope_ids = {s["id"] for s in scope_scenes}
 got_in_scope = set()
 for s in scope_scenes:

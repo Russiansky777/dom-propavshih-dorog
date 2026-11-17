@@ -46,6 +46,10 @@ func _run() -> void:
 	rm = root.get_node("RoomManager")
 	await _test("R17-1 the morning of day three: Nina in her place and in sight before and through M21 (N02 npc_back); self-check — without it she is gone and it is seen", _test_morning_nina)
 	await _test("R17-2 the ghost rule: clickable and out of sight is caught; walking, visible or hidden is not", _test_ghost_rule)
+	await _test("R17-3 the photo in the mill passage: its caption clear of the line box through the lines said over it (ru, en); self-check — the layout until 17.11 is caught", _test_photo_caption)
+	await _test("R17-4 a room change takes the old room's caption away at once; self-check — without it the caption stays over the new room", _test_hover_drop)
+	await _test("R17-5 the speaker rule (ghost_watch.gd): a speaker with a figure in sight passes; a faded, hidden or absent one, or Agata hidden, is caught", _test_speaker_rule)
+	await _test("R17-6 a body turn settles at any frame length (villagers; Agata running); self-check — the unsliced step at a long frame swings", _test_turn_settles)
 	var failed := _results.count(false)
 	print("==== review 17.11: %d tests, %d passed, %d failed ====" % [_results.size(), _results.size() - failed, failed])
 	quit(1 if failed > 0 else 0)
@@ -134,6 +138,262 @@ func _test_morning_nina() -> void:
 	if keep != null:
 		last["npc_back"] = keep
 	_check(float(bad["morning_alpha"]) < 0.05, "self-check: without npc_back Nina was still seen in the morning (alpha %.2f)" % float(bad["morning_alpha"]))
+
+
+func _ui() -> Node:
+	for n in root.find_children("*", "", true, false):
+		if n.get_script() != null and String(n.get_script().resource_path).ends_with("ui/game_ui.gd"):
+			return n
+	return null
+
+
+func _set_subs(v: String) -> void:
+	var ls = load("res://scripts/core/language_settings.gd")
+	ls.set_subtitles(v)
+	sd.call("reload")
+	root.get_node("VoiceDirector").call("reload_config")
+
+
+func _start(point: String) -> Node:
+	gs.reset()
+	var main_node = load("res://scenes/Main.tscn").instantiate()
+	main_node.set("title_mode", "skip")
+	root.add_child(main_node)
+	for i in 4:
+		await process_frame
+	rm.autosave_enabled = false
+	rm.start_with((sd.start_points.get(point, {}) as Dictionary).duplicate(true))
+	for i in 600:
+		await process_frame
+		if i > 30 and not sr.is_busy():
+			break
+	return main_node
+
+
+func _stop(main_node: Node) -> void:
+	if sr.mechanic_open:
+		sr.close_mechanic()
+	main_node.queue_free()
+	await process_frame
+	if rm.current_room != null:
+		rm.current_room.queue_free()
+		rm.current_room = null
+	gs.reset()
+	await process_frame
+
+
+## The lowest corner of the photo's caption on screen (the photo lies turned a little), -1 — none shown.
+func _caption_bottom() -> float:
+	for c in root.find_children("Caption", "Label", true, false):
+		var cap := c as Control
+		if cap.get_parent() != null and String(cap.get_parent().name) == "Photo" and cap.is_visible_in_tree() and cap.text != "":
+			var xf := cap.get_global_transform()
+			var low := -INF
+			for p in [Vector2.ZERO, Vector2(cap.size.x, 0.0), Vector2(0.0, cap.size.y), cap.size]:
+				low = maxf(low, (xf * p).y)
+			return low
+	return -1.0
+
+
+## The photo in the mill passage clicked the first time on day two (M09 done — M09s follows over it): for every page of
+## every line said while it is open, the line box's top and the caption's lowest corner. `layout` — the photo's data
+## put in place for this run (the self-check's old layout). Returns {"lines", "air" (the least box top − caption
+## bottom), "worst"}.
+func _photo_lines(lang: String, layout: Dictionary = {}) -> Dictionary:
+	var out := {"lines": 0, "air": INF, "worst": ""}
+	_set_subs(lang)
+	var spec: Dictionary = {}
+	for h in (sd.rooms["M2"]["hotspots"] as Array):
+		if String((h as Dictionary).get("id", "")) == "photo":
+			spec = h["mechanic"]["photo"]
+	for k in layout.keys():
+		spec[k] = layout[k]
+	var main_node: Node = await _start("day2")
+	# M09 done, the office door and the board «Порядок на мельнице» looked at: the photo is the last look — M09s plays
+	# over it (rooms M1/M2 `complete_when`), as on day two
+	for f in ["done_M09", "seen_office_door", "seen_shift_schedule"]:
+		gs.set_flag(f, true)
+	rm.change_room("M2", "from_M1")
+	for i in 30:
+		await process_frame
+	var ph := _hotspot("photo")
+	var ui := _ui()
+	if ph == null or ui == null:
+		_fails.append("no photo hotspot in M2 (%s) or no game UI (%s)" % [str(ph), str(ui)])
+		await _stop(main_node)
+		return out
+	sr.interact(ph)
+	var last := ""
+	var g := 0
+	while g < 4000:
+		g += 1
+		await process_frame
+		var b: Dictionary = sr.current_beat
+		if b.is_empty():
+			if gs.has_flag("done_M09s"):
+				break   # the photo stays open after the lines (a click puts it away): all said over it is measured
+			continue
+		if sr.is_staging():
+			continue
+		var said: bool = String(b.get("type", "")) in ["line", "narration"]
+		if sr.mechanic_open and said:
+			var key := "%s|%d" % [String(b.get("text", "")), int(ui.get("dialogue_page"))]
+			if key != last:
+				last = key
+				for i in 4:
+					await process_frame
+				var top: float = (ui.get("dialogue") as Control).get_global_rect().position.y
+				var cb := _caption_bottom()
+				if cb > 0.0:
+					out["lines"] = int(out["lines"]) + 1
+					if top - cb < float(out["air"]):
+						out["air"] = top - cb
+						out["worst"] = "«%s» (page %d): the line box from y %.0f, the caption down to %.0f" % [String(b.get("text", "")).left(40),
+							int(ui.get("dialogue_page")) + 1, top, cb]
+		for i in 6:
+			await process_frame
+		if said:
+			ui.call("_next_line")
+		else:
+			sr.advance()
+	await _stop(main_node)
+	_set_subs("ru")
+	return out
+
+
+func _test_photo_caption() -> void:
+	var spec: Dictionary = {}
+	for h in (sd.rooms["M2"]["hotspots"] as Array):
+		if String((h as Dictionary).get("id", "")) == "photo":
+			spec = h["mechanic"]["photo"]
+	var keep := {"pos": spec.get("pos"), "scale": spec.get("scale")}
+	for lang in ["ru", "en"]:
+		var r: Dictionary = await _photo_lines(lang)
+		_check(int(r["lines"]) >= 2, "%s: %d lines seen over the photo (the narration and Agata's at least)" % [lang, int(r["lines"])])
+		_check(float(r["air"]) >= 4.0, "%s: the caption under the line box — %s" % [lang, String(r["worst"])])
+	# self-check: the layout until 17.11 — the caption ran under the box (the bots' screenshot 0022/0023 of day two)
+	var bad: Dictionary = await _photo_lines("ru", {"pos": [274, 130], "scale": 0.82})
+	_check(float(bad["air"]) < 0.0, "self-check: the old layout (274, 130; ×0.82) was not caught: air %.0f" % float(bad["air"]))
+	for k in keep.keys():
+		spec[k] = keep[k]
+
+
+func _mouse(at: Vector2) -> void:
+	var m := InputEventMouseMotion.new()
+	m.position = root.get_final_transform() * at
+	m.global_position = m.position
+	Input.warp_mouse(m.position)
+	Input.parse_input_event(m)
+
+
+## The caption over Pelageya at the far pier, then the story takes Agata to the street: is the caption shown right
+## after the room change (before any frame of the new room)? `drop` false — the drop on room_changed taken away.
+func _caption_after_change(drop: bool) -> Dictionary:
+	var main_node: Node = await _start("olkhovka")
+	var ui := _ui()
+	var out := {"before": false, "after": true}
+	if ui == null:
+		_fails.append("no game UI")
+		await _stop(main_node)
+		return out
+	var cb := Callable(ui, "drop_hover")
+	if not drop and rm.room_changed.is_connected(cb):
+		rm.room_changed.disconnect(cb)
+	_mouse(Vector2(935, 545))   # Pelageya at the far pier (R3 hotspot [890, 425, 90, 240])
+	for i in 12:
+		await process_frame
+	var hl: Label = ui.get("hover_label")
+	out["before"] = hl.visible and hl.text != ""
+	rm.change_room("O4", "default")
+	out["after"] = hl.visible
+	if not drop and not rm.room_changed.is_connected(cb):
+		rm.room_changed.connect(cb)
+	await _stop(main_node)
+	return out
+
+
+func _test_hover_drop() -> void:
+	var r: Dictionary = await _caption_after_change(true)
+	_check(bool(r["before"]), "the caption over Pelageya was not shown before the change (nothing to check)")
+	_check(not bool(r["after"]), "right after the room change the far pier's caption is still over the street")
+	var bad: Dictionary = await _caption_after_change(false)
+	_check(bool(bad["before"]) and bool(bad["after"]), "self-check: without the drop the old caption was not seen over the new room (before %s, after %s)" % [str(bad["before"]), str(bad["after"])])
+
+
+func _test_speaker_rule() -> void:
+	var rule = load("res://tests/ghost_watch.gd")
+	var place := Node2D.new()
+	root.add_child(place)
+	var hs := GDScript.new()
+	hs.source_code = "extends Node2D\nvar hotspot_id := \"\"\n"
+	hs.reload()
+	var fig := Node2D.new()
+	fig.name = "npc_tamara"
+	place.add_child(fig)
+	var pl := Node2D.new()
+	place.add_child(pl)
+	_check(rule.speaker_in_sight(place, "tamara", pl), "a villager in sight is not seen")
+	fig.modulate.a = 0.0
+	_check(not rule.speaker_in_sight(place, "tamara", pl), "a villager faded out (alpha 0) passes as in sight")
+	fig.modulate.a = 1.0
+	fig.visible = false
+	_check(not rule.speaker_in_sight(place, "tamara", pl), "a hidden villager passes as in sight")
+	_check(not rule.speaker_in_sight(place, "ulyana", pl), "a villager with no figure passes as in sight")
+	_check(rule.speaker_in_sight(place, "agata", pl), "Agata (the player) in sight is not seen")
+	pl.visible = false
+	_check(not rule.speaker_in_sight(place, "agata", pl), "Agata hidden passes as in sight")
+	var painted := Node2D.new()
+	painted.set_script(hs)
+	painted.set("hotspot_id", "manager")
+	var img := Sprite2D.new()
+	img.name = "Image"
+	painted.add_child(img)
+	place.add_child(painted)
+	_check(rule.speaker_in_sight(place, "manager", null), "a painted figure (the hotspot's picture) is not seen")
+	img.visible = false
+	_check(not rule.speaker_in_sight(place, "manager", null), "a hotspot with its picture hidden passes as in sight")
+	# where it judges: Agata shown — yes; no Agata and no villager's hotspot (the boat's view, a picture frame) — no
+	pl.visible = true
+	_check(rule.shows_people(place, pl), "a room with Agata in it is not judged")
+	_check(not rule.shows_people(place, null), "a place with neither Agata nor a villager's hotspot is judged")
+	place.queue_free()
+	await process_frame
+
+
+## A turn from `from_deg` to `to_deg` at frames of `dt` seconds for 12 s: the worst miss in the last 6 (degrees).
+func _turn_miss(sliced: bool, dt: float, from_deg: float, to_deg: float, ease: float, cap_deg: float, accel_deg: float) -> float:
+	var st := Vector4(deg_to_rad(from_deg), 0.0, 0.0, 0.0)
+	var tgt := deg_to_rad(to_deg)
+	var t := 0.0
+	var miss := 0.0
+	while t < 12.0:
+		if sliced:
+			st = Actor3D.turn_step(st, tgt, dt, deg_to_rad(cap_deg), ease, deg_to_rad(accel_deg))
+		else:
+			st = Actor3D.turn_step_slice(st, tgt, dt, deg_to_rad(cap_deg), ease, deg_to_rad(accel_deg))
+		t += dt
+		if t > 6.0:
+			miss = maxf(miss, absf(rad_to_deg(angle_difference(st.x, tgt))))
+	return miss
+
+
+func _test_turn_settles() -> void:
+	# villagers (NpcLive3D defaults: 240°/s, ease 7, 1100°/s²) — the council at the mill: from facing the camera to Pavel's
+	# 92°, Ilya's −106°; Agata running (player.gd: 400°/s, ease 9, 1500°/s², ×speed 2)
+	var kinds := [["villager", 7.0, 240.0, 1100.0], ["Agata running", 18.0, 800.0, 6000.0]]
+	for k in kinds:
+		for dt in [1.0 / 60.0, 1.0 / 30.0, 8.0 / 60.0, 0.3, 0.53, 1.0]:
+			for to in [92.0, -106.0, 179.0]:
+				var m := _turn_miss(true, dt, 0.0, to, float(k[1]), float(k[2]), float(k[3]))
+				_check(m < 1.0, "%s, frames of %.3f s, 0° → %.0f°: still %.1f° off after 6 s" % [String(k[0]), dt, to, m])
+	# the same frames of 30 a second turn as before (one slice) — the motion of the game is unchanged
+	var a := Vector4(0.3, 1.2, 1.0, 0.0)
+	var b1 := Actor3D.turn_step(a, 1.6, 1.0 / 30.0, deg_to_rad(240.0), 7.0, deg_to_rad(1100.0))
+	var b2 := Actor3D.turn_step_slice(a, 1.6, 1.0 / 30.0, deg_to_rad(240.0), 7.0, deg_to_rad(1100.0))
+	_check(b1.is_equal_approx(b2), "a frame of 1/30 s is not one slice: %s vs %s" % [str(b1), str(b2)])
+	# self-check: the bots' frame (time scale 4 on a slow display) with the step until 17.11 — the villager swings
+	var bad := _turn_miss(false, 0.53, 0.0, 92.0, 7.0, 240.0, 1100.0)
+	_check(bad > 20.0, "self-check: the unsliced step at frames of 0.53 s settled (%.1f° off) — the check would not see the swing" % bad)
 
 
 func _test_ghost_rule() -> void:

@@ -743,6 +743,68 @@
    }
   },
   {
+   "id": "tamara",
+   "kind": "npc",
+   "label": "@char.tamara",
+   "rect": [
+    928,
+    294,
+    125,
+    496
+   ],
+   "stand": [
+    1190,
+    830
+   ],
+   "face": [
+    828,
+    760
+   ],
+   "draw": false,
+   "pickable": false,
+   "pick_priority": 3,
+   "scene_only": "Q08",
+   "visible_if": [
+    "q08_guests_h1"
+   ],
+   "hidden_if": [
+    "q08_guests_left",
+    "done_Q08"
+   ],
+   "_r1711": "ревью 17.11 (Q08 у тётиной печи): Тамара пришла к чаю — у столика с чашками, лицом к нему; ноги (990, 790), масштаб 1,47 → 1,62 м ≈ 496 px. Только на время чая (q08_guests_h1 … q08_guests_left), не щёлкается (pickable false)"
+  },
+  {
+   "id": "ulyana",
+   "kind": "npc",
+   "label": "@char.ulyana",
+   "rect": [
+    645,
+    446,
+    110,
+    434
+   ],
+   "stand": [
+    1190,
+    830
+   ],
+   "face": [
+    1190,
+    830
+   ],
+   "draw": false,
+   "pickable": false,
+   "pick_priority": 3,
+   "scene_only": "Q08",
+   "visible_if": [
+    "q08_guests_h1"
+   ],
+   "hidden_if": [
+    "q08_guests_left",
+    "done_Q08"
+   ],
+   "_r1711": "ревью 17.11 (Q08 у тётиной печи): Ульяна по другую сторону столика, у лежанки, правее кресла с Тихоном; ноги (700, 880), масштаб 1,64 → 1,27 м ≈ 434 px; лицом к Агате"
+  },
+  {
    "id": "nina_coat",
    "kind": "object",
    "action_anim": "reach",

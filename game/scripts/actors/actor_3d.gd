@@ -1942,7 +1942,25 @@ static func spring(x: float, v: float, target: float, omega: float, dt: float) -
 ## when the body turns the other way now — and it changes only when the other is cheaper by 30° (Director 30.10,
 ## 19:16: «крутится на 360, прежде чем повернуться в нужную сторону»: a body carried past its target by braking, or
 ## past «straight behind», took the way round the whole circle).
+## Review 17.11 (the bots' screenshots of the council at the mill: all four turned their backs to the camera on some
+## lines and faced it on others): one step of the eased approach goes `ease × delta` of the angle left — past 1 it
+## overshoots, past 2 it swings around the target and never settles. The engine keeps a frame's delta under 8/60 s, so
+## at time scale 1 the villagers (ease 7) never got there; the bots play at time scale 4 on a slow display (a frame of
+## half a second), and running Agata (ease 9 × speed) would on a machine under ~9 frames a second. A long frame is now
+## taken in slices of at most TURN_MAX_DT — at 30 frames a second and faster nothing changes.
+const TURN_MAX_DT := 1.0 / 30.0
+
+
 static func turn_step(state: Vector4, target: float, delta: float, cap: float, ease: float, accel: float) -> Vector4:
+	var n := clampi(ceili(delta / TURN_MAX_DT - 0.001), 1, 64)
+	var s := state
+	for i in n:
+		s = turn_step_slice(s, target, delta / float(n), cap, ease, accel)
+	return s
+
+
+## One slice of turn_step, as it was for every frame until 17.11 (the tests' self-check: at a long frame it swings).
+static func turn_step_slice(state: Vector4, target: float, delta: float, cap: float, ease: float, accel: float) -> Vector4:
 	var yaw := state.x
 	var v := state.y
 	var dir := state.z

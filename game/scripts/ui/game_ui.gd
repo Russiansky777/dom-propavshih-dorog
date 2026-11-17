@@ -153,6 +153,9 @@ func _ready() -> void:
 	StoryRunner.panel_requested.connect(_on_panel_requested)
 	RoomManager.room_changed.connect(_on_room_changed)
 	StoryRunner.frame_changed.connect(_on_frame_changed)
+	# ревью 17.11: the caption of the room left behind no longer hangs one frame over the next room, a frame, a close-up
+	for sig in [RoomManager.room_changed, StoryRunner.frame_changed, StoryRunner.view_opened, StoryRunner.mechanic_opened, StoryRunner.examine_opened]:
+		(sig as Signal).connect(drop_hover)
 	_render_inventory()
 	_render_dialogue()
 	if RoomManager.current_room != null:
@@ -1651,6 +1654,14 @@ func _place_hover(screen: Vector2) -> void:
 	hover_label.position = Vector2(x + icon_w, y)
 	if hover_icon.visible:
 		hover_icon.position = Vector2(x, roundf(y + (hover_label.size.y - HOVER_ICON) * 0.5))
+
+
+## Review 17.11 (the bots' screenshots: «Павел» over the empty mill yard, «Зарубки на косяке» over the letters): the
+## caption is worked out in _process, before a room change, a frame, a close-up or a mechanic made in the same frame —
+## so the old room's caption was drawn over the new picture for a frame (at two or three frames a second of a slow
+## machine — a third of a second). Whatever opens takes the caption away at once; the next frame picks anew.
+func drop_hover(_a = null, _b = null) -> void:
+	_set_hover(null)
 
 
 func _set_hover(node: Node) -> void:

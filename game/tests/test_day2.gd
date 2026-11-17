@@ -903,6 +903,7 @@ func _test_states() -> void:
 
 func _test_walkthrough() -> void:
 	ghost.violations.clear()
+	ghost.speakers_unseen.clear()
 	_npc_goal_check = true
 	rm.autosave_enabled = true
 	Engine.time_scale = 4.0
@@ -1439,6 +1440,7 @@ func _test_walkthrough() -> void:
 	Engine.time_scale = 1.0
 	# ревью 17.11: никто не остался невидимым, но кликабельным (утро третьего дня: Нина после N02)
 	_check(ghost.violations.is_empty(), "a villager clickable but out of sight: " + "; ".join(ghost.violations))
+	_check(ghost.speakers_unseen.is_empty(), "a line said by someone not in sight (ghost_watch.gd): " + "; ".join(ghost.speakers_unseen))
 
 
 ## «Точный удар» (F7, F8): `n` strikes, each when the marker is near the middle of the green (time scale 1 for it).

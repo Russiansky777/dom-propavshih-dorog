@@ -89,10 +89,11 @@ func _on_beat() -> void:
 			_shot(String(b.get("line_id", "")))
 		"choice", "options":
 			# ревью 17.11: the runner's choices are beats of type "options" — their buttons were logged empty
+			# (the runner's options are {"id", "label", …} — StoryRunner._choice_beat; the question is "prompt")
 			var opts: Array = []
 			for o in b.get("options", []):
-				opts.append(String((o as Dictionary).get("text", o)) if o is Dictionary else String(o))
-			_w("   [выбор] %s → %s" % [String(b.get("text", "")), " / ".join(opts)])
+				opts.append(str((o as Dictionary).get("label", (o as Dictionary).get("id", ""))) if o is Dictionary else str(o))
+			_w("   [выбор] %s → %s" % [str(b.get("prompt", b.get("text", ""))), " / ".join(opts)])
 		_:
 			_w("   [%s] %s" % [String(b.get("type", "")), String(b.get("text", ""))])
 
