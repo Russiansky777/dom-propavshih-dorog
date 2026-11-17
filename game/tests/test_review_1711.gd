@@ -16,6 +16,9 @@ extends SceneTree
 ##   R17-7 M21b: Agata reads the village list over it, then the talk goes on in the room (scenes data close_view).
 ##   R17-8 Director 17.11 (evening) «Ленту — можно, давай сделаем да»: Mama takes the ribbon in Dunya's house too.
 ##   R17-9 Director 17.11 «надписи приняты»: close-up titles on one line above their pictures (the big ones lower).
+##   R17-10 Director 17.11 «давай озвучим ок»: the epilogue's trace of Mama's ribbon (M26 №16 `then`, ru and en voice).
+##       Written ahead of the line: the Director picks one of two recorded variants by ear; `_test_epilogue_ribbon` joins
+##       `_run` in the same commit as the line and its recordings (until then it would only say the line is missing).
 ##   Every one with its self-check.
 
 var _results: Array = []
@@ -645,3 +648,83 @@ func _test_ghost_rule() -> void:
 	_check(not rule.out_of_sight_but_clickable(0.0, true, true), "a figure walking off (fading) is caught")
 	_check(not rule.out_of_sight_but_clickable(1.0, false, true), "a visible figure is caught")
 	_check(not rule.out_of_sight_but_clickable(0.0, false, false), "a figure whose hotspot is hidden is caught")
+
+
+## The lines a scene shows under these flags (beat_allowed, as in the game), each with its voice id — in the order
+## StoryRunner.start_scene gives them (a line, then its `then` follow-ups): [[line_id, speaker, text], …].
+func _scene_beats(scene_id: String, flags: Array) -> Array:
+	gs.reset()
+	for f in flags:
+		gs.set_flag(String(f), true)
+	var out: Array = []
+	var lines: Array = sd.scene(scene_id).get("mandatory_lines", [])
+	for i in lines.size():
+		var ln: Dictionary = lines[i]
+		if ln.has("options"):
+			continue
+		if String(ln.get("text", "")).strip_edges() != "" and sr.beat_allowed(ln):
+			out.append(["%s_%d" % [scene_id, i], String(ln.get("speaker", "")), String(ln.get("text", ""))])
+		var th: Array = ln.get("then", [])
+		for k in th.size():
+			if sr.beat_allowed(th[k]):
+				out.append(["%s_%d_then%d" % [scene_id, i, k], String(th[k].get("speaker", "narrator")), String(th[k].get("text", ""))])
+	gs.reset()
+	return out
+
+
+func _set_lang(v: String) -> void:
+	var ls = load("res://scripts/core/language_settings.gd")
+	ls.set_voice(v)
+	ls.set_subtitles(v)
+	sd.call("reload")
+	root.get_node("VoiceDirector").call("reload_config")
+
+
+## Director 17.11 «давай озвучим ок»: the epilogue keeps a trace of Mama's ribbon — a follow-up (`then`) of the dinner
+## line M26 №16 under ribbon_braided, so no recorded position M26_<n> shifts; shown only when Mama braided the ribbon,
+## right after the dinner line; voiced by the narrator in ru and en (VoiceDirector.line_status «ok»: the manifest has
+## M26_16_then<k> of the line's current words and its file is there). Self-check — the same follow-up without its `if`
+## would show without the ribbon.
+func _test_epilogue_ribbon() -> void:
+	var lines: Array = sd.scene("M26").get("mandatory_lines", [])
+	_check(lines.size() == 38, "M26 keeps its 38 positions (%d) — the ribbon is a follow-up, not a line of its own" % lines.size())
+	if lines.size() <= 16:
+		return
+	var dinner: Dictionary = lines[16]
+	_check(String(dinner.get("text", "")).begins_with("Вечером ужинают"), "M26 №16 is the dinner line: «%s»" % String(dinner.get("text", "")).left(40))
+	var th: Array = dinner.get("then", [])
+	var k := -1
+	for j in th.size():
+		if (th[j].get("if", []) as Array).has("ribbon_braided"):
+			_check(k == -1, "two follow-ups of the dinner under ribbon_braided")
+			k = j
+	_check(k >= 0, "no follow-up of the dinner line under ribbon_braided")
+	if k < 0:
+		return
+	var sub: Dictionary = th[k]
+	var lid := "M26_16_then%d" % k
+	var text := String(sub.get("text", ""))
+	_check(String(sub.get("speaker", "narrator")) == "narrator" and text.contains("лент"), "the follow-up is the narrator's, about the ribbon: «%s»" % text)
+	var ids_with: Array = _scene_beats("M26", ["ribbon_braided"]).map(func(b): return b[0])
+	var ids_without: Array = _scene_beats("M26", []).map(func(b): return b[0])
+	var at := ids_with.find(lid)
+	_check(at > 0 and String(ids_with[at - 1]) == "M26_16", "with the ribbon braided the line comes right after the dinner: %s" % str(ids_with.slice(maxi(at - 2, 0), at + 2)))
+	_check(not ids_without.has(lid), "without the ribbon braided the epilogue has no ribbon line")
+	_check(ids_with.size() == ids_without.size() + 1, "the ribbon adds this one line and changes nothing else (%d / %d)" % [ids_with.size(), ids_without.size()])
+	# voiced, ru and en
+	var vd: Node = root.get_node("VoiceDirector")
+	for lang in ["ru", "en"]:
+		_set_lang(lang)
+		var t_lang := String(((sd.scene("M26").get("mandatory_lines", [])[16] as Dictionary).get("then", [])[k] as Dictionary).get("text", ""))
+		_check(t_lang != "" and (lang == "ru") == (t_lang == text), "%s: the line's words «%s»" % [lang, t_lang])
+		var st := String(vd.call("line_status", lid, t_lang))
+		_check(st == "ok", "%s: the recording of %s is «%s», not ok" % [lang, lid, st])
+		var e: Dictionary = (vd.get("manifest") as Dictionary).get(lid, {})
+		_check(String(e.get("speaker", "")) == "narrator", "%s: %s is read by «%s», not the narrator" % [lang, lid, String(e.get("speaker", ""))])
+	_set_lang("ru")
+	# self-check: the same follow-up without its `if` would be shown without the ribbon — the check above sees the flag
+	var bare: Dictionary = sub.duplicate(true)
+	bare.erase("if")
+	gs.reset()
+	_check(sr.beat_allowed(bare), "self-check: without its `if` the follow-up is still not shown — the check above proves nothing")
+	_check(not sr.beat_allowed(sub), "self-check: with nothing set the ribbon line is shown")
