@@ -70,6 +70,9 @@ for f in "${steam_dlls[@]}"; do
     exit 1
   fi
 done
+# ревью 17.11: библиотеки рядом — ещё не всё; движок загрузит GodotSteam, только если в пакете внутри exe есть
+# .godot/extension_list.cfg с godotsteam.gdextension и сам .gdextension (иначе exe молча идёт без Steam)
+python3 tools/pck_list.py build/windows/DomPropavshihDorog.exe --need-steam || exit 1
 rm -f build/windows/steam_proba_overlay.zip
 printf '480' > build/windows/steam_appid.txt
 (cd build/windows && zip -q -j steam_proba_overlay.zip "${steam_dlls[@]}" steam_appid.txt)
