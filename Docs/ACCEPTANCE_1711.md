@@ -8,11 +8,13 @@
 ## Где проверять
 
 - **Сборка 17.11** — https://github.com/Russiansky777/dom-propavshih-dorog/releases/tag/latest → файл
-  `DomPropavshihDorog.exe` (один файл, вся игра). Номер сборки — СБОРКА_НОМЕР (впишу, когда соберётся).
+  `DomPropavshihDorog.exe` (один файл, 1,29 ГБ, вся игра). Сборка № 220 (прогон 44078303804, коммит `27aa3b2`,
+  собрана 17.11 в 13:13).
   Прямая ссылка: https://github.com/Russiansky777/dom-propavshih-dorog/releases/download/latest/DomPropavshihDorog.exe
-- Что это та самая сборка: на титульном экране внизу справа — «сборка 27aa3b2 · 17.11 СБОРКА_ВРЕМЯ» (время по часам
+- Что это та самая сборка: на титульном экране внизу справа — «сборка 27aa3b2 · 17.11 13:02» (время по часам
   вашего компьютера).
-- **Проба оверлея Steam** — в том же релизе файл `steam_proba_overlay.zip` (строка 12).
+- **Проба оверлея Steam** — в том же релизе файл `steam_proba_overlay.zip` (1,4 МБ, строка 12):
+  https://github.com/Russiansky777/dom-propavshih-dorog/releases/download/latest/steam_proba_overlay.zip
 - **Точки старта** — те же файлы, что 14.11 (`tochki_starta_1411.zip`, распаковать рядом с exe).
 - Windows при первом запуске покажет «Windows защитила ваш компьютер» (файл не подписан): «Подробнее» → «Выполнить в
   любом случае».

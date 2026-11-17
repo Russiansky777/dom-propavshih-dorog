@@ -7,6 +7,9 @@ https://claude.ai/artifact/JCE7GwRZvpvER96FMNXaXb.
 
 ## Где проверять
 
+- **17.11: сборка № 218 в релизе заменена сборкой № 220 (та же игра + Steam) — проверять по `Docs/ACCEPTANCE_1711.md`;
+  строки 1–10 там те же.**
+
 - **Сборка 16.11** — https://github.com/Russiansky777/dom-propavshih-dorog/releases/tag/latest → файл
   `DomPropavshihDorog.exe` (один файл, 1,29 ГБ, вся игра). Сборка № 218 (прогон 43925349074, коммит `1512908`, собрана
   16.11 в 19:28). Прямая ссылка: https://github.com/Russiansky777/dom-propavshih-dorog/releases/download/latest/DomPropavshihDorog.exe
