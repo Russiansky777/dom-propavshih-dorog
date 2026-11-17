@@ -721,7 +721,17 @@
     },
     {
      "speaker": "narrator",
-     "text": "Supper at Dunya's house that evening. Nina, Ilya and his wife, Agata. Tikhon on his shelf. Tamara's pot on the table."
+     "text": "Supper at Dunya's house that evening. Nina, Ilya and his wife, Agata. Tikhon on his shelf. Tamara's pot on the table.",
+     "then": [
+      {
+       "speaker": "narrator",
+       "if": [
+        "ribbon_braided"
+       ],
+       "text": "Mama's ribbon in Agata's braid — as on feast days.",
+       "_note": "Директор 17.11, вечер: след маминой ленты в эпилоге — «давай озвучим ок», выбран вариант v2 на слух (пробы pipeline/voice/probe/ribbon_epilogue). Продолжение строки ужина (then), чтобы записанные позиции M26_<n> не сдвинулись; id записи M26_16_then0."
+      }
+     ]
     },
     {
      "speaker": "tikhon",
