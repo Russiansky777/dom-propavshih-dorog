@@ -34,6 +34,9 @@ func _open_latch() -> void:
 		await process_frame
 
 
+var ghost: Node = null   # ревью 17.11: tests/ghost_watch.gd
+
+
 func _initialize() -> void:
 	var sfx := "_%d" % OS.get_process_id()
 	TEST_SLOT += sfx
@@ -43,6 +46,9 @@ func _initialize() -> void:
 	rm = root.get_node_or_null("RoomManager")
 	if OS.get_environment("PLAY_LOG") != "":   # the review's record of what the player is shown (tests/play_tap.gd)
 		root.add_child.call_deferred(load("res://tests/play_tap.gd").new())
+	# ревью 17.11: «кликабельный житель — видимый» (tests/ghost_watch.gd), проверяется в конце прохождения
+	ghost = load("res://tests/ghost_watch.gd").new()
+	root.add_child.call_deferred(ghost)
 	_run()
 
 
@@ -732,6 +738,7 @@ func _test_exit_gate() -> void:
 
 
 func _test_walkthrough() -> void:
+	ghost.violations.clear()
 	gs.reset()
 	await _spawn_main()
 	rm.checkpoint_prefix = "test_%d_" % OS.get_process_id()
@@ -1112,6 +1119,8 @@ func _test_walkthrough() -> void:
 		print("        chain: day one saved to «%s» — room %s, %d flags, bag %s" % [OS.get_environment("CHAIN_OUT"), bot.room_id(), gs.flags.size(), str(gs.inventory)])
 	Engine.time_scale = 1.0
 	_cleanup_m1()
+	# ревью 17.11: никто не остался невидимым, но кликабельным (утро третьего дня: Нина после N02)
+	_check(ghost.violations.is_empty(), "a villager clickable but out of sight: " + "; ".join(ghost.violations))
 
 
 func _test_h1_real() -> void:

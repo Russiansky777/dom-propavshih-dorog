@@ -1112,6 +1112,12 @@ func _stage_layer_reset(spec: Dictionary) -> void:
 	var room := RoomManager.current_room
 	if room == null:
 		return
+	# review 17.11: `npc_back` [ids] — villagers an earlier npc_go walked off (faded out) are back in their places, in
+	# sight, while black (N02's morning: Nina in the horenka again for M21) — NpcActor.come_back()
+	for id in spec.get("npc_back", []):
+		var nb := room.get_node_or_null("npc_" + String(id))
+		if nb != null and nb.has_method("come_back"):
+			nb.call("come_back")
 	for id in spec.get("layer_reset", []):
 		var node := room.get_node_or_null("Layers/" + String(id)) as Node2D
 		if node != null:

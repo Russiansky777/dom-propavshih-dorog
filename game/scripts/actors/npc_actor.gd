@@ -24,6 +24,10 @@ var talking: bool = false
 var _said_check_t: float = 0.0
 ## I-T4: walking off in a staging (go_off with a walk sheet) — beats do not switch the clip meanwhile.
 var walking: bool = false
+## Where setup() placed the figure (come_back(): a later staging's `npc_back`).
+var home_pos: Vector2 = Vector2.ZERO
+var home_scale: Vector2 = Vector2.ONE
+var home_dir: int = 0
 ## I-T2 (Director 02:34): three states of every villager — "idle" (just stands: breathing, rare small
 ## moves), "listen" (turned to Agata, quiet: a scene with this villager is on and someone else speaks),
 ## "talk" (gesture/head while their own line is up). Per actor data `states.<state>` = {action, speed,
@@ -186,6 +190,9 @@ func setup(id: String, h: StoryHotspot, room: Node, the_player: Node2D) -> bool:
 		sprite.sprite_frames = sheet.frames
 	_face_data()
 	shown_dir = direction
+	home_pos = global_position
+	home_scale = scale
+	home_dir = direction
 	visible = h.visible
 	h.visibility_changed.connect(func(): visible = hotspot.visible)
 	StoryRunner.beat_changed.connect(_on_beat_changed)
@@ -247,6 +254,25 @@ func face_towards(target: Vector2) -> void:
 		direction = sheet.direction_index(v)
 		if live != null:
 			live.face(v, _floor_k)
+
+
+## Back where the room puts her and in sight — a later staging's `npc_back` [ids] (review 17.11: N02 sends Nina out of
+## the horenka at night with a fade; the morning is the same room, not rebuilt, and she stayed invisible — alpha 0 at
+## the door — while M21 had her speak and her hotspot «Нина» hung over an empty floor; a load or a re-entry rebuilt
+## her in place anyway). The place, size and facing are those setup() gave her.
+func come_back() -> void:
+	_end_walk()
+	global_position = home_pos
+	scale = home_scale
+	z_index = clampi(int(global_position.y), -4096, 4096)
+	modulate.a = 1.0
+	direction = home_dir
+	shown_dir = home_dir
+	partner = null
+	if live != null:
+		live.face(ActorSheet.facing_vector(sheet.facing), _floor_k, true)
+	_face_data()   # after the sheet's facing, as in setup(): the data's face_dir / face_hold win
+	_play_idle()
 
 
 func _end_walk() -> void:

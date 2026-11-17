@@ -31,9 +31,15 @@ var _fails: Array[String] = []
 var _reached_end: bool = false   # a test that stops on a script error never reaches its end: FAIL, not PASS
 
 
+var ghost: Node = null   # ревью 17.11: tests/ghost_watch.gd
+
+
 func _initialize() -> void:
 	if OS.get_environment("PLAY_LOG") != "":   # the review's record of what the player is shown (tests/play_tap.gd)
 		root.add_child.call_deferred(load("res://tests/play_tap.gd").new())
+	# ревью 17.11: «кликабельный житель — видимый» (tests/ghost_watch.gd), проверяется в конце прохождения
+	ghost = load("res://tests/ghost_watch.gd").new()
+	root.add_child.call_deferred(ghost)
 	_run()
 
 
@@ -896,6 +902,7 @@ func _test_states() -> void:
 # --- Walkthrough -------------------------------------------------------------------------
 
 func _test_walkthrough() -> void:
+	ghost.violations.clear()
 	_npc_goal_check = true
 	rm.autosave_enabled = true
 	Engine.time_scale = 4.0
@@ -1430,6 +1437,8 @@ func _test_walkthrough() -> void:
 	_check(gs.inventory.count("school_ribbon") == 1, "ribbon still once")
 	_npc_goal_check = false
 	Engine.time_scale = 1.0
+	# ревью 17.11: никто не остался невидимым, но кликабельным (утро третьего дня: Нина после N02)
+	_check(ghost.violations.is_empty(), "a villager clickable but out of sight: " + "; ".join(ghost.violations))
 
 
 ## «Точный удар» (F7, F8): `n` strikes, each when the marker is near the middle of the green (time scale 1 for it).

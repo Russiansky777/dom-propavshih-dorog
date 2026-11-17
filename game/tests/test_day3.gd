@@ -43,9 +43,15 @@ var _reached_end: bool = false
 var frames_seen: Array[String] = []
 
 
+var ghost: Node = null   # ревью 17.11: tests/ghost_watch.gd
+
+
 func _initialize() -> void:
 	if OS.get_environment("PLAY_LOG") != "":   # the review's record of what the player is shown (tests/play_tap.gd)
 		root.add_child.call_deferred(load("res://tests/play_tap.gd").new())
+	# ревью 17.11: «кликабельный житель — видимый» (tests/ghost_watch.gd), проверяется в конце прохождения
+	ghost = load("res://tests/ghost_watch.gd").new()
+	root.add_child.call_deferred(ghost)
 	_run()
 
 
@@ -680,6 +686,7 @@ func _test_start_points() -> void:
 # --- Walkthrough -------------------------------------------------------------------------
 
 func _test_walkthrough() -> void:
+	ghost.violations.clear()
 	rm.autosave_enabled = true
 	Engine.time_scale = 4.0
 	frames_seen.clear()
@@ -974,6 +981,8 @@ func _test_walkthrough() -> void:
 	await _frames(2)
 	Engine.time_scale = 1.0
 	_reached_end = true
+	# ревью 17.11: никто не остался невидимым, но кликабельным (утро третьего дня: Нина после N02)
+	_check(ghost.violations.is_empty(), "a villager clickable but out of sight: " + "; ".join(ghost.violations))
 
 
 # --- Save / load ---------------------------------------------------------------------------
@@ -1076,6 +1085,7 @@ func _test_traces() -> void:
 # --- Block 5 ---------------------------------------------------------------------------------
 
 func _test_optional() -> void:
+	ghost.violations.clear()
 	Engine.time_scale = 4.0
 	# Q07 and Q01 on the street of Olkhovka, the free day.
 	_check(rm.start_at("freewalk"), "start: the free day")
@@ -1145,6 +1155,8 @@ func _test_optional() -> void:
 	_check(tr.size() >= 5, "achievements reached: %d" % tr.size())
 	Engine.time_scale = 1.0
 	_reached_end = true
+	# ревью 17.11: никто не остался невидимым, но кликабельным (утро третьего дня: Нина после N02)
+	_check(ghost.violations.is_empty(), "a villager clickable but out of sight: " + "; ".join(ghost.violations))
 
 
 # --- Block 5: Q02 and Q06 (Director 23.10 11:51) ----------------------------------------------------
@@ -1336,6 +1348,7 @@ func _layer_visible(room: Node, id: String) -> bool:
 
 
 func _test_q02_q06_traces() -> void:
+	ghost.violations.clear()
 	# Epilogue lines by the four choices; none when skipped; the last word is still Ulyana's.
 	var a := _beats_of("M26", ["q02_old_under_new", "q06_table_at_ilya"])
 	_check(a.any(func(x): return x.contains("Нина детям показывает, как место менялось")) and a.any(func(x): return x.contains("Рядом сохнет их полка")), "A/A: the lesson shows the map with the tracing; the oarlock and the drying shelf")
@@ -1421,6 +1434,8 @@ func _test_q02_q06_traces() -> void:
 	sr.set_frame("")
 	gs.reset()
 	_reached_end = true
+	# ревью 17.11: никто не остался невидимым, но кликабельным (утро третьего дня: Нина после N02)
+	_check(ghost.violations.is_empty(), "a villager clickable but out of sight: " + "; ".join(ghost.violations))
 
 
 func _exit_to_room(to: String) -> Node:
