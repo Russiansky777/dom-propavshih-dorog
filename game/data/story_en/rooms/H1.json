@@ -740,6 +740,36 @@
    "_rect_note": "блок 3 (M23c): Нина в доме сестры у двери в сени, ноги y 756 (масштаб 1,41 → Нина 1,62 м ≈ 476 px); 23.10: сдвинута вправо на 52 px — стояла перед своим пальто на крючке (слой nina_coat партии 8, x 1206–1339) и закрывала его",
    "talk": {
     "after_text": "@H1d.nina.after"
+   },
+   "item_use": {
+    "school_ribbon": {
+     "text": "@O3.nina.ribbon",
+     "sets": [
+      "ribbon_braided"
+     ],
+     "once_flag": "ribbon_braided",
+     "text_done": "@O3.nina.ribbon_again",
+     "consumes": true,
+     "_r1711": "Директор 17.11, 19:47 («Ленту — можно, давай сделаем да»): ленту можно отдать маме и в доме тёти — со свободного дня мама здесь (в горнице её больше нет, M21b). Те же слова и крупный план, что в горнице (O3 nina.item_use)",
+     "view": {
+      "id": "ribbon_braid",
+      "type": "papers",
+      "title": "@O3.nina.ribbon.title",
+      "close_label": "@ui.close",
+      "pictures": [
+       {
+        "image": "res://assets/closeups/closeup_ribbon_braid.png",
+        "rect": [
+         260,
+         130,
+         1400,
+         0
+        ],
+        "angle_deg": 0.0
+       }
+      ]
+     }
+    }
    }
   },
   {

@@ -9,6 +9,13 @@ extends SceneTree
 ##   R17-2 The rule of tests/ghost_watch.gd (a clickable villager is a visible one; the bot walkthroughs run it all the
 ##       way): a shown hotspot over a figure at alpha 0 that is not walking is caught; a walking or visible one, or one
 ##       whose hotspot is hidden, is not.
+##   R17-3 The photo in the mill passage: its caption above the line box on every line said over it (ru, en).
+##   R17-4 A room change takes the old room's hover caption away at once (GameUi.drop_hover).
+##   R17-5 The speaker rule of ghost_watch.gd: a villager who speaks is in sight (Q07 Pelageya, Q08 the guests).
+##   R17-6 A body turn settles at any frame length (Actor3D.turn_step in slices).
+##   R17-7 M21b: Agata reads the village list over it, then the talk goes on in the room (scenes data close_view).
+##   R17-8 Director 17.11, 19:47 «Ленту — можно, давай сделаем да»: Mama takes the ribbon in Dunya's house too.
+##   Every one with its self-check.
 
 var _results: Array = []
 var _fails: Array[String] = []
@@ -51,6 +58,7 @@ func _run() -> void:
 	await _test("R17-5 the speaker rule (ghost_watch.gd): a speaker with a figure in sight passes; a faded, hidden or absent one, or Agata hidden, is caught", _test_speaker_rule)
 	await _test("R17-6 a body turn settles at any frame length (villagers; Agata running); self-check — the unsliced step at a long frame swings", _test_turn_settles)
 	await _test("R17-7 M21b: Agata reads the village list over it, then the talk with Mama goes on in the room, not over the paper; self-check — without the scene's close_view it stays over it", _test_m21b_room)
+	await _test("R17-8 Mama's ribbon in Dunya's house (the free day): a real click with it on Mama braids it — the close-up, the trace, the ribbon gone; self-check — without the house's item_use it stays in the bag", _test_ribbon_h1)
 	var failed := _results.count(false)
 	print("==== review 17.11: %d tests, %d passed, %d failed ====" % [_results.size(), _results.size() - failed, failed])
 	quit(1 if failed > 0 else 0)
@@ -461,6 +469,79 @@ func _test_m21b_room() -> void:
 	var too_soon: Dictionary = await _m21b_lines()
 	sr.scene_started.disconnect(early)
 	_check(not bool(too_soon["list_read_open"]), "self-check: the list closed as the scene starts was not caught (Agata's reading still seen over it)")
+
+
+func _click(at: Vector2) -> void:
+	var win := root.get_final_transform() * at
+	var m := InputEventMouseMotion.new()
+	m.position = win
+	m.global_position = win
+	Input.parse_input_event(m)
+	await process_frame
+	for pressed in [true, false]:
+		var ev := InputEventMouseButton.new()
+		ev.button_index = MOUSE_BUTTON_LEFT
+		ev.pressed = pressed
+		ev.position = win
+		ev.global_position = win
+		Input.parse_input_event(ev)
+		await process_frame
+
+
+## The free day in Dunya's house (Mama is there from M22 on; in her room no more after M21b): the ribbon picked in the
+## bag and a real click on Mama. `with_use` false — the house's item_use taken away (the data until 17.11, 19:47).
+func _ribbon_h1(with_use: bool) -> Dictionary:
+	var out := {"in_bag_before": false, "braided": false, "in_bag_after": true, "view": ""}
+	var main_node: Node = await _start("freewalk")
+	for f in ["started_M23c", "done_M23c"]:
+		gs.set_flag(f, true)
+	rm.change_room("H1", "from_H3")
+	for i in 40:
+		await process_frame
+	for i in 900:   # whatever the house plays on entry
+		if not sr.is_busy():
+			break
+		if not sr.current_beat.is_empty() and not sr.is_staging() and String(sr.current_beat.get("type", "")) != "options":
+			sr.advance()
+		await process_frame
+	out["in_bag_before"] = gs.has_item("school_ribbon")
+	var h := _hotspot("nina")
+	if h == null:
+		_fails.append("no Mama (hotspot nina) in Dunya's house on the free day")
+		await _stop(main_node)
+		return out
+	var hd: Dictionary = h.get("data")
+	var uses: Dictionary = hd.get("item_use", {})
+	var keep = uses.get("school_ribbon", null)
+	if not with_use:
+		uses.erase("school_ribbon")
+	sr.select_item("school_ribbon")
+	var r: Array = hd.get("rect", [1342, 280, 125, 476])
+	await _click(Vector2(float(r[0]) + float(r[2]) / 2.0, float(r[1]) + float(r[3]) / 2.0))
+	for i in 900:
+		if gs.has_flag("ribbon_braided") or not sr.current_beat.is_empty():
+			break
+		await process_frame
+	for i in 6:
+		await process_frame
+	out["braided"] = gs.has_flag("ribbon_braided")
+	out["in_bag_after"] = gs.has_item("school_ribbon")
+	out["view"] = String(sr.view.get("id", "")) if sr.view_open else ""
+	if keep != null:
+		uses["school_ribbon"] = keep
+	sr.close_view()
+	await _stop(main_node)
+	return out
+
+
+func _test_ribbon_h1() -> void:
+	var r: Dictionary = await _ribbon_h1(true)
+	_check(bool(r["in_bag_before"]), "the free day: the ribbon is not in the bag (start point freewalk)")
+	_check(bool(r["braided"]), "a click with the ribbon on Mama in Dunya's house did not braid it")
+	_check(not bool(r["in_bag_after"]), "the ribbon is still in the bag after Mama braided it")
+	_check(String(r["view"]) == "ribbon_braid", "the close-up of the braiding did not open (%s)" % String(r["view"]))
+	var bad: Dictionary = await _ribbon_h1(false)
+	_check(not bool(bad["braided"]) and bool(bad["in_bag_after"]), "self-check: without the house's item_use the ribbon was braided anyway (%s)" % str(bad))
 
 
 func _test_ghost_rule() -> void:
