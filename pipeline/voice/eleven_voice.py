@@ -754,7 +754,9 @@ def cmd_adopt(req_path: Path) -> int:
                  "voice_settings": spec["voice_settings"], "file": file_rel(ln, lid, "ogg"), "source": "src/" + file_rel(ln, lid, "mp3"),
                  "voice_text": api_text(ln), "voice_sha1": text_sha1(api_text(ln)), "tags": ln.get("tags", []),
                  "characters": len(api_text(ln)), "loudness_target_lufs": target, **meas,
-                 "output_format": "mp3_44100_192", "generated_at": now_iso(), "run": os.environ.get("GITHUB_RUN_ID", "local"),
+                 # формат — тот, в котором записана проба (поле её JSON с 17.11); прежние пробы — mp3_44100_192
+                 "output_format": str(pj.get("output_format") or "mp3_44100_192"), "generated_at": now_iso(),
+                 "run": os.environ.get("GITHUB_RUN_ID", "local"),
                  "adopted_from": f"probe/{req.get('set')}/{pid}",
                  "api": {"history_item_id": pj.get("history_item_id", ""), "character_cost": pj.get("character_cost", ""),
                          "previous_text": pj.get("previous_text", ""), "probe_run": pj.get("run", "")}}
@@ -813,6 +815,10 @@ def cmd_say(req_path: Path) -> int:
     set_name = str(req.get("set", req_path.stem))
     cast = dict(read_json(CAST_PATH, {}) or {})
     cast["timestamps"] = True
+    if req.get("output_format"):
+        # Формат записи из запроса (17.11: план ElevenLabs — предоплата «payg», mp3_44100_192 API не даёт: «only available
+        # on the Creator tier and above»; лучшее доступное — mp3_44100_128). Формат пишется в JSON пробы, adopt берёт его.
+        cast["output_format"] = str(req["output_format"])
     items = [it for it in req.get("items", []) if it.get("id") and it.get("text")]
     chars = sum(len(str(it["text"])) for it in items)
     if chars > int(req.get("max_chars", 0)):
@@ -875,6 +881,7 @@ def cmd_say(req_path: Path) -> int:
         write_json(out / f"{it['id']}.json", {"id": it["id"], "speaker": sp, "voice_name": spec["voice_name"], "alt": it.get("alt", ""),
                                                "model_id": spec["model_id"], "text": text, "duration_s": duration_s(f),
                                                "language_code": lang,
+                                               "output_format": info.get("output_format", cast.get("output_format", "")),
                                                "character_cost": cc, "alignment": info.get("alignment"),
                                                "expect": it.get("expect"), "variant": it.get("variant", ""),
                                                "line": it.get("line", ""), "take": it.get("take", ""),
@@ -1106,6 +1113,9 @@ def cmd_generate(req_path: Path, dry_run: bool) -> int:
     cast = read_json(CAST_PATH, None)
     if cast is None:
         raise VoiceError(f"нет {CAST_PATH.relative_to(ROOT)} — сначала режим list и сопоставление голосов")
+    if req.get("output_format"):
+        # формат записи из запроса, как в say (17.11: план «payg» не даёт mp3_44100_192); в манифест — из ответа синтеза
+        cast = dict(cast, output_format=str(req["output_format"]))
     use_language(str(req.get("lang", "ru")))
     if LANG != "ru":
         cast = dict(cast, language_code=LANG)
