@@ -400,12 +400,13 @@ func start_scene(scene_id: String) -> bool:
 	var sc := StoryData.scene(scene_id)
 	GameState.set_flag("started_" + scene_id, true)
 	scene_started.emit(scene_id)
-	# ревью 17.11 (M21b «А как прежде сделать — нельзя?» — the talk of Mama and Agata went on over Nina's village list,
-	# the close-up whose reading started it): scenes data `close_view` true — a paper close-up still open is put away as
-	# the scene begins (it goes as when the player closes it), its people are seen saying their lines
-	if bool(sc.get("close_view", false)) and view_open:
-		close_view()
 	var beats: Array[Dictionary] = []
+	# ревью 17.11 (M21b «А как прежде сделать — нельзя?» — the talk of Mama and Agata went on over Nina's village list,
+	# the close-up whose reading started it): scenes data `close_view` true — a paper close-up still open is put away
+	# when the scene's first beat comes (after the words said over it — Agata reads the list), as when the player
+	# closes it; the scene's people are seen saying their lines
+	if bool(sc.get("close_view", false)):
+		beats.append({"type": "call", "scene": scene_id, "fn": close_view})
 	var lines: Array = sc.get("mandatory_lines", [])
 	var stages: Array = sc.get("stage", [])
 	var mechs: Array = sc.get("mechanics", [])

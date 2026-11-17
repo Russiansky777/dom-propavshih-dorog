@@ -50,7 +50,7 @@ func _run() -> void:
 	await _test("R17-4 a room change takes the old room's caption away at once; self-check — without it the caption stays over the new room", _test_hover_drop)
 	await _test("R17-5 the speaker rule (ghost_watch.gd): a speaker with a figure in sight passes; a faded, hidden or absent one, or Agata hidden, is caught", _test_speaker_rule)
 	await _test("R17-6 a body turn settles at any frame length (villagers; Agata running); self-check — the unsliced step at a long frame swings", _test_turn_settles)
-	await _test("R17-7 M21b: the village list read, the talk with Mama goes on in the room, not over the paper; self-check — without the scene's close_view it stays over it", _test_m21b_room)
+	await _test("R17-7 M21b: Agata reads the village list over it, then the talk with Mama goes on in the room, not over the paper; self-check — without the scene's close_view it stays over it", _test_m21b_room)
 	var failed := _results.count(false)
 	print("==== review 17.11: %d tests, %d passed, %d failed ====" % [_results.size(), _results.size() - failed, failed])
 	quit(1 if failed > 0 else 0)
@@ -400,7 +400,7 @@ func _test_turn_settles() -> void:
 ## The morning of day three in Mama's room, M21 talked, the notebooks read: the village list clicked — its words, then
 ## M21b. Returns {"nina_lines": Nina's lines of M21b seen, "over_paper": how many of them were said with a close-up open}.
 func _m21b_lines() -> Dictionary:
-	var out := {"nina_lines": 0, "over_paper": 0}
+	var out := {"nina_lines": 0, "over_paper": 0, "list_read_open": false}
 	var main_node: Node = await _start("day3")
 	for f in ["started_M21", "done_M21", "o3_read_notebooks"]:
 		gs.set_flag(f, true)
@@ -423,6 +423,11 @@ func _m21b_lines() -> Dictionary:
 		var key := String(b.get("text", ""))
 		if key != last:
 			last = key
+			# Agata reads the list aloud («Живых двадцать два…») — over the list itself, it is still open
+			if String(b.get("text_key", "")) == "O3.village_list.use" or key.begins_with("Живых двадцать два"):
+				for i in 3:
+					await process_frame
+				out["list_read_open"] = sr.view_open
 			if String(sr.active_scene) == "M21b" and String(b.get("speaker", "")) == "nina":
 				for i in 3:
 					await process_frame
@@ -440,6 +445,7 @@ func _test_m21b_room() -> void:
 	var r: Dictionary = await _m21b_lines()
 	_check(int(r["nina_lines"]) >= 3, "M21b: %d lines of Mama seen (three at least)" % int(r["nina_lines"]))
 	_check(int(r["over_paper"]) == 0, "M21b: %d of Mama's lines said over the village list" % int(r["over_paper"]))
+	_check(bool(r["list_read_open"]), "the list was put away before Agata read it aloud («Живых двадцать два…» over the room)")
 	# self-check: the scene as it was — no close_view — and the paper stays over the talk
 	var sc: Dictionary = sd.scene("M21b")
 	var keep = sc.get("close_view", null)
@@ -448,6 +454,13 @@ func _test_m21b_room() -> void:
 	if keep != null:
 		sc["close_view"] = keep
 	_check(int(bad["over_paper"]) >= 3, "self-check: without close_view Mama's lines were not seen over the paper (%d of %d)" % [int(bad["over_paper"]), int(bad["nina_lines"])])
+	# self-check 2: the list put away as the scene starts (the first try of 17.11 — before Agata's reading of it)
+	var early := func(_id: String) -> void:
+		sr.close_view()
+	sr.scene_started.connect(early)
+	var too_soon: Dictionary = await _m21b_lines()
+	sr.scene_started.disconnect(early)
+	_check(not bool(too_soon["list_read_open"]), "self-check: the list closed as the scene starts was not caught (Agata's reading still seen over it)")
 
 
 func _test_ghost_rule() -> void:
