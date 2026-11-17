@@ -688,6 +688,7 @@ func _test_start_points() -> void:
 func _test_walkthrough() -> void:
 	ghost.violations.clear()
 	ghost.speakers_unseen.clear()
+	ghost.lines_over_view.clear()
 	rm.autosave_enabled = true
 	Engine.time_scale = 4.0
 	frames_seen.clear()
@@ -985,6 +986,7 @@ func _test_walkthrough() -> void:
 	# ревью 17.11: никто не остался невидимым, но кликабельным (утро третьего дня: Нина после N02)
 	_check(ghost.violations.is_empty(), "a villager clickable but out of sight: " + "; ".join(ghost.violations))
 	_check(ghost.speakers_unseen.is_empty(), "a line said by someone not in sight (ghost_watch.gd): " + "; ".join(ghost.speakers_unseen))
+	print("        lines over a close-up: %d — %s" % [ghost.lines_over_view.size(), "; ".join(ghost.lines_over_view)])
 
 
 # --- Save / load ---------------------------------------------------------------------------
@@ -1089,6 +1091,7 @@ func _test_traces() -> void:
 func _test_optional() -> void:
 	ghost.violations.clear()
 	ghost.speakers_unseen.clear()
+	ghost.lines_over_view.clear()
 	Engine.time_scale = 4.0
 	# Q07 and Q01 on the street of Olkhovka, the free day.
 	_check(rm.start_at("freewalk"), "start: the free day")
@@ -1161,6 +1164,7 @@ func _test_optional() -> void:
 	# ревью 17.11: никто не остался невидимым, но кликабельным (утро третьего дня: Нина после N02)
 	_check(ghost.violations.is_empty(), "a villager clickable but out of sight: " + "; ".join(ghost.violations))
 	_check(ghost.speakers_unseen.is_empty(), "a line said by someone not in sight (ghost_watch.gd): " + "; ".join(ghost.speakers_unseen))
+	print("        lines over a close-up: %d — %s" % [ghost.lines_over_view.size(), "; ".join(ghost.lines_over_view)])
 
 
 # --- Block 5: Q02 and Q06 (Director 23.10 11:51) ----------------------------------------------------
@@ -1354,6 +1358,7 @@ func _layer_visible(room: Node, id: String) -> bool:
 func _test_q02_q06_traces() -> void:
 	ghost.violations.clear()
 	ghost.speakers_unseen.clear()
+	ghost.lines_over_view.clear()
 	# Epilogue lines by the four choices; none when skipped; the last word is still Ulyana's.
 	var a := _beats_of("M26", ["q02_old_under_new", "q06_table_at_ilya"])
 	_check(a.any(func(x): return x.contains("Нина детям показывает, как место менялось")) and a.any(func(x): return x.contains("Рядом сохнет их полка")), "A/A: the lesson shows the map with the tracing; the oarlock and the drying shelf")
@@ -1442,6 +1447,7 @@ func _test_q02_q06_traces() -> void:
 	# ревью 17.11: никто не остался невидимым, но кликабельным (утро третьего дня: Нина после N02)
 	_check(ghost.violations.is_empty(), "a villager clickable but out of sight: " + "; ".join(ghost.violations))
 	_check(ghost.speakers_unseen.is_empty(), "a line said by someone not in sight (ghost_watch.gd): " + "; ".join(ghost.speakers_unseen))
+	print("        lines over a close-up: %d — %s" % [ghost.lines_over_view.size(), "; ".join(ghost.lines_over_view)])
 
 
 func _exit_to_room(to: String) -> Node:

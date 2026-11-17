@@ -400,6 +400,11 @@ func start_scene(scene_id: String) -> bool:
 	var sc := StoryData.scene(scene_id)
 	GameState.set_flag("started_" + scene_id, true)
 	scene_started.emit(scene_id)
+	# ревью 17.11 (M21b «А как прежде сделать — нельзя?» — the talk of Mama and Agata went on over Nina's village list,
+	# the close-up whose reading started it): scenes data `close_view` true — a paper close-up still open is put away as
+	# the scene begins (it goes as when the player closes it), its people are seen saying their lines
+	if bool(sc.get("close_view", false)) and view_open:
+		close_view()
 	var beats: Array[Dictionary] = []
 	var lines: Array = sc.get("mandatory_lines", [])
 	var stages: Array = sc.get("stage", [])

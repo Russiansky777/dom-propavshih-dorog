@@ -20,6 +20,7 @@ var gs: Node
 ## room — or in the frame (FrameView) when one is open. Not judged: a close-up, a mechanic or a bag item over the room
 ## (the room is not seen), a staging (its black). `speakers_unseen` — «scene/line: speaker» once each.
 var speakers_unseen: Array[String] = []
+var lines_over_view: Array[String] = []
 var _lines_judged: Dictionary = {}
 
 
@@ -41,6 +42,13 @@ func _on_beat() -> void:
 	var key := "%s|%s|%s" % [String(sr.active_scene), String(b.get("line_id", "")), String(b.get("text", ""))]
 	await get_tree().process_frame
 	if _lines_judged.has(key) or sr.current_beat != b:
+		return
+	if bool(sr.get("view_open")) and sp != "agata" and not _lines_judged.has(key):
+		# review 17.11 (M21b «А как прежде сделать — нельзя?» over Nina's village list): a villager's line said while a
+		# paper close-up hides the room — listed for the review (`lines_over_view`), judged by the walkthroughs' data
+		_lines_judged[key] = true
+		lines_over_view.append("%s/%s «%s»: %s over the close-up «%s»" % [String(sr.active_scene), String(b.get("line_id", "")),
+			String(b.get("text", "")).left(40), sp, String((sr.get("view") as Dictionary).get("id", "?")) if sr.get("view") is Dictionary else "?"])
 		return
 	if bool(sr.get("view_open")) or bool(sr.get("mechanic_open")) or String(sr.get("examined_item")) != "" or sr.is_staging():
 		return

@@ -740,6 +740,7 @@ func _test_exit_gate() -> void:
 func _test_walkthrough() -> void:
 	ghost.violations.clear()
 	ghost.speakers_unseen.clear()
+	ghost.lines_over_view.clear()
 	gs.reset()
 	await _spawn_main()
 	rm.checkpoint_prefix = "test_%d_" % OS.get_process_id()
@@ -1123,6 +1124,7 @@ func _test_walkthrough() -> void:
 	# ревью 17.11: никто не остался невидимым, но кликабельным (утро третьего дня: Нина после N02)
 	_check(ghost.violations.is_empty(), "a villager clickable but out of sight: " + "; ".join(ghost.violations))
 	_check(ghost.speakers_unseen.is_empty(), "a line said by someone not in sight (ghost_watch.gd): " + "; ".join(ghost.speakers_unseen))
+	print("        lines over a close-up: %d — %s" % [ghost.lines_over_view.size(), "; ".join(ghost.lines_over_view)])
 
 
 func _test_h1_real() -> void:
