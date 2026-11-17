@@ -27,15 +27,14 @@ https://docs.godotengine.org/en/stable/tutorials/io/data_paths.html). Настр
 ## 3. Достижения
 Steamworks → **Stats & Achievements → Achievements** (https://partner.steamgames.com/doc/features/achievements).
 Для каждого — «New Achievement»:
-- **API Name** — строго как в первом столбце `Docs/STEAM_ACHIEVEMENTS.md` (`ACH_BOARD`, `ACH_MITTEN`…): по этому имени
-  игра сообщает Steam, что достижение открыто.
+- **API Name** — строго как в таблице «В Steam — 8» `Docs/STEAM_ACHIEVEMENTS.md` (`ACH_DAY1`, `ACH_Q02`…): по этому
+  имени игра сообщает Steam, что достижение открыто.
 - Display Name (название) и Description (описание) — на русском и английском (Steamworks даёт вкладки языков).
 - Две иконки: открыто и закрыто.
 - Set By: `Client`. Hidden — по желанию (скрытые не показывают описание до получения).
 - Затем **Publish**.
 
-Что решить вам (вопросы из `Docs/STEAM_ACHIEVEMENTS.md`): все 18 или меньше; названия — как на экране конца или новые;
-описания; иконки. Если какое-то не нужно — скажите номер, я уберу его из игры (`skip` в `game/data/steam.json`).
+Состав — 8 (ваше решение 17.11). Осталось утвердить: английские названия, описания, иконки (черновики — в той же таблице).
 
 ## 4. Сборка в Steam
 Папка для Steam — три файла: `DomPropavshihDorog.exe` и рядом `libgodotsteam.windows.template_release.x86_64.dll`,

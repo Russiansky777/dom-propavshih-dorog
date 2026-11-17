@@ -1,8 +1,54 @@
 {
- "_comment": "Steam (SteamService, game/scripts/core/steam_service.gd; Docs/STEAM.md). app_id — номер приложения в Steamworks (0 — пока нет: игру запускает Steam и сам передаёт номер). Достижения Steam — следы выборов из data/story/achievements.json под API-именами prefix + ID заглавными (ACH_BOARD…); names — своё API-имя для id, skip — id, которые в Steam не идут. Те же API-имена заводятся в Steamworks (Docs/STEAM_ACHIEVEMENTS.md). enabled false — Steam не трогать вовсе.",
+ "_comment": "Steam (SteamService, game/scripts/core/steam_service.gd; Docs/STEAM.md, Docs/STEAM_ACHIEVEMENTS.md). app_id — номер приложения в Steamworks (0 — пока нет: игру запускает Steam и сам передаёт номер). Достижения Steam — следы выборов из data/story/achievements.json под API-именами prefix + ID заглавными (ACH_Q02…), кроме skip; плюс extra — только для Steam (на экране конца их нет): конец каждого дня и игры, {id, if: [флаги], any: [флаги]}. names — своё API-имя для id. Те же API-имена заводятся в Steamworks. enabled false — Steam не трогать вовсе.",
+ "_d1711": "Директор 17.11: «меньше 18 достижений, может до 10» → «может по окончанию дней и игры? плюс сад плюс рукав плюс письма мамы» → «Старая карта, Рукав пальто, мамина лента в косе — поправить имена достижений». Итог — 8: дни 1–3, конец игры, сад (q02), рукав (q03), письма (letters), лента (ribbon).",
  "enabled": true,
  "app_id": 0,
  "prefix": "ACH_",
  "names": {},
- "skip": []
+ "skip": [
+  "board",
+  "mitten",
+  "bird",
+  "promise",
+  "family",
+  "tikhon_nina",
+  "tikhon_agata",
+  "beam",
+  "cup",
+  "q01",
+  "q04",
+  "q06",
+  "q07",
+  "q08"
+ ],
+ "extra": [
+  {
+   "id": "day1",
+   "if": [
+    "night_day1"
+   ],
+   "_note": "конец первого дня — N01 «Ночь у печи»"
+  },
+  {
+   "id": "day2",
+   "if": [
+    "morning_day3"
+   ],
+   "_note": "конец второго дня — N02 «Ночь в Ольховке»"
+  },
+  {
+   "id": "day3",
+   "if": [
+    "day3_done"
+   ],
+   "_note": "конец свободного дня — M24 «Вечер третьего дня»"
+  },
+  {
+   "id": "finale",
+   "if": [
+    "game_finished"
+   ],
+   "_note": "конец игры — M26 «Три недели спустя» (день четвёртый — мост — переходит в эпилог)"
+  }
+ ]
 }

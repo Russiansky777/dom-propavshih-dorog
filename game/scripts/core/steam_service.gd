@@ -12,8 +12,10 @@ extends Node
 ##
 ## Achievements are data: res://data/steam.json says which of the traces of choices (data/story/achievements.json —
 ## the end screen, FrameView.achieved()) are Steam achievements and under which API names (`ACH_<ID>` unless
-## renamed); each one is set the moment its flags hold — on every flag change and after a load (GameState's
-## flag_changed "*"). Steam keeps an achievement once set; a repeated set (a load, the next game) does nothing.
+## renamed; `skip` — not in Steam), plus `extra` — Steam-only ones that are no trace on the end screen (Director
+## 17.11: the end of each day and of the game), each {id, if: [flags], any: [flags]} like a trace; each one is set
+## the moment its flags hold — on every flag change and after a load (GameState's flag_changed "*"). Steam keeps an
+## achievement once set; a repeated set (a load, the next game) does nothing.
 
 const CONFIG := "res://data/steam.json"
 
@@ -98,17 +100,33 @@ func api_name(entry: Dictionary) -> String:
 	return String(cfg.get("prefix", "ACH_")) + id.to_upper()
 
 
-## Every Steam achievement the game knows, in the order of achievements.json: [{id, api}] (Docs/STEAM_ACHIEVEMENTS.md).
+## Every Steam achievement the game knows: the traces of achievements.json in their order, then `extra`:
+## [{id, api}] (Docs/STEAM_ACHIEVEMENTS.md).
 func all_api_names() -> Array:
 	var out: Array = []
 	var path := StoryData.DATA_DIR_RU + "/achievements.json"
 	var doc = JSON.parse_string(FileAccess.get_file_as_string(path)) if FileAccess.file_exists(path) else null
-	if doc is Dictionary:
-		for a in doc.get("achievements", []):
-			var n := api_name(a)
-			if n != "":
-				out.append({"id": String(a.get("id", "")), "api": n})
+	var entries: Array = doc.get("achievements", []).duplicate() if doc is Dictionary else []
+	entries.append_array(cfg.get("extra", []))
+	for a in entries:
+		var n := api_name(a)
+		if n != "":
+			out.append({"id": String(a.get("id", "")), "api": n})
 	return out
+
+
+## Do an entry's flags hold now: every one of `if`, and one of `any` when there is `any` (the rule of the end screen,
+## FrameView.achieved()).
+static func holds(entry: Dictionary) -> bool:
+	for f in entry.get("if", []):
+		if not GameState.has_flag(String(f)):
+			return false
+	if entry.has("any"):
+		for f in entry["any"]:
+			if GameState.has_flag(String(f)):
+				return true
+		return false
+	return true
 
 
 func _on_flag(_flag: String, _value: bool) -> void:
@@ -130,7 +148,11 @@ func sync_achievements() -> Array:
 	var out: Array = []
 	if not active or backend == null:
 		return out
-	for a in FrameView.achieved():
+	var now: Array = FrameView.achieved()
+	for e in cfg.get("extra", []):
+		if e is Dictionary and holds(e):
+			now.append(e)
+	for a in now:
 		var n := api_name(a)
 		if n == "" or sent.has(n):
 			continue
