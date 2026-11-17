@@ -131,7 +131,7 @@ func _test_ribbon() -> void:
 	_check(sr.view_open and String(sr.view.get("id", "")) == "ribbon_braid", "the close-up did not open: %s" % str(sr.view))
 	var pics: Array = sr.view.get("pictures", [])
 	_check(pics.size() == 1 and String(pics[0].get("image", "")) == IMG, "the close-up shows %s" % str(pics))
-	_check(String(sr.view.get("title", "")) == "@O3.nina.ribbon_title" and sd.text("@O3.nina.ribbon_title") == "Мамина лента",
+	_check(String(sr.view.get("title", "")) == "@O3.nina.ribbon.title" and sd.text("@O3.nina.ribbon.title") == "Мамина лента",
 		"the close-up's title is not «Мамина лента»: %s" % sd.text(String(sr.view.get("title", ""))))
 	var said: String = String(sr.current_beat.get("text", ""))
 	_check(said.contains("вплетает её в Агатину косу"), "the narrator's words are not over the close-up: «%s»" % said)

@@ -87,7 +87,8 @@ func _on_beat() -> void:
 		"line":
 			_w("%s: %s" % [String(b.get("speaker_name", b.get("speaker", ""))), String(b.get("text", ""))])
 			_shot(String(b.get("line_id", "")))
-		"choice":
+		"choice", "options":
+			# ревью 17.11: the runner's choices are beats of type "options" — their buttons were logged empty
 			var opts: Array = []
 			for o in b.get("options", []):
 				opts.append(String((o as Dictionary).get("text", o)) if o is Dictionary else String(o))

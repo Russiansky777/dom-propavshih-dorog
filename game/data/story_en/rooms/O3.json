@@ -770,7 +770,7 @@
      "view": {
       "id": "ribbon_braid",
       "type": "papers",
-      "title": "@O3.nina.ribbon_title",
+      "title": "@O3.nina.ribbon.title",
       "close_label": "@ui.close",
       "pictures": [
        {
