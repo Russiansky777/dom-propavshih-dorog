@@ -37,6 +37,9 @@ func _move(to: Vector2, seconds: float) -> void:
 		var m := InputEventMouseMotion.new()
 		m.position = root.get_final_transform() * _mouse
 		m.global_position = m.position
+		# with a display the system pointer is the mouse the game reads (the first take: it stayed in the middle of
+		# the screen, and the ribbon went to the notches on the door frame) — it is moved too
+		Input.warp_mouse(m.position)
 		Input.parse_input_event(m)
 		await process_frame
 
