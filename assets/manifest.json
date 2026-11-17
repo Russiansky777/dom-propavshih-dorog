@@ -3090,8 +3090,9 @@
     },
     {
       "id": "closeup_ribbon_braid",
-      "status": "requested",
+      "status": "imported",
       "requested": "2026-11-17",
+      "imported": "2026-11-17 (ChatGPT, картинка пришла в чат от Директора, 1440×810 RGB; в игре — game/assets/closeups/closeup_ribbon_braid.png; O3.json nina.item_use.school_ribbon.view, тест F17-1)",
       "block": "Партия 19 (мамина лента в косе)",
       "batch": "19",
       "owner": "ChatGPT + Директор",

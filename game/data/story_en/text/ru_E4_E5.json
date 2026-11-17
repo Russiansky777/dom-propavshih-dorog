@@ -747,6 +747,10 @@
   "O3.nina.ribbon": {
    "text": "Mama's ribbon. Nina weaves it into Agata's braid without a word — as she used to on feast days."
   },
+  "O3.nina.ribbon_title": {
+   "text": "Mama's ribbon",
+   "_k": "Директор 17.11: крупный план «Мамина лента в косе» (партия 19) — заголовок кадра"
+  },
   "O3.nina.ribbon_again": {
    "text": "The ribbon in my braid. Just as before.",
    "line": {

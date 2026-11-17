@@ -764,7 +764,27 @@
       "ribbon_braided"
      ],
      "once_flag": "ribbon_braided",
-     "text_done": "@O3.nina.ribbon_again"
+     "text_done": "@O3.nina.ribbon_again",
+     "consumes": true,
+     "_d1711": "Директор 17.11: «Давай добавим и крупный кадр да» — крупный план рук Нины и косы (партия 19); «давай уберем да, по логике» — лента вплетена, из сумки уходит (text_done теперь не звучит: щёлкать нечем)",
+     "view": {
+      "id": "ribbon_braid",
+      "type": "papers",
+      "title": "@O3.nina.ribbon_title",
+      "close_label": "@ui.close",
+      "pictures": [
+       {
+        "image": "res://assets/closeups/closeup_ribbon_braid.png",
+        "rect": [
+         260,
+         130,
+         1400,
+         0
+        ],
+        "angle_deg": 0.0
+       }
+      ]
+     }
     }
    }
   },

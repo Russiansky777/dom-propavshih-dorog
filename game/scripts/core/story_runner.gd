@@ -1937,6 +1937,10 @@ func _run_action(h: StoryHotspot, act: Dictionary, item_id: String) -> void:
 		GameState.set_goal(StoryData.text(String(act["goal"])))
 	if act.has("synth_sound"):
 		synth_sound_requested.emit(String(act["synth_sound"]))
+	# `view`: the action opens a close-up first and its words play over it, like a hotspot's look-only `view`
+	# (Director 17.11: «Давай добавим и крупный кадр» — Mama's ribbon braided into Agata's braid, O3).
+	if act.has("view") and view_allowed(act["view"]):
+		open_view(act["view"], h.hotspot_id if h != null else "")
 	if act.has("text"):
 		# one key or a list of keys read in turn (H2 bell: the tag, then Agata's thought)
 		var t = act["text"]
