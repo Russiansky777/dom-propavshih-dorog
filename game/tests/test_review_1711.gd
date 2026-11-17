@@ -14,7 +14,7 @@ extends SceneTree
 ##   R17-5 The speaker rule of ghost_watch.gd: a villager who speaks is in sight (Q07 Pelageya, Q08 the guests).
 ##   R17-6 A body turn settles at any frame length (Actor3D.turn_step in slices).
 ##   R17-7 M21b: Agata reads the village list over it, then the talk goes on in the room (scenes data close_view).
-##   R17-8 Director 17.11, 19:47 «Ленту — можно, давай сделаем да»: Mama takes the ribbon in Dunya's house too.
+##   R17-8 Director 17.11 (evening) «Ленту — можно, давай сделаем да»: Mama takes the ribbon in Dunya's house too.
 ##   Every one with its self-check.
 
 var _results: Array = []
@@ -489,7 +489,7 @@ func _click(at: Vector2) -> void:
 
 
 ## The free day in Dunya's house (Mama is there from M22 on; in her room no more after M21b): the ribbon picked in the
-## bag and a real click on Mama. `with_use` false — the house's item_use taken away (the data until 17.11, 19:47).
+## bag and a real click on Mama. `with_use` false — the house's item_use taken away (the data until the evening of 17.11).
 func _ribbon_h1(with_use: bool) -> Dictionary:
 	var out := {"in_bag_before": false, "braided": false, "in_bag_after": true, "view": ""}
 	var main_node: Node = await _start("freewalk")
