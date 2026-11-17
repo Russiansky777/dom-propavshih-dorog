@@ -1,12 +1,12 @@
-run 44157494034 2026-11-17T19:23:20Z requests: pipeline/requests/voice_say_ribbon_epilogue.json
+run 44163132379 2026-11-17T19:54:43Z requests: pipeline/requests/voice_say_ribbon_epilogue.json
 ключ: есть, длина 51, формат sk_…: да
 план: payg (active), израсходовано 0 из 16415 символов
 ключ принят API (GET /v2/voices → 200)
 === pipeline/requests/voice_say_ribbon_epilogue.json
   квота: осталось 16415, запас 0, к синтезу ≈ 98 кредитов (98 символов × 1.0)
-  ОШИБКА v1_ru: синтез ZAKADR: HTTP 403: {"type": "authorization_error", "code": "subscription_required", "message": "Output format 'mp3_44100_192' is only available on the Creator tier and above.", "status": "output_format_not_allowed", "request_id": "d1d37605fcd8efa3c8cf8df7b5c4069a"}
-  ОШИБКА v2_ru: синтез ZAKADR: HTTP 403: {"type": "authorization_error", "code": "subscription_required", "message": "Output format 'mp3_44100_192' is only available on the Creator tier and above.", "status": "output_format_not_allowed", "request_id": "ad7dd9541e8c160c760045b174f4f19e"}
-[say ribbon_epilogue] фраз 0, ошибок 2, символов 98, кредитов 0
+  v1_ru                         4.16 с  выравнивание: есть  В косе у Агаты мамина лента. Нина сама вплела.
+  v2_ru                         4.00 с  выравнивание: есть  У Агаты в косе мамина лента — как бывало в праздник.
+[say ribbon_epilogue] фраз 2, ошибок 0, символов 98, кредитов 21
   предупреждение: H2d.nina_mirror.watch_again: устарела (текст изменён) — игра покажет только субтитры
   предупреждение: M02_6: устарела (нет в сценах) — игра покажет только субтитры
   предупреждение: mitya:O4.mitya_board.use: устарела (текст изменён) — игра покажет только субтитры
