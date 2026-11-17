@@ -17,6 +17,8 @@ var _mouse := Vector2(960, 700)
 
 
 func _initialize() -> void:
+	# a watchdog: a script error stops `_run` but not the movie writer — the recording ends anyway
+	create_timer(150.0).timeout.connect(func(): print("[ribbon] watchdog: 150 s"); quit(1))
 	_run()
 
 
@@ -89,7 +91,7 @@ func _run() -> void:
 	await _hold(2.0)
 	# the ribbon from its pocket
 	var ui := _ui()
-	var inv: Dictionary = ui.call("probe").get("inventory", {}) if ui != null else {}
+	var inv: Dictionary = ui.call("probe_positions").get("inventory", {}) if ui != null else {}
 	if inv.has("school_ribbon"):
 		await _move(Vector2(float(inv["school_ribbon"]["x"]), float(inv["school_ribbon"]["y"])), 1.0)
 		await _hold(0.6)
@@ -110,19 +112,26 @@ func _run() -> void:
 	print("[ribbon] close-up open: %s after %.1f s" % [str(sr.view_open), g / FPS])
 	# the narrator's words over the close-up, as long as they are said, then a moment more
 	g = 0
-	while g < int(20 * FPS):
+	while g < int(40 * FPS):
 		g += 1
 		await process_frame
 		if sr.current_beat.is_empty():
 			break
 		if vd != null and bool(vd.call("line_being_said", sr.current_beat)):
 			continue
+		print("[ribbon] line: «%s»" % String(sr.current_beat.get("text", "")).left(60))
 		await _hold(1.6)
 		sr.advance()
-		break
+		await _hold(0.2)
 	await _hold(1.8)
-	# «Закрыть»
-	await _move(Vector2(1780, 1038), 0.9)
+	# «Закрыть» — where the close-up put it
+	var close_at := Vector2(1780, 1038)
+	for n in root.find_children("Close", "Button", true, false):
+		var b := n as Button
+		if b.is_visible_in_tree() and b.get_parent() != null and String(b.get_parent().get_path()).contains("Closeup"):
+			close_at = b.get_global_rect().get_center()
+	print("[ribbon] before close: beat empty %s, close at %s" % [str(sr.current_beat.is_empty()), str(close_at)])
+	await _move(close_at, 0.9)
 	await _hold(0.4)
 	await _click()
 	await _hold(0.6)
