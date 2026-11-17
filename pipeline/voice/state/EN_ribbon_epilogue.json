@@ -1,0 +1,33 @@
+{
+  "set": "EN_ribbon_epilogue",
+  "runs": [
+    {
+      "run": "44166502562",
+      "at": "2026-11-17T20:14:11+00:00",
+      "request": "pipeline/requests/voice_EN_ribbon_epilogue.json",
+      "synthesized": [
+        "M26_16_then0"
+      ],
+      "reprocessed": [],
+      "characters_text": 50,
+      "failed": [],
+      "pruned": [],
+      "subscription_before": {
+        "tier": "payg",
+        "status": "active",
+        "character_count": 21,
+        "character_limit": 16415,
+        "next_character_count_reset_unix": 1797574870
+      },
+      "subscription_after": {
+        "tier": "payg",
+        "status": "active",
+        "character_count": 21,
+        "character_limit": 16415,
+        "next_character_count_reset_unix": 1797574870
+      },
+      "credits_spent": 11,
+      "subscription_delta": 0
+    }
+  ]
+}
