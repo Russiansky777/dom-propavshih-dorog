@@ -15,6 +15,7 @@ extends SceneTree
 ##   R17-6 A body turn settles at any frame length (Actor3D.turn_step in slices).
 ##   R17-7 M21b: Agata reads the village list over it, then the talk goes on in the room (scenes data close_view).
 ##   R17-8 Director 17.11 (evening) «Ленту — можно, давай сделаем да»: Mama takes the ribbon in Dunya's house too.
+##   R17-9 Director 17.11 «надписи приняты»: close-up titles on one line above their pictures (the big ones lower).
 ##   Every one with its self-check.
 
 var _results: Array = []
@@ -59,6 +60,7 @@ func _run() -> void:
 	await _test("R17-6 a body turn settles at any frame length (villagers; Agata running); self-check — the unsliced step at a long frame swings", _test_turn_settles)
 	await _test("R17-7 M21b: Agata reads the village list over it, then the talk with Mama goes on in the room, not over the paper; self-check — without the scene's close_view it stays over it", _test_m21b_room)
 	await _test("R17-8 Mama's ribbon in Dunya's house (the free day): a real click with it on Mama braids it — the close-up, the trace, the ribbon gone; self-check — without the house's item_use it stays in the bag", _test_ribbon_h1)
+	await _test("R17-9 Director 17.11 «надписи приняты»: every close-up's title on one line, clear of its picture, the picture clear of the buttons (ru, en, every page); self-check — the old place of the picture (y 130) wraps the title", _test_titles_one_line)
 	var failed := _results.count(false)
 	print("==== review 17.11: %d tests, %d passed, %d failed ====" % [_results.size(), _results.size() - failed, failed])
 	quit(1 if failed > 0 else 0)
@@ -542,6 +544,99 @@ func _test_ribbon_h1() -> void:
 	_check(String(r["view"]) == "ribbon_braid", "the close-up of the braiding did not open (%s)" % String(r["view"]))
 	var bad: Dictionary = await _ribbon_h1(false)
 	_check(not bool(bad["braided"]) and bool(bad["in_bag_after"]), "self-check: without the house's item_use the ribbon was braided anyway (%s)" % str(bad))
+
+
+## Every close-up of the rooms' data with a title (a hotspot's view, an item's view on a hotspot, each page), opened as
+## the game opens it: [{where, spec}].
+func _titled_views() -> Array:
+	var out: Array = []
+	for rid in (sd.rooms as Dictionary).keys():
+		for h in (sd.room(String(rid)).get("hotspots", []) as Array):
+			var found: Array = []
+			if h.get("view") is Dictionary:
+				found.append(["%s.%s" % [rid, h.get("id")], h["view"]])
+			var uses = h.get("item_use", {})
+			if uses is Dictionary:
+				for it in (uses as Dictionary).keys():
+					var a = uses[it]
+					if a is Dictionary and a.get("view") is Dictionary:
+						found.append(["%s.%s+%s" % [rid, h.get("id"), it], a["view"]])
+			for f in found:
+				var v: Dictionary = f[1]
+				var titled := String(v.get("title", "")) != ""
+				for pg in v.get("pages", []):
+					titled = titled or String((pg as Dictionary).get("title", "")) != ""
+				if titled:
+					out.append({"where": String(f[0]), "spec": v})
+	return out
+
+
+## The close-up open: per page, the title's lines, where its words run against the pictures' frames, the lowest frame.
+func _title_layout(cv: Node, spec: Dictionary) -> Array:
+	var rows: Array = []
+	sr.open_view(spec, "")
+	for i in 4:
+		await process_frame
+	var n: int = maxi(1, (spec.get("pages", []) as Array).size())
+	for pi in n:
+		if not (spec.get("pages", []) as Array).is_empty():
+			cv.call("_show_page", pi)
+			for i in 3:
+				await process_frame
+		var title: Label = cv.get("title_label")
+		if title == null or title.text == "":
+			continue
+		var font := title.get_theme_font("font")
+		var fsize := title.get_theme_font_size("font_size")
+		var words := Rect2(title.position, Vector2(font.get_string_size(title.text, HORIZONTAL_ALIGNMENT_LEFT, -1, fsize).x,
+			float(title.get_line_count()) * float(title.get_line_height())))
+		var under := 0.0
+		var lowest := 0.0
+		for sh in cv.get("sheets"):
+			var c := sh as Control
+			if c == null or not String(c.name).begins_with("Picture") or not c.is_visible_in_tree():
+				continue
+			var fr := Rect2(c.position + (c.get_parent() as Control).position if c.get_parent() is Control else c.position, c.size).grow(16.0)
+			if fr.intersects(words):
+				under = maxf(under, minf(words.end.y, fr.end.y) - maxf(words.position.y, fr.position.y))
+			lowest = maxf(lowest, fr.end.y)
+		rows.append({"page": pi, "title": title.text, "lines": title.get_line_count(), "under": under, "lowest": lowest})
+	sr.close_view()
+	for i in 2:
+		await process_frame
+	return rows
+
+
+func _test_titles_one_line() -> void:
+	var main_node: Node = await _start("freewalk")
+	var cv: Node = main_node.get_node_or_null("CloseupView")
+	if cv == null:
+		_fails.append("no CloseupView in the game scene")
+		await _stop(main_node)
+		return
+	var seen := 0
+	for lang in ["ru", "en"]:
+		_set_subs(lang)
+		for v in _titled_views():
+			for row in await _title_layout(cv, v["spec"]):
+				seen += 1
+				_check(int(row["lines"]) == 1, "%s %s page %d: «%s» on %d lines" % [lang, v["where"], int(row["page"]), row["title"], int(row["lines"])])
+				_check(float(row["under"]) <= 0.0, "%s %s page %d: «%s» runs %.0f px under its picture" % [lang, v["where"], int(row["page"]), row["title"], float(row["under"])])
+				_check(float(row["lowest"]) <= 1004.0, "%s %s page %d: the picture's frame comes down to y %.0f — on the buttons (1010)" % [lang, v["where"], int(row["page"]), float(row["lowest"])])
+	_set_subs("ru")
+	_check(seen >= 20, "only %d titled close-up pages were seen" % seen)
+	# self-check: Mitya's board with its picture where it stood until 17.11 (y 130) — the title wraps into two lines
+	var board: Dictionary = {}
+	for v in _titled_views():
+		if String(v["where"]).begins_with("O4.mitya_board"):
+			board = (v["spec"] as Dictionary).duplicate(true)
+	if board.is_empty():
+		_fails.append("self-check: no Mitya's board close-up in O4")
+	else:
+		(board["pictures"][0] as Dictionary)["rect"] = [260, 130, 1400, 0]
+		var bad: Array = await _title_layout(cv, board)
+		_check(not bad.is_empty() and int(bad[0]["lines"]) >= 2, "self-check: with the picture at y 130 the title did not wrap (%s)" % str(bad))
+	await _stop(main_node)
 
 
 func _test_ghost_rule() -> void:

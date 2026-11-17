@@ -49,7 +49,7 @@
       "_note": "блок 5, Q07: дощечка Мити с двадцатью зарубками (одна зарубка — одна зима вечерних дежурств у фонаря дальней опоры). Первый клик — крупный план (closeup_mitya_board), потом выбор: оставить Мите или отдать Пелагее; след — кадр эпилога EP_boat.",
       "use": {"sets": ["q07_seen_board"], "text": "@O4.mitya_board.use", "once_flag": "q07_seen_board"},
       "view": {"id": "mitya_board", "type": "papers", "title": "@O4.mitya_board.title", "close_label": "@ui.close", "unless": ["q07_seen_board"],
-        "pictures": [{"image": "res://assets/closeups/closeup_mitya_board.png", "rect": [260, 130, 1400, 0], "angle_deg": 0.0}]},
+        "pictures": [{"image": "res://assets/closeups/closeup_mitya_board.png", "rect": [260, 176, 1400, 0], "_title_1711": "Директор 17.11 («надписи приняты»): заголовок крупного плана в одну строку над картиной — картина ниже (y 120/130 → 176), рамка кончается выше кнопок (979 < 1010); test_review_1711 R17-9", "angle_deg": 0.0}]},
       "_choice_moved": "Директор 01.11, стр. 57: выбор «куда дощечку» — у Мити на мостках (R3, mitya.choice), его у забора нет",
       "look": "@O4.mitya_board.look"
     },

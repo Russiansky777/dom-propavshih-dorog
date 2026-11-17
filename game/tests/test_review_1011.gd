@@ -663,6 +663,12 @@ func _test_view_title_clear() -> void:
 		var title: Label = cv.get("title_label")
 		title.autowrap_mode = TextServer.AUTOWRAP_OFF
 		title.size = Vector2(520, 60)
+		# 17.11 (Director: «надписи приняты» — the big pictures stand lower, their titles on one line above them): the
+		# picture put back where it stood until then (y 130), up beside the title
+		for sh in cv.get("sheets"):
+			var c := sh as Control
+			if c != null and String(c.name).begins_with("Picture") and c.is_visible_in_tree():
+				c.position.y = 130.0
 		await _frames(2)
 		var over0 := _title_overlap(cv)
 		_check(over0 > 10.0, "self-check: «%s» in the old one-line box is not read as covered (%.0f px) — the test sees nothing" % [longest, over0])
