@@ -1,22 +1,12 @@
-run 42924844288 2026-11-10T23:40:05Z requests: pipeline/requests/voice_EN_rerecord.json
+run 44157494034 2026-11-17T19:23:20Z requests: pipeline/requests/voice_say_ribbon_epilogue.json
 ключ: есть, длина 51, формат sk_…: да
-план: creator (active), израсходовано 166974 из 179889 символов
+план: payg (active), израсходовано 0 из 16415 символов
 ключ принят API (GET /v2/voices → 200)
-=== pipeline/requests/voice_EN_rerecord.json
-  закадровые фразы без ссылок в данных игры — пропущены: H2.clapper_box.look, H3.exit_R4.closed, R1.boat.look, R1.instruction.board, agata:H1.lezhanka.after_d1, agata:H4.bed.late_d1, agata:Z2.exit_H1.unlock_after, agata:Z2.exit_Z3.closed
-  отложены (voice.json → by_speaker.<персонаж>.hold): agata:H1.photo.look
-  манифест ru: M19c_1: текст изменён
-  манифест ru: M20_7: текст изменён
-  манифест ru: ilya_wife:O3.ilya_wife.after: текст изменён
-  only_changed: к работе 2 из 240 реплик/фраз запроса
-  задание: Директор 10.11, 23:26 («фраза подходит, делай да, кредиты есть у елевен»), 2026-11-11 — английская копия перезаписанных строк: M19c_1, H3.puzzle.need_drawing и что ещё изменилось в этих сценах/текстах после записи (потолок 6 файлов, 700 символов)
-[EN_rerecord] реплик в сценах запроса: 240; файлов с вариантами голосов: 2; к синтезу: 2 (165 символов); переобработка: 0
-  M19c_1  narrator  ru           ZAKADR     eleven_v4    Nina points to a little wooden-framed mirror on the table.
-  H3.puzzle.need_drawing narrator  ru           ZAKADR     eleven_v4    I have the hinges. But how they go is on Dunya's drawing on the workshop wall. I'd better look at it first.
-  квота: осталось 12915 из 179889, запас 0, к синтезу ≤ 82 кредитов (оценка сверху)
-  M19c_1             синтез: 3.50 с, -17.0 LUFS, TP -5.7 dB (усиление -3.6 dB)
-  H3.puzzle.need_drawing синтез: 6.84 с, -17.0 LUFS, TP -3.6 dB (усиление -2.4 dB)
-[EN_rerecord] синтезировано 2, переобработано 0, ошибок 0; символов текста 165; списано кредитов (character-cost): 73, изменение счётчика подписки: 0
+=== pipeline/requests/voice_say_ribbon_epilogue.json
+  квота: осталось 16415, запас 0, к синтезу ≈ 98 кредитов (98 символов × 1.0)
+  ОШИБКА v1_ru: синтез ZAKADR: HTTP 403: {"type": "authorization_error", "code": "subscription_required", "message": "Output format 'mp3_44100_192' is only available on the Creator tier and above.", "status": "output_format_not_allowed", "request_id": "d1d37605fcd8efa3c8cf8df7b5c4069a"}
+  ОШИБКА v2_ru: синтез ZAKADR: HTTP 403: {"type": "authorization_error", "code": "subscription_required", "message": "Output format 'mp3_44100_192' is only available on the Creator tier and above.", "status": "output_format_not_allowed", "request_id": "ad7dd9541e8c160c760045b174f4f19e"}
+[say ribbon_epilogue] фраз 0, ошибок 2, символов 98, кредитов 0
   предупреждение: H2d.nina_mirror.watch_again: устарела (текст изменён) — игра покажет только субтитры
   предупреждение: M02_6: устарела (нет в сценах) — игра покажет только субтитры
   предупреждение: mitya:O4.mitya_board.use: устарела (текст изменён) — игра покажет только субтитры
