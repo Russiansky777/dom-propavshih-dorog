@@ -223,6 +223,9 @@ jobs:
           system_profiler SPDisplaysDataType 2>/dev/null | head -20 > out/displays.txt
           win window_title
           win window_freewalk -- --start=freewalk
+          # Intel-раннер: OpenGL там — программный (Apple Software Renderer, окно чёрное), а Metal-устройство есть —
+          # через ANGLE (OpenGL поверх Metal) видно, что x86_64-часть игры рисует то же, что на Apple Silicon
+          if [ "$(uname -m)" = x86_64 ]; then win window_angle --rendering-driver opengl3_angle -- --start=freewalk; fi
           cat out/summary.txt out/displays.txt
           for f in out/window_*.txt; do echo "== $f"; head -40 "$f"; done
 
