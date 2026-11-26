@@ -1,8 +1,8 @@
 name: fetch-godotsteam
 # Steam (Директор 16.11: «так надо чтобы и достижения и оверлей и сохранения»): достать готовую сборку GodotSteam
 # GDExtension (MIT, https://store.godotengine.org/asset/godotsteam/godotsteam-gdextension/) — сессия Claude до
-# codeberg.org не достаёт, раннер GitHub достаёт. В main не пишет: аддон (только win64 — игра, linux64 — проверки в
-# CI и у агента) и SHA256.txt кладутся отдельной веткой `vendor-godotsteam`; Claude смотрит её, проверяет загрузку в
+# codeberg.org не достаёт, раннер GitHub достаёт. В main не пишет: аддон (win64 — игра, linux64 — проверки в
+# CI и у агента, osx — версия для Mac с 26.11) и SHA256.txt кладутся отдельной веткой `vendor-godotsteam`; Claude смотрит её, проверяет загрузку в
 # Godot 4.7.2 и сам переносит в game/addons/godotsteam. Артефакты прогона сессии недоступны (хранилище закрыто).
 # Только вручную; `tag` — выпуск (пусто — последний на Codeberg).
 on:
@@ -10,6 +10,10 @@ on:
     inputs:
       tag:
         description: "Выпуск GodotSteam (пусто — последний)"
+        required: false
+        default: ""
+      expect_sha256:
+        description: "SHA-256 архива, который должен прийти (пусто — не сверять); 26.11: тот же v4.24-gde, что в game/addons/godotsteam/SHA256.txt"
         required: false
         default: ""
 
@@ -44,6 +48,7 @@ jobs:
       - name: Download the GDExtension archives
         env:
           TAG: ${{ inputs.tag }}
+          EXPECT: ${{ inputs.expect_sha256 }}
         run: |
           set -uo pipefail
           python3 - <<'EOF'
@@ -80,6 +85,12 @@ jobs:
           ls -la out/dl
           for z in out/dl/*.zip; do if [ -f "$z" ]; then unzip -l "$z" | tail -60; fi; done
           test -s out/SHA256.txt
+          # 26.11 (Mac): same archive as before or nothing — the vetted one, not whatever is newest
+          if [ -n "${EXPECT}" ]; then
+            got=$(cut -d' ' -f1 out/SHA256.txt | head -1)
+            if [ "$got" != "$EXPECT" ]; then echo "::error title=GodotSteam::SHA-256 $got, expected $EXPECT"; exit 1; fi
+            echo "SHA-256 matches the expected $EXPECT"
+          fi
 
       - uses: actions/checkout@v4
         with:
@@ -102,9 +113,10 @@ jobs:
           mkdir -p game/addons/godotsteam
           src=../x/addons/godotsteam
           cp $src/godotsteam.gdextension $src/license.md $src/readme.md game/addons/godotsteam/
-          cp -r $src/win64 $src/linux64 game/addons/godotsteam/
+          # 26.11 (Директор: «Сделай версию для мак»): + osx (universal dylib GodotSteam и libsteam_api.dylib)
+          cp -r $src/win64 $src/linux64 $src/osx game/addons/godotsteam/
           cp ../out/SHA256.txt ../out/codeberg_releases.json game/addons/godotsteam/ 2>/dev/null || true
           git add -A game
-          git commit -q -m "GodotSteam GDExtension $(cut -d' ' -f5 ../out/SHA256.txt | head -1): win64 + linux64 [skip ci]"
+          git commit -q -m "GodotSteam GDExtension $(cut -d' ' -f5 ../out/SHA256.txt | head -1): win64 + linux64 + osx [skip ci]"
           git push -f origin vendor-godotsteam
           git log --stat -1 | cat
