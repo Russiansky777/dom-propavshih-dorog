@@ -1,34 +1,34 @@
 == runner: macos-15-intel · macOS 15.7.9 · x86_64
-== zip: -rw-r--r--  1 runner  staff  969305307 Nov 26 10:49 dl/DomPropavshihDorog_mac.zip
+== zip: -rw-r--r--  1 runner  staff  969305307 Nov 26 10:56 dl/DomPropavshihDorog_mac.zip
 == app: app/Dom propavshih dorog.app
 app/Dom propavshih dorog.app/Contents:
 total 16
-drwxr-xr-x  3 runner  staff    96 Nov 26 10:49 _CodeSignature
-drwxr-xr-x  8 runner  staff   256 Nov 26 10:49 .
-drwxr-xr-x  3 runner  staff    96 Nov 26 10:49 ..
-drwxr-xr-x  4 runner  staff   128 Nov 26 10:49 Frameworks
+drwxr-xr-x  3 runner  staff    96 Nov 26 10:57 _CodeSignature
+drwxr-xr-x  8 runner  staff   256 Nov 26 10:57 .
+drwxr-xr-x  3 runner  staff    96 Nov 26 10:56 ..
+drwxr-xr-x  4 runner  staff   128 Nov 26 10:57 Frameworks
 -rw-r--r--  1 runner  staff  1852 Nov 26 10:22 Info.plist
-drwxr-xr-x  3 runner  staff    96 Nov 26 10:49 MacOS
+drwxr-xr-x  3 runner  staff    96 Nov 26 10:57 MacOS
 -rw-r--r--  1 runner  staff     9 Nov 26 10:22 PkgInfo
-drwxr-xr-x  5 runner  staff   160 Nov 26 10:49 Resources
+drwxr-xr-x  5 runner  staff   160 Nov 26 10:57 Resources
 
 app/Dom propavshih dorog.app/Contents/Frameworks:
 total 12880
-drwxr-xr-x  4 runner  staff      128 Nov 26 10:49 .
-drwxr-xr-x  8 runner  staff      256 Nov 26 10:49 ..
+drwxr-xr-x  4 runner  staff      128 Nov 26 10:57 .
+drwxr-xr-x  8 runner  staff      256 Nov 26 10:57 ..
 -rwxr-xr-x  1 runner  staff  6130624 Nov 26 10:22 libgodotsteam.macos.template_release.universal.dylib
 -rwxr-xr-x  1 runner  staff   461728 Nov 26 10:22 libsteam_api.dylib
 
 app/Dom propavshih dorog.app/Contents/MacOS:
-total 333920
-drwxr-xr-x  3 runner  staff         96 Nov 26 10:49 .
-drwxr-xr-x  8 runner  staff        256 Nov 26 10:49 ..
+total 358912
+drwxr-xr-x  3 runner  staff         96 Nov 26 10:57 .
+drwxr-xr-x  8 runner  staff        256 Nov 26 10:57 ..
 -rwxr-xr-x  1 runner  staff  170963648 Nov 26 10:22 Dom propavshih dorog
 
 app/Dom propavshih dorog.app/Contents/Resources:
-total 2308792
-drwxr-xr-x  5 runner  staff         160 Nov 26 10:49 .
-drwxr-xr-x  8 runner  staff         256 Nov 26 10:49 ..
+total 2317240
+drwxr-xr-x  5 runner  staff         160 Nov 26 10:57 .
+drwxr-xr-x  8 runner  staff         256 Nov 26 10:57 ..
 -rw-r--r--  1 runner  staff  1179092816 Nov 26 10:21 Dom propavshih dorog.pck
 -rw-r--r--  1 runner  staff     2184552 Nov 26 10:21 icon.icns
 -rw-r--r--  1 runner  staff         229 Nov 26 10:22 PrivacyInfo.xcprivacy

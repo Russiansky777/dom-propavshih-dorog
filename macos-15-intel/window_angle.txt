@@ -1,0 +1,11 @@
+^DGodot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+[1;31mERROR:[0;91m Can't create an EGL display.
+[0;90m   at: _get_gldisplay_id (drivers/egl/egl_manager.cpp:110)[0m
+[1;33mWARNING:[0;93m Your video card drivers seem not to support GLES3 / ANGLE, switching to native OpenGL.
+[0;90m     at: DisplayServerMacOS (platform/macos/display_server_macos.mm:3851)[0m
+OpenGL API 4.1 APPLE-21.1.1 - Compatibility - Using Device: Apple Inc. - Apple Software Renderer
+
+[S_API FAIL] SteamAPI_Init() failed; ipcserver init failed .
+[S_API] SteamAPI_Init(): SteamAPI_IsSteamRunning() did not locate a running instance of Steam.
+[S_API] SteamAPI_Init(): Could not determine Steam client install directory.
+[steam] not started: Could not determine Steam client install directory.

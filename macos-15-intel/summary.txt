@@ -10,3 +10,7 @@
 [window_freewalk] renderer: OpenGL API 4.1 APPLE-21.1.1 - Compatibility - Using Device: Apple Inc. - Apple Software Renderer
 [window_freewalk] steam: [steam] not started: Could not determine Steam client install directory.
 [window_freewalk] SCRIPT ERROR: 0
+[window_angle] alive after 75s — stopped
+[window_angle] renderer: OpenGL API 4.1 APPLE-21.1.1 - Compatibility - Using Device: Apple Inc. - Apple Software Renderer
+[window_angle] steam: [steam] not started: Could not determine Steam client install directory.
+[window_angle] SCRIPT ERROR: 0
