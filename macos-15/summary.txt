@@ -2,11 +2,11 @@
 [headless_title] SCRIPT ERROR: 0, extension load errors: 0
 [headless_epilogue] alive after 60s — stopped
 [headless_epilogue] SCRIPT ERROR: 0, extension load errors: 0
-[window_title] alive — stopped
-[window_title] renderer: —
-[window_title] steam: —
+[window_title] alive after 75s — stopped
+[window_title] renderer: OpenGL API OpenGL ES 3.0 (ANGLE 2.1.1 git hash: aaebda1c5a40) - Compatibility - Using Device: Google Inc. (Apple) - ANGLE (Apple, ANGLE Metal Renderer: Apple Paravirtual device, Version 15.8.2 (Build 24H232))
+[window_title] steam: [steam] not started: Could not determine Steam client install directory.
 [window_title] SCRIPT ERROR: 0
-[window_freewalk] alive — stopped
-[window_freewalk] renderer: —
-[window_freewalk] steam: —
+[window_freewalk] alive after 75s — stopped
+[window_freewalk] renderer: OpenGL API OpenGL ES 3.0 (ANGLE 2.1.1 git hash: aaebda1c5a40) - Compatibility - Using Device: Google Inc. (Apple) - ANGLE (Apple, ANGLE Metal Renderer: Apple Paravirtual device, Version 15.8.2 (Build 24H232))
+[window_freewalk] steam: [steam] not started: Could not determine Steam client install directory.
 [window_freewalk] SCRIPT ERROR: 0

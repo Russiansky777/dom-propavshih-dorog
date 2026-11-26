@@ -1,5 +1,9 @@
-WARNING: Virtual Machine detected, switching to ANGLE.
-     at: DisplayServerMacOS (platform/macos/display_server_macos.mm:3837)
+^DGodot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+[1;33mWARNING:[0;93m Virtual Machine detected, switching to ANGLE.
+[0;90m     at: DisplayServerMacOS (platform/macos/display_server_macos.mm:3837)[0m
+OpenGL API OpenGL ES 3.0 (ANGLE 2.1.1 git hash: aaebda1c5a40) - Compatibility - Using Device: Google Inc. (Apple) - ANGLE (Apple, ANGLE Metal Renderer: Apple Paravirtual device, Version 15.8.2 (Build 24H232))
+
 [S_API FAIL] SteamAPI_Init() failed; ipcserver init failed .
 [S_API] SteamAPI_Init(): SteamAPI_IsSteamRunning() did not locate a running instance of Steam.
 [S_API] SteamAPI_Init(): Could not determine Steam client install directory.
+[steam] not started: Could not determine Steam client install directory.
