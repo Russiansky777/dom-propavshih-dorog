@@ -201,23 +201,30 @@ jobs:
         continue-on-error: true
         run: |
           set +e -u
-          win() {  # $1 tag, $2 seconds before the shot, rest — args
-            local tag=$1 secs=$2; shift 2
-            "$BIN" "$@" > "out/$tag.txt" 2>&1 &
+          # stdout игры в файл буферизуется и при остановке теряется (строка движка о видеокарте, «[steam] …») —
+          # запуск через `script` даёт ей терминал, строки пишутся сразу. Снимки — через 20, 45 и 75 с: на Intel-раннере
+          # видеокарта программная, первый кадр может прийти не сразу. Окно игры выводится вперёд (System Events).
+          win() {  # $1 tag, rest — args
+            local tag=$1; shift
+            script -q "out/$tag.txt" "$BIN" "$@" > /dev/null 2>&1 &
             local pid=$!
-            sleep "$secs"
-            screencapture -x "out/$tag.png" || echo "[$tag] screencapture failed" >> out/summary.txt
-            sleep 5
-            if kill -0 $pid 2>/dev/null; then kill $pid; wait $pid 2>/dev/null; echo "[$tag] alive — stopped" >> out/summary.txt
+            local t=0
+            for at in 20 45 75; do
+              sleep $((at - t)); t=$at
+              osascript -e 'tell application "System Events" to set frontmost of every process whose name contains "Dom" to true' >/dev/null 2>&1
+              screencapture -x "out/${tag}_${at}s.png" || echo "[$tag] screencapture failed at ${at}s" >> out/summary.txt
+            done
+            if kill -0 $pid 2>/dev/null; then pkill -TERM -P $pid; kill $pid; wait $pid 2>/dev/null; echo "[$tag] alive after 75s — stopped" >> out/summary.txt
             else wait $pid; echo "[$tag] EXITED EARLY with code $?" >> out/summary.txt; fi
-            echo "[$tag] renderer: $(grep -m1 -E 'OpenGL API|Vulkan API|Metal' "out/$tag.txt" || echo '—')" >> out/summary.txt
-            echo "[$tag] steam: $(grep -m1 '\[steam\]' "out/$tag.txt" || echo '—')" >> out/summary.txt
-            echo "[$tag] SCRIPT ERROR: $(grep -c 'SCRIPT ERROR' "out/$tag.txt" || true)" >> out/summary.txt
+            echo "[$tag] renderer: $(grep -a -m1 -E 'OpenGL API|Vulkan API|Metal' "out/$tag.txt" | tr -d '\r' || echo '—')" >> out/summary.txt
+            echo "[$tag] steam: $(grep -a -m1 '\[steam\]' "out/$tag.txt" | tr -d '\r' || echo '—')" >> out/summary.txt
+            echo "[$tag] SCRIPT ERROR: $(grep -a -c 'SCRIPT ERROR' "out/$tag.txt" || true)" >> out/summary.txt
           }
-          win window_title 25
-          win window_freewalk 45 -- --start=freewalk
-          cat out/summary.txt
-          for f in out/window_*.txt; do echo "== $f"; head -30 "$f"; done
+          system_profiler SPDisplaysDataType 2>/dev/null | head -20 > out/displays.txt
+          win window_title
+          win window_freewalk -- --start=freewalk
+          cat out/summary.txt out/displays.txt
+          for f in out/window_*.txt; do echo "== $f"; head -40 "$f"; done
 
       - name: Push the log to branch mac-checks
         if: always()
