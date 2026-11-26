@@ -25,6 +25,16 @@
 
 На macOS 14 и старше можно проще: правый щелчок по программе → «Открыть» → «Открыть».
 
+**Если Mac пишет «программа повреждена, переместите в Корзину»** (так было 26.11 у тестера Dominik, файл пришёл через
+Telegram; по-словацки «Súbor … je poškodený a nie je možné ho otvoriť»): файл цел — так Mac встречает незаверенные
+программы из интернета, и в «Конфиденциальности и безопасности» её не видно. Помогает одна команда: «Терминал» (поиск
+Spotlight) → набрать `xattr -cr` и пробел → перетащить в окно Терминала саму программу «Dom propavshih dorog» (значок, а не
+папку Contents внутри) → Enter → открыть двойным щелчком. Устанавливать ничего не нужно: программа и есть игра.
+
+Для тестеров по-английски: *Open Terminal (Cmd+Space, type “Terminal”), type `xattr -cr` followed by a space, drag the
+“Dom propavshih dorog” app icon into the Terminal window, press Enter, then double-click the app. There is no installer —
+the app itself is the game.*
+
 ## Критичное
 
 | № | Где | Что должно быть | Ваш ответ |
