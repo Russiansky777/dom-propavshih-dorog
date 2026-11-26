@@ -1,0 +1,3 @@
+[S_API FAIL] SteamAPI_Init() failed; ipcserver init failed .
+[S_API] SteamAPI_Init(): SteamAPI_IsSteamRunning() did not locate a running instance of Steam.
+[S_API] SteamAPI_Init(): Could not determine Steam client install directory.

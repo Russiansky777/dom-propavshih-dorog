@@ -1,0 +1,12 @@
+[headless_title] alive after 40s — stopped
+[headless_title] SCRIPT ERROR: 0, extension load errors: 0
+[headless_epilogue] alive after 60s — stopped
+[headless_epilogue] SCRIPT ERROR: 0, extension load errors: 0
+[window_title] alive — stopped
+[window_title] renderer: —
+[window_title] steam: —
+[window_title] SCRIPT ERROR: 0
+[window_freewalk] alive — stopped
+[window_freewalk] renderer: —
+[window_freewalk] steam: —
+[window_freewalk] SCRIPT ERROR: 0
