@@ -1,3 +1,7 @@
+^DGodot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 4.1 APPLE-21.1.1 - Compatibility - Using Device: Apple Inc. - Apple Software Renderer
+
 [S_API FAIL] SteamAPI_Init() failed; ipcserver init failed .
 [S_API] SteamAPI_Init(): SteamAPI_IsSteamRunning() did not locate a running instance of Steam.
 [S_API] SteamAPI_Init(): Could not determine Steam client install directory.
+[steam] not started: Could not determine Steam client install directory.
