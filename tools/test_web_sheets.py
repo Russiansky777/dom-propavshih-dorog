@@ -99,6 +99,16 @@ def presets() -> None:
     check("assets/characters/*_v2/*.png" in lite and "assets/characters/agata/idle*.png" in lite,
           "Windows Lite везёт полные листы")
     check('export_path="../build/windows/DomPropavshihDorog.exe"' in lite, "Windows Lite: не тот путь exe (его выкладывает workflow)")
+    # 26.11 (Директор: «Сделай версию для мак»): Mac — как Windows Lite (веб-копии листов, без полных листов), один
+    # universal .app с подписью ad-hoc; tools/export_macos.sh убирает на время экспорта ровно то, что пресет исключает
+    mac = blocks.get("macOS", "")
+    check('platform="macOS"' in mac and 'custom_features="web_atlas"' in mac, "macOS: нет пресета или фичи web_atlas")
+    check(mac.split("exclude_filter=")[1].splitlines()[0] == lite.split("exclude_filter=")[1].splitlines()[0] if mac else False,
+          "macOS: исключает не то же, что Windows Lite")
+    check('binary_format/architecture="universal"' in mac, "macOS: не universal (Apple Silicon и Intel)")
+    check("codesign/codesign=1" in mac, "macOS: не подпись ad-hoc (без подписи Mac на Apple Silicon не запустит)")
+    check('export_path="../build/macos/DomPropavshihDorog_mac.zip"' in mac, "macOS: не тот путь zip (его выкладывает build_mac.yml)")
+    check('application/bundle_identifier="com.' in mac, "macOS: нет идентификатора пакета")
 
 
 def scales() -> None:

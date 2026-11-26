@@ -1,0 +1,243 @@
+name: build-mac
+
+# Директор 26.11: «Сделай версию для мак». Только вручную.
+#   1. export (Linux): tools/export_macos.sh → DomPropavshihDorog_mac.zip («Dom propavshih dorog.app», universal,
+#      подпись ad-hoc, GodotSteam для Mac внутри) и tools/check_mac_zip.py.
+#   2. smoke (настоящие Mac GitHub: macos-15 — Apple Silicon, macos-15-intel — Intel): подпись (codesign --verify),
+#      архитектуры, запуск без окна (титул и точка старта) и с окном (снимки экрана), журнал — в ветку mac-checks
+#      (сессия Claude видит ветки, но не артефакты прогона). Запуск без окна без ошибок скриптов — условие выкладки.
+#   3. publish: DomPropavshihDorog_mac.zip в релиз «latest» рядом с exe (только если smoke прошёл на обоих Mac).
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: "Выложить DomPropavshihDorog_mac.zip в релиз latest (только если проверка на Mac прошла)"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-mac
+  cancel-in-progress: false
+
+env:
+  GODOT_VERSION: 4.7.2
+  GODOT_ZIP_SHA256: cadd3204e728a35d3f13adb7fd0d7902636b79f6b95c40c265eb73b6c35329e4
+  TEMPLATES_SHA256: f298490b8d44d934be425a5a65a51bf15f422428b229a06a6e11d9ffea248011
+
+jobs:
+  export:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 150
+    steps:
+      - name: Free disk space
+        run: |
+          df -h / | tail -1
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/local/.ghcup /opt/hostedtoolcache/CodeQL /usr/local/share/boost || true
+          df -h / | tail -1
+      - uses: actions/checkout@v4
+
+      - name: Cache Godot and export templates (with macOS)
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/godot
+            ~/.local/share/godot/export_templates
+          key: godot-${{ env.GODOT_VERSION }}-macos-v1
+
+      - name: Download Godot and the macOS template (hashes from Docs/PROBE_M0.md)
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          mkdir -p ~/godot ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+          cd ~/godot
+          base="https://github.com/godotengine/godot-builds/releases/download/${GODOT_VERSION}-stable"
+          curl -sSL --retry 3 -o godot.zip "$base/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          echo "${GODOT_ZIP_SHA256}  godot.zip" | sha256sum -c -
+          unzip -q -o godot.zip
+          chmod +x Godot_v${GODOT_VERSION}-stable_linux.x86_64
+          curl -sSL --retry 3 -o templates.tpz "$base/Godot_v${GODOT_VERSION}-stable_export_templates.tpz"
+          echo "${TEMPLATES_SHA256}  templates.tpz" | sha256sum -c -
+          unzip -q -o templates.tpz "templates/version.txt" "templates/macos.zip" -d tpz
+          cp tpz/templates/* ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable/
+          rm -rf godot.zip templates.tpz tpz
+          ls -la ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable/
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Python + Pillow
+        run: python -m pip install -q pillow && python3 -I -c "import PIL; print('Pillow', PIL.__version__)"
+
+      # Только чтение кэша импорта сборки exe (build_and_publish.yml): этот прогон меняет импорт на время экспорта
+      # (tools/export_macos.sh) — его кэш никому не нужен.
+      - name: Restore the Godot import cache of the exe build
+        uses: actions/cache/restore@v4
+        with:
+          path: game/.godot
+          key: godot-import-${{ env.GODOT_VERSION }}-${{ hashFiles('game/assets/**/*.import', 'game/assets/characters/**/sprites.json', 'game/export_presets.cfg') }}
+          restore-keys: |
+            godot-import-${{ env.GODOT_VERSION }}-
+
+      - name: Stamp game
+        run: |
+          printf '{"sha": "%s", "utc": "%s"}\n' "${GITHUB_SHA::7}" "$(date -u +%Y-%m-%dT%H:%MZ)" > game/build_info.json
+
+      - name: Export macOS
+        env:
+          GODOT: /home/runner/godot/Godot_v4.7.2-stable_linux.x86_64
+        run: tools/export_macos.sh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mac-zip
+          path: build/macos/DomPropavshihDorog_mac.zip
+          compression-level: 0
+          retention-days: 5
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mac-export-logs
+          path: build/logs/
+          retention-days: 5
+
+  smoke:
+    needs: export
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [macos-15, macos-15-intel]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 40
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: mac-zip
+          path: dl
+      - uses: actions/download-artifact@v4
+        with:
+          name: mac-export-logs
+          path: out/export_logs
+
+      - name: Unpack, signature, architectures
+        run: |
+          set -uo pipefail
+          mkdir -p app out
+          ditto -x -k dl/DomPropavshihDorog_mac.zip app
+          APP=$(ls -d app/*.app | head -1)
+          echo "APP=$APP" >> "$GITHUB_ENV"
+          EXE=$(/usr/libexec/PlistBuddy -c "Print :CFBundleExecutable" "$APP/Contents/Info.plist")
+          echo "BIN=$APP/Contents/MacOS/$EXE" >> "$GITHUB_ENV"
+          {
+            echo "== runner: ${{ matrix.runner }} · $(sw_vers -productName) $(sw_vers -productVersion) · $(uname -m)"
+            echo "== zip: $(ls -la dl/DomPropavshihDorog_mac.zip)"
+            echo "== app: $APP"; ls -la "$APP/Contents" "$APP/Contents/MacOS" "$APP/Contents/Frameworks" "$APP/Contents/Resources"
+            echo "== lipo"; lipo -archs "$APP/Contents/MacOS/$EXE"
+            echo "== codesign -dv"; codesign -dv --verbose=4 "$APP" 2>&1
+            echo "== codesign --verify --deep --strict"; codesign --verify --deep --strict --verbose=2 "$APP" 2>&1; echo "codesign verify exit $?"
+            echo "== entitlements"; codesign -d --entitlements - "$APP" 2>&1 | head -40
+            echo "== Gatekeeper as for a download (quarantine set on a copy): expected «rejected» — not notarized"
+            cp -R "$APP" out/gk.app; xattr -w com.apple.quarantine "0081;$(printf %x $(date +%s));Safari;" out/gk.app
+            spctl -a -vv -t exec out/gk.app 2>&1; echo "spctl exit $?"; rm -rf out/gk.app
+          } > out/inspect.txt 2>&1
+          cat out/inspect.txt
+
+      # Без окна: Godot грузит пакет, скрипты, титул; затем точка старта (эпилог с лентой — сцена, голос, кадры).
+      # Процесс должен дожить до остановки (не упасть) и не дать ни одной SCRIPT ERROR и ошибки загрузки библиотек.
+      - name: Headless runs
+        id: headless
+        run: |
+          set -uo pipefail
+          verdict=0
+          run_for() {  # $1 tag, $2 seconds, rest — args
+            local tag=$1 secs=$2; shift 2
+            "$BIN" "$@" > "out/$tag.txt" 2>&1 &
+            local pid=$!
+            sleep "$secs"
+            if kill -0 $pid 2>/dev/null; then
+              kill $pid; wait $pid 2>/dev/null; echo "[$tag] alive after ${secs}s — stopped" >> out/summary.txt
+            else
+              wait $pid; local c=$?
+              echo "[$tag] EXITED EARLY with code $c" >> out/summary.txt; verdict=1
+            fi
+            local se dl
+            se=$(grep -c "SCRIPT ERROR" "out/$tag.txt" || true)
+            dl=$(grep -ciE "can't open dynamic library|failed to load .*gdextension|GDExtension.*(error|failed)" "out/$tag.txt" || true)
+            echo "[$tag] SCRIPT ERROR: $se, extension load errors: $dl" >> out/summary.txt
+            if [ "$se" != "0" ] || [ "$dl" != "0" ]; then verdict=1; fi
+          }
+          run_for headless_title 40 --headless
+          run_for headless_epilogue 60 --headless -- --start=epilogue_ribbon
+          cat out/summary.txt
+          for f in out/headless_*.txt; do echo "== $f"; head -40 "$f"; done
+          echo "verdict=$verdict" >> "$GITHUB_OUTPUT"
+          exit $verdict
+
+      # С окном: строка движка о видеокарте, «[steam] …» (GodotSteam загрузился и спросил Steam — клиента на раннере
+      # нет), снимки экрана. Видеокарта раннера виртуальная: если окно не поднимется, это видно в журнале, но выкладку
+      # не держит (держит запуск без окна выше).
+      - name: Windowed runs and screenshots
+        if: always()
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+          win() {  # $1 tag, $2 seconds before the shot, rest — args
+            local tag=$1 secs=$2; shift 2
+            "$BIN" "$@" > "out/$tag.txt" 2>&1 &
+            local pid=$!
+            sleep "$secs"
+            screencapture -x "out/$tag.png" || echo "[$tag] screencapture failed" >> out/summary.txt
+            sleep 5
+            if kill -0 $pid 2>/dev/null; then kill $pid; wait $pid 2>/dev/null; echo "[$tag] alive — stopped" >> out/summary.txt
+            else wait $pid; echo "[$tag] EXITED EARLY with code $?" >> out/summary.txt; fi
+            echo "[$tag] renderer: $(grep -m1 -E 'OpenGL API|Vulkan API|Metal' "out/$tag.txt" || echo '—')" >> out/summary.txt
+            echo "[$tag] steam: $(grep -m1 '\[steam\]' "out/$tag.txt" || echo '—')" >> out/summary.txt
+            echo "[$tag] SCRIPT ERROR: $(grep -c 'SCRIPT ERROR' "out/$tag.txt" || true)" >> out/summary.txt
+          }
+          win window_title 25
+          win window_freewalk 45 -- --start=freewalk
+          cat out/summary.txt
+          for f in out/window_*.txt; do echo "== $f"; head -30 "$f"; done
+
+      - name: Push the log to branch mac-checks
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -uo pipefail
+          url="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          dst="${{ matrix.runner }}"
+          line="run ${{ github.run_id }} · ${GITHUB_SHA::8} · $(date -u +%Y-%m-%dT%H:%MZ) · headless verdict ${{ steps.headless.outputs.verdict }}"
+          for i in 1 2 3 4 5; do
+            rm -rf pub && mkdir pub && cd pub && git init -q
+            if git fetch -q --depth 1 "$url" mac-checks 2>/dev/null; then git checkout -q -b mac-checks FETCH_HEAD
+            else git checkout -q --orphan mac-checks; fi
+            rm -rf "$dst" && mkdir -p "$dst" && cp -R ../out/. "$dst/" && echo "$line" > "$dst/RUN.txt"
+            git add -A
+            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+              commit -q -m "mac smoke ${{ matrix.runner }} · run ${{ github.run_id }} [skip ci]"
+            if git push -q "$url" HEAD:mac-checks; then exit 0; fi
+            cd .. && sleep $((i * 7))
+          done
+          echo "::warning title=mac-checks::журнал не выложен в ветку"
+
+  publish:
+    needs: [export, smoke]
+    if: inputs.publish
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: mac-zip
+          path: dl
+      - name: Upload to release «latest»
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ls -la dl
+          gh release upload latest dl/DomPropavshihDorog_mac.zip --clobber --repo "$GITHUB_REPOSITORY"
+          gh api "repos/${GITHUB_REPOSITORY}/releases/tags/latest" --jq '.assets[] | "\(.name) \(.size) \(.updated_at)"'
