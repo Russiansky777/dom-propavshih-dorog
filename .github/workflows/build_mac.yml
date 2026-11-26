@@ -14,9 +14,14 @@ on:
         description: "Выложить DomPropavshihDorog_mac.zip в релиз latest (только если проверка на Mac прошла)"
         type: boolean
         default: true
+      from_run:
+        description: "Не собирать заново: взять zip (артефакт mac-zip) из прогона с этим номером — только проверка и выкладка"
+        required: false
+        default: ""
 
 permissions:
   contents: write
+  actions: read
 
 concurrency:
   group: build-mac
@@ -29,6 +34,7 @@ env:
 
 jobs:
   export:
+    if: inputs.from_run == ''
     runs-on: ubuntu-24.04
     timeout-minutes: 150
     steps:
@@ -106,6 +112,7 @@ jobs:
 
   smoke:
     needs: export
+    if: always() && (needs.export.result == 'success' || needs.export.result == 'skipped')
     strategy:
       fail-fast: false
       matrix:
@@ -117,14 +124,21 @@ jobs:
         with:
           name: mac-zip
           path: dl
+          run-id: ${{ inputs.from_run || github.run_id }}
+          github-token: ${{ github.token }}
       - uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
           name: mac-export-logs
           path: out/export_logs
+          run-id: ${{ inputs.from_run || github.run_id }}
+          github-token: ${{ github.token }}
 
+      # Шаги ниже — с `set +e`: оболочка раннера по умолчанию `bash -e`, а здесь ненулевые коды — данные
+      # (spctl отказывает неподписанному Apple — код 3; `wait` убитого процесса — 143), а не поломка шага.
       - name: Unpack, signature, architectures
         run: |
-          set -uo pipefail
+          set +e -u
           mkdir -p app out
           ditto -x -k dl/DomPropavshihDorog_mac.zip app
           APP=$(ls -d app/*.app | head -1)
@@ -140,17 +154,20 @@ jobs:
             echo "== codesign --verify --deep --strict"; codesign --verify --deep --strict --verbose=2 "$APP" 2>&1; echo "codesign verify exit $?"
             echo "== entitlements"; codesign -d --entitlements - "$APP" 2>&1 | head -40
             echo "== Gatekeeper as for a download (quarantine set on a copy): expected «rejected» — not notarized"
-            cp -R "$APP" out/gk.app; xattr -w com.apple.quarantine "0081;$(printf %x $(date +%s));Safari;" out/gk.app
-            spctl -a -vv -t exec out/gk.app 2>&1; echo "spctl exit $?"; rm -rf out/gk.app
+            gk="$RUNNER_TEMP/gk/Dom.app"; mkdir -p "$RUNNER_TEMP/gk"; cp -R "$APP" "$gk"
+            xattr -w com.apple.quarantine "0081;$(printf %x $(date +%s));Safari;" "$gk"
+            spctl -a -vv -t exec "$gk" 2>&1; echo "spctl exit $?"; rm -rf "$RUNNER_TEMP/gk"
           } > out/inspect.txt 2>&1
           cat out/inspect.txt
+          lipo -archs "$APP/Contents/MacOS/$EXE" | grep -q x86_64 && lipo -archs "$APP/Contents/MacOS/$EXE" | grep -q arm64 \
+            && codesign --verify --deep --strict "$APP" || { echo "::error title=mac::не universal или подпись не сходится"; exit 1; }
 
       # Без окна: Godot грузит пакет, скрипты, титул; затем точка старта (эпилог с лентой — сцена, голос, кадры).
       # Процесс должен дожить до остановки (не упасть) и не дать ни одной SCRIPT ERROR и ошибки загрузки библиотек.
       - name: Headless runs
         id: headless
         run: |
-          set -uo pipefail
+          set +e -u
           verdict=0
           run_for() {  # $1 tag, $2 seconds, rest — args
             local tag=$1 secs=$2; shift 2
@@ -183,7 +200,7 @@ jobs:
         if: always()
         continue-on-error: true
         run: |
-          set -uo pipefail
+          set +e -u
           win() {  # $1 tag, $2 seconds before the shot, rest — args
             local tag=$1 secs=$2; shift 2
             "$BIN" "$@" > "out/$tag.txt" 2>&1 &
@@ -207,7 +224,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          set -uo pipefail
+          set +e -u
           url="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           dst="${{ matrix.runner }}"
           line="run ${{ github.run_id }} · ${GITHUB_SHA::8} · $(date -u +%Y-%m-%dT%H:%MZ) · headless verdict ${{ steps.headless.outputs.verdict }}"
@@ -215,7 +232,10 @@ jobs:
             rm -rf pub && mkdir pub && cd pub && git init -q
             if git fetch -q --depth 1 "$url" mac-checks 2>/dev/null; then git checkout -q -b mac-checks FETCH_HEAD
             else git checkout -q --orphan mac-checks; fi
-            rm -rf "$dst" && mkdir -p "$dst" && cp -R ../out/. "$dst/" && echo "$line" > "$dst/RUN.txt"
+            rm -rf "$dst" && mkdir -p "$dst" && echo "$line" > "$dst/RUN.txt"
+            # только журналы и снимки, не больше 20 МБ каждый (ветка — не хранилище сборок: предел GitHub 100 МБ на файл)
+            (cd ../out && find . -type f \( -name '*.txt' -o -name '*.log' -o -name '*.png' \) -size -20M) | while IFS= read -r f; do
+              mkdir -p "$dst/$(dirname "$f")"; cp "../out/$f" "$dst/$f"; done
             git add -A
             git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
               commit -q -m "mac smoke ${{ matrix.runner }} · run ${{ github.run_id }} [skip ci]"
@@ -226,13 +246,15 @@ jobs:
 
   publish:
     needs: [export, smoke]
-    if: inputs.publish
+    if: always() && inputs.publish && needs.smoke.result == 'success'
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/download-artifact@v4
         with:
           name: mac-zip
           path: dl
+          run-id: ${{ inputs.from_run || github.run_id }}
+          github-token: ${{ github.token }}
       - name: Upload to release «latest»
         env:
           GH_TOKEN: ${{ github.token }}
